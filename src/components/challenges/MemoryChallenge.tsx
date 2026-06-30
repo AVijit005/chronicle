@@ -1,0 +1,1 @@
+export { MemoryChallenge } from "./Challenges";

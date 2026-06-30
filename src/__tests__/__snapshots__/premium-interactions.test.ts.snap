@@ -1,0 +1,75 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`design tokens (src/styles.css) > shadow tokens are stable 1`] = `
+{
+  "shadow-button": "0 8px 24px -12px oklch(0 0 0 / 0.6)",
+  "shadow-button-hover": "0 18px 44px -18px oklch(0 0 0 / 0.7), 0 0 28px -6px oklch(0.72 0.18 255 / 0.5)",
+  "shadow-elevated": "0 30px 80px -30px oklch(0 0 0 / 0.6), 0 0 0 1px oklch(1 0 0 / 0.05)",
+  "shadow-ghost-hover": "0 18px 44px -22px oklch(0 0 0 / 0.6)",
+  "shadow-glass": "0 1px 0 oklch(1 0 0 / 0.08) inset, 0 -1px 0 oklch(0 0 0 / 0.2) inset, 0 20px 60px -20px oklch(0 0 0 / 0.7)",
+  "shadow-glow": "0 0 40px oklch(0.72 0.18 255 / 0.35)",
+  "shadow-poster-hover": "0 24px 60px -20px oklch(0 0 0 / 0.7)",
+}
+`;
+
+exports[`premium interaction class surface > components/discovery/RecommendationCard.tsx interaction classes are stable 1`] = `
+[
+  "duration-[var(--dur-page)]",
+  "ease-[var(--ease-out)]",
+  "rounded-full",
+  "rounded-xl",
+  "transition",
+]
+`;
+
+exports[`premium interaction class surface > components/editorial/Collage.tsx interaction classes are stable 1`] = `
+[
+  "ring-1",
+  "ring-white/8",
+  "rounded-3xl",
+]
+`;
+
+exports[`premium interaction class surface > components/media/MediaCard.tsx interaction classes are stable 1`] = `
+[
+  "duration-700",
+  "glass-strong",
+  "press-scale",
+  "ring-1",
+  "ring-white/10",
+  "rounded-2xl",
+  "rounded-full",
+  "transition",
+]
+`;
+
+exports[`premium interaction class surface > components/ui/PosterCard.tsx interaction classes are stable 1`] = `
+[
+  "duration-[var(--dur-large)]",
+  "duration-[var(--dur-normal)]",
+  "duration-[var(--dur-page)]",
+  "ease-[var(--ease-out)]",
+  "focus-ring",
+  "ring-1",
+  "ring-white/10",
+  "rounded-2xl",
+  "rounded-full",
+  "transition",
+  "transition-[transform,filter]",
+  "transition-opacity",
+  "transition-shadow",
+  "transition-transform",
+]
+`;
+
+exports[`premium interaction class surface > components/ui/PremiumButton.tsx interaction classes are stable 1`] = `
+[
+  "animate-spin",
+  "duration-[var(--dur-large)]",
+  "ease-[var(--ease-out)]",
+  "rounded-3xl",
+  "transition-opacity",
+]
+`;
+
+exports[`premium interaction class surface > components/ui/PremiumField.tsx interaction classes are stable 1`] = `[]`;
