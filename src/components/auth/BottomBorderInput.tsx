@@ -15,6 +15,32 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   success?: boolean;
 }
 
+/* oklch → rgba approximations used in animate() props only.
+   Static CSS strings (background in style={}) can still use oklch. */
+const V = {
+  coreDim:   "rgba(148,128,255,0.70)",
+  coreBright:"rgba(165,145,255,0.90)",
+  centerDim: "rgba(200,188,255,1)",
+  centerBrt: "rgba(225,215,255,1)",
+  midInner:  "rgba(130,108,248,0.38)",
+  midOuter:  "rgba(125,100,245,0.14)",
+  midInnerB: "rgba(145,120,255,0.50)",
+  midOuterB: "rgba(138,112,250,0.20)",
+  spillIn:   "rgba(95,72,220,0.20)",
+  spillOut:  "rgba(88,65,208,0.08)",
+  spillInB:  "rgba(108,84,235,0.28)",
+  spillOutB: "rgba(98,74,220,0.12)",
+} as const;
+
+const gradCore = (a: typeof V.coreDim, c: typeof V.centerDim) =>
+  `linear-gradient(90deg, transparent, ${a} 22%, ${c} 50%, ${a} 78%, transparent)`;
+
+const gradMid = (inner: string, outer: string) =>
+  `radial-gradient(ellipse 72% 100% at 50% 100%, ${inner} 0%, ${outer} 50%, transparent 80%)`;
+
+const gradSpill = (inner: string, outer: string) =>
+  `radial-gradient(ellipse 92% 100% at 50% 100%, ${inner} 0%, ${outer} 55%, transparent 80%)`;
+
 export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
   function BottomBorderInput(
     { label, icon, error, success, id, className, onFocus, onBlur, ...rest },
@@ -31,6 +57,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
     }, [error, reduced]);
 
     const isError = Boolean(error);
+    const isLit = focused && !isError;
 
     return (
       <div className={className}>
@@ -45,7 +72,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
                 ? "rgba(190,182,255,0.95)"
                 : "rgba(255,255,255,0.38)",
           }}
-          transition={{ duration: 0.28 }}
+          transition={{ duration: 0.35 }}
         >
           {label}
         </motion.label>
@@ -58,62 +85,78 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
           transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
-          {/* Pill — no border glow, just a subtle bg shift */}
+          {/* ── PILL ── */}
           <motion.div
             className="relative flex h-[52px] items-center gap-3 overflow-hidden rounded-full px-5"
             animate={{
-              backgroundColor: focused
-                ? "rgba(255,255,255,0.09)"
-                : "rgba(255,255,255,0.06)",
               boxShadow: isError
-                ? "0 0 0 1px rgba(252,165,165,0.40)"
+                ? "0 0 0 1px rgba(252,165,165,0.38)"
                 : "0 0 0 1px rgba(255,255,255,0.10)",
             }}
-            transition={{ duration: 0.30, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.30 }}
             style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
+            {/* Reflective surface — bottom highlight anchors the light to the glass */}
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full"
+              animate={{
+                background: isLit
+                  ? "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.07) 55%, rgba(148,138,255,0.18) 88%, rgba(120,110,255,0.26) 100%)"
+                  : "rgba(255,255,255,0.05)",
+              }}
+              transition={{ duration: 0.65, ease: "easeInOut" }}
+            />
+
             {/* Icon */}
             {icon && (
               <motion.span
-                className="flex-shrink-0 z-10"
+                className="relative z-10 flex-shrink-0"
                 animate={{
                   color: isError
                     ? "rgba(252,165,165,0.75)"
                     : focused
-                      ? "rgba(190,182,255,0.90)"
+                      ? "rgba(190,182,255,0.92)"
                       : "rgba(255,255,255,0.28)",
                 }}
-                transition={{ duration: 0.28 }}
+                transition={{ duration: 0.30 }}
               >
                 {icon}
               </motion.span>
             )}
 
-            {/* Input */}
-            <input
+            {/* Input — text blooms with light source */}
+            <motion.input
               ref={ref}
               id={inputId}
-              {...rest}
-              onFocus={(e) => {
+              {...(rest as object)}
+              onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
                 setFocused(true);
                 onFocus?.(e);
               }}
-              onBlur={(e) => {
+              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
                 setFocused(false);
                 setHasValue(Boolean(e.target.value));
                 onBlur?.(e);
               }}
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setHasValue(Boolean(e.target.value));
                 rest.onChange?.(e);
               }}
               placeholder={`Enter ${label.toLowerCase()}`}
-              className="relative z-10 flex-1 bg-transparent text-[15px] tracking-wide text-white outline-none border-0 ring-0 placeholder:text-white/20"
+              className="relative z-10 flex-1 bg-transparent text-[15px] tracking-wide outline-none border-0 ring-0 placeholder:text-white/20"
+              animate={{
+                textShadow: isLit
+                  ? "0 0 12px rgba(168,158,255,0.55)"
+                  : "0 0 0px rgba(168,158,255,0)",
+              }}
+              transition={{ duration: 0.55, ease: "easeInOut" }}
               style={{
-                caretColor: "oklch(0.80 0.18 272)",
+                caretColor: "#b0a8ff",
+                color: focused ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.82)",
                 WebkitBoxShadow: "0 0 0 1000px transparent inset",
-                WebkitTextFillColor: "white",
-                transition: "background-color 5000s ease-in-out 0s",
+                WebkitTextFillColor: focused ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.82)",
+                transition: "background-color 5000s ease-in-out 0s, color 0.3s ease, -webkit-text-fill-color 0.3s ease",
               }}
             />
 
@@ -133,71 +176,89 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
             </AnimatePresence>
           </motion.div>
 
-          {/* ── STRIP LIGHT ── bottom-edge only, center-expand bloom */}
+          {/* ── PHYSICAL LIGHT SOURCE — outside overflow-hidden so it spills freely ── */}
           {!reduced && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute bottom-0 left-0 right-0 flex justify-center"
-              style={{ height: "2px" }}
-            >
-              {/* Core line — expands from center outward */}
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0">
+
+              {/* Core strip line — the "filament" of the light source */}
               <motion.div
-                className="absolute inset-0 origin-center"
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{
-                  scaleX: focused && !isError ? 1 : 0,
-                  opacity: focused && !isError ? 1 : 0,
-                }}
-                transition={{
-                  scaleX: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-                  opacity: { duration: 0.35, ease: "easeOut" },
-                }}
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent 0%, oklch(0.72 0.22 272 / 0.60) 20%, oklch(0.85 0.18 250 / 1) 50%, oklch(0.72 0.22 272 / 0.60) 80%, transparent 100%)",
-                }}
+                className="absolute inset-x-8 bottom-0 h-[1.5px] origin-center rounded-full"
+                animate={
+                  isLit
+                    ? {
+                        scaleX: [1, 1],
+                        opacity: [0.75, 1, 0.75],
+                        background: [
+                          gradCore(V.coreDim, V.centerDim),
+                          gradCore(V.coreBright, V.centerBrt),
+                          gradCore(V.coreDim, V.centerDim),
+                        ],
+                      }
+                    : isError
+                      ? {
+                          scaleX: 1,
+                          opacity: 1,
+                          background: "linear-gradient(90deg, transparent, rgba(252,165,165,0.55) 25%, rgba(252,165,165,1) 50%, rgba(252,165,165,0.55) 75%, transparent)",
+                        }
+                      : { scaleX: 0, opacity: 0, background: "linear-gradient(90deg,transparent,transparent)" }
+                }
+                transition={
+                  isLit
+                    ? { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
+                    : { duration: 0.50, ease: [0.22, 1, 0.36, 1] }
+                }
               />
 
-              {/* Diffuse glow halo below the line */}
+              {/* Mid halo — tight diffuse bloom */}
               <motion.div
-                className="absolute left-1/2 -translate-x-1/2"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{
-                  opacity: focused && !isError ? 1 : 0,
-                  scaleX: focused && !isError ? 1 : 0,
-                }}
-                transition={{
-                  opacity: { duration: 0.6, ease: "easeOut", delay: 0.05 },
-                  scaleX: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 },
-                }}
-                style={{
-                  width: "80%",
-                  height: "20px",
-                  top: "0px",
-                  background:
-                    "radial-gradient(ellipse at 50% 0%, oklch(0.75 0.22 272 / 0.45) 0%, oklch(0.75 0.22 272 / 0.15) 45%, transparent 75%)",
-                  filter: "blur(4px)",
-                  transformOrigin: "center top",
-                }}
+                className="absolute inset-x-0 bottom-0"
+                style={{ height: "30px", transformOrigin: "center bottom" }}
+                animate={
+                  isLit
+                    ? {
+                        opacity: [0.65, 1, 0.65],
+                        scaleY: [0.88, 1.06, 0.88],
+                        background: [
+                          gradMid(V.midInner, V.midOuter),
+                          gradMid(V.midInnerB, V.midOuterB),
+                          gradMid(V.midInner, V.midOuter),
+                        ],
+                      }
+                    : isError
+                      ? { opacity: 0.7, scaleY: 1, background: "radial-gradient(ellipse 72% 100% at 50% 100%, rgba(252,165,165,0.28) 0%, transparent 70%)" }
+                      : { opacity: 0, scaleY: 0.4, background: "radial-gradient(ellipse 72% 100% at 50% 100%, transparent 0%, transparent 100%)" }
+                }
+                transition={
+                  isLit
+                    ? { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
+                    : { duration: 0.55, ease: "easeOut" }
+                }
               />
 
-              {/* Error strip — red, same animation */}
+              {/* Wide volumetric spill — bleeds far below, blurred */}
               <motion.div
-                className="absolute inset-0 origin-center"
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{
-                  scaleX: isError ? 1 : 0,
-                  opacity: isError ? 1 : 0,
-                }}
-                transition={{
-                  scaleX: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-                  opacity: { duration: 0.3 },
-                }}
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent 0%, rgba(252,165,165,0.5) 25%, rgba(252,165,165,1) 50%, rgba(252,165,165,0.5) 75%, transparent 100%)",
-                  boxShadow: "0 0 10px rgba(252,165,165,0.4)",
-                }}
+                className="absolute inset-x-0 bottom-0"
+                style={{ height: "72px", transformOrigin: "center bottom", filter: "blur(7px)" }}
+                animate={
+                  isLit
+                    ? {
+                        opacity: [0.50, 0.90, 0.50],
+                        scaleY: [0.82, 1.02, 0.82],
+                        background: [
+                          gradSpill(V.spillIn, V.spillOut),
+                          gradSpill(V.spillInB, V.spillOutB),
+                          gradSpill(V.spillIn, V.spillOut),
+                        ],
+                      }
+                    : isError
+                      ? { opacity: 0.45, scaleY: 1, background: "radial-gradient(ellipse 92% 100% at 50% 100%, rgba(252,165,165,0.12) 0%, transparent 70%)" }
+                      : { opacity: 0, scaleY: 0.3, background: "radial-gradient(ellipse 92% 100% at 50% 100%, transparent 0%, transparent 100%)" }
+                }
+                transition={
+                  isLit
+                    ? { duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.08 }
+                    : { duration: 0.65, ease: "easeOut" }
+                }
               />
             </div>
           )}
