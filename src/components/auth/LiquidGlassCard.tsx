@@ -138,25 +138,15 @@ export function LiquidGlassCard({ children, className = "" }: Props) {
         />
       )}
 
-      {/* ROTATING CONIC BORDER */}
-      {!reduced && (
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute -inset-px rounded-[32px]"
-          style={{
-            background:
-              "conic-gradient(from 0deg, transparent 0%, rgba(175,165,255,0.75) 11%, transparent 26%, transparent 70%, rgba(255,185,215,0.60) 88%, transparent 100%)",
-            maskImage:
-              "linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)",
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-            padding: "1px",
-            opacity: 0.5,
-          }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
-      )}
+      {/* STATIC GRADIENT BORDER — subtle, no rotation */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[32px]"
+        style={{
+          boxShadow:
+            "inset 0 0 0 1px rgba(255,255,255,0.09), inset 0 1px 0 rgba(255,255,255,0.18)",
+        }}
+      />
 
       {/* TOP HAIRLINE */}
       <div
