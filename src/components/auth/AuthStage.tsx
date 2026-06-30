@@ -47,9 +47,9 @@ const POSTERS: PosterPlacement[] = [
 
   // Layer 3 — main hero memories (large, sharp, anchored)
   { id: "interstellar", x: 36, y: 22, w: 220, rot: 3, layer: 3 },
-  { id: "one-piece", x: 14, y: 56, w: 200, rot: -4, layer: 3 },
-  { id: "elden-ring", x: 50, y: 46, w: 175, rot: 6, layer: 3 },
-  { id: "dune", x: 6, y: 84, w: 150, rot: -7, layer: 3 },
+  { id: "one-piece", x: 20, y: 26, w: 200, rot: -4, layer: 3 },
+  { id: "elden-ring", x: 52, y: 48, w: 175, rot: 6, layer: 3 },
+  { id: "dune", x: 42, y: 78, w: 150, rot: -7, layer: 3 },
 
   // Layer 4 — foreground, slightly bleeding off-canvas
   { id: "cyberpunk", x: 30, y: 80, w: 130, rot: -3, layer: 4 },
@@ -379,6 +379,16 @@ export function AuthStage() {
         }}
       />
 
+      {/* CINEMATIC BOTTOM FADE — natural darkness for text legibility */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(5,3,15,0.92) 0%, rgba(5,3,15,0.65) 18%, rgba(5,3,15,0.30) 36%, transparent 55%)",
+        }}
+      />
+
       {/* film grain */}
       <div
         aria-hidden
@@ -429,15 +439,27 @@ export function AuthStage() {
             transition={{ duration: 1.1, delay: 0.6, ease: ease.out }}
             className="mt-7 text-balance font-display text-[3.4rem] leading-[1.02] tracking-tight xl:text-[4.1rem]"
             style={{
-              textShadow:
-                "0 2px 32px rgba(0,0,0,0.95), 0 1px 6px rgba(0,0,0,0.85)",
+              filter:
+                "drop-shadow(0 4px 32px rgba(0,0,0,1)) drop-shadow(0 1px 6px rgba(0,0,0,0.95))",
             }}
           >
             <span className="text-gradient-aurora">Every story you finish</span>
             <br />
-            <span className="italic text-white/80">
+            <span
+              className="italic"
+              style={{ color: "rgba(255,255,255,0.88)" }}
+            >
               becomes part of{" "}
-              <span className="text-white font-semibold not-italic">your story.</span>
+              <span
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: 700,
+                  color: "#ffffff",
+                  filter: "drop-shadow(0 0 18px oklch(0.72 0.22 268 / 0.75))",
+                }}
+              >
+                your story.
+              </span>
             </span>
           </motion.h2>
 
