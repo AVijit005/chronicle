@@ -260,33 +260,28 @@ function Auth() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               />
 
-              {/* Primary line */}
+              {/* Primary line — crisp off-white with violet bloom */}
               <p
                 className="relative font-display text-[1.55rem] leading-snug md:text-[1.75rem]"
                 style={{
                   letterSpacing: "0.02em",
                   fontWeight: 300,
-                  backgroundImage:
-                    "linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(195,182,255,0.88) 48%, rgba(160,190,255,0.82) 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  color: "#f8f8ff",
+                  textShadow: "0 0 10px rgba(139,92,246,0.50), 0 1px 2px rgba(0,0,0,0.30)",
                 }}
               >
                 Welcome back
               </p>
 
-              {/* Secondary — softer, spaced */}
+              {/* Secondary — airy, readable grey */}
               <p
-                className="relative mt-2 text-[12.5px] leading-relaxed"
+                className="relative mt-2.5 text-[12.5px]"
                 style={{
-                  letterSpacing: "0.05em",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.6,
                   fontWeight: 300,
-                  backgroundImage:
-                    "linear-gradient(135deg, rgba(255,255,255,0.48) 0%, rgba(180,168,255,0.44) 55%, rgba(148,178,255,0.40) 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  color: "rgba(255,255,255,0.70)",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.25)",
                 }}
               >
                 Your personal media sanctuary.{" "}
@@ -308,9 +303,9 @@ function Auth() {
                   />
                 ))}
               </div>
-              <span className="text-[11px] text-white/40">
+              <span className="text-[10px] tracking-wide" style={{ color: "rgba(255,255,255,0.35)" }}>
                 Joined by{" "}
-                <span className="text-white/65 font-medium">12,400</span>{" "}
+                <span style={{ color: "rgba(255,255,255,0.58)", fontWeight: 500 }}>12,400</span>{" "}
                 chroniclers
               </span>
             </motion.div>
