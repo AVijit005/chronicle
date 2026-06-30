@@ -6,11 +6,6 @@ interface Props {
   className?: string;
 }
 
-/**
- * LiquidGlassCard — Mouse-reactive, living glass surface.
- * Fresnel highlights, caustic refraction, and pointer-tracking liquid sheen.
- * Uses CSS custom properties updated via spring physics for smooth reactivity.
- */
 export function LiquidGlassCard({ children, className = "" }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -20,67 +15,85 @@ export function LiquidGlassCard({ children, className = "" }: Props) {
   const smx = useSpring(mx, { stiffness: 80, damping: 20, mass: 0.3 });
   const smy = useSpring(my, { stiffness: 80, damping: 20, mass: 0.3 });
 
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const srx = useSpring(rx, { stiffness: 55, damping: 16, mass: 0.5 });
+  const sry = useSpring(ry, { stiffness: 55, damping: 16, mass: 0.5 });
+
   const updatePointer = useCallback(
     (e: PointerEvent) => {
       if (!cardRef.current) return;
       const rect = cardRef.current.getBoundingClientRect();
       const nx = (e.clientX - rect.left) / rect.width;
       const ny = (e.clientY - rect.top) / rect.height;
-      mx.set(Math.max(0, Math.min(1, nx)));
-      my.set(Math.max(0, Math.min(1, ny)));
+      const cx = Math.max(0, Math.min(1, nx));
+      const cy = Math.max(0, Math.min(1, ny));
+      mx.set(cx);
+      my.set(cy);
+      ry.set((cx - 0.5) * 14);
+      rx.set(-(cy - 0.5) * 9);
     },
-    [mx, my]
+    [mx, my, rx, ry],
   );
 
-  // Subscribe to springs and update CSS custom properties
+  const resetTilt = useCallback(() => {
+    rx.set(0);
+    ry.set(0);
+    mx.set(0.5);
+    my.set(0.5);
+  }, [rx, ry, mx, my]);
+
   useEffect(() => {
     if (reduced) return;
     const el = cardRef.current;
     if (!el) return;
 
-    const unsubX = smx.on("change", (v) => {
-      el.style.setProperty("--lg-x", String(v));
-    });
-    const unsubY = smy.on("change", (v) => {
-      el.style.setProperty("--lg-y", String(v));
-    });
+    const unsubX = smx.on("change", (v) => el.style.setProperty("--lg-x", String(v)));
+    const unsubY = smy.on("change", (v) => el.style.setProperty("--lg-y", String(v)));
     el.addEventListener("pointermove", updatePointer);
+    el.addEventListener("pointerleave", resetTilt);
     return () => {
       unsubX();
       unsubY();
       el.removeEventListener("pointermove", updatePointer);
+      el.removeEventListener("pointerleave", resetTilt);
     };
-  }, [updatePointer, smx, smy, reduced]);
+  }, [updatePointer, resetTilt, smx, smy, reduced]);
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 28, filter: "blur(16px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 1.05, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 36, filter: "blur(22px)", scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+      transition={{ duration: 1.15, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
       className={`relative overflow-hidden ${className}`}
-      style={{
-        "--lg-x": 0.5,
-        "--lg-y": 0.5,
-        background:
-          "linear-gradient(135deg, rgba(15, 15, 20, 0.55) 0%, rgba(25, 25, 35, 0.32) 100%)",
-        backdropFilter: "blur(32px) saturate(140%)",
-        border: "1px solid rgba(255, 255, 255, 0.06)",
-        boxShadow:
-          "0 40px 100px -20px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.06)",
-        borderRadius: "28px",
-      } as React.CSSProperties}
+      style={
+        {
+          "--lg-x": 0.5,
+          "--lg-y": 0.5,
+          background:
+            "linear-gradient(145deg, rgba(16, 14, 26, 0.62) 0%, rgba(22, 20, 40, 0.42) 100%)",
+          backdropFilter: "blur(44px) saturate(170%) brightness(1.06)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          boxShadow:
+            "0 60px 130px -24px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.09), inset 0 -1px 0 rgba(0,0,0,0.2)",
+          borderRadius: "32px",
+          rotateX: reduced ? 0 : srx,
+          rotateY: reduced ? 0 : sry,
+          transformPerspective: 1400,
+        } as React.CSSProperties
+      }
     >
-      {/* LIQUID SHEEN — tracks pointer via CSS vars */}
+      {/* LIQUID SHEEN */}
       {!reduced && (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            opacity: 0.55,
+            opacity: 0.7,
             background:
-              "linear-gradient(120deg, transparent 0%, rgba(140, 130, 255, 0.16) 25%, transparent 50%, rgba(255, 170, 200, 0.10) 75%, transparent 100%)",
-            backgroundSize: "220% 220%",
+              "linear-gradient(120deg, transparent 0%, rgba(155,140,255,0.20) 28%, transparent 52%, rgba(255,175,205,0.13) 76%, transparent 100%)",
+            backgroundSize: "230% 230%",
             backgroundPosition:
               "calc(var(--lg-x) * 100%) calc(var(--lg-y) * 100%)",
             transition: "background-position 0.05s linear",
@@ -88,61 +101,60 @@ export function LiquidGlassCard({ children, className = "" }: Props) {
         />
       )}
 
-      {/* FRESNEL EDGE — glows brightest at cursor position */}
+      {/* FRESNEL EDGE */}
       {!reduced && (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            borderRadius: "28px",
+            borderRadius: "32px",
             padding: "1px",
             background:
-              "radial-gradient(400px 400px at calc(var(--lg-x) * 100%) calc(var(--lg-y) * 100%), rgba(200, 195, 255, 0.45) 0%, rgba(255, 180, 210, 0.25) 35%, transparent 70%)",
-            WebkitMask:
-              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+              "radial-gradient(520px 520px at calc(var(--lg-x) * 100%) calc(var(--lg-y) * 100%), rgba(210,200,255,0.60) 0%, rgba(255,185,215,0.32) 35%, transparent 68%)",
+            WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             WebkitMaskComposite: "xor",
             maskComposite: "exclude",
             mixBlendMode: "screen",
-            opacity: 0.55,
+            opacity: 0.65,
           }}
         />
       )}
 
-      {/* CAUSTIC REFRACTION — warped light blob follows cursor */}
+      {/* CAUSTIC REFRACTION BLOB */}
       {!reduced && (
         <div
           aria-hidden
-          className="pointer-events-none absolute h-64 w-64 rounded-full"
+          className="pointer-events-none absolute h-80 w-80 rounded-full"
           style={{
-            left: "calc(var(--lg-x) * 100% - 8rem)",
-            top: "calc(var(--lg-y) * 100% - 8rem)",
+            left: "calc(var(--lg-x) * 100% - 10rem)",
+            top: "calc(var(--lg-y) * 100% - 10rem)",
             background:
-              "radial-gradient(circle, rgba(170, 160, 255, 0.14) 0%, rgba(255, 180, 210, 0.08) 40%, transparent 70%)",
+              "radial-gradient(circle, rgba(175,165,255,0.20) 0%, rgba(255,185,215,0.11) 42%, transparent 70%)",
             mixBlendMode: "screen",
-            filter: "blur(24px)",
-            opacity: 0.5,
-            transition: "left 0.08s linear, top 0.08s linear",
+            filter: "blur(30px)",
+            opacity: 0.6,
+            transition: "left 0.06s linear, top 0.06s linear",
           }}
         />
       )}
 
-      {/* AMBIENT CONIC BORDER — slow rotation */}
+      {/* ROTATING CONIC BORDER */}
       {!reduced && (
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute -inset-px rounded-[28px]"
+          className="pointer-events-none absolute -inset-px rounded-[32px]"
           style={{
             background:
-              "conic-gradient(from 0deg, transparent 0%, rgba(170,160,255,0.5) 12%, transparent 28%, transparent 72%, rgba(255,180,210,0.35) 88%, transparent 100%)",
+              "conic-gradient(from 0deg, transparent 0%, rgba(175,165,255,0.75) 11%, transparent 26%, transparent 70%, rgba(255,185,215,0.60) 88%, transparent 100%)",
             maskImage:
-              "linear-gradient(#000, #000) content-box, linear-gradient(#000, #000)",
+              "linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)",
             WebkitMaskComposite: "xor",
             maskComposite: "exclude",
             padding: "1px",
-            opacity: 0.35,
+            opacity: 0.5,
           }}
           animate={{ rotate: [0, 360] }}
-          transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
       )}
 
@@ -152,22 +164,35 @@ export function LiquidGlassCard({ children, className = "" }: Props) {
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)",
+            "linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.50) 50%, transparent 92%)",
         }}
       />
 
-      {/* STATIC INNER GLARE */}
+      {/* INNER AMBIENT GLOW — breathes */}
+      {!reduced && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -top-20 left-1/2 h-60 w-80 -translate-x-1/2 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(160,150,255,0.12) 0%, transparent 70%)",
+            filter: "blur(30px)",
+          }}
+          animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.08, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+      )}
+
+      {/* FILM GRAIN */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-1/4 left-1/4 h-1/2 w-1/2 rounded-full"
+        className="pointer-events-none absolute inset-0 rounded-[32px] opacity-[0.04] mix-blend-overlay"
         style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)",
-          mixBlendMode: "screen",
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
         }}
       />
 
-      {/* CONTENT */}
       <div className="relative z-10">{children}</div>
     </motion.div>
   );
