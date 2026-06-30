@@ -58,56 +58,20 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
           transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
-          {/* Pill */}
+          {/* Pill — no border glow, just a subtle bg shift */}
           <motion.div
             className="relative flex h-[52px] items-center gap-3 overflow-hidden rounded-full px-5"
             animate={{
               backgroundColor: focused
-                ? "rgba(255,255,255,0.10)"
-                : "rgba(255,255,255,0.07)",
+                ? "rgba(255,255,255,0.09)"
+                : "rgba(255,255,255,0.06)",
               boxShadow: isError
-                ? "0 0 0 1.5px rgba(252,165,165,0.55), inset 0 1px 0 rgba(255,255,255,0.05)"
-                : focused
-                  ? "0 0 0 1.5px rgba(155,145,255,0.55), 0 0 22px rgba(130,120,255,0.15), inset 0 1px 0 rgba(255,255,255,0.09)"
-                  : "0 0 0 1px rgba(255,255,255,0.14), inset 0 1px 0 rgba(255,255,255,0.05)",
+                ? "0 0 0 1px rgba(252,165,165,0.40)"
+                : "0 0 0 1px rgba(255,255,255,0.10)",
             }}
-            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.30, ease: [0.22, 1, 0.36, 1] }}
             style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
-            {/* Scan sweep — appears once on focus */}
-            {!reduced && (
-              <AnimatePresence>
-                {focused && (
-                  <motion.span
-                    key="sweep"
-                    aria-hidden
-                    initial={{ x: "-110%", opacity: 0 }}
-                    animate={{ x: "260%", opacity: [0, 0.55, 0] }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-                    className="pointer-events-none absolute inset-y-0 w-2/5"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, transparent, rgba(170,162,255,0.22), transparent)",
-                    }}
-                  />
-                )}
-              </AnimatePresence>
-            )}
-
-            {/* Top hairline — brightens on focus */}
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-px"
-              animate={{
-                opacity: focused ? 1 : 0.4,
-                background: focused
-                  ? "linear-gradient(90deg, transparent 12%, rgba(180,172,255,0.55) 50%, transparent 88%)"
-                  : "linear-gradient(90deg, transparent 15%, rgba(255,255,255,0.14) 50%, transparent 85%)",
-              }}
-              transition={{ duration: 0.35 }}
-            />
-
             {/* Icon */}
             {icon && (
               <motion.span
@@ -169,24 +133,77 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
             </AnimatePresence>
           </motion.div>
 
-          {/* Bottom glow line — draws in from center on focus */}
+          {/* ── STRIP LIGHT ── bottom-edge only, center-expand bloom */}
           {!reduced && (
-            <div className="absolute inset-x-4 bottom-0 h-[1px] overflow-hidden rounded-full">
-              <motion.span
+            <div
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 left-0 right-0 flex justify-center"
+              style={{ height: "2px" }}
+            >
+              {/* Core line — expands from center outward */}
+              <motion.div
                 className="absolute inset-0 origin-center"
-                animate={{ scaleX: focused && !isError ? 1 : 0, opacity: focused ? 1 : 0 }}
-                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{
+                  scaleX: focused && !isError ? 1 : 0,
+                  opacity: focused && !isError ? 1 : 0,
+                }}
+                transition={{
+                  scaleX: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                  opacity: { duration: 0.35, ease: "easeOut" },
+                }}
                 style={{
                   background:
-                    "linear-gradient(90deg, oklch(0.70 0.20 272 / 0.0), oklch(0.78 0.18 272 / 0.9) 50%, oklch(0.70 0.20 272 / 0.0))",
-                  filter: "blur(0.5px)",
+                    "linear-gradient(90deg, transparent 0%, oklch(0.72 0.22 272 / 0.60) 20%, oklch(0.85 0.18 250 / 1) 50%, oklch(0.72 0.22 272 / 0.60) 80%, transparent 100%)",
+                }}
+              />
+
+              {/* Diffuse glow halo below the line */}
+              <motion.div
+                className="absolute left-1/2 -translate-x-1/2"
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{
+                  opacity: focused && !isError ? 1 : 0,
+                  scaleX: focused && !isError ? 1 : 0,
+                }}
+                transition={{
+                  opacity: { duration: 0.6, ease: "easeOut", delay: 0.05 },
+                  scaleX: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 },
+                }}
+                style={{
+                  width: "80%",
+                  height: "20px",
+                  top: "0px",
+                  background:
+                    "radial-gradient(ellipse at 50% 0%, oklch(0.75 0.22 272 / 0.45) 0%, oklch(0.75 0.22 272 / 0.15) 45%, transparent 75%)",
+                  filter: "blur(4px)",
+                  transformOrigin: "center top",
+                }}
+              />
+
+              {/* Error strip — red, same animation */}
+              <motion.div
+                className="absolute inset-0 origin-center"
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{
+                  scaleX: isError ? 1 : 0,
+                  opacity: isError ? 1 : 0,
+                }}
+                transition={{
+                  scaleX: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+                  opacity: { duration: 0.3 },
+                }}
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent 0%, rgba(252,165,165,0.5) 25%, rgba(252,165,165,1) 50%, rgba(252,165,165,0.5) 75%, transparent 100%)",
+                  boxShadow: "0 0 10px rgba(252,165,165,0.4)",
                 }}
               />
             </div>
           )}
         </motion.div>
 
-        {/* Error */}
+        {/* Error message */}
         <AnimatePresence>
           {error && (
             <motion.p
