@@ -379,15 +379,6 @@ export function AuthStage() {
         }}
       />
 
-      {/* TEXT SCRIM — darkens the bottom-left where the headline lives */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 75% 55% at 18% 90%, oklch(0.05 0.02 270 / 0.92) 0%, oklch(0.06 0.02 270 / 0.60) 45%, transparent 75%), linear-gradient(180deg, transparent 35%, oklch(0.06 0.02 270 / 0.65) 100%)",
-        }}
-      />
       {/* film grain */}
       <div
         aria-hidden
