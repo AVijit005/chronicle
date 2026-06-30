@@ -48,6 +48,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
   ) {
     const reduced = useReducedMotion();
     const [focused, setFocused] = useState(false);
+    const [hovered, setHovered] = useState(false);
     const [hasValue, setHasValue] = useState(Boolean(rest.defaultValue || rest.value));
     const [shakeKey, setShakeKey] = useState(0);
     const inputId = id ?? `bb-${label.replace(/\s+/g, "-").toLowerCase()}`;
@@ -70,13 +71,23 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
               ? "rgba(252,165,165,0.85)"
               : focused
                 ? "rgba(190,182,255,0.95)"
-                : "rgba(255,255,255,0.38)",
+                : hovered
+                  ? "rgba(255,255,255,0.55)"
+                  : "rgba(255,255,255,0.38)",
           }}
-          transition={{ duration: 0.35 }}
+          transition={{ duration: 0.25 }}
         >
           {label}
         </motion.label>
 
+        {/* Hover wrapper — scales the whole pill without disrupting shake key */}
+        <motion.div
+          className="relative"
+          whileHover={reduced ? undefined : { scale: 1.01 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
+        >
         <motion.div
           key={shakeKey}
           animate={
@@ -90,10 +101,14 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
             className="relative flex h-[52px] items-center gap-3 overflow-hidden rounded-full px-5"
             animate={{
               boxShadow: isError
-                ? "0 0 0 1px rgba(252,165,165,0.38)"
-                : "0 0 0 1px rgba(255,255,255,0.10)",
+                ? "0 0 0 1px rgba(252,165,165,0.38), 0 4px 12px rgba(0,0,0,0.20)"
+                : focused
+                  ? "0 0 0 1px rgba(255,255,255,0.20), 0 4px 14px rgba(0,0,0,0.22)"
+                  : hovered
+                    ? "0 0 0 1px rgba(255,255,255,0.22), 0 4px 12px rgba(0,0,0,0.20)"
+                    : "0 0 0 1px rgba(255,255,255,0.10)",
             }}
-            transition={{ duration: 0.30 }}
+            transition={{ duration: 0.25 }}
             style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
             {/* Reflective surface — always-on gradient, opacity-faded when not focused */}
@@ -268,6 +283,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
             </div>
           )}
         </motion.div>
+        </motion.div>{/* end hover wrapper */}
 
         {/* Error message */}
         <AnimatePresence>

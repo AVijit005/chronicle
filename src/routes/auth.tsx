@@ -345,13 +345,12 @@ function Auth() {
 
             {/* ── TAB TOGGLE — right above the email field ── */}
             <motion.div variants={cardLine} className="mb-5">
-              <div
+              <motion.div
                 className="relative flex rounded-full p-[3px]"
-                style={{
-                  background: "transparent",
-                  boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
-                  backdropFilter: "blur(12px)",
-                }}
+                style={{ background: "transparent", backdropFilter: "blur(12px)" }}
+                animate={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.08)" }}
+                whileHover={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.22)", scale: 1.005 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
               >
                 {/* Sliding active-tab glass pill */}
                 <motion.div
@@ -363,23 +362,27 @@ function Auth() {
                     boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.18)",
                   }}
                 />
-                <button
+                <motion.button
                   type="button"
                   onClick={() => switchMode("signin")}
-                  className="relative z-10 flex-1 rounded-full py-2 text-[11.5px] font-medium tracking-wide transition-colors duration-300"
+                  className="relative z-10 flex-1 rounded-full py-2 text-[11.5px] font-medium tracking-wide"
                   style={{ color: mode === "signin" ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)" }}
+                  whileHover={{ color: mode === "signin" ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.65)" }}
+                  transition={{ duration: 0.2 }}
                 >
                   Sign In
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="button"
                   onClick={() => switchMode("signup")}
-                  className="relative z-10 flex-1 rounded-full py-2 text-[11.5px] font-medium tracking-wide transition-colors duration-300"
+                  className="relative z-10 flex-1 rounded-full py-2 text-[11.5px] font-medium tracking-wide"
                   style={{ color: mode === "signup" ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)" }}
+                  whileHover={{ color: mode === "signup" ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.65)" }}
+                  transition={{ duration: 0.2 }}
                 >
                   Create Account
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             </motion.div>
 
             {/* Forms */}
@@ -411,20 +414,29 @@ function Auth() {
                     />
 
                     <div className="flex items-center justify-between pt-1 text-[11px]">
-                      <label className="inline-flex cursor-pointer items-center gap-2 text-white/45 transition hover:text-white/70">
+                      <motion.label
+                        className="inline-flex cursor-pointer items-center gap-2 text-white/45"
+                        whileHover={{ scale: 1.02, color: "rgba(255,255,255,0.72)" }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                      >
                         <input
                           type="checkbox"
                           {...signIn.register("remember")}
                           className="peer sr-only"
                         />
-                        <span className="grid h-3.5 w-3.5 place-items-center rounded-sm border border-white/20 bg-white/[0.04] transition peer-checked:border-white/70 peer-checked:bg-white/80">
+                        <span className="grid h-3.5 w-3.5 place-items-center rounded-sm border border-white/20 bg-white/[0.04] transition-all duration-200 peer-checked:border-white/70 peer-checked:bg-white/80 hover:border-white/35">
                           <Check className="h-2.5 w-2.5 text-black opacity-0 peer-checked:opacity-100" />
                         </span>
                         Remember me
-                      </label>
-                      <a href="#" className="text-white/45 transition hover:text-white/80">
+                      </motion.label>
+                      <motion.a
+                        href="#"
+                        className="text-white/45"
+                        whileHover={{ scale: 1.04, color: "rgba(255,255,255,0.85)" }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                      >
                         Forgot password?
-                      </a>
+                      </motion.a>
                     </div>
 
                     <PremiumButton status={status} label="Continue" />
