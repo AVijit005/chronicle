@@ -402,109 +402,99 @@ export function AuthStage() {
       {/* ============ Hero column ============ */}
       <div className="relative z-10 flex h-full flex-col justify-between p-12 xl:p-16">
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: ease.out }}
           className="flex items-center gap-4"
         >
           {/* ── Logo icon ── */}
-          <div className="relative">
-            {/* Pulsing outer glow */}
+          <div className="relative h-12 w-12 flex-shrink-0">
+            {/* Subtle ambient glow — barely visible, cinematic */}
             <motion.div
               aria-hidden
-              className="absolute -inset-1 rounded-2xl"
-              animate={{
-                opacity: [0.45, 0.85, 0.45],
-                scale: [1, 1.08, 1],
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-2 rounded-3xl"
+              animate={{ opacity: [0.28, 0.52, 0.28] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               style={{
                 background:
-                  "radial-gradient(ellipse at 50% 50%, oklch(0.68 0.26 270 / 0.70), transparent 70%)",
-                filter: "blur(8px)",
+                  "radial-gradient(ellipse, oklch(0.60 0.26 272 / 0.65) 0%, transparent 72%)",
+                filter: "blur(10px)",
               }}
             />
 
-            {/* Icon body — animated gradient */}
+            {/* Icon body */}
             <motion.div
-              className="relative grid h-12 w-12 place-items-center rounded-2xl text-white overflow-hidden"
+              className="relative h-12 w-12 grid place-items-center rounded-2xl overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg, oklch(0.62 0.24 295), oklch(0.52 0.26 252), oklch(0.60 0.24 215))",
+                  "linear-gradient(145deg, oklch(0.58 0.26 292), oklch(0.48 0.28 255), oklch(0.55 0.24 218))",
                 boxShadow:
-                  "0 8px 32px -6px oklch(0.62 0.26 268 / 0.75), inset 0 1px 0 rgba(255,255,255,0.22)",
+                  "0 0 0 1px rgba(255,255,255,0.13), 0 10px 28px -8px oklch(0.58 0.26 268 / 0.55)",
               }}
-              animate={{ rotate: [0, 0, 0] }}
+              animate={{
+                filter: [
+                  "hue-rotate(0deg)",
+                  "hue-rotate(20deg)",
+                  "hue-rotate(0deg)",
+                ],
+              }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
             >
-              {/* Animated inner light sweep */}
-              <motion.div
+              {/* Glass top-left reflection */}
+              <div
                 aria-hidden
-                className="absolute inset-0"
+                className="absolute inset-0 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(115deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 50%, transparent 100%)",
-                }}
-                animate={{ x: ["-100%", "160%"] }}
-                transition={{
-                  duration: 2.4,
-                  repeat: Infinity,
-                  repeatDelay: 2.5,
-                  ease: "easeInOut",
+                    "linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 45%, transparent 70%)",
                 }}
               />
-              <span className="font-display text-xl font-bold leading-none drop-shadow-sm z-10">
+              <span className="font-display text-[22px] font-bold text-white leading-none z-10"
+                style={{ textShadow: "0 1px 8px rgba(0,0,0,0.35)" }}>
                 C
               </span>
-              <span
-                aria-hidden
-                className="absolute inset-0 rounded-2xl ring-1 ring-white/20"
-              />
             </motion.div>
-
-            {/* Orbiting status dot */}
-            <motion.div
-              aria-hidden
-              className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full"
-              style={{
-                background: "oklch(0.72 0.24 155)",
-                boxShadow: "0 0 8px 2px oklch(0.72 0.24 155 / 0.8)",
-              }}
-              animate={{
-                scale: [1, 1.35, 1],
-                opacity: [0.75, 1, 0.75],
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            />
           </div>
 
           {/* ── Wordmark ── */}
           <div className="flex flex-col leading-none">
+            {/* Staggered letter entrance — one-shot */}
             <motion.span
-              className="font-display text-2xl font-semibold tracking-tight"
-              style={{
-                background:
-                  "linear-gradient(105deg, #ffffff 0%, oklch(0.80 0.22 285) 45%, oklch(0.84 0.18 245) 70%, #ffffff 100%)",
-                backgroundSize: "250% 100%",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-              animate={{ backgroundPosition: ["100% 50%", "-80% 50%"] }}
-              transition={{
-                duration: 4.5,
-                repeat: Infinity,
-                repeatDelay: 1.5,
-                ease: "easeInOut",
+              className="font-display text-2xl font-semibold tracking-tight text-white"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: { staggerChildren: 0.038, delayChildren: 0.15 },
+                },
               }}
             >
-              Chronicle
+              {"Chronicle".split("").map((ch, i) => (
+                <motion.span
+                  key={i}
+                  className="inline-block"
+                  variants={{
+                    hidden: { opacity: 0, y: 7, filter: "blur(4px)" },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      filter: "blur(0px)",
+                      transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+                    },
+                  }}
+                >
+                  {ch}
+                </motion.span>
+              ))}
             </motion.span>
+
             <motion.span
               className="mt-[5px] text-[9px] uppercase tracking-[0.36em]"
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, delay: 0.45 }}
-              style={{ color: "oklch(0.68 0.14 270)" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.55 }}
+              transition={{ duration: 1, delay: 0.65 }}
+              style={{ color: "oklch(0.70 0.10 268)" }}
             >
               Your memory portal
             </motion.span>
