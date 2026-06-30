@@ -96,15 +96,20 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
             transition={{ duration: 0.30 }}
             style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
-            {/* Reflective surface — bottom highlight anchors the light to the glass */}
+            {/* Reflective surface — always-on gradient, opacity-faded when not focused */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full"
+              style={{ background: "rgba(255,255,255,0.05)" }}
+            />
             <motion.div
               aria-hidden
               className="pointer-events-none absolute inset-0 rounded-full"
-              animate={{
-                background: isLit
-                  ? "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.07) 55%, rgba(148,138,255,0.18) 88%, rgba(120,110,255,0.26) 100%)"
-                  : "rgba(255,255,255,0.05)",
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.07) 55%, rgba(148,138,255,0.18) 88%, rgba(120,110,255,0.26) 100%)",
               }}
+              animate={{ opacity: isLit ? 1 : 0 }}
               transition={{ duration: 0.65, ease: "easeInOut" }}
             />
 

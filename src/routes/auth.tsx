@@ -221,49 +221,54 @@ function Auth() {
               </span>
             </motion.div>
 
-            {/* Aurora gradient heading */}
-            <motion.h1
-              variants={cardLine}
-              className="font-display text-[2.6rem] leading-none tracking-tight md:text-[3rem]"
-              style={{
-                background:
-                  mode === "signin"
-                    ? "linear-gradient(130deg, #ffffff 20%, oklch(0.82 0.18 290) 55%, oklch(0.85 0.15 220) 85%)"
-                    : "linear-gradient(130deg, #ffffff 20%, oklch(0.85 0.16 35) 55%, oklch(0.80 0.18 290) 85%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={mode}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ display: "block" }}
-                >
-                  {mode === "signin" ? (
-                    "Welcome back"
-                  ) : (
-                    <>
-                      Begin your{" "}
-                      <span style={{ fontStyle: "italic" }}>Chronicle</span>
-                    </>
-                  )}
-                </motion.span>
-              </AnimatePresence>
-            </motion.h1>
+            {/* Living Text Area — illuminated sanctuary prose */}
+            <motion.div variants={cardLine} className="relative mt-1 mb-1 py-5 text-center">
+              {/* Slow-breathing violet radial glow */}
+              <motion.div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 80% 70% at 50% 55%, rgba(148,128,255,0.13) 0%, rgba(120,100,240,0.06) 55%, transparent 80%)",
+                  borderRadius: "16px",
+                }}
+                animate={{ opacity: [0.45, 1, 0.45], scale: [0.94, 1.04, 0.94] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
 
-            <motion.p
-              variants={cardLine}
-              className="mt-3 text-[13.5px] font-sans text-neutral-400/90"
-            >
-              {mode === "signin"
-                ? "Pick up your story where you left it."
-                : "One quiet place for every story you finish."}
-            </motion.p>
+              {/* Primary line */}
+              <p
+                className="relative font-display text-[1.55rem] leading-snug md:text-[1.75rem]"
+                style={{
+                  letterSpacing: "0.02em",
+                  fontWeight: 300,
+                  backgroundImage:
+                    "linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(195,182,255,0.88) 48%, rgba(160,190,255,0.82) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Welcome back
+              </p>
+
+              {/* Secondary — softer, spaced */}
+              <p
+                className="relative mt-2 text-[12.5px] leading-relaxed"
+                style={{
+                  letterSpacing: "0.05em",
+                  fontWeight: 300,
+                  backgroundImage:
+                    "linear-gradient(135deg, rgba(255,255,255,0.48) 0%, rgba(180,168,255,0.44) 55%, rgba(148,178,255,0.40) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Your personal media sanctuary.{" "}
+                Track, collect, and curate your digital history.
+              </p>
+            </motion.div>
 
             {/* Social proof */}
             <motion.div
