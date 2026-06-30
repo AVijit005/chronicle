@@ -378,6 +378,16 @@ export function AuthStage() {
             "linear-gradient(90deg, transparent, oklch(0.09 0.02 270 / 0.55))",
         }}
       />
+
+      {/* TEXT SCRIM — darkens the bottom-left where the headline lives */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 75% 55% at 18% 90%, oklch(0.05 0.02 270 / 0.92) 0%, oklch(0.06 0.02 270 / 0.60) 45%, transparent 75%), linear-gradient(180deg, transparent 35%, oklch(0.06 0.02 270 / 0.65) 100%)",
+        }}
+      />
       {/* film grain */}
       <div
         aria-hidden
@@ -427,11 +437,16 @@ export function AuthStage() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 1.1, delay: 0.6, ease: ease.out }}
             className="mt-7 text-balance font-display text-[3.4rem] leading-[1.02] tracking-tight xl:text-[4.1rem]"
+            style={{
+              textShadow:
+                "0 2px 32px rgba(0,0,0,0.95), 0 1px 6px rgba(0,0,0,0.85)",
+            }}
           >
             <span className="text-gradient-aurora">Every story you finish</span>
             <br />
-            <span className="italic text-muted-foreground">
-              becomes part of <span className="text-foreground/85">your story.</span>
+            <span className="italic text-white/80">
+              becomes part of{" "}
+              <span className="text-white font-semibold not-italic">your story.</span>
             </span>
           </motion.h2>
 
