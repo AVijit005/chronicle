@@ -25,57 +25,68 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
     const [hasValue, setHasValue] = useState(Boolean(rest.defaultValue || rest.value));
     const [shakeKey, setShakeKey] = useState(0);
     const inputId = id ?? `bb-${label.replace(/\s+/g, "-").toLowerCase()}`;
-    const float = focused || hasValue;
 
     useEffect(() => {
       if (error && !reduced) setShakeKey((k) => k + 1);
     }, [error, reduced]);
 
-    const borderColor = error
-      ? "rgba(252,165,165,0.50)"
-      : focused
-        ? "oklch(0.70 0.20 272 / 0.75)"
-        : "rgba(255,255,255,0.09)";
-
-    const glowShadow = focused
-      ? error
-        ? "0 0 0 1px rgba(252,165,165,0.45), 0 0 22px rgba(252,165,165,0.12)"
-        : "0 0 0 1px oklch(0.70 0.20 272 / 0.55), 0 0 26px oklch(0.68 0.22 272 / 0.18)"
-      : "0 0 0 1px rgba(255,255,255,0.09)";
+    const isError = Boolean(error);
 
     return (
       <div className={className}>
+        {/* Label sits above the pill — always visible, never floats inside */}
+        <motion.label
+          htmlFor={inputId}
+          className="mb-2 block text-[10px] uppercase tracking-[0.30em]"
+          animate={{
+            color: isError
+              ? "rgba(252,165,165,0.80)"
+              : focused
+                ? "rgba(185,175,255,0.90)"
+                : "rgba(255,255,255,0.42)",
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          {label}
+        </motion.label>
+
         <motion.div
           key={shakeKey}
-          animate={error && !reduced ? { x: [0, -3, 3, -2, 2, 0] } : { x: 0 }}
-          transition={{ duration: error ? 0.34 : 0.24, ease: [0.22, 1, 0.36, 1] }}
-          className="relative"
+          animate={
+            isError && !reduced ? { x: [0, -4, 4, -3, 3, 0] } : { x: 0 }
+          }
+          transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Frosted glass container */}
+          {/* Pill container */}
           <motion.div
-            className="relative flex h-[58px] items-center overflow-hidden rounded-2xl px-4"
+            className="relative flex h-[52px] items-center gap-3 rounded-full px-5"
+            style={{ backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)" }}
             animate={{
               backgroundColor: focused
-                ? "rgba(255,255,255,0.075)"
-                : "rgba(255,255,255,0.04)",
-              boxShadow: glowShadow,
+                ? "rgba(255,255,255,0.13)"
+                : "rgba(255,255,255,0.09)",
+              boxShadow: isError
+                ? "0 0 0 1.5px rgba(252,165,165,0.60), 0 0 20px rgba(252,165,165,0.12)"
+                : focused
+                  ? "0 0 0 1.5px oklch(0.68 0.22 272 / 0.80), 0 0 28px oklch(0.68 0.22 272 / 0.22)"
+                  : "0 0 0 1px rgba(255,255,255,0.22)",
             }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              border: `1px solid ${borderColor}`,
-            }}
+            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Icon */}
             {icon && (
               <motion.span
-                className="mr-3 flex-shrink-0"
+                className="flex-shrink-0"
                 animate={{
-                  color: focused ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.28)",
-                  filter: focused && !reduced
-                    ? "drop-shadow(0 0 6px rgba(175,165,255,0.55))"
-                    : "none",
+                  color: isError
+                    ? "rgba(252,165,165,0.70)"
+                    : focused
+                      ? "rgba(185,175,255,0.85)"
+                      : "rgba(255,255,255,0.30)",
+                  filter:
+                    focused && !isError && !reduced
+                      ? "drop-shadow(0 0 6px rgba(175,165,255,0.50))"
+                      : "none",
                 }}
                 transition={{ duration: 0.35 }}
               >
@@ -83,68 +94,37 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
               </motion.span>
             )}
 
-            {/* Label + Input stacked in a relative container */}
-            <div className="relative flex flex-1 flex-col justify-center h-full">
-              <motion.label
-                htmlFor={inputId}
-                className="pointer-events-none absolute left-0 origin-left"
-                animate={
-                  float
-                    ? {
-                        top: "8px",
-                        fontSize: "9px",
-                        letterSpacing: "0.26em",
-                        color: error
-                          ? "rgba(252,165,165,0.75)"
-                          : focused
-                            ? "rgba(185,175,255,0.85)"
-                            : "rgba(255,255,255,0.45)",
-                      }
-                    : {
-                        top: "50%",
-                        fontSize: "14px",
-                        letterSpacing: "0.01em",
-                        color: "rgba(255,255,255,0.35)",
-                      }
-                }
-                style={float ? {} : { transform: "translateY(-50%)" }}
-                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {float
-                  ? label.toUpperCase()
-                  : label}
-              </motion.label>
-
-              <input
-                ref={ref}
-                id={inputId}
-                {...rest}
-                onFocus={(e) => {
-                  setFocused(true);
-                  onFocus?.(e);
-                }}
-                onBlur={(e) => {
-                  setFocused(false);
-                  setHasValue(Boolean(e.target.value));
-                  onBlur?.(e);
-                }}
-                onChange={(e) => {
-                  setHasValue(Boolean(e.target.value));
-                  rest.onChange?.(e);
-                }}
-                placeholder=" "
-                className="block w-full bg-transparent pb-0.5 pt-4 text-[15px] tracking-wide text-white outline-none placeholder:text-transparent"
-              />
-            </div>
+            {/* Input */}
+            <input
+              ref={ref}
+              id={inputId}
+              {...rest}
+              onFocus={(e) => {
+                setFocused(true);
+                onFocus?.(e);
+              }}
+              onBlur={(e) => {
+                setFocused(false);
+                setHasValue(Boolean(e.target.value));
+                onBlur?.(e);
+              }}
+              onChange={(e) => {
+                setHasValue(Boolean(e.target.value));
+                rest.onChange?.(e);
+              }}
+              placeholder={`Enter ${label.toLowerCase()}`}
+              className="flex-1 bg-transparent text-[15px] tracking-wide text-white outline-none placeholder:text-white/22"
+              style={{ caretColor: "oklch(0.78 0.18 272)" }}
+            />
 
             {/* Success check */}
             <AnimatePresence>
               {success && (
                 <motion.span
-                  initial={{ opacity: 0, scale: 0.6 }}
+                  initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.6 }}
-                  className="ml-3 flex-shrink-0 text-emerald-300/90"
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  className="flex-shrink-0 text-emerald-300/90"
                 >
                   <Check className="h-4 w-4" />
                 </motion.span>
@@ -153,17 +133,18 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
           </motion.div>
         </motion.div>
 
+        {/* Error text */}
         <AnimatePresence>
           {error && (
-            <motion.div
+            <motion.p
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.28 }}
-              className="mt-1.5 ml-4 text-[11px] tracking-wide text-rose-300/85"
+              transition={{ duration: 0.26 }}
+              className="mt-1.5 pl-5 text-[11px] tracking-wide text-rose-300/85"
             >
               {error}
-            </motion.div>
+            </motion.p>
           )}
         </AnimatePresence>
       </div>
