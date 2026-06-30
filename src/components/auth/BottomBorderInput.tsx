@@ -144,8 +144,13 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
                 rest.onChange?.(e);
               }}
               placeholder={`Enter ${label.toLowerCase()}`}
-              className="relative z-10 flex-1 bg-transparent text-[15px] tracking-wide text-white outline-none placeholder:text-white/20"
-              style={{ caretColor: "oklch(0.80 0.18 272)" }}
+              className="relative z-10 flex-1 bg-transparent text-[15px] tracking-wide text-white outline-none border-0 ring-0 placeholder:text-white/20"
+              style={{
+                caretColor: "oklch(0.80 0.18 272)",
+                WebkitBoxShadow: "0 0 0 1000px transparent inset",
+                WebkitTextFillColor: "white",
+                transition: "background-color 5000s ease-in-out 0s",
+              }}
             />
 
             {/* Success */}
