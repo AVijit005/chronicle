@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { ArrowRight, Lock, Mail, Check, Loader as Loader2 } from "lucide-react";
+import { ArrowRight, Lock, Mail, Check, Loader as Loader2, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,10 +31,19 @@ const signInSchema = z.object({
   password: z.string().min(6, "At least 6 characters"),
   remember: z.boolean().optional(),
 });
-const signUpSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "At least 6 characters"),
-});
+
+const signUpSchema = z
+  .object({
+    fullName: z.string().min(2, "Enter your full name"),
+    email: z.string().email("Enter a valid email"),
+    password: z.string().min(6, "At least 6 characters"),
+    confirmPassword: z.string().min(6, "At least 6 characters"),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
 type SignIn = z.infer<typeof signInSchema>;
 type SignUp = z.infer<typeof signUpSchema>;
 type Mode = "signin" | "signup";
@@ -75,7 +84,7 @@ function Auth() {
   });
   const signUp = useForm<SignUp>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { fullName: "", email: "", password: "", confirmPassword: "" },
   });
 
   const onSubmit = () => {
@@ -84,6 +93,11 @@ function Auth() {
       setStatus("success");
       setTimeout(() => navigate({ to: "/app" }), 700);
     }, 900);
+  };
+
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setStatus("idle");
   };
 
   return (
@@ -258,39 +272,6 @@ function Auth() {
               </span>
             </motion.div>
 
-            {/* Tabs */}
-            <motion.div
-              variants={cardLine}
-              className="relative mt-7 grid grid-cols-2 text-[12px] uppercase tracking-[0.18em]"
-            >
-              <motion.div
-                layout
-                className="absolute bottom-0 h-[1.5px] w-1/2"
-                style={{
-                  left: mode === "signin" ? 0 : "50%",
-                  background:
-                    "linear-gradient(90deg, oklch(0.72 0.18 290), oklch(0.80 0.18 220))",
-                  boxShadow: "0 0 14px oklch(0.72 0.18 290 / 0.6)",
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              />
-              <button
-                type="button"
-                onClick={() => setMode("signin")}
-                className={`pb-2 text-left transition-colors duration-300 ${mode === "signin" ? "text-white" : "text-white/35 hover:text-white/60"}`}
-              >
-                Sign in
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode("signup")}
-                className={`pb-2 text-right transition-colors duration-300 ${mode === "signup" ? "text-white" : "text-white/35 hover:text-white/60"}`}
-              >
-                Create
-              </button>
-              <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.07]" />
-            </motion.div>
-
             {/* Google button */}
             <motion.div variants={cardLine}>
               <button
@@ -323,15 +304,54 @@ function Auth() {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
             </motion.div>
 
+            {/* ── TAB TOGGLE — right above the email field ── */}
+            <motion.div variants={cardLine} className="mb-5">
+              <div
+                className="relative flex rounded-full p-[3px]"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  boxShadow: "0 0 0 1px rgba(255,255,255,0.09), inset 0 1px 0 rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(12px)",
+                }}
+              >
+                {/* Sliding pill indicator */}
+                <motion.div
+                  className="absolute inset-[3px] w-[calc(50%-3px)] rounded-full"
+                  animate={{ x: mode === "signin" ? 0 : "100%" }}
+                  transition={{ type: "spring", stiffness: 340, damping: 32 }}
+                  style={{
+                    background: "rgba(255,255,255,0.11)",
+                    boxShadow: "0 0 0 1px rgba(255,255,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12)",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => switchMode("signin")}
+                  className="relative z-10 flex-1 rounded-full py-2 text-[11.5px] font-medium tracking-wide transition-colors duration-300"
+                  style={{ color: mode === "signin" ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)" }}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => switchMode("signup")}
+                  className="relative z-10 flex-1 rounded-full py-2 text-[11.5px] font-medium tracking-wide transition-colors duration-300"
+                  style={{ color: mode === "signup" ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)" }}
+                >
+                  Create Account
+                </button>
+              </div>
+            </motion.div>
+
             {/* Forms */}
             <motion.div variants={cardLine}>
               <AnimatePresence mode="wait">
                 {mode === "signin" ? (
                   <motion.form
                     key="signin"
-                    initial={{ opacity: 0, x: -8 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 8 }}
+                    exit={{ opacity: 0, x: 10 }}
                     transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
                     onSubmit={signIn.handleSubmit(onSubmit)}
                     className="space-y-5"
@@ -373,13 +393,20 @@ function Auth() {
                 ) : (
                   <motion.form
                     key="signup"
-                    initial={{ opacity: 0, x: 8 }}
+                    initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -8 }}
+                    exit={{ opacity: 0, x: -10 }}
                     transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
                     onSubmit={signUp.handleSubmit(onSubmit)}
                     className="space-y-5"
                   >
+                    <BottomBorderInput
+                      label="Full Name"
+                      type="text"
+                      icon={<User className="h-4 w-4" />}
+                      error={signUp.formState.errors.fullName?.message}
+                      {...signUp.register("fullName")}
+                    />
                     <BottomBorderInput
                       label="Email"
                       type="email"
@@ -388,11 +415,18 @@ function Auth() {
                       {...signUp.register("email")}
                     />
                     <BottomBorderInput
-                      label="Create a password"
+                      label="Password"
                       type="password"
                       icon={<Lock className="h-4 w-4" />}
                       error={signUp.formState.errors.password?.message}
                       {...signUp.register("password")}
+                    />
+                    <BottomBorderInput
+                      label="Confirm Password"
+                      type="password"
+                      icon={<Lock className="h-4 w-4" />}
+                      error={signUp.formState.errors.confirmPassword?.message}
+                      {...signUp.register("confirmPassword")}
                     />
                     <PremiumButton status={status} label="Begin Chronicle" />
                   </motion.form>
