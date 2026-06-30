@@ -195,17 +195,31 @@ function Auth() {
               </Link>
             </motion.div>
 
-            {/* Portal label */}
-            <motion.span
-              variants={cardLine}
-              className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-white/40"
-            >
+            {/* Portal label — frosted glass pill badge */}
+            <motion.div variants={cardLine} className="mb-4 inline-flex">
               <span
-                className="inline-block h-1.5 w-1.5 animate-pulse rounded-full"
-                style={{ background: "oklch(0.72 0.18 290)" }}
-              />
-              Portal
-            </motion.span>
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[9.5px] uppercase tracking-[0.32em]"
+                style={{
+                  background:
+                    "linear-gradient(120deg, rgba(160,145,255,0.10) 0%, rgba(120,110,210,0.06) 60%, rgba(255,180,200,0.07) 100%)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 12px rgba(130,110,255,0.08)",
+                  color: "rgba(255,255,255,0.52)",
+                }}
+              >
+                <span
+                  className="inline-block h-1.5 w-1.5 rounded-full"
+                  style={{
+                    background: "radial-gradient(circle, rgba(180,165,255,0.95) 0%, rgba(140,120,240,0.70) 100%)",
+                    boxShadow: "0 0 6px rgba(160,145,255,0.60)",
+                    animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite",
+                  }}
+                />
+                Portal
+              </span>
+            </motion.div>
 
             {/* Aurora gradient heading */}
             <motion.h1
