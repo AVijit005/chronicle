@@ -175,7 +175,31 @@ function Auth() {
 
       {/* === FLOATING CARD ZONE === */}
       <div className="relative z-10 flex min-h-screen items-end justify-center px-4 pb-6 lg:items-center lg:justify-end lg:px-0 lg:pb-0 lg:pr-[5vw] xl:pr-[7vw]">
-        <LiquidGlassCard className="w-full max-w-[448px] p-7 md:p-9">
+
+        {/* Ambient light depth — violet halo that drifts slowly behind the card */}
+        {!reduced && (
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute hidden lg:block"
+            style={{
+              width: "560px",
+              height: "560px",
+              borderRadius: "50%",
+              background:
+                "radial-gradient(circle, rgba(130,108,255,0.07) 0%, rgba(100,80,220,0.04) 45%, transparent 72%)",
+              filter: "blur(60px)",
+              zIndex: 0,
+            }}
+            animate={{
+              x: [0, 28, -18, 10, 0],
+              y: [0, -16, 22, -8, 0],
+              opacity: [0.6, 1, 0.7, 0.9, 0.6],
+            }}
+            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          />
+        )}
+
+        <LiquidGlassCard className="relative z-10 w-full max-w-[448px] p-7 md:p-9">
           <ParticleBurst active={status === "success"} />
 
           {/* Staggered card content */}
@@ -296,7 +320,8 @@ function Auth() {
               <button
                 onClick={onSubmit}
                 type="button"
-                className="group relative mt-7 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full border border-white/10 bg-white/[0.05] px-4 py-3 text-[13px] font-medium tracking-wide text-white/90 transition-all duration-300 hover:scale-[1.015] hover:border-white/18 hover:bg-white/[0.08] active:scale-[0.99]"
+                className="group relative mt-7 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[12.5px] font-medium tracking-wide text-white/90 transition-all duration-300 hover:scale-[1.015] hover:border-white/18 hover:bg-white/[0.08] active:scale-[0.99]"
+                style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.10)" }}
               >
                 <GoogleColorIcon />
                 Continue with Google
@@ -328,19 +353,19 @@ function Auth() {
               <div
                 className="relative flex rounded-full p-[3px]"
                 style={{
-                  background: "rgba(255,255,255,0.06)",
-                  boxShadow: "0 0 0 1px rgba(255,255,255,0.09), inset 0 1px 0 rgba(255,255,255,0.05)",
+                  background: "transparent",
+                  boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
                   backdropFilter: "blur(12px)",
                 }}
               >
-                {/* Sliding pill indicator */}
+                {/* Sliding active-tab glass pill */}
                 <motion.div
                   className="absolute inset-[3px] w-[calc(50%-3px)] rounded-full"
                   animate={{ x: mode === "signin" ? 0 : "100%" }}
                   transition={{ type: "spring", stiffness: 340, damping: 32 }}
                   style={{
-                    background: "rgba(255,255,255,0.11)",
-                    boxShadow: "0 0 0 1px rgba(255,255,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.05)",
+                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.18)",
                   }}
                 />
                 <button
