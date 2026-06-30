@@ -31,135 +31,126 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
       if (error && !reduced) setShakeKey((k) => k + 1);
     }, [error, reduced]);
 
+    const borderColor = error
+      ? "rgba(252,165,165,0.50)"
+      : focused
+        ? "oklch(0.70 0.20 272 / 0.75)"
+        : "rgba(255,255,255,0.09)";
+
+    const glowShadow = focused
+      ? error
+        ? "0 0 0 1px rgba(252,165,165,0.45), 0 0 22px rgba(252,165,165,0.12)"
+        : "0 0 0 1px oklch(0.70 0.20 272 / 0.55), 0 0 26px oklch(0.68 0.22 272 / 0.18)"
+      : "0 0 0 1px rgba(255,255,255,0.09)";
+
     return (
       <div className={className}>
         <motion.div
           key={shakeKey}
           animate={error && !reduced ? { x: [0, -3, 3, -2, 2, 0] } : { x: 0 }}
           transition={{ duration: error ? 0.34 : 0.24, ease: [0.22, 1, 0.36, 1] }}
-          className="group relative"
+          className="relative"
         >
-          {/* Focus glow wash */}
-          <AnimatePresence>
-            {focused && !reduced && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 -bottom-1 -top-1 rounded-lg"
-                style={{
-                  background:
-                    error
-                      ? "radial-gradient(ellipse at 50% 100%, rgba(252,165,165,0.08) 0%, transparent 70%)"
-                      : "radial-gradient(ellipse at 50% 100%, rgba(175,165,255,0.10) 0%, transparent 70%)",
-                }}
-              />
-            )}
-          </AnimatePresence>
-
-          {icon && (
-            <span
-              className={`pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 transition-all duration-500 ${
-                focused ? "text-white/85" : "text-white/30"
-              }`}
-              style={
-                focused && !reduced
-                  ? { filter: "drop-shadow(0 0 6px rgba(175,165,255,0.6))" }
-                  : undefined
-              }
-            >
-              {icon}
-            </span>
-          )}
-
-          <input
-            ref={ref}
-            id={inputId}
-            {...rest}
-            onFocus={(e) => {
-              setFocused(true);
-              onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setFocused(false);
-              setHasValue(Boolean(e.target.value));
-              onBlur?.(e);
-            }}
-            onChange={(e) => {
-              setHasValue(Boolean(e.target.value));
-              rest.onChange?.(e);
-            }}
-            placeholder=" "
-            className={`peer block w-full bg-transparent pb-2.5 pt-6 text-[15px] tracking-wide text-white outline-none placeholder:text-transparent ${
-              icon ? "pl-7 pr-8" : "pr-8"
-            }`}
-          />
-
-          <label
-            htmlFor={inputId}
-            className={`pointer-events-none absolute left-0 origin-left transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              icon ? "pl-7" : ""
-            } ${
-              float
-                ? "top-0 text-[10px] tracking-[0.28em] uppercase"
-                : "top-1/2 -translate-y-1/2 text-[14px]"
-            }`}
-            style={
-              float
-                ? {
-                    color: error
-                      ? "rgba(252,165,165,0.75)"
-                      : focused
-                        ? "rgba(185,175,255,0.85)"
-                        : "rgba(255,255,255,0.50)",
-                  }
-                : { color: "rgba(255,255,255,0.38)" }
-            }
-          >
-            {label}
-          </label>
-
-          {/* Static hairline */}
-          <div
-            aria-hidden
-            className="absolute inset-x-0 bottom-0 h-px bg-white/[0.07]"
-          />
-
-          {/* Animated focus underline */}
+          {/* Frosted glass container */}
           <motion.div
-            aria-hidden
-            className="absolute inset-x-0 bottom-0 h-px origin-center"
+            className="relative flex h-[58px] items-center overflow-hidden rounded-2xl px-4"
             animate={{
-              scaleX: focused ? 1 : 0,
-              opacity: focused ? 1 : 0,
+              backgroundColor: focused
+                ? "rgba(255,255,255,0.075)"
+                : "rgba(255,255,255,0.04)",
+              boxShadow: glowShadow,
             }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              background: error
-                ? "linear-gradient(90deg, transparent, rgba(252,165,165,0.80), transparent)"
-                : "linear-gradient(90deg, oklch(0.72 0.18 290 / 0), oklch(0.82 0.16 270 / 0.9), oklch(0.78 0.18 220 / 0), transparent)",
-              boxShadow: focused
-                ? error
-                  ? "0 0 16px rgba(252,165,165,0.40)"
-                  : "0 0 20px oklch(0.72 0.18 290 / 0.50)"
-                : "none",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: `1px solid ${borderColor}`,
             }}
-          />
-
-          <AnimatePresence>
-            {success && (
+          >
+            {/* Icon */}
+            {icon && (
               <motion.span
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.6 }}
-                className="absolute right-0 top-1/2 -translate-y-1/2 text-emerald-300/90"
+                className="mr-3 flex-shrink-0"
+                animate={{
+                  color: focused ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.28)",
+                  filter: focused && !reduced
+                    ? "drop-shadow(0 0 6px rgba(175,165,255,0.55))"
+                    : "none",
+                }}
+                transition={{ duration: 0.35 }}
               >
-                <Check className="h-4 w-4" />
+                {icon}
               </motion.span>
             )}
-          </AnimatePresence>
+
+            {/* Label + Input stacked in a relative container */}
+            <div className="relative flex flex-1 flex-col justify-center h-full">
+              <motion.label
+                htmlFor={inputId}
+                className="pointer-events-none absolute left-0 origin-left"
+                animate={
+                  float
+                    ? {
+                        top: "8px",
+                        fontSize: "9px",
+                        letterSpacing: "0.26em",
+                        color: error
+                          ? "rgba(252,165,165,0.75)"
+                          : focused
+                            ? "rgba(185,175,255,0.85)"
+                            : "rgba(255,255,255,0.45)",
+                      }
+                    : {
+                        top: "50%",
+                        fontSize: "14px",
+                        letterSpacing: "0.01em",
+                        color: "rgba(255,255,255,0.35)",
+                      }
+                }
+                style={float ? {} : { transform: "translateY(-50%)" }}
+                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {float
+                  ? label.toUpperCase()
+                  : label}
+              </motion.label>
+
+              <input
+                ref={ref}
+                id={inputId}
+                {...rest}
+                onFocus={(e) => {
+                  setFocused(true);
+                  onFocus?.(e);
+                }}
+                onBlur={(e) => {
+                  setFocused(false);
+                  setHasValue(Boolean(e.target.value));
+                  onBlur?.(e);
+                }}
+                onChange={(e) => {
+                  setHasValue(Boolean(e.target.value));
+                  rest.onChange?.(e);
+                }}
+                placeholder=" "
+                className="block w-full bg-transparent pb-0.5 pt-4 text-[15px] tracking-wide text-white outline-none placeholder:text-transparent"
+              />
+            </div>
+
+            {/* Success check */}
+            <AnimatePresence>
+              {success && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.6 }}
+                  className="ml-3 flex-shrink-0 text-emerald-300/90"
+                >
+                  <Check className="h-4 w-4" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </motion.div>
 
         <AnimatePresence>
@@ -169,7 +160,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.28 }}
-              className="mt-1.5 text-[11px] tracking-wide text-rose-300/85"
+              className="mt-1.5 ml-4 text-[11px] tracking-wide text-rose-300/85"
             >
               {error}
             </motion.div>
