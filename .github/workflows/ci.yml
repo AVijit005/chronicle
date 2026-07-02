@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: 22
+  DATABASE_URL: postgresql://chronicle:chronicle@localhost:5432/chronicle
+
+jobs:
+  lint-format:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+        working-directory: apps/backend
+      - run: npm run format
+        working-directory: apps/backend
+      - run: npm run lint
+        working-directory: apps/backend
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+        working-directory: apps/backend
+      - run: npx prisma generate
+        working-directory: apps/backend
+      - run: npm run build
+        working-directory: apps/backend
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: chronicle
+          POSTGRES_USER: chronicle
+          POSTGRES_PASSWORD: chronicle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready -U chronicle
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+        working-directory: apps/backend
+      - run: npx prisma generate && npx prisma db push
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+      - run: npm test
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t chronicle-api ./apps/backend
+      - run: docker run --rm chronicle-api node dist/main --help || true
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+        working-directory: apps/backend
+      - run: npm audit --audit-level=high
+        working-directory: apps/backend
+        continue-on-error: true

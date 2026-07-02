@@ -1,0 +1,98 @@
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { libraryApi } from '@/lib/api';
+import { queryKeys } from '@/lib/api/query-keys';
+import type { AddToLibraryInput, UpdateLibraryItemInput, LibraryFilterParams } from '@/lib/api/library';
+
+export function useLibrary(params?: LibraryFilterParams) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.library.list(params),
+    queryFn: ({ pageParam }) => libraryApi.listLibrary({ ...params, cursor: pageParam as string | undefined }),
+    getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
+    initialPageParam: undefined as string | undefined,
+  });
+}
+
+export function useLibraryByStatus(status: string, params?: LibraryFilterParams) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.library.byStatus(status, params),
+    queryFn: ({ pageParam }) => libraryApi.listLibraryByStatus(status, { ...params, cursor: pageParam as string | undefined }),
+    getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
+    initialPageParam: undefined as string | undefined,
+  });
+}
+
+export function useLibraryByType(type: string, params?: LibraryFilterParams) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.library.byType(type, params),
+    queryFn: ({ pageParam }) => libraryApi.listLibraryByType(type, { ...params, cursor: pageParam as string | undefined }),
+    getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
+    initialPageParam: undefined as string | undefined,
+  });
+}
+
+export function useLibraryItem(id: string) {
+  return useQuery({
+    queryKey: queryKeys.library.detail(id),
+    queryFn: () => libraryApi.getLibraryItem(id),
+    enabled: !!id,
+  });
+}
+
+export function useLibraryStats() {
+  return useQuery({
+    queryKey: queryKeys.library.stats(),
+    queryFn: () => libraryApi.getLibraryStats(),
+  });
+}
+
+export function useAddToLibrary() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: AddToLibraryInput) => libraryApi.addToLibrary(input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.library.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.search.all });
+    },
+  });
+}
+
+export function useUpdateLibraryItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: UpdateLibraryItemInput }) =>
+      libraryApi.updateLibraryItem(id, input),
+    onMutate: async ({ id, input }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.library.detail(id) });
+      const previous = queryClient.getQueryData(queryKeys.library.detail(id));
+      queryClient.setQueryData(queryKeys.library.detail(id), (old: unknown) => {
+        if (!old) return old;
+        return { ...(old as Record<string, unknown>), ...input };
+      });
+      return { previous };
+    },
+    onError: (_err, { id }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(queryKeys.library.detail(id), context.previous);
+      }
+    },
+    onSettled: (_data, _error, { id }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.library.detail(id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.library.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.wrapped.all });
+    },
+  });
+}
+
+export function useRemoveFromLibrary() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => libraryApi.removeFromLibrary(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.library.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.search.all });
+    },
+  });
+}
