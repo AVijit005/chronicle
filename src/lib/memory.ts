@@ -229,7 +229,7 @@ const withMemory = () =>
   );
 
 export function getFavoriteMemories() {
-  return withMemory().filter(({ media }) => media.rating >= 4.7);
+  return withMemory().filter(({ media }) => (media.rating ?? 0) >= 4.7);
 }
 export function getEmotionalMemories() {
   return withMemory().filter(({ memory }) =>

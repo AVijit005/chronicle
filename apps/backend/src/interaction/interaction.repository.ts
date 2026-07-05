@@ -14,6 +14,8 @@ export interface LibraryItemWithMetadata {
   userId: string;
   rating: number | null;
   favorite: boolean;
+  bookmarked: boolean;
+  bookmarkedAt: Date | null;
   metadata: Record<string, any> | null;
   status: string;
   startedAt: Date | null;
@@ -152,11 +154,10 @@ export class InteractionRepository {
       const delegate = this.prismaAny()[cfg.userDelegate];
       if (!delegate) continue;
 
-      // Filter by metadata JSON containing bookmarkedAt
       const where: Record<string, any> = {
         userId,
         deletedAt: null,
-        metadata: { path: ['bookmarkedAt'], not: null },
+        bookmarked: true,
       };
       if (cursor) {
         where.updatedAt = { lt: cursor };

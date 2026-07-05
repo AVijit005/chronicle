@@ -14,11 +14,11 @@ import {
   Youtube,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import type { MediaItem, MediaKind } from "@/lib/mock";
+import type { UIMediaItem, UIMediaKind } from "@/lib/adapters/types";
 import { cn } from "@/lib/utils";
 import { ItemActionBar } from "@/components/media/ItemActionBar";
 
-const KIND_GLYPH: Record<MediaKind, LucideIcon> = {
+const KIND_GLYPH: Record<UIMediaKind, LucideIcon> = {
   movie: Film,
   series: Tv,
   anime: Sparkles,
@@ -31,8 +31,10 @@ const KIND_GLYPH: Record<MediaKind, LucideIcon> = {
   youtube: Youtube,
 };
 
-export function MediaCard({ item, size = "md" }: { item: MediaItem; size?: "sm" | "md" | "lg" }) {
+export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm" | "md" | "lg" }) {
   const w = size === "sm" ? "w-36" : size === "lg" ? "w-56" : "w-44";
+  const rating = item.rating ?? 0;
+  const accent = item.accent ?? "oklch(0.72 0.18 255)";
   return (
     <motion.div
       initial="rest"
@@ -40,7 +42,7 @@ export function MediaCard({ item, size = "md" }: { item: MediaItem; size?: "sm" 
       animate="rest"
       className={cn("group relative shrink-0", w)}
     >
-      <Link to="/app/media/$id" params={{ id: item.id }} className="block">
+      <Link to="/app/media/$id" params={{ id: item.mediaId }} className="block">
         <motion.div
           variants={{ rest: { y: 0 }, hover: { y: -6 } }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -59,14 +61,16 @@ export function MediaCard({ item, size = "md" }: { item: MediaItem; size?: "sm" 
             variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
             className="absolute inset-0"
             style={{
-              background: `radial-gradient(60% 80% at 50% 100%, ${item.accent ?? "oklch(0.72 0.18 255)"} / 0.35, transparent 70%)`,
+              background: `radial-gradient(60% 80% at 50% 100%, ${accent} / 0.35, transparent 70%)`,
             }}
           />
 
           {/* Rating chip */}
-          <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-[10px] backdrop-blur-md">
-            <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" /> {item.rating.toFixed(1)}
-          </div>
+          {rating > 0 && (
+            <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-[10px] backdrop-blur-md">
+              <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" /> {rating.toFixed(1)}
+            </div>
+          )}
 
           {/* Cross-media glyph — subtle medium identity */}
           {(() => {
@@ -77,7 +81,7 @@ export function MediaCard({ item, size = "md" }: { item: MediaItem; size?: "sm" 
                 className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-black/45 text-white/85 ring-1 ring-white/10 backdrop-blur-md"
                 title={item.kind}
                 style={{
-                  boxShadow: `inset 0 0 0 1px ${item.accent ?? "oklch(0.72 0.18 255)"} / 0.0`,
+                  boxShadow: `inset 0 0 0 1px ${accent} / 0.0`,
                 }}
               >
                 <Glyph className="h-3 w-3" />
@@ -86,7 +90,7 @@ export function MediaCard({ item, size = "md" }: { item: MediaItem; size?: "sm" 
           })()}
 
           {/* Progress bar (always when in-progress) */}
-          {item.progress !== undefined && item.progress > 0 && item.progress < 100 && (
+          {item.progress !== null && item.progress > 0 && item.progress < 100 && (
             <div className="absolute inset-x-2 bottom-2">
               <div className="h-1 overflow-hidden rounded-full bg-white/20">
                 <div

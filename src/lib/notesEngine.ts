@@ -28,7 +28,7 @@ function read(): Note[] {
     return [];
   }
 }
-function write(list: Note[]) {
+function writem(list: Note[]) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(KEY, JSON.stringify(list));
@@ -51,12 +51,12 @@ export function addNote(kind: NoteEntityKind, refId: string, text: string) {
     text,
     createdAt: new Date().toISOString(),
   };
-  write([note, ...read()]);
+  writem([note, ...read()]);
   return note;
 }
 
 export function removeNote(id: string) {
-  write(read().filter((n) => n.id !== id));
+  writem(read().filter((n) => n.id !== id));
 }
 
 export function searchNotes(term: string): Note[] {

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { COLLECTIONS } from "@/lib/mock";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
 import { SectionHeader, RevealSection } from "@/components/dashboard/SectionHeader";
 import { CollectionsHero } from "@/components/collections/CollectionsHero";
 import { FeaturedCollections } from "@/components/collections/FeaturedCollections";
@@ -13,6 +14,7 @@ import { DiscoveryCollections } from "@/components/discovery/DiscoveryCollection
 import { SmartCollectionCard } from "@/components/challenges/SmartCollectionCard";
 import { getAllSmartCollections } from "@/lib/smartCollections";
 import { RelatedJourney } from "@/components/intelligence/RelatedJourney";
+import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 
 export const Route = createFileRoute("/app/collections/")({
   component: CollectionsIndex,
@@ -20,11 +22,24 @@ export const Route = createFileRoute("/app/collections/")({
 
 function CollectionsIndex() {
   const [open, setOpen] = useState(false);
-  const pinned = COLLECTIONS.filter((c) => c.pinned);
-  const recent = [...COLLECTIONS].sort((a, b) => a.updatedAt!.localeCompare(b.updatedAt!));
-  const categories = Array.from(
-    new Set(COLLECTIONS.map((c) => c.category).filter(Boolean)),
-  ) as string[];
+  const { data: collections, isLoading } = useCollections();
+
+  if (isLoading) {
+    return (
+      <div className="-mt-3 pb-24 space-y-8">
+        <ShimmerSkeleton className="h-64 rounded-[40px]" />
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ShimmerSkeleton key={i} className="h-48 rounded-3xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const allCollections = collections?.map(adaptCollectionResponse) ?? [];
+  const pinned = allCollections.filter((c) => c.isPinned);
+  const recent = [...allCollections].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 
   return (
     <div className="-mt-3 pb-24">
@@ -39,29 +54,19 @@ function CollectionsIndex() {
         <FeaturedCollections />
       </RevealSection>
 
-      <RevealSection>
-        <SectionHeader eyebrow="Pinned" title="Always within reach" />
-        <EditorialGrid collections={pinned} />
-      </RevealSection>
+      {pinned.length > 0 && (
+        <RevealSection>
+          <SectionHeader eyebrow="Pinned" title="Always within reach" />
+          <EditorialGrid collections={pinned} />
+        </RevealSection>
+      )}
 
-      <RevealSection>
-        <SectionHeader eyebrow="Recent activity" title="Recently updated" />
-        <EditorialGrid collections={recent} />
-      </RevealSection>
-
-      <RevealSection>
-        <SectionHeader eyebrow="Browse" title="By category" />
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className="glass-subtle rounded-full px-4 py-2 text-xs hover:bg-white/[0.08] press-scale"
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </RevealSection>
+      {recent.length > 0 && (
+        <RevealSection>
+          <SectionHeader eyebrow="Recent activity" title="Recently updated" />
+          <EditorialGrid collections={recent} />
+        </RevealSection>
+      )}
 
       <RevealSection>
         <SectionHeader

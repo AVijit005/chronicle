@@ -20,7 +20,6 @@ import {
 import {
   MEDIA,
   COLLECTIONS,
-  RECENT_SEARCHES,
   PINNED_MEDIA,
   POPULAR_MEDIA,
   RECENT_JOURNALS,
@@ -30,6 +29,7 @@ import {
 } from "@/lib/mock";
 import { useNavigate } from "@tanstack/react-router";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { useSearch, useRecentSearches } from "@/hooks/use-search";
 
 type Row =
   | { kind: "media"; group: string; item: MediaItem; onSelect: () => void }
@@ -69,6 +69,9 @@ export function CommandPalette({
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  
+  const { data: searchData } = useSearch({ q });
+  const { data: recentData } = useRecentSearches();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -103,7 +106,7 @@ export function CommandPalette({
       return [
         {
           title: "Recent searches",
-          rows: RECENT_SEARCHES.map(
+          rows: (recentData || []).map(
             (t) =>
               ({
                 kind: "recent",
@@ -187,68 +190,76 @@ export function CommandPalette({
       ];
     }
 
-    const groupsOrder: { label: string; kinds: MediaKind[] }[] = [
-      { label: "Movies", kinds: ["movie"] },
-      { label: "Series", kinds: ["series"] },
-      { label: "Anime", kinds: ["anime"] },
-      { label: "Books", kinds: ["book", "manga"] },
-      { label: "Games", kinds: ["game"] },
-      { label: "Music", kinds: ["music", "podcast"] },
-    ];
     const out: { title: string; rows: Row[] }[] = [];
-    for (const g of groupsOrder) {
-      const matches = MEDIA.filter(
-        (m) =>
-          g.kinds.includes(m.kind) &&
-          (m.title.toLowerCase().includes(term) || m.creator?.toLowerCase().includes(term)),
-      );
-      if (matches.length) {
-        out.push({
-          title: g.label,
-          rows: matches.slice(0, 5).map(
-            (m) =>
-              ({
-                kind: "media",
-                group: g.label,
-                item: m,
-                onSelect: go({ to: "/app/media/$id", params: { id: m.id } }),
-              }) as Row,
-          ),
-        });
+    
+    if (searchData && searchData.items.length > 0) {
+      // Group by type
+      const groups = new Map<string, typeof searchData.items>();
+      for (const item of searchData.items) {
+        if (!groups.has(item.type)) groups.set(item.type, []);
+        groups.get(item.type)!.push(item);
+      }
+      
+      const groupLabels: Record<string, string> = {
+        movie: "Movies",
+        series: "Series",
+        anime: "Anime",
+        book: "Books",
+        manga: "Manga",
+        game: "Games",
+        music: "Music",
+        podcast: "Podcasts",
+        collection: "Collections",
+        journal: "Journal",
+      };
+
+      for (const [type, items] of groups.entries()) {
+        const title = groupLabels[type] || type;
+        
+        if (type === "collection") {
+          out.push({
+            title,
+            rows: items.slice(0, 4).map(
+              (item) =>
+                ({
+                  kind: "collection",
+                  group: title,
+                  col: { id: item.id, name: item.title, description: item.subtitle || "", accent: "var(--primary)", count: 0, category: "Mixed" },
+                  onSelect: go({ to: "/app/collections/$id", params: { id: item.id } }),
+                }) as Row,
+            ),
+          });
+        } else if (type === "journal") {
+           out.push({
+            title,
+            rows: items.map(
+              (item) =>
+                ({
+                  kind: "journal",
+                  group: title,
+                  j: { id: item.id, title: item.title, excerpt: item.subtitle || "", date: "Recent", mood: "Neutral", media: "Memory", accent: "var(--primary)" },
+                  onSelect: go({ to: "/app/journal" }),
+                }) as Row,
+            ),
+          });
+        } else {
+          out.push({
+            title,
+            rows: items.slice(0, 5).map(
+              (item) =>
+                ({
+                  kind: "media",
+                  group: title,
+                  item: { id: item.id, title: item.title, kind: type as MediaKind, poster: item.imageUrl || "", creator: item.subtitle, year: 2024, accent: null, status: "completed" },
+                  onSelect: go({ to: "/app/media/$id", params: { id: item.id } }),
+                }) as Row,
+            ),
+          });
+        }
       }
     }
-    const cols = COLLECTIONS.filter(
-      (c) => c.name.toLowerCase().includes(term) || c.description.toLowerCase().includes(term),
-    );
-    if (cols.length)
-      out.push({
-        title: "Collections",
-        rows: cols.slice(0, 4).map(
-          (c) =>
-            ({
-              kind: "collection",
-              group: "Collections",
-              col: c,
-              onSelect: go({ to: "/app/collections/$id", params: { id: c.id } }),
-            }) as Row,
-        ),
-      });
-    const j = RECENT_JOURNALS.filter(
-      (x) => x.title.toLowerCase().includes(term) || x.excerpt.toLowerCase().includes(term),
-    );
-    if (j.length)
-      out.push({
-        title: "Journal",
-        rows: j.map(
-          (entry) =>
-            ({
-              kind: "journal",
-              group: "Journal",
-              j: entry,
-              onSelect: go({ to: "/app/journal" }),
-            }) as Row,
-        ),
-      });
+
+    // Still include settings locally since they aren't from backend
     const s = SEARCHABLE_SETTINGS.filter(
       (x) => x.label.toLowerCase().includes(term) || x.hint.toLowerCase().includes(term),
     );
@@ -265,8 +276,9 @@ export function CommandPalette({
             }) as Row,
         ),
       });
+      
     return out;
-  }, [q]);
+  }, [q, recentData, searchData]);
 
   const flat = rows.flatMap((g) => g.rows);
   useEffect(() => {
@@ -445,7 +457,7 @@ function RowView({
 
 function RowContent({ row }: { row: Row }) {
   if (row.kind === "media") {
-    const Icon = MEDIA_ICONS[row.item.kind];
+    const Icon = (MEDIA_ICONS as any)[row.item.kind];
     return (
       <>
         <img

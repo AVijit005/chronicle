@@ -205,7 +205,7 @@ function deriveDefault(m: MediaItem): MediaStatus {
 
 const initialMeta = (): Record<string, StoredMeta> => {
   const out: Record<string, StoredMeta> = {};
-  for (const m of MEDIA) out[m.id] = { status: deriveDefault(m), progress: m.progress };
+  for (const m of MEDIA) out[m.id] = { status: deriveDefault(m), progress: m.progress ?? undefined };
   for (const [id, s] of Object.entries(SEED_META))
     out[id] = { ...(out[id] ?? { status: s.status }), ...s };
   return out;

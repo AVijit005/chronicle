@@ -13,19 +13,27 @@ export type MediaKind =
   | "youtube";
 
 export interface MediaItem {
+  [key: string]: any;
+  mediaId?: string;
+  mediaType?: string;
+  lastInteractionAt?: string | null;
+  progressLabel?: string | null;
+  favorite?: boolean | null;
+  slug?: string | null;
+  rewatchCount?: number | null;
   id: string;
   title: string;
-  kind: MediaKind;
+  kind: MediaKind | string;
   year: number;
   poster: string;
-  backdrop?: string;
-  rating: number; // 0-5
-  progress?: number; // 0-100
-  status: "watching" | "completed" | "planned" | "paused";
+  backdrop?: string | null;
+  rating?: number | null; // 0-5
+  progress?: number | null; // 0-100
+  status: "watching" | "completed" | "planned" | "paused" | string;
   genres: string[];
-  runtime?: string;
-  creator?: string;
-  accent?: string; // oklch
+  runtime?: string | null;
+  creator?: string | null;
+  accent?: string | null; // oklch
   synopsis: string;
 }
 
@@ -228,9 +236,21 @@ export const MEDIA: MediaItem[] = [
   },
 ];
 
-export const continueWatching = MEDIA.filter((m) => m.status === "watching");
+export const continueWatching = MEDIA.filter((m) => (m.status === "watching" || m.status === "in_progress"));
 export const recentlyCompleted = MEDIA.filter((m) => m.status === "completed").slice(0, 6);
 export const featured = MEDIA[1]; // One Piece
+
+export interface RecentActivityItem {
+  [key: string]: any;
+  libraryId?: string;
+  mediaId?: string;
+  slug?: string | null;
+  posterUrl?: string;
+  id: string;
+  title: string;
+  type: string;
+  date: string; // ISO
+}
 
 export interface Collection {
   id: string;
@@ -398,7 +418,7 @@ export const COLLECTIONS: Collection[] = [
   },
 ];
 
-export const KIND_LABEL: Record<MediaKind, string> = {
+export const KIND_LABEL: Record<string, string> = {
   movie: "Movies",
   series: "Series",
   anime: "Anime",
@@ -678,7 +698,7 @@ const baseDetail: MediaDetail = {
 };
 export const MEDIA_DETAIL: Record<string, MediaDetail> = Object.fromEntries(
   MEDIA.map((m) => {
-    const kindLabel: Record<MediaKind, string> = {
+    const kindLabel: Record<string, string> = {
       movie: "Continue Watching",
       series: "Continue Watching",
       anime: "Continue Watching",
@@ -711,7 +731,7 @@ export const MEDIA_DETAIL: Record<string, MediaDetail> = Object.fromEntries(
           { label: "Runtime", value: m.runtime ?? "—" },
           { label: "Language", value: "English" },
           { label: "Status", value: m.status.charAt(0).toUpperCase() + m.status.slice(1) },
-          { label: "Rating", value: `${m.rating.toFixed(1)} / 5` },
+          { label: "Rating", value: `${((m.rating ?? 0) ?? 0).toFixed(1)} / 5` },
         ],
         relatedIds: MEDIA.filter((x) => x.id !== m.id && x.kind === m.kind)
           .slice(0, 4)

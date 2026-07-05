@@ -1,13 +1,21 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import { COLLECTIONS } from "@/lib/mock";
 import { ArrowUpRight } from "lucide-react";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
 export function FeaturedCollections() {
-  const featured = COLLECTIONS.filter((c) => c.featured).slice(0, 3);
+  const { data: collections } = useCollections();
+  const allCollections = collections?.map(adaptCollectionResponse) ?? [];
+  // Use pinned collections as "featured", fallback to first 3
+  const featured = allCollections.filter((c) => c.isPinned).slice(0, 3);
+  const display = featured.length >= 3 ? featured : allCollections.slice(0, 3);
+
+  if (display.length === 0) return null;
+
   return (
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.3fr_1fr_1fr]">
-      {featured.map((c, i) => (
+      {display.map((c, i) => (
         <motion.div
           key={c.id}
           initial={{ opacity: 0, y: 18 }}
@@ -21,14 +29,14 @@ export function FeaturedCollections() {
             className="group relative block aspect-[3/2] overflow-hidden rounded-[32px] ring-1 ring-white/10"
           >
             <img
-              src={c.cover}
+              src={c.cover ?? ""}
               alt=""
               className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
             />
             <div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(125deg, transparent 30%, ${c.accent} / 0.35, oklch(0 0 0 / 0.85))`,
+                background: `linear-gradient(125deg, transparent 30%, ${c.color ?? "oklch(0.72 0.18 255)"} / 0.35, oklch(0 0 0 / 0.85))`,
               }}
             />
             <span
@@ -42,7 +50,7 @@ export function FeaturedCollections() {
             />
             <div className="absolute inset-x-0 bottom-0 p-6">
               <div className="glass-subtle inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-white/85">
-                Featured · {c.count} items
+                Featured · {c.itemCount} items
               </div>
               <div className="mt-3 font-display text-3xl leading-tight text-white md:text-4xl">
                 {c.name}

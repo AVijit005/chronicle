@@ -57,7 +57,7 @@ export function RecentlyFinishedTimeline({ limit }: { limit?: number }) {
                         <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
                           <span className="inline-flex items-center gap-1">
                             <Star className="h-3 w-3 fill-amber-400 text-amber-400" />{" "}
-                            {m.rating.toFixed(1)}
+                            {(m.rating ?? 0).toFixed(1)}
                           </span>
                           {meta.journalExcerpt && (
                             <span className="inline-flex items-center gap-1 text-primary/80">

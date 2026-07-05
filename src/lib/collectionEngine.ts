@@ -50,7 +50,7 @@ export function getCollectionIntelligence(c: Collection): CollectionIntelligence
       journalCount += mem.journalEntries;
       revisits += mem.revisits;
     }
-    ratingSum += m.rating;
+    ratingSum += (m.rating ?? 0);
   }
   const avg = items.length ? ratingSum / items.length : 0;
   return {
@@ -58,7 +58,7 @@ export function getCollectionIntelligence(c: Collection): CollectionIntelligence
     completionPct: c.completion ?? 0,
     growthRate: `+${Math.floor(rng() * 4) + 1} this month`,
     favoriteCategory: c.category ?? items[0]?.genres[0] ?? "Story",
-    mostEmotionalId: items.sort((a, b) => b.rating - a.rating)[0]?.id ?? null,
+    mostEmotionalId: items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))[0]?.id ?? null,
     newestId: items[0]?.id ?? null,
     oldestId: items[items.length - 1]?.id ?? null,
     averageRating: Math.round(avg * 10) / 10,

@@ -1,6 +1,7 @@
-import { COLLECTIONS } from "@/lib/mock";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
 const THEMES = [
   "Mind Bending",
@@ -20,6 +21,11 @@ interface Props {
 }
 
 export function DiscoveryCollections({ className }: Props) {
+  const { data: collections } = useCollections();
+  const allCollections = collections?.map(adaptCollectionResponse) ?? [];
+
+  if (allCollections.length === 0) return null;
+
   return (
     <section aria-label="Discovery collections" className={cn("space-y-4", className)}>
       <header className="flex items-baseline justify-between">
@@ -30,15 +36,17 @@ export function DiscoveryCollections({ className }: Props) {
       </header>
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
         {THEMES.slice(0, 10).map((theme, i) => {
-          const c = COLLECTIONS[i % COLLECTIONS.length]!;
+          const c = allCollections[i % allCollections.length]!;
+          const coverSrc = c.cover ?? c.items?.[0]?.posterUrl ?? "";
           return (
             <li key={theme}>
               <Link
-                to="/app/collections"
+                to="/app/collections/$id"
+                params={{ id: c.id }}
                 className="group relative block aspect-[4/5] overflow-hidden rounded-2xl ring-1 ring-white/5 transition hover:ring-white/15"
               >
                 <img
-                  src={c.cover}
+                  src={coverSrc}
                   alt=""
                   className="h-full w-full object-cover transition duration-[var(--dur-page)] ease-[var(--ease-out)] group-hover:scale-105"
                 />

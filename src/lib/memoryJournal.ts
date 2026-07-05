@@ -76,7 +76,7 @@ export interface MemoryExtensions {
   moments: FavoriteMoment[];
   arc: EmotionArcNode[];
   scores: EmotionScores;
-  quote: MemoryQuoteData | null;
+  quote: any;
   reflection: MemoryReflectionData;
   environment: MemoryEnvironmentData;
 }
@@ -207,7 +207,7 @@ function buildExtensions(item: MediaItem, memory: MediaMemory): MemoryExtensions
   };
 
   const hasQuote = rng() > 0.4;
-  const quote: MemoryQuoteData | null = hasQuote
+  const quote: any = hasQuote
     ? { text: pick(rng, QUOTES), attribution: item.creator }
     : null;
 

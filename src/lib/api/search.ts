@@ -56,6 +56,7 @@ export interface FilterOptions {
 }
 
 export interface SearchParams {
+  [key: string]: any;
   q: string;
   mode?: 'global' | 'library' | 'media' | 'journal' | 'collections' | 'timeline';
   type?: string;

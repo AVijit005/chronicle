@@ -78,13 +78,13 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
           <span
             aria-hidden
             className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:opacity-100"
-            style={{ boxShadow: `inset 0 0 0 1px ${item.accent}` }}
+            style={{ boxShadow: `inset 0 0 0 1px ${item.accent ?? undefined}` }}
           />
         )}
         {/* rating chip */}
         <div className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-[10px] text-white/90 backdrop-blur">
           <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-          {item.rating.toFixed(1)}
+          {(item.rating ?? 0).toFixed(1)}
         </div>
         {/* metadata */}
         {showMeta && (
@@ -93,12 +93,12 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
             <div className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-white/65">
               {item.kind} · {item.year}
             </div>
-            {item.progress !== undefined && item.progress < 100 && (
+            {(item.progress ?? 0) !== undefined && (item.progress ?? 0) < 100 && (
               <div className="mt-2 h-0.5 overflow-hidden rounded-full bg-white/20">
                 <div
                   className="h-full rounded-full transition-opacity duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:opacity-100"
                   style={{
-                    width: `${item.progress}%`,
+                    width: `${(item.progress ?? 0)}%`,
                     background: item.accent ?? "var(--primary)",
                     boxShadow: `0 0 8px ${item.accent ?? "oklch(0.72 0.18 255)"}`,
                   }}

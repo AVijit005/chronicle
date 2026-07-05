@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { Share2, Download } from "lucide-react";
+import { Share2, Download, Sparkles } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
-import { WRAPPED_SLIDES } from "@/lib/analytics-mock";
 import { MemoryMilestones } from "@/components/memory/MemoryMilestones";
 import { FirstMoments } from "@/components/memory/FirstMoments";
 import { RecommendationCard } from "@/components/discovery/RecommendationCard";
@@ -16,10 +15,84 @@ import { buildEditorialInsight } from "@/lib/intelligence";
 import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
 import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
+import { useOverview, useInsights } from "@/hooks/use-analytics";
+import { adaptOverview, adaptInsights } from "@/lib/adapters/analytics";
+import type { UIOverview, UIInsights, UIWrappedSlide } from "@/lib/adapters/types";
 
 export const Route = createFileRoute("/app/wrapped")({ component: WrappedPage });
 
 function WrappedPage() {
+  const { data: overview, isLoading: oLoad, isError: oErr, refetch: oRef } = useOverview();
+  const { data: insights, isLoading: iLoad, isError: iErr, refetch: iRef } = useInsights();
+
+  if (oLoad || iLoad) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <Sparkles className="h-8 w-8 animate-pulse text-primary/50" />
+        <p className="text-muted-foreground animate-pulse">Preparing your wrapped...</p>
+      </div>
+    );
+  }
+
+  if (oErr || iErr) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 text-center">
+        <p className="text-destructive">Failed to load wrapped.</p>
+        <PremiumButton onClick={() => { oRef(); iRef(); }} variant="secondary">Retry</PremiumButton>
+      </div>
+    );
+  }
+
+  if (!overview || !insights) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <p className="text-muted-foreground">No data available.</p>
+      </div>
+    );
+  }
+
+  const o = adaptOverview(overview);
+  const i = adaptInsights(insights);
+
+  const slides: UIWrappedSlide[] = [
+    {
+      key: "intro",
+      eyebrow: "Welcome to Chronicle",
+      title: "Your Year in Stories",
+      caption: "A look back at everything you watched, read, played, and lived.",
+      accent: "oklch(0.72 0.18 255)",
+    },
+    {
+      key: "total-items",
+      eyebrow: "A vast journey",
+      value: o.totalItems,
+      caption: "stories kept you company this year.",
+      accent: "oklch(0.65 0.22 295)",
+    },
+    {
+      key: "hours-spent",
+      eyebrow: "Time well spent",
+      value: o.hoursSpent,
+      unit: "h",
+      caption: "immersed in different worlds.",
+      accent: "oklch(0.72 0.16 160)",
+    },
+    {
+      key: "favorite-genre",
+      eyebrow: "Your anchor",
+      value: i.favoriteGenre || "Unknown",
+      caption: "was your genre of choice when you needed a sure thing.",
+      accent: "oklch(0.82 0.16 80)",
+    },
+    {
+      key: "thanks",
+      eyebrow: "Thank you",
+      title: "Here's to the next chapter.",
+      caption: "Keep exploring.",
+      accent: "oklch(0.72 0.18 255)",
+    },
+  ];
+
   return (
     <div className="-mx-4 -mt-6 md:-mx-8">
       {/* Snap-scroll container */}
@@ -27,10 +100,10 @@ function WrappedPage() {
         className="snap-y snap-mandatory overflow-y-auto"
         style={{ scrollSnapType: "y mandatory" }}
       >
-        {WRAPPED_SLIDES.map((s, i) => (
-          <Slide key={s.key} index={i} slide={s} last={i === WRAPPED_SLIDES.length - 1} />
+        {slides.map((s, idx) => (
+          <Slide key={s.key} index={idx} slide={s} last={idx === slides.length - 1} totalSlides={slides.length} />
         ))}
-        <ShareSection />
+        <ShareSection overview={o} insights={i} />
       </div>
 
       {/* Memory · Milestones & firsts */}
@@ -62,9 +135,7 @@ function WrappedPage() {
   );
 }
 
-type Slide = (typeof WRAPPED_SLIDES)[number];
-
-function Slide({ slide, index, last }: { slide: Slide; index: number; last: boolean }) {
+function Slide({ slide, index, last, totalSlides }: { slide: UIWrappedSlide; index: number; last: boolean; totalSlides: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
@@ -236,7 +307,7 @@ function Slide({ slide, index, last }: { slide: Slide; index: number; last: bool
 
         {/* Progress dots */}
         <div className="mt-12 flex justify-center gap-1.5">
-          {WRAPPED_SLIDES.map((_, i) => (
+          {Array.from({ length: totalSlides }).map((_, i) => (
             <span
               key={i}
               className="h-1 w-6 rounded-full"
@@ -249,7 +320,7 @@ function Slide({ slide, index, last }: { slide: Slide; index: number; last: bool
   );
 }
 
-function ShareSection() {
+function ShareSection({ overview: o, insights: i }: { overview: UIOverview; insights: UIInsights }) {
   return (
     <section
       className="relative grid min-h-[100svh] snap-start place-items-center px-6 py-16"
@@ -268,10 +339,10 @@ function ShareSection() {
           <div className="mt-4 font-display text-4xl tracking-tight">Your year in stories</div>
           <div className="mt-6 grid grid-cols-2 gap-3">
             {[
-              { l: "Top Movie", v: "Interstellar" },
-              { l: "Hours", v: "1,284" },
-              { l: "Favorite Genre", v: "Sci-Fi" },
-              { l: "Stories Completed", v: "312" },
+              { l: "Most Rewatched", v: i.mostRewatchedMedia || "N/A" },
+              { l: "Hours", v: o.hoursSpent.toLocaleString() },
+              { l: "Favorite Genre", v: i.favoriteGenre || "N/A" },
+              { l: "Stories Completed", v: o.completedItems.toLocaleString() },
             ].map((s) => (
               <div key={s.l} className="glass-subtle rounded-2xl p-4">
                 <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">

@@ -46,8 +46,8 @@ export function calculateCompatibility(a: MediaItem, b: MediaItem): number {
 
 export function calculateDiscoveryWeight(m: MediaItem): number {
   // Higher for unstarted/planned of high rating.
-  const planning = m.status === "planned" ? 0.4 : m.status === "watching" ? 0.2 : 0.1;
-  return Math.min(1, planning + m.rating / 10);
+  const planning = m.status === "planned" ? 0.4 : (m.status === "watching" || m.status === "in_progress") ? 0.2 : 0.1;
+  return Math.min(1, planning + (m.rating ?? 0) / 10);
 }
 
 export function buildReason(
@@ -155,7 +155,7 @@ export function rankFranchises(limit = 6) {
   }
   return [...groups.entries()]
     .map(([creator, items]) => {
-      const current = items.find((i) => i.status === "watching") ?? items[0];
+      const current = items.find((i) => (i.status === "watching" || i.status === "in_progress")) ?? items[0];
       const next = items.find((i) => i.status === "planned");
       const completion = Math.round(
         items.reduce((a, b) => a + (b.progress ?? 0), 0) / items.length,

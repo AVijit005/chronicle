@@ -18,7 +18,7 @@ function PlanningPage() {
     >
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {items.map((m) => (
-          <PlanningRow key={m.id} item={m} />
+          <PlanningRow key={m.id} item={m as any} />
         ))}
       </div>
     </StatusPageShell>

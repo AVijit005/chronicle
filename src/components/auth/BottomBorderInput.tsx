@@ -32,7 +32,7 @@ const V = {
   spillOutB: "rgba(98,74,220,0.12)",
 } as const;
 
-const gradCore = (a: typeof V.coreDim, c: typeof V.centerDim) =>
+const gradCore = (a: string, c: string) =>
   `linear-gradient(90deg, transparent, ${a} 22%, ${c} 50%, ${a} 78%, transparent)`;
 
 const gradMid = (inner: string, outer: string) =>

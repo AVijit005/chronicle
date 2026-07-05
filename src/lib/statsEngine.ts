@@ -41,7 +41,7 @@ export function getPersonalStats(): PersonalStats {
     MEDIA.reduce((s, m) => s + (m.progress ?? (m.status === "completed" ? 100 : 0)), 0) /
       MEDIA.length,
   );
-  const avgRating = Math.round((MEDIA.reduce((s, m) => s + m.rating, 0) / MEDIA.length) * 10) / 10;
+  const avgRating = Math.round((MEDIA.reduce((s, m) => s + (m.rating ?? 0), 0) / MEDIA.length) * 10) / 10;
   const genres = [...new Set(MEDIA.flatMap((m) => m.genres))];
   const creators = [...new Set(MEDIA.map((m) => m.creator).filter(Boolean) as string[])];
   _stats = {

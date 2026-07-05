@@ -13,7 +13,7 @@ interface Props {
 export function RecommendationCard({ rec, className, compact }: Props) {
   const { media, reason, confidence, discoveryTags } = rec;
   return (
-    <PremiumGlass variant="subtle" glow={media.accent} className={cn("h-full", className)}>
+    <PremiumGlass variant="subtle" glow={media.accent ?? undefined} className={cn("h-full", className)}>
       <article className={cn("flex h-full flex-col gap-3", compact ? "p-3" : "p-4")}>
         <Link
           to="/app/media/$id"

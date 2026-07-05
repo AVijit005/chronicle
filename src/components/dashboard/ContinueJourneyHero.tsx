@@ -18,7 +18,7 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
       aria-label="Continue your journey"
       className={cn("relative", className)}
     >
-      <PremiumGlass variant="strong" glow={j.accent} className="overflow-hidden">
+      <PremiumGlass variant="strong" glow={j.accent ?? undefined} className="overflow-hidden">
         <div className="relative grid gap-0 md:grid-cols-[1.1fr_1fr]">
           <div className="relative aspect-[16/9] md:aspect-auto md:min-h-[280px]">
             <img src={j.backdrop ?? j.poster} alt="" className="h-full w-full object-cover" />

@@ -1,16 +1,15 @@
 import { motion } from "motion/react";
 import { CountUp } from "@/components/landing/CountUp";
-import type { MediaItem } from "@/lib/mock";
-import { MEDIA_DETAIL } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
 import { Repeat, Clock, Eye, History } from "lucide-react";
 
-export function MediaStatistics({ item }: { item: MediaItem }) {
-  const s = MEDIA_DETAIL[item.id].stats;
+export function MediaStatistics({ item }: { item: UIMediaItem }) {
+  const accent = item.accent ?? "oklch(0.72 0.18 255)";
   const cards = [
-    { icon: Repeat, label: "Rewatches", value: s.rewatches, suffix: "" },
-    { icon: Clock, label: "Total hours", value: s.totalHours, suffix: "h" },
-    { icon: Eye, label: "First seen", text: s.firstSeen },
-    { icon: History, label: "Last revisited", text: s.lastSeen },
+    { icon: Repeat, label: "Rewatches", value: item.rewatchCount ?? 0, suffix: "" },
+    { icon: Clock, label: "Total hours", value: 0, suffix: "h" },
+    { icon: Eye, label: "First seen", text: item.lastInteractionAt ? new Date(item.lastInteractionAt).toLocaleDateString() : "—" },
+    { icon: History, label: "Last revisited", text: item.lastInteractionAt ? new Date(item.lastInteractionAt).toLocaleDateString() : "—" },
   ] as const;
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -28,7 +27,7 @@ export function MediaStatistics({ item }: { item: MediaItem }) {
             <span
               aria-hidden
               className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full opacity-30 blur-3xl"
-              style={{ background: item.accent }}
+              style={{ background: accent }}
             />
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-white/[0.05] ring-1 ring-white/10 text-primary">
               <Icon className="h-4 w-4" />

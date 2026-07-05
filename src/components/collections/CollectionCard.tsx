@@ -1,13 +1,13 @@
 import { motion, useMotionValue, useTransform, useSpring } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import type { MouseEvent } from "react";
-import type { Collection } from "@/lib/mock";
+import type { UICollection } from "@/lib/adapters/types";
 
 export function CollectionCard({
   collection: c,
   size = "md",
 }: {
-  collection: Collection;
+  collection: UICollection;
   size?: "sm" | "md" | "lg";
 }) {
   const x = useMotionValue(0);
@@ -28,6 +28,10 @@ export function CollectionCard({
   const aspect =
     size === "lg" ? "aspect-[16/10]" : size === "sm" ? "aspect-square" : "aspect-[4/5]";
 
+  const accent = c.color ?? "oklch(0.72 0.18 255)";
+  const coverImages = c.items?.slice(0, 4).map((item) => item.posterUrl).filter(Boolean) as string[] ?? [];
+  const coverSrc = c.cover ?? coverImages[0] ?? "";
+
   return (
     <motion.div
       onMouseMove={onMove}
@@ -41,9 +45,9 @@ export function CollectionCard({
         className={`relative block ${aspect} overflow-hidden rounded-3xl ring-1 ring-white/10 transition-shadow duration-500 group-hover:shadow-[0_30px_80px_-30px_oklch(0_0_0/0.7)]`}
       >
         {/* collage of covers */}
-        {c.covers && c.covers.length >= 4 ? (
+        {coverImages.length >= 4 ? (
           <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-            {c.covers.slice(0, 4).map((src, i) => (
+            {coverImages.slice(0, 4).map((src, i) => (
               <img
                 key={i}
                 src={src}
@@ -54,7 +58,7 @@ export function CollectionCard({
           </div>
         ) : (
           <img
-            src={c.cover}
+            src={coverSrc}
             alt=""
             className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.08]"
           />
@@ -64,7 +68,7 @@ export function CollectionCard({
           aria-hidden
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, transparent 35%, ${c.accent} / 0.42, oklch(0 0 0 / 0.9))`,
+            background: `linear-gradient(180deg, transparent 35%, ${accent} / 0.42, oklch(0 0 0 / 0.9))`,
           }}
         />
         {/* reflection */}
@@ -81,20 +85,20 @@ export function CollectionCard({
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition duration-500 group-hover:opacity-100"
-          style={{ boxShadow: `inset 0 0 0 1px ${c.accent}` }}
+          style={{ boxShadow: `inset 0 0 0 1px ${accent}` }}
         />
 
         {/* meta */}
         <div className="absolute inset-x-0 bottom-0 p-5">
           <div className="glass-subtle inline-block rounded-full px-2 py-0.5 text-[9px] uppercase tracking-[0.22em] text-white/85">
-            {c.count} items · {c.category}
+            {c.itemCount} items
           </div>
           <div className="mt-2 font-display text-2xl leading-tight text-white">{c.name}</div>
           <div className="mt-1 max-w-md translate-y-2 text-[12px] text-white/75 opacity-0 transition duration-500 group-hover:translate-y-0 group-hover:opacity-100">
             {c.description}
           </div>
           <div className="mt-2 text-[10px] uppercase tracking-[0.18em] text-white/55">
-            Updated {c.updatedAt}
+            Updated {new Date(c.updatedAt).toLocaleDateString()}
           </div>
         </div>
       </Link>

@@ -174,10 +174,10 @@ export class AnalyticsRepository {
     for (const cfg of USER_LIB_TYPES) {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, deletedAt: null, metadata: { path: ['bookmarkedAt'], not: null } },
+      const count = await delegate.count({
+        where: { userId, deletedAt: null, bookmarked: true },
       });
-      total += items.length;
+      total += count;
     }
     return total;
   }

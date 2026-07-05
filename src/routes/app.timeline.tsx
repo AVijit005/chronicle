@@ -1,14 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Star, NotebookPen, Trophy, Layers } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp, SegmentedFilter, ZoneHeading } from "@/components/analytics/AnalyticsKit";
 import {
-  TIMELINE_EVENTS,
-  TIMELINE_YEARS,
   MEMORY_CLUSTERS,
-  TIMELINE_STATS,
 } from "@/lib/analytics-mock";
 import { MEDIA } from "@/lib/mock";
 import { LIFE_CHAPTERS } from "@/lib/memoryInsights";
@@ -18,14 +15,32 @@ import { JourneyTracker } from "@/components/challenges/JourneyTracker";
 import { MediaEvolution } from "@/components/intelligence/MediaEvolution";
 import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
+import { useTimelineEvents, useJournalStats } from "@/hooks/use-journal";
+import { adaptTimelineEvent } from "@/lib/adapters/journal";
 
 export const Route = createFileRoute("/app/timeline")({ component: TimelinePage });
 
 function TimelinePage() {
-  const [year, setYear] = useState<string>("2026");
+  const [year, setYear] = useState<string>(new Date().getFullYear().toString());
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  const { data: timelineData, isLoading } = useTimelineEvents();
+  const { data: statsData } = useJournalStats();
+
+  const allEvents = useMemo(() => (timelineData ?? []).map(adaptTimelineEvent), [timelineData]);
+  
+  const years = useMemo(() => {
+    const y = new Set<string>();
+    allEvents.forEach(e => y.add(new Date(e.eventDate).getFullYear().toString()));
+    if (y.size === 0) y.add(new Date().getFullYear().toString());
+    return Array.from(y).sort((a, b) => Number(b) - Number(a));
+  }, [allEvents]);
+
+  const yearEvents = useMemo(() => {
+    return allEvents.filter(e => new Date(e.eventDate).getFullYear().toString() === year);
+  }, [allEvents, year]);
 
   return (
     <div className="pb-32 pt-2">
@@ -61,10 +76,10 @@ function TimelinePage() {
             </p>
             <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
               {[
-                { l: "Years tracked", v: TIMELINE_STATS.years },
-                { l: "Stories", v: TIMELINE_STATS.stories },
-                { l: "Favorite era", v: TIMELINE_STATS.era as string | number },
-                { l: "Longest streak", v: TIMELINE_STATS.longest, s: "d" },
+                { l: "Years tracked", v: years.length },
+                { l: "Stories", v: statsData?.timelineEventCount ?? 0 },
+                { l: "Journals", v: statsData?.journalCount ?? 0 },
+                { l: "Longest streak", v: statsData?.writingStreak ?? 0, s: "d" },
               ].map((s) => (
                 <div key={s.l} className="glass-subtle rounded-2xl p-4">
                   <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -95,7 +110,7 @@ function TimelinePage() {
         <SegmentedFilter
           value={year}
           onChange={setYear}
-          options={TIMELINE_YEARS.map((y) => ({ value: String(y), label: String(y) }))}
+          options={years.map((y) => ({ value: y, label: y }))}
         />
       </div>
 
@@ -115,76 +130,104 @@ function TimelinePage() {
             />
           </div>
           <div className="space-y-8">
-            {TIMELINE_EVENTS.map((e, i) => (
-              <motion.div
-                key={e.id}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: i * 0.04 }}
-                className="relative pl-14 md:pl-20"
-              >
-                <motion.span
-                  className="absolute left-2 top-4 grid h-7 w-7 place-items-center rounded-full md:left-4"
-                  style={{
-                    background: "oklch(0.18 0.014 270)",
-                    border: `2px solid ${e.media.accent ?? "var(--primary)"}`,
-                    boxShadow: `0 0 18px ${e.media.accent}`,
-                  }}
-                  whileInView={{ scale: [0.6, 1.1, 1] }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
+            {yearEvents.length === 0 && !isLoading && (
+              <div className="pl-14 md:pl-20 text-muted-foreground">No events for this year.</div>
+            )}
+            {yearEvents.map((e, i) => {
+               // Map UI event properties from metadata or fallback
+               const rawEvent = (timelineData ?? []).find(d => d.id === e.id);
+               const meta = (rawEvent?.metadata as any) || {};
+               const media = {
+                 poster: meta.mediaPoster || MEDIA[0].poster,
+                 title: meta.mediaTitle || e.title,
+                 creator: meta.mediaCreator || "Creator",
+                 accent: e.color || "var(--primary)"
+               };
+               const when = new Date(e.eventDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+               const mood = meta.mood || e.type;
+               const journal = e.description || meta.journalExcerpt;
+               const rating = meta.rating;
+               const achievement = meta.achievement;
+               const collection = meta.collection;
+               
+               return (
+                <motion.div
+                  key={e.id}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: i * 0.04 }}
+                  className="relative pl-14 md:pl-20"
                 >
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ background: e.media.accent ?? "var(--primary)" }}
-                  />
-                </motion.span>
-
-                <PremiumGlass className="flex gap-5 p-5">
-                  <img
-                    src={e.media.poster}
-                    alt=""
-                    className="h-28 w-20 shrink-0 rounded-xl object-cover"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                      {e.when} · {e.mood}
-                    </div>
-                    <div className="mt-1 truncate font-display text-2xl tracking-tight">
-                      {e.media.title}
-                    </div>
-                    <div className="mt-0.5 truncate text-xs text-muted-foreground">
-                      {e.media.creator}
-                    </div>
-                    <p className="mt-3 line-clamp-2 text-sm italic text-foreground/85">
-                      "{e.journal}"
-                    </p>
-                    <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-current" /> {e.rating}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <NotebookPen className="h-3 w-3" /> Journal
-                      </span>
-                      {e.achievement && (
-                        <span className="flex items-center gap-1 text-amber-300/90">
-                          <Trophy className="h-3 w-3" /> {e.achievement}
-                        </span>
+                  <motion.span
+                    className="absolute left-2 top-4 grid h-7 w-7 place-items-center rounded-full md:left-4"
+                    style={{
+                      background: "oklch(0.18 0.014 270)",
+                      border: `2px solid ${media.accent ?? undefined}`,
+                      boxShadow: `0 0 18px ${media.accent ?? undefined}`,
+                    }}
+                    whileInView={{ scale: [0.6, 1.1, 1] }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ background: media.accent }}
+                    />
+                  </motion.span>
+  
+                  <PremiumGlass className="flex gap-5 p-5">
+                    <img
+                      src={media.poster}
+                      alt=""
+                      className="h-28 w-20 shrink-0 rounded-xl object-cover"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                        {when} · {mood}
+                      </div>
+                      <div className="mt-1 truncate font-display text-2xl tracking-tight">
+                        {media.title}
+                      </div>
+                      <div className="mt-0.5 truncate text-xs text-muted-foreground">
+                        {media.creator}
+                      </div>
+                      {journal && (
+                        <p className="mt-3 line-clamp-2 text-sm italic text-foreground/85">
+                          "{journal}"
+                        </p>
                       )}
-                      {e.collection && (
-                        <span className="flex items-center gap-1">
-                          <Layers className="h-3 w-3" /> {e.collection}
-                        </span>
-                      )}
+                      <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                        {rating && (
+                          <span className="flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-current" /> {rating}
+                          </span>
+                        )}
+                        {journal && (
+                          <span className="flex items-center gap-1">
+                            <NotebookPen className="h-3 w-3" /> Journal
+                          </span>
+                        )}
+                        {achievement && (
+                          <span className="flex items-center gap-1 text-amber-300/90">
+                            <Trophy className="h-3 w-3" /> {achievement}
+                          </span>
+                        )}
+                        {collection && (
+                          <span className="flex items-center gap-1">
+                            <Layers className="h-3 w-3" /> {collection}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </PremiumGlass>
-              </motion.div>
-            ))}
+                  </PremiumGlass>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
+
 
       {/* Memory clusters */}
       <motion.section

@@ -39,7 +39,7 @@ class EnvironmentVariables {
 
   @IsBoolean()
   @IsOptional()
-  SWAGGER_ENABLED: boolean = true;
+  SWAGGER_ENABLED: boolean = false;
 
   @IsString()
   @IsOptional()

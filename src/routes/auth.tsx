@@ -12,6 +12,7 @@ import { BottomBorderInput } from "@/components/auth/BottomBorderInput";
 import { LiquidGlassCard } from "@/components/auth/LiquidGlassCard";
 import { ParticleBurst } from "@/components/auth/ParticleBurst";
 import { useMouseParallax } from "@/lib/useParallax";
+import { useLogin, useRegister } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/auth")({
 
 const signInSchema = z.object({
   email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "At least 6 characters"),
+  password: z.string().min(12, "At least 12 characters"),
   remember: z.boolean().optional(),
 });
 
@@ -36,8 +37,8 @@ const signUpSchema = z
   .object({
     fullName: z.string().min(2, "Enter your full name"),
     email: z.string().email("Enter a valid email"),
-    password: z.string().min(6, "At least 6 characters"),
-    confirmPassword: z.string().min(6, "At least 6 characters"),
+    password: z.string().min(12, "At least 12 characters"),
+    confirmPassword: z.string().min(12, "At least 12 characters"),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords don't match",
@@ -75,8 +76,12 @@ function Auth() {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
   const [mode, setMode] = useState<Mode>("signin");
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { x: ax, y: ay } = useMouseParallax(18);
+
+  const loginMutation = useLogin();
+  const registerMutation = useRegister();
 
   const signIn = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
@@ -87,12 +92,39 @@ function Auth() {
     defaultValues: { fullName: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setStatus("loading");
-    setTimeout(() => {
+    setErrorMessage(null);
+
+    try {
+      if (mode === "signin") {
+        const values = signIn.getValues();
+        await loginMutation.mutateAsync({
+          email: values.email,
+          password: values.password,
+        });
+      } else {
+        const values = signUp.getValues();
+        await registerMutation.mutateAsync({
+          email: values.email,
+          password: values.password,
+          name: values.fullName,
+        });
+        // After registration, auto-login
+        await loginMutation.mutateAsync({
+          email: values.email,
+          password: values.password,
+        });
+      }
       setStatus("success");
       setTimeout(() => navigate({ to: "/app" }), 700);
-    }, 900);
+    } catch (err: unknown) {
+      setStatus("error");
+      const message =
+        err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setErrorMessage(message);
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   };
 
   const switchMode = (next: Mode) => {
@@ -312,9 +344,8 @@ function Auth() {
 
             {/* Google button */}
             <motion.div variants={cardLine}>
-              <button
-                onClick={onSubmit}
-                type="button"
+              <a
+                href="/api/auth/google"
                 className="group relative mt-7 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[12.5px] font-medium tracking-wide text-white/90 transition-all duration-300 hover:scale-[1.015] hover:border-white/18 hover:bg-white/[0.08] active:scale-[0.99]"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.10)" }}
               >
@@ -328,7 +359,7 @@ function Auth() {
                       "linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)",
                   }}
                 />
-              </button>
+              </a>
             </motion.div>
 
             {/* Divider */}
@@ -439,7 +470,7 @@ function Auth() {
                       </motion.a>
                     </div>
 
-                    <PremiumButton status={status} label="Continue" />
+                    <PremiumButton status={status} label="Continue" error={errorMessage} />
                   </motion.form>
                 ) : (
                   <motion.form
@@ -479,7 +510,7 @@ function Auth() {
                       error={signUp.formState.errors.confirmPassword?.message}
                       {...signUp.register("confirmPassword")}
                     />
-                    <PremiumButton status={status} label="Begin Chronicle" />
+                    <PremiumButton status={status} label="Begin Chronicle" error={errorMessage} />
                   </motion.form>
                 )}
               </AnimatePresence>
@@ -511,14 +542,26 @@ function Auth() {
 function PremiumButton({
   status,
   label,
+  error,
 }: {
-  status: "idle" | "loading" | "success";
+  status: "idle" | "loading" | "success" | "error";
   label: string;
+  error?: string | null;
 }) {
   return (
-    <motion.button
-      type="submit"
-      disabled={status !== "idle"}
+    <>
+      {error && (
+        <motion.p
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center text-[11px] text-red-400/90"
+        >
+          {error}
+        </motion.p>
+      )}
+      <motion.button
+        type="submit"
+        disabled={status !== "idle" && status !== "error"}
       className="group relative mt-2 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-[#F8F8F5] px-5 py-3.5 text-[13.5px] font-medium tracking-wide text-black disabled:opacity-95"
       style={{
         boxShadow:
@@ -588,6 +631,7 @@ function PremiumButton({
         )}
       </AnimatePresence>
     </motion.button>
+    </>
   );
 }
 

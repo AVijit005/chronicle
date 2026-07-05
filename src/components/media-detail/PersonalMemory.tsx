@@ -1,10 +1,15 @@
 import { motion } from "motion/react";
-import { Star, MapPin, CalendarDays, Sparkles } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
-import { MEDIA_DETAIL } from "@/lib/mock";
+import { Star, CalendarDays, Sparkles, MapPin } from "lucide-react";
+import type { UIMediaItem } from "@/lib/adapters/types";
+import { useMemories } from "@/hooks/use-journal";
+import { adaptMemory } from "@/lib/adapters/journal";
 
-export function PersonalMemory({ item }: { item: MediaItem }) {
-  const m = MEDIA_DETAIL[item.id].memory;
+export function PersonalMemory({ item }: { item: UIMediaItem }) {
+  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const { data: memoriesData, isLoading } = useMemories({ limit: 1 });
+  const memories = memoriesData?.pages.flatMap((p) => p.data).map(adaptMemory) ?? [];
+  const latestMemory = memories[0];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -24,43 +29,35 @@ export function PersonalMemory({ item }: { item: MediaItem }) {
         <span
           aria-hidden
           className="pointer-events-none absolute -top-20 -left-20 h-56 w-56 rounded-full opacity-30 blur-3xl"
-          style={{ background: item.accent }}
+          style={{ background: accent }}
         />
         <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          A memory you wrote
+          {latestMemory ? "Your memory" : "Your memory"}
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-            <CalendarDays className="h-3.5 w-3.5" /> {m.date}
+            <CalendarDays className="h-3.5 w-3.5" />{" "}
+            {latestMemory?.memoryDate
+              ? new Date(latestMemory.memoryDate).toLocaleDateString()
+              : item.lastInteractionAt
+                ? new Date(item.lastInteractionAt).toLocaleDateString()
+                : "No date recorded"}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPin className="h-3.5 w-3.5" /> {m.location}
-          </span>
-          <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5" /> {m.mood}
-          </span>
-        </div>
-        <div className="mt-3 flex">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              className={`h-5 w-5 ${i < m.rating ? "fill-amber-400 text-amber-400" : "text-white/15"}`}
-            />
-          ))}
-        </div>
-        <blockquote className="mt-5 font-display text-3xl leading-tight tracking-tight text-foreground md:text-4xl">
-          &ldquo;{m.note}&rdquo;
-        </blockquote>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {m.tags.map((t) => (
-            <span
-              key={t}
-              className="rounded-full bg-white/[0.05] px-3 py-1 text-[11px] text-muted-foreground ring-1 ring-white/5"
-            >
-              #{t}
+          {latestMemory?.emotion && (
+            <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+              <Sparkles className="h-3.5 w-3.5" /> {latestMemory.emotion}
             </span>
-          ))}
+          )}
+          <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Star className="h-3.5 w-3.5" /> {item.rating ? `${item.rating}/5` : "Not rated"}
+          </span>
         </div>
+        <h3 className="mt-3 font-display text-2xl tracking-tight">
+          {latestMemory?.title || item.title}
+        </h3>
+        <p className="mt-3 font-display text-lg leading-snug text-foreground/85">
+          {latestMemory?.description || item.synopsis || "No memory recorded yet."}
+        </p>
       </div>
     </motion.div>
   );

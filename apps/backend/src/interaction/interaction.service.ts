@@ -111,14 +111,14 @@ export class InteractionService {
     if (!item) throw new NotFoundException('Library item not found');
     if (item.userId !== userId) throw new NotFoundException('Library item not found');
 
-    const metadata = (item.metadata as Record<string, any>) ?? {};
+    const updateData: Record<string, unknown> = { bookmarked: dto.bookmark };
     if (dto.bookmark) {
-      metadata.bookmarkedAt = new Date().toISOString();
+      updateData.bookmarkedAt = new Date();
     } else {
-      delete metadata.bookmarkedAt;
+      updateData.bookmarkedAt = null;
     }
 
-    const updated = await this.repository.updateLibraryItem(id, type, userId, { metadata });
+    const updated = await this.repository.updateLibraryItem(id, type, userId, updateData);
     if (!updated) throw new NotFoundException('Library item not found');
 
     if (dto.bookmark) {
@@ -131,7 +131,7 @@ export class InteractionService {
 
     return {
       bookmarked: dto.bookmark,
-      bookmarkedAt: dto.bookmark ? metadata.bookmarkedAt : null,
+      bookmarkedAt: updated.bookmarkedAt ? updated.bookmarkedAt.toISOString() : null,
     };
   }
 
@@ -140,10 +140,9 @@ export class InteractionService {
     if (!item) throw new NotFoundException('Library item not found');
     if (item.userId !== userId) throw new NotFoundException('Library item not found');
 
-    const metadata = (item.metadata as Record<string, any>) ?? {};
     return {
-      bookmarked: !!metadata.bookmarkedAt,
-      bookmarkedAt: metadata.bookmarkedAt ?? null,
+      bookmarked: item.bookmarked ?? false,
+      bookmarkedAt: item.bookmarkedAt ? item.bookmarkedAt.toISOString() : null,
     };
   }
 
@@ -308,19 +307,16 @@ export class InteractionService {
     const hasMore = items.length > limit;
     const sliced = hasMore ? items.slice(0, limit) : items;
 
-    const mapped = sliced.map((item: any) => {
-      const metadata = (item.metadata as Record<string, any>) ?? {};
-      return {
-        libraryId: item.id,
-        mediaId: item[`${item._mediaType}Id`],
-        title: item[item._mediaType]?.title ?? 'Unknown',
-        slug: item[item._mediaType]?.slug ?? '',
-        posterUrl: item[item._mediaType]?.posterUrl ?? null,
-        mediaType: item._mediaType,
-        bookmarked: true,
-        bookmarkedAt: metadata.bookmarkedAt ?? null,
-      };
-    });
+    const mapped = sliced.map((item: any) => ({
+      libraryId: item.id,
+      mediaId: item[`${item._mediaType}Id`],
+      title: item[item._mediaType]?.title ?? 'Unknown',
+      slug: item[item._mediaType]?.slug ?? '',
+      posterUrl: item[item._mediaType]?.posterUrl ?? null,
+      mediaType: item._mediaType,
+      bookmarked: item.bookmarked ?? true,
+      bookmarkedAt: item.bookmarkedAt?.toISOString() ?? null,
+    }));
 
     return {
       items: mapped,

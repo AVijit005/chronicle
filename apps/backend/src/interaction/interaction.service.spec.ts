@@ -146,9 +146,11 @@ describe('InteractionService', () => {
 
   describe('toggleBookmark', () => {
     it('adds a bookmark and emits BookmarkAdded', async () => {
+      const bookmarkTime = new Date();
       repoMock.updateLibraryItem.mockResolvedValueOnce({
         ...mockItem,
-        metadata: { bookmarkedAt: new Date().toISOString() },
+        bookmarked: true,
+        bookmarkedAt: bookmarkTime,
       });
       const result = await service.toggleBookmark('user-1', 'lib-1', 'movie', { bookmark: true });
       expect(result.bookmarked).toBe(true);
@@ -159,13 +161,34 @@ describe('InteractionService', () => {
     it('removes a bookmark and emits BookmarkRemoved', async () => {
       repoMock.findLibraryItem.mockResolvedValueOnce({
         ...mockItem,
-        metadata: { bookmarkedAt: new Date().toISOString() },
+        bookmarked: true,
+        bookmarkedAt: new Date(),
       });
-      repoMock.updateLibraryItem.mockResolvedValueOnce({ ...mockItem, metadata: {} });
+      repoMock.updateLibraryItem.mockResolvedValueOnce({ ...mockItem, bookmarked: false, bookmarkedAt: null });
       const result = await service.toggleBookmark('user-1', 'lib-1', 'movie', { bookmark: false });
       expect(result.bookmarked).toBe(false);
       expect(result.bookmarkedAt).toBeNull();
       expect(eventsMock.emitBookmarkRemoved).toHaveBeenCalledTimes(1);
+    });
+
+    it('preserves bookmarkedAt when other fields change', async () => {
+      const bookmarkTime = new Date('2026-01-15');
+      repoMock.findLibraryItem.mockResolvedValueOnce({
+        ...mockItem,
+        bookmarked: true,
+        bookmarkedAt: bookmarkTime,
+      });
+      // Simulate a rating update (not a bookmark update)
+      repoMock.updateLibraryItem.mockResolvedValueOnce({
+        ...mockItem,
+        bookmarked: true,
+        bookmarkedAt: bookmarkTime,
+        rating: 5,
+        updatedAt: new Date(), // updatedAt changes, but bookmarkedAt should not
+      });
+      const result = await service.getBookmark('user-1', 'lib-1', 'movie');
+      expect(result.bookmarked).toBe(true);
+      expect(result.bookmarkedAt).toBe(bookmarkTime.toISOString());
     });
   });
 
@@ -173,16 +196,18 @@ describe('InteractionService', () => {
     it('returns bookmarked status', async () => {
       repoMock.findLibraryItem.mockResolvedValueOnce({
         ...mockItem,
-        metadata: { bookmarkedAt: new Date().toISOString() },
+        bookmarked: true,
+        bookmarkedAt: new Date(),
       });
       const result = await service.getBookmark('user-1', 'lib-1', 'movie');
       expect(result.bookmarked).toBe(true);
     });
 
-    it('returns not bookmarked when no metadata', async () => {
-      repoMock.findLibraryItem.mockResolvedValueOnce({ ...mockItem, metadata: null });
+    it('returns not bookmarked when bookmarked is false', async () => {
+      repoMock.findLibraryItem.mockResolvedValueOnce({ ...mockItem, bookmarked: false, bookmarkedAt: null });
       const result = await service.getBookmark('user-1', 'lib-1', 'movie');
       expect(result.bookmarked).toBe(false);
+      expect(result.bookmarkedAt).toBeNull();
     });
   });
 

@@ -1,19 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { Play, NotebookPen } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
-import { MEDIA_DETAIL } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
 import { useMediaActions } from "@/lib/store/MediaActionsContext";
-import { useLibraryStore } from "@/lib/store/libraryStore";
 
-export function ContinueCard({ item }: { item: MediaItem }) {
-  const d = MEDIA_DETAIL[item.id];
+export function ContinueCard({ item }: { item: UIMediaItem }) {
   const { openProgress } = useMediaActions();
-  const meta = useLibraryStore((s) => s.meta[item.id]);
-  const pct = meta?.progress ?? item.progress ?? 0;
-  const label = meta?.progressLabel ?? d?.continueDetail ?? `${pct}% complete`;
+  const pct = item.progress ?? 0;
+  const label = item.progressLabel ?? `${pct}% complete`;
+  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+
+  // Derive continue label from media kind
+  const continueLabel: Record<string, string> = {
+    movie: "Continue Watching",
+    series: "Continue Watching",
+    anime: "Continue Watching",
+    book: "Continue Reading",
+    manga: "Continue Reading",
+    game: "Continue Playing",
+    music: "Continue Listening",
+    podcast: "Continue Listening",
+    course: "Continue Learning",
+    youtube: "Continue Watching",
+  };
+
   return (
     <div className="group relative w-[300px] shrink-0 overflow-hidden rounded-2xl border border-border/60">
-      <Link to="/app/media/$id" params={{ id: item.id }} className="block">
+      <Link to="/app/media/$id" params={{ id: item.mediaId }} className="block">
         <div className="relative aspect-[16/10] overflow-hidden">
           <img
             src={item.backdrop ?? item.poster}
@@ -25,14 +37,14 @@ export function ContinueCard({ item }: { item: MediaItem }) {
           <div
             className="absolute inset-0 opacity-0 transition group-hover:opacity-60"
             style={{
-              background: `radial-gradient(60% 80% at 50% 100%, ${item.accent ?? "oklch(0.72 0.18 255)"} / 0.35, transparent 70%)`,
+              background: `radial-gradient(60% 80% at 50% 100%, ${accent} / 0.35, transparent 70%)`,
             }}
           />
         </div>
       </Link>
       <div className="relative p-4">
         <div className="text-[10px] uppercase tracking-[0.2em] text-primary/90">
-          {d?.continueLabel ?? "Continue"}
+          {continueLabel[item.kind] ?? "Continue"}
         </div>
         <div className="mt-1 truncate font-medium">{item.title}</div>
         <div className="mt-0.5 text-[11px] text-muted-foreground">{label}</div>

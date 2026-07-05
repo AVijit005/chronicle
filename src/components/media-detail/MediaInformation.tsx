@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import type { MediaItem } from "@/lib/mock";
-import { MEDIA_DETAIL } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
+import { UI_MEDIA_KIND_LABEL } from "@/lib/adapters/types";
 import {
   User,
   Clapperboard,
@@ -28,8 +28,16 @@ const ICONS: Record<string, typeof User> = {
   Kind: Activity,
 };
 
-export function MediaInformation({ item }: { item: MediaItem }) {
-  const info = MEDIA_DETAIL[item.id].info;
+export function MediaInformation({ item }: { item: UIMediaItem }) {
+  const info = [
+    { label: "Creator", value: item.creator ?? "—" },
+    { label: "Year", value: String(item.year) },
+    { label: "Kind", value: UI_MEDIA_KIND_LABEL[item.kind] },
+    { label: "Genres", value: item.genres.join(" · ") || "—" },
+    { label: "Runtime", value: item.runtime ?? "—" },
+    { label: "Status", value: item.status.replace(/_/g, " ") },
+    { label: "Rating", value: item.rating ? `${item.rating.toFixed(1)} / 5` : "—" },
+  ];
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
       {info.map((row, i) => {

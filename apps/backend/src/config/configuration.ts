@@ -3,7 +3,7 @@ export default () => ({
   port: parseInt(process.env.PORT || '3000', 10),
   apiPrefix: process.env.API_PREFIX || 'api',
   swagger: {
-    enabled: process.env.SWAGGER_ENABLED !== 'false',
+    enabled: process.env.SWAGGER_ENABLED === 'true',
     title: 'Chronicle API',
     description: 'Chronicle production backend API',
     version: '0.0.1',

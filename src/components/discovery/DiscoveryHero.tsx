@@ -22,7 +22,7 @@ export function DiscoveryHero({ className }: Props) {
       aria-label="Today's recommendation"
       className={cn("relative", className)}
     >
-      <PremiumGlass variant="strong" glow={media.accent} className="overflow-hidden">
+      <PremiumGlass variant="strong" glow={media.accent ?? undefined} className="overflow-hidden">
         <div className="grid gap-6 p-6 md:grid-cols-[260px_1fr] md:gap-8 md:p-8">
           <Link to="/app/media/$id" params={{ id: media.id }} className="block">
             <img

@@ -1,14 +1,28 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getProfileIdentity } from "@/lib/profileEngine";
-import { UNIVERSE } from "@/lib/mock";
+import { useMediaAnalytics, useGenreAnalytics, useInsights } from "@/hooks/use-analytics";
 
 export function MediaDNA() {
-  const id = getProfileIdentity();
-  const total = UNIVERSE.reduce((s, u) => s + u.count, 0);
+  const { data: mediaAnalytics } = useMediaAnalytics();
+  const { data: genreAnalytics } = useGenreAnalytics();
+  const { data: insights } = useInsights();
+  
+  const id = getProfileIdentity(); // Fallback for some hardcoded bits like moods
+  
+  const universe = Object.entries(mediaAnalytics?.totalByType || {}).map(([kind, count]) => ({
+    kind,
+    count,
+    accent: "oklch(0.65 0.22 295)", // fallback accent if not mapped
+  }));
+  
+  const total = universe.reduce((s, u) => s + u.count, 0) || 1;
   const size = 320,
     c = size / 2,
     R = 130;
   let angle = -Math.PI / 2;
+
+  const topGenres = genreAnalytics?.topGenres?.map(g => g.genre) || id.favoriteGenres;
+  const favoriteGenre = insights?.favoriteGenre || topGenres[0] || "Mixed";
 
   return (
     <PremiumGlass variant="default">
@@ -27,7 +41,7 @@ export function MediaDNA() {
             </defs>
             <circle cx={c} cy={c} r={R + 40} fill="url(#dna-core)" />
             <circle cx={c} cy={c} r={R} fill="none" stroke="oklch(1 0 0 / 0.06)" />
-            {UNIVERSE.map((u) => {
+            {universe.map((u) => {
               const frac = u.count / total;
               const start = angle,
                 end = angle + frac * Math.PI * 2;
@@ -60,22 +74,22 @@ export function MediaDNA() {
               DNA
             </text>
             <text x={c} y={c + 16} textAnchor="middle" fontSize="14" fill="white" fontWeight={600}>
-              {id.favoriteGenres[0]}
+              {favoriteGenre}
             </text>
           </svg>
           <div className="grid gap-3 text-sm">
-            <DnaRow label="Top genres" value={id.favoriteGenres.slice(0, 4).join(" · ")} />
+            <DnaRow label="Top genres" value={topGenres.slice(0, 4).join(" · ")} />
             <DnaRow label="Top creators" value={id.favoriteCreators.slice(0, 3).join(" · ")} />
             <DnaRow label="Languages" value={id.favoriteLanguages.join(" · ")} />
             <DnaRow
               label="Decades"
-              value={id.favoriteYears
+              value={insights?.favoriteDecade || id.favoriteYears
                 .map((y) => `${Math.floor(y / 10) * 10}s`)
                 .filter((v, i, a) => a.indexOf(v) === i)
                 .join(" · ")}
             />
             <DnaRow label="Mood" value="Reflective · Curious · Tender" />
-            <DnaRow label="Formats" value="Movies · Anime · Books · Games" />
+            <DnaRow label="Formats" value={universe.slice(0, 4).map(u => u.kind).join(" · ") || "Movies · Anime · Books · Games"} />
             <DnaRow label="Discovery" value="Editorial, slow, deliberate" />
           </div>
         </div>

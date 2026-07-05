@@ -31,7 +31,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
     };
-    if (code) body.code = code;
+
+    // Only expose safe, user-facing error codes
+    const safeCodes = ['UNIQUE_VIOLATION', 'RECORD_NOT_FOUND', 'VALIDATION_ERROR'];
+    if (code && safeCodes.includes(code)) {
+      body.code = code;
+    }
 
     response.status(status).json(body);
   }
@@ -92,14 +97,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
           message: 'The requested record was not found',
           code: 'RECORD_NOT_FOUND',
         };
-      case 'P2003': {
-        const field = (error.meta?.field_name as string) ?? 'reference';
+      case 'P2003':
         return {
           status: HttpStatus.BAD_REQUEST,
-          message: `Invalid reference: ${field}`,
+          message: 'Invalid reference — the referenced record does not exist',
           code: 'FOREIGN_KEY_VIOLATION',
         };
-      }
       case 'P2014':
         return {
           status: HttpStatus.BAD_REQUEST,

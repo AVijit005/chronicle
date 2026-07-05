@@ -33,7 +33,7 @@ function read(): SavedItem[] {
     return [];
   }
 }
-function write(list: SavedItem[]) {
+function writem(list: SavedItem[]) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(KEY, JSON.stringify(list));
@@ -52,14 +52,14 @@ export function saveForLater(item: Omit<SavedItem, "id" | "createdAt">) {
     id: `sv_${Date.now().toString(36)}`,
     createdAt: new Date().toISOString(),
   };
-  write([next, ...read()]);
+  writem([next, ...read()]);
   return next;
 }
 
 export function removeSaved(id: string) {
-  write(read().filter((s) => s.id !== id));
+  writem(read().filter((s) => s.id !== id));
 }
 
 export function updateSaved(id: string, patch: Partial<SavedItem>) {
-  write(read().map((s) => (s.id === id ? { ...s, ...patch } : s)));
+  writem(read().map((s) => (s.id === id ? { ...s, ...patch } : s)));
 }

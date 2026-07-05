@@ -60,7 +60,7 @@ export function buildCreatorProfile(id: string): CreatorProfile | undefined {
     works.some((w) => j.media.toLowerCase().includes(w.title.toLowerCase())),
   );
   const avgRating = works.length
-    ? Math.round((works.reduce((s, w) => s + w.rating, 0) / works.length) * 10) / 10
+    ? Math.round((works.reduce((s, w) => s + (w.rating ?? 0), 0) / works.length) * 10) / 10
     : 0;
   return {
     creator,

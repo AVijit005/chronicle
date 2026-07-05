@@ -284,10 +284,10 @@ export function AuthStage() {
                         <span className="truncate font-display italic tracking-wide">
                           {media.title}
                         </span>
-                        {typeof media.rating === "number" && (
+                        {typeof (media.rating ?? 0) === "number" && (
                           <span className="flex items-center gap-0.5 text-[8px] text-amber-200/80">
                             <Star className="h-2.5 w-2.5 fill-amber-200/80" />
-                            {media.rating.toFixed(1)}
+                            {(media.rating ?? 0).toFixed(1)}
                           </span>
                         )}
                       </div>

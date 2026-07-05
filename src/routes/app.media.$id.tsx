@@ -1,7 +1,9 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { MEDIA } from "@/lib/mock";
-import { snapshotAllItems } from "@/lib/store/libraryStore";
+import { useMedia, useRelatedMedia } from "@/hooks/use-media";
+import { useLibraryItem } from "@/hooks/use-library";
+import { adaptMediaResponse, adaptLibraryItem } from "@/lib/adapters/media";
+import type { UIMediaItem } from "@/lib/adapters/types";
 import { CinematicHero } from "@/components/media-detail/CinematicHero";
 import { ContinueExperience } from "@/components/media-detail/ContinueExperience";
 import { PersonalMemory } from "@/components/media-detail/PersonalMemory";
@@ -15,7 +17,6 @@ import { ChapterNav } from "@/components/media-detail/ChapterNav";
 import { MemorySummary } from "@/components/memory/MemorySummary";
 import { MemoryJourney } from "@/components/memory/MemoryJourney";
 import { MemoryConnections } from "@/components/memory/MemoryConnections";
-import { getMemory } from "@/lib/memory";
 import { BecauseYouLoved } from "@/components/discovery/BecauseYouLoved";
 import { GoalCard } from "@/components/goals/GoalCard";
 import { getRelatedGoal } from "@/lib/goals";
@@ -43,15 +44,11 @@ import { MediaRelationships } from "@/components/media/MediaRelationships";
 import { EditorialFooter } from "@/components/media/EditorialFooter";
 import { RelationshipPanel } from "@/components/profile/RelationshipPanel";
 import { MediaReflectionPanel } from "@/components/memory/YourReflectionsRail";
+import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
+import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 
 export const Route = createFileRoute("/app/media/$id")({
-  loader: ({ params }) => {
-    const item =
-      MEDIA.find((m) => m.id === params.id) ?? snapshotAllItems().find((m) => m.id === params.id);
-    if (!item) throw notFound();
-    return { item };
-  },
-  component: MediaDetail,
+  component: MediaDetailPage,
 });
 
 const CHAPTERS = [
@@ -63,10 +60,39 @@ const CHAPTERS = [
   { id: "ch-archive", label: "Archive" },
 ];
 
-function MediaDetail() {
-  const { item } = Route.useLoaderData() as { item: (typeof MEDIA)[number] };
-  const memory = getMemory(item.id);
+function MediaDetailPage() {
+  const { id } = Route.useParams();
+  const { data: mediaData, isLoading, isError } = useMedia(id);
 
+  if (isLoading) {
+    return (
+      <div className="-mt-3 space-y-8">
+        <ShimmerSkeleton className="h-[60vh] rounded-b-[40px]" />
+        <div className="space-y-4 px-4">
+          <ShimmerSkeleton className="h-12 w-64 rounded-2xl" />
+          <ShimmerSkeleton className="h-8 w-96 rounded-xl" />
+          <ShimmerSkeleton className="h-48 rounded-3xl" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !mediaData) {
+    return (
+      <div className="-mt-3">
+        <PremiumErrorState
+          title="Media not found"
+          description="This media item may have been removed or you don't have access."
+        />
+      </div>
+    );
+  }
+
+  const item = adaptMediaResponse(mediaData);
+  return <MediaDetailContent item={item} />;
+}
+
+function MediaDetailContent({ item }: { item: UIMediaItem }) {
   return (
     <div className="-mt-3">
       <ChapterNav chapters={CHAPTERS} />
@@ -89,7 +115,7 @@ function MediaDetail() {
         title="The story, in your hands"
         description="What it is, where you are with it, and how to step back in."
         tone="cinematic"
-        accent={item.accent}
+        accent={item.accent ?? undefined}
       >
         <ContinueExperience item={item} />
         <MediaInformation item={item} />
@@ -136,7 +162,7 @@ function MediaDetail() {
         title="Where it lives in your world"
         description="The collections, journal entries, and stories it touches."
         tone="diagram"
-        accent={item.accent}
+        accent={item.accent ?? undefined}
       >
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr]">
           <CollectionsIntegration item={item} />
@@ -158,12 +184,6 @@ function MediaDetail() {
         description="History, sessions, and what's still ahead."
         tone="timeline"
       >
-        {memory && (
-          <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr]">
-            <MemoryJourney memory={memory} />
-            <MemoryConnections mediaId={item.id} />
-          </div>
-        )}
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr]">
           <MediaTimelinePreview item={item} />
           <MediaJournalPreview item={item} />

@@ -1,7 +1,7 @@
 import { CollectionCard } from "./CollectionCard";
-import type { Collection } from "@/lib/mock";
+import type { UICollection } from "@/lib/adapters/types";
 
-export function EditorialGrid({ collections }: { collections: Collection[] }) {
+export function EditorialGrid({ collections }: { collections: UICollection[] }) {
   // editorial rhythm: alternate large/medium/small
   return (
     <div className="grid grid-cols-2 gap-5 md:grid-cols-6">

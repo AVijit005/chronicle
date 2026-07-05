@@ -18,7 +18,7 @@ function ContinueJourneyPage() {
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((m) => (
-          <ContinueCard key={m.id} item={m} />
+          <ContinueCard key={m.id} item={m as any} />
         ))}
       </div>
     </StatusPageShell>

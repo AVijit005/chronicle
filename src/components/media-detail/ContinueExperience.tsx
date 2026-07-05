@@ -1,12 +1,25 @@
 import { motion } from "motion/react";
 import { Play, RefreshCw } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
-import { MEDIA_DETAIL } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { PremiumProgress } from "@/components/ui/PremiumProgress";
 
-export function ContinueExperience({ item }: { item: MediaItem }) {
-  const d = MEDIA_DETAIL[item.id];
+const CONTINUE_LABEL: Record<string, string> = {
+  movie: "Continue Watching",
+  series: "Continue Watching",
+  anime: "Continue Watching",
+  book: "Continue Reading",
+  manga: "Continue Reading",
+  game: "Continue Playing",
+  music: "Continue Listening",
+  podcast: "Continue Listening",
+  course: "Continue Learning",
+  youtube: "Continue Watching",
+};
+
+export function ContinueExperience({ item }: { item: UIMediaItem }) {
+  const continueLabel = CONTINUE_LABEL[item.kind] ?? "Continue";
+  const accent = item.accent ?? "oklch(0.72 0.18 255)";
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -18,20 +31,20 @@ export function ContinueExperience({ item }: { item: MediaItem }) {
       <span
         aria-hidden
         className="pointer-events-none absolute -top-20 -right-20 h-48 w-48 rounded-full opacity-30 blur-3xl"
-        style={{ background: item.accent }}
+        style={{ background: accent }}
       />
       <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
         <div className="min-w-0">
           <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            {d.continueLabel}
+            {continueLabel}
           </div>
           <h3 className="mt-2 font-display text-3xl tracking-tight md:text-4xl">{item.title}</h3>
-          <div className="mt-1 text-sm text-muted-foreground">{d.continueDetail}</div>
+          <div className="mt-1 text-sm text-muted-foreground">{item.progressLabel ?? `${item.progress ?? 0}% complete`}</div>
           <div className="mt-5">
-            <PremiumProgress value={item.progress ?? 0} accent={item.accent} />
+            <PremiumProgress value={item.progress ?? 0} accent={accent} />
             <div className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground tabular-nums">
               <span>{item.progress ?? 0}%</span>
-              <span>{item.runtime}</span>
+              <span>{item.runtime ?? ""}</span>
             </div>
           </div>
         </div>

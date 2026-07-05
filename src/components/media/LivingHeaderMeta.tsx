@@ -1,16 +1,14 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { getLivingHeader } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
 
-export function LivingHeaderMeta({ item }: { item: MediaItem }) {
-  const h = getLivingHeader(item);
+export function LivingHeaderMeta({ item }: { item: UIMediaItem }) {
   const items = [
-    { k: "Started", v: h.firstStarted },
-    { k: "Last activity", v: h.lastActivity },
-    { k: "Current streak", v: `${h.streak} days` },
-    { k: "Memory score", v: `${h.memoryScore}%` },
-    { k: "Emotion", v: "★".repeat(Math.round(h.emotionScore)) },
-    { k: "Completion", v: `${h.completionPct}%` },
+    { k: "Status", v: item.status.replace(/_/g, " ") },
+    { k: "Progress", v: item.progress !== null ? `${item.progress}%` : "Not started" },
+    { k: "Rating", v: item.rating ? `${item.rating}/5` : "Not rated" },
+    { k: "Kind", v: item.kind },
+    { k: "Year", v: String(item.year) },
+    { k: "Genres", v: item.genres.slice(0, 2).join(", ") || "—" },
   ];
   return (
     <PremiumGlass variant="subtle" className="mt-6">

@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StatCard } from "@/components/common/Section";
-import { STATS, MEDIA } from "@/lib/mock";
 import { IdentityHero } from "@/components/profile/IdentityHero";
 import { MediaDNA } from "@/components/profile/MediaDNA";
 import { MemoryMap } from "@/components/profile/MemoryMap";
@@ -18,11 +17,26 @@ import { Section } from "@/components/common/Section";
 import { PullQuote } from "@/components/editorial/PullQuote";
 import { SplitBlock } from "@/components/editorial/SplitBlock";
 import { Collage } from "@/components/editorial/Collage";
+import { useOverview, useStreaks } from "@/hooks/use-analytics";
+import { adaptOverview, adaptStreaks } from "@/lib/adapters/analytics";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
+import { useLibrary } from "@/hooks/use-library";
+import { adaptLibraryItem } from "@/lib/adapters/media";
 
 export const Route = createFileRoute("/app/profile")({ component: ProfilePage });
 
 function ProfilePage() {
-  const museumCovers = MEDIA.slice(0, 4);
+  const { data: rawOverview } = useOverview();
+  const { data: rawStreaks } = useStreaks();
+  const { data: rawCollections } = useCollections();
+  const { data: libraryData } = useLibrary();
+
+  const overview = rawOverview ? adaptOverview(rawOverview) : null;
+  const streaks = rawStreaks ? adaptStreaks(rawStreaks) : null;
+  const collections = rawCollections ? rawCollections.map(adaptCollectionResponse) : [];
+
+  const museumCovers = libraryData?.pages.flatMap(p => p.data).map(adaptLibraryItem).slice(0, 4) || [];
 
   return (
     <div className="pt-2 pb-20">
@@ -34,12 +48,12 @@ function ProfilePage() {
       </PullQuote>
 
       <div className="mt-2 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="Total hours" value={`${STATS.totalHours.toLocaleString()}h`} />
-        <StatCard label="Completed" value={STATS.completed} accent="oklch(0.72 0.16 160 / 0.4)" />
-        <StatCard label="Streak" value={`${STATS.streak}d`} accent="oklch(0.82 0.16 80 / 0.4)" />
+        <StatCard label="Total hours" value={`${(overview?.hoursSpent || 0).toLocaleString()}h`} />
+        <StatCard label="Completed" value={overview?.completedItems || 0} accent="oklch(0.72 0.16 160 / 0.4)" />
+        <StatCard label="Streak" value={`${streaks?.current || 0}d`} accent="oklch(0.82 0.16 80 / 0.4)" />
         <StatCard
           label="Collections"
-          value={STATS.collections}
+          value={collections.length}
           accent="oklch(0.65 0.22 295 / 0.4)"
         />
       </div>

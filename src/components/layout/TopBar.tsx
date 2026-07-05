@@ -3,6 +3,7 @@ import { Bell, Search, Settings, Plus } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useMediaActions } from "@/lib/store/MediaActionsContext";
+import { useNotifications } from "@/hooks/use-notifications";
 
 const TITLES: Record<string, { title: string; subtitle?: string }> = {
   "/app/library": { title: "Your Library", subtitle: "Everything you've experienced." },
@@ -18,6 +19,7 @@ const TITLES: Record<string, { title: string; subtitle?: string }> = {
 
 export function TopBar({ onOpenSearch }: { onOpenSearch: () => void }) {
   const { openAdd } = useMediaActions();
+  const { data: notifications } = useNotifications();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/app" || pathname === "/app/";
   const meta =
@@ -93,13 +95,16 @@ export function TopBar({ onOpenSearch }: { onOpenSearch: () => void }) {
           >
             <Plus className="h-4 w-4" />
           </button>
-          <button
+          <Link
+            to="/app/notifications"
             aria-label="Notifications"
             className="relative grid h-9 w-9 place-items-center rounded-xl bg-white/[0.04] ring-1 ring-white/5 transition hover:text-primary press-scale"
           >
             <Bell className="h-4 w-4" />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_oklch(0.72_0.18_255)]" />
-          </button>
+            {notifications?.unreadCount ? (
+              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_oklch(0.72_0.18_255)]" />
+            ) : null}
+          </Link>
           <Link
             to="/app/settings"
             aria-label="Quick settings"

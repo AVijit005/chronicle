@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { queryKeys } from "../lib/api/query-keys";
+import { authApi } from "../lib/api";
+import { setAccessToken } from "../lib/api/fetch";
 
 function NotFoundComponent() {
   return (
@@ -122,6 +125,30 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  // Session restore: try to fetch current user on mount.
+  // If successful, the user is already logged in (refresh token cookie is valid).
+  // If failed, the user is not logged in — no redirect needed here.
+  useEffect(() => {
+    const restoreSession = async () => {
+      try {
+        const user = await authApi.getCurrentUser();
+        // Session is valid — hydrate the auth cache
+        queryClient.setQueryData(queryKeys.auth.me(), user);
+      } catch {
+        // Session is invalid — clear any stale auth data
+        setAccessToken(null);
+        queryClient.removeQueries({ queryKey: queryKeys.auth.all });
+      }
+    };
+
+    // Only restore if we don't already have user data
+    const existingUser = queryClient.getQueryData(queryKeys.auth.me());
+    if (!existingUser) {
+      restoreSession();
+    }
+  }, [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

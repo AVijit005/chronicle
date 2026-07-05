@@ -17,7 +17,7 @@ function CompletedPage() {
   const items = completed()
     .slice()
     .sort((a, b) => {
-      if (sort === "Highest Rated") return b.rating - a.rating;
+      if (sort === "Highest Rated") return (b.rating ?? 0) - (a.rating ?? 0);
       return 0;
     });
   return (
@@ -45,7 +45,7 @@ function CompletedPage() {
     >
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {items.map((m) => (
-          <MediaCard key={m.id} item={m} />
+          <MediaCard key={m.id} item={m as any} />
         ))}
       </div>
     </StatusPageShell>

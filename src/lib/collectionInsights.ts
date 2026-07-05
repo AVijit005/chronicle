@@ -13,7 +13,7 @@ export interface InsightCard {
 export function getCollectionInsights(c: Collection): InsightCard[] {
   const items = getCollectionItems(c);
   if (!items.length) return [];
-  const byRating = [...items].sort((a, b) => b.rating - a.rating);
+  const byRating = [...items].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   const oldest = items[items.length - 1]!;
   const newest = items[0]!;
   const mostJournaled = items

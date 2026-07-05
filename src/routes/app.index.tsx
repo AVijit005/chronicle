@@ -4,7 +4,6 @@ import { Plus, Search as SearchIcon, NotebookPen, Layers, ChevronRight } from "l
 import { CinematicHero } from "@/components/media/CinematicHero";
 import { MediaCard } from "@/components/media/MediaCard";
 import { Section } from "@/components/common/Section";
-import { recentlyCompleted, featured, COLLECTIONS } from "@/lib/mock";
 import { OnThisDay } from "@/components/memory/OnThisDay";
 import { DiscoveryHero } from "@/components/discovery/DiscoveryHero";
 import { ContinueUniverse } from "@/components/discovery/ContinueUniverse";
@@ -28,15 +27,68 @@ import { SmartFooter } from "@/components/dashboard/SmartFooter";
 import { PullQuote } from "@/components/editorial/PullQuote";
 import { Collage } from "@/components/editorial/Collage";
 import { SplitBlock } from "@/components/editorial/SplitBlock";
+import { useDashboard } from "@/hooks/use-analytics";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptContinueItem } from "@/lib/adapters/media";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
+import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
+import { PremiumErrorState } from "@/components/common/PremiumErrorState";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export const Route = createFileRoute("/app/")({
   component: Home,
 });
 
 function Home() {
+  const { data: dashboard, isLoading, isError, error } = useDashboard();
+  const { data: collections } = useCollections();
+
+  if (isLoading) {
+    return (
+      <div className="pt-2 space-y-8">
+        <ShimmerSkeleton className="h-[520px] rounded-b-[40px]" />
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ShimmerSkeleton key={i} className="h-20 rounded-2xl" />
+          ))}
+        </div>
+        <ShimmerSkeleton className="h-48 rounded-3xl" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="pt-2">
+        <PremiumErrorState
+          title="Couldn't load your dashboard"
+          description={error?.message ?? "Something went wrong. Please try again."}
+        />
+      </div>
+    );
+  }
+
+  // Use real data from API, with fallback for empty states
+  const continueItems = dashboard?.continueWatching ?? [];
+  const recentlyCompletedItems = dashboard?.recentlyCompleted ?? [];
+  const collectionList = collections?.map(adaptCollectionResponse) ?? [];
+
+  // Pick a featured item from continue watching, or first recently completed
+  const featuredItem = continueItems[0]
+    ? adaptContinueItem(continueItems[0])
+    : recentlyCompletedItems[0]
+      ? adaptContinueItem(recentlyCompletedItems[0] as any)
+      : null;
+
   return (
     <div className="pt-2">
-      <CinematicHero item={featured} />
+      {featuredItem ? (
+        <CinematicHero item={featuredItem as any} />
+      ) : (
+        <div className="glass-strong rounded-b-[40px] p-16 text-center">
+          <p className="text-muted-foreground">Add some media to your library to see your dashboard come alive.</p>
+        </div>
+      )}
 
       {/* Quick actions */}
       <motion.div
@@ -131,45 +183,49 @@ function Home() {
       </div>
 
       {/* Collections — editorial collage instead of yet another 4-up grid */}
-      <Section
-        title="Collections"
-        subtitle="Stories grouped by feeling."
-        action={
-          <Link
-            to="/app/collections"
-            className="story-link text-sm text-muted-foreground hover:text-foreground"
-          >
-            All collections
-          </Link>
-        }
-      >
-        <Collage
-          items={COLLECTIONS.slice(0, 4).map((c) => ({
-            id: c.id,
-            image: c.cover,
-            alt: c.name,
-            node: (
-              <div className="rounded-2xl bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 pt-12">
-                <div className="font-display text-xl tracking-tight text-white">{c.name}</div>
-                <div className="text-xs text-white/70">{c.count} items</div>
-              </div>
-            ),
-          }))}
-        />
-      </Section>
+      {collectionList.length > 0 && (
+        <Section
+          title="Collections"
+          subtitle="Stories grouped by feeling."
+          action={
+            <Link
+              to="/app/collections"
+              className="story-link text-sm text-muted-foreground hover:text-foreground"
+            >
+              All collections
+            </Link>
+          }
+        >
+          <Collage
+            items={collectionList.slice(0, 4).map((c) => ({
+              id: c.id,
+              image: c.cover ?? "",
+              alt: c.name,
+              node: (
+                <div className="rounded-2xl bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 pt-12">
+                  <div className="font-display text-xl tracking-tight text-white">{c.name}</div>
+                  <div className="text-xs text-white/70">{c.itemCount} items</div>
+                </div>
+              ),
+            }))}
+          />
+        </Section>
+      )}
 
       <Section title="Lately" subtitle="A small editorial timeline.">
         <MiniTimeline />
       </Section>
 
       {/* Recently completed */}
-      <Section title="Recently completed" subtitle="The stories that just became yours.">
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-4 lg:grid-cols-6">
-          {recentlyCompleted.slice(0, 6).map((m) => (
-            <MediaCard key={m.id} item={m} />
-          ))}
-        </div>
-      </Section>
+      {recentlyCompletedItems.length > 0 && (
+        <Section title="Recently completed" subtitle="The stories that just became yours.">
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-4 lg:grid-cols-6">
+            {recentlyCompletedItems.slice(0, 6).map((item) => (
+              <MediaCard key={(item as any).libraryId} item={adaptContinueItem(item as any)} />
+            ))}
+          </div>
+        </Section>
+      )}
 
       <SmartFooter className="mt-20" />
     </div>

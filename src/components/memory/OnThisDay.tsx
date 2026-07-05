@@ -30,7 +30,7 @@ export function OnThisDay({ className, variant = "default" }: Props) {
       >
         {media.backdrop && (
           <img
-            src={media.backdrop}
+            src={media.backdrop ?? undefined}
             alt=""
             className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-10"
           />

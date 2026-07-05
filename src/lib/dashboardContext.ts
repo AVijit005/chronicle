@@ -67,7 +67,7 @@ const ALL_SECTIONS: SectionKey[] = [
 ];
 
 export function getDashboardContext(name = "Avijit"): DashboardContext {
-  const watching = MEDIA.filter((m) => m.status === "watching");
+  const watching = MEDIA.filter((m) => (m.status === "watching" || m.status === "in_progress"));
   const completed = MEDIA.filter((m) => m.status === "completed");
   const journey = watching[0] ?? null;
   const lastMem = Object.entries(MEMORIES_BY_MEDIA).find(([, m]) => !!m && !!m.memoryExcerpt);

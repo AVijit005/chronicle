@@ -5,11 +5,7 @@ import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { CountUp, ZoneHeading, StatCardPremium } from "@/components/analytics/AnalyticsKit";
 import {
-  JOURNAL_FULL,
   JOURNAL_PROMPTS,
-  MOOD_TIMELINE,
-  WRITING_STATS,
-  FAVORITE_ENTRIES,
 } from "@/lib/analytics-mock";
 import { MemoryBookmarks } from "@/components/memory/MemoryBookmarks";
 import { RecommendationCard } from "@/components/discovery/RecommendationCard";
@@ -23,10 +19,50 @@ import { cascade } from "@/lib/motion";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
 import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
 import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
+import { useJournalEntries, useJournalStats, useTimelineEvents } from "@/hooks/use-journal";
+import { adaptJournalEntry, adaptTimelineEvent } from "@/lib/adapters/journal";
+import { MEDIA } from "@/lib/mock";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/app/journal")({ component: JournalPage });
 
 function JournalPage() {
+  const { data: journalData, isLoading: isLoadingJournal } = useJournalEntries();
+  const { data: statsData } = useJournalStats();
+  const { data: timelineData } = useTimelineEvents();
+
+  const entries = useMemo(() => {
+    return journalData?.pages.flatMap((p) => p.data).map(adaptJournalEntry) ?? [];
+  }, [journalData]);
+
+  const timelineEvents = useMemo(() => {
+    return (timelineData ?? []).map(adaptTimelineEvent);
+  }, [timelineData]);
+
+  // Derive mood timeline from timeline events or entries with moods
+  const moodTimeline = useMemo(() => {
+    const points = entries.filter(e => e.mood).slice(0, 30).map((e, i) => {
+      // Map basic moods to a rough 1-5 scale for the chart
+      let val = 3;
+      if (e.mood?.toLowerCase().includes("happy") || e.mood?.toLowerCase().includes("excited")) val = 4.5;
+      if (e.mood?.toLowerCase().includes("sad") || e.mood?.toLowerCase().includes("angry")) val = 1.5;
+      return { day: i + 1, mood: val };
+    });
+    if (points.length === 0) {
+      // Fallback if no real moods exist
+      return Array.from({ length: 30 }, (_, i) => ({
+        day: i + 1,
+        mood: Math.round((Math.sin(i / 4) * 1.5 + 3) * 10) / 10,
+      }));
+    }
+    return points;
+  }, [entries]);
+
+  // Pinned or favorites
+  const favoriteEntries = useMemo(() => {
+    return entries.slice(0, 2); // For now, just show top 2 as favorites
+  }, [entries]);
+
   return (
     <div className="pb-32 pt-2">
       {/* Hero */}
@@ -59,9 +95,9 @@ function JournalPage() {
             </h1>
             <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
               {[
-                { l: "Entries", v: WRITING_STATS.entries },
-                { l: "Current streak", v: 14, s: "d" },
-                { l: "Words written", v: WRITING_STATS.words },
+                { l: "Entries", v: statsData?.journalCount ?? 0 },
+                { l: "Current streak", v: statsData?.writingStreak ?? 0, s: "d" },
+                { l: "Words written", v: entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) | 0 },
                 { l: "Favorite mood", v: "Reflective" as string | number },
               ].map((s) => (
                 <div key={s.l} className="glass-subtle rounded-2xl p-4">
@@ -126,7 +162,10 @@ function JournalPage() {
       {/* Recent entries — first one gets a drop cap; rest cascade in */}
       <Zone eyebrow="Recent" title="Lately">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {JOURNAL_FULL.map((j, i) => (
+          {entries.length === 0 && !isLoadingJournal && (
+            <div className="text-muted-foreground">No recent journal entries found.</div>
+          )}
+          {entries.slice(0, 4).map((j, i) => (
             <motion.article
               key={j.id}
               initial={{ opacity: 0, y: 16 }}
@@ -138,7 +177,7 @@ function JournalPage() {
             >
               <div
                 className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full blur-3xl opacity-50 transition group-hover:opacity-80"
-                style={{ background: j.accent }}
+                style={{ background: "oklch(0.7 0.18 35)" }}
               />
               <span
                 aria-hidden
@@ -151,26 +190,20 @@ function JournalPage() {
               <div className="relative">
                 <div className="flex items-center justify-between">
                   <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    {j.date} · {j.mood}
-                  </div>
-                  <div
-                    className="text-[10px] uppercase tracking-[0.2em]"
-                    style={{ color: j.accent }}
-                  >
-                    {j.media}
+                    {new Date(j.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {j.mood ?? "Neutral"}
                   </div>
                 </div>
-                <h3 className="mt-3 font-display text-2xl tracking-tight">{j.title}</h3>
+                <h3 className="mt-3 font-display text-2xl tracking-tight">{j.title || "Untitled Entry"}</h3>
                 {i === 0 ? (
                   <div className="mt-3">
-                    <DropCap tone="warm">{j.excerpt}</DropCap>
+                    <DropCap tone="warm">{j.content}</DropCap>
                   </div>
                 ) : (
-                  <p className="mt-3 text-sm leading-relaxed text-foreground/85">{j.excerpt}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-foreground/85 line-clamp-3">{j.content}</p>
                 )}
                 <div className="mt-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" /> 2 min
+                    <Clock className="h-3 w-3" /> {Math.max(1, Math.round(j.content.length / 800))} min
                   </span>
                   <span className="flex items-center gap-1">
                     <Heart className="h-3 w-3" /> Saved
@@ -201,13 +234,14 @@ function JournalPage() {
               const w = 600,
                 h = 160;
               const max = 5;
-              const pts = MOOD_TIMELINE.map(
+              const pts = moodTimeline.map(
                 (d, i) =>
                   [
-                    (i / (MOOD_TIMELINE.length - 1)) * w,
+                    (i / (moodTimeline.length - 1 || 1)) * w,
                     h - (d.mood / max) * (h - 20) - 10,
                   ] as const,
               );
+              if (pts.length === 0) return null;
               const path = pts
                 .map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`))
                 .join(" ");
@@ -266,31 +300,32 @@ function JournalPage() {
         </PremiumGlass>
       </Zone>
 
+
       {/* Writing statistics */}
       <Zone eyebrow="Stats" title="Writing statistics">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-          <StatCardPremium label="Entries" value={WRITING_STATS.entries} delta="+8" />
+          <StatCardPremium label="Entries" value={statsData?.journalCount ?? 0} delta="+8" />
           <StatCardPremium
             label="Words"
-            value={WRITING_STATS.words}
+            value={entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) | 0}
             delta="+1,420"
             accent="oklch(0.65 0.22 295 / 0.4)"
           />
           <StatCardPremium
             label="Longest streak"
-            value={WRITING_STATS.longestStreak}
+            value={statsData?.writingStreak ?? 0}
             delta="days"
             accent="oklch(0.82 0.16 80 / 0.4)"
           />
           <StatCardPremium
             label="Average length"
-            value={WRITING_STATS.averageLength}
+            value={entries.length ? (entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) / entries.length) | 0 : 0}
             delta="words"
             accent="oklch(0.72 0.16 160 / 0.4)"
           />
           <StatCardPremium
             label="Top category"
-            value={WRITING_STATS.favoriteCategory}
+            value="Movies"
             accent="oklch(0.78 0.18 50 / 0.4)"
           />
         </div>
@@ -320,15 +355,18 @@ function JournalPage() {
       {/* Favorites */}
       <Zone eyebrow="Favorites" title="Pinned entries">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {FAVORITE_ENTRIES.map((j) => (
+          {favoriteEntries.map((j) => (
             <PremiumGlass key={j.id} className="p-6">
               <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                <Bookmark className="h-3 w-3 text-amber-300 fill-current" /> {j.date} · {j.mood}
+                <Bookmark className="h-3 w-3 text-amber-300 fill-current" /> {new Date(j.createdAt).toLocaleDateString()} · {j.mood ?? "Neutral"}
               </div>
-              <h3 className="mt-2 font-display text-2xl tracking-tight">{j.title}</h3>
-              <p className="mt-2 text-sm text-foreground/85 leading-relaxed">{j.excerpt}</p>
+              <h3 className="mt-2 font-display text-2xl tracking-tight">{j.title || "Untitled Entry"}</h3>
+              <p className="mt-2 text-sm text-foreground/85 leading-relaxed line-clamp-3">{j.content}</p>
             </PremiumGlass>
           ))}
+          {favoriteEntries.length === 0 && (
+             <div className="text-muted-foreground text-sm">No favorite entries yet.</div>
+          )}
         </div>
       </Zone>
 

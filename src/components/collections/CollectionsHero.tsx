@@ -1,15 +1,18 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { CountUp } from "@/components/landing/CountUp";
-import { COLLECTIONS, MEDIA } from "@/lib/mock";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
 export function CollectionsHero() {
   const ref = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
-  const totalMedia = COLLECTIONS.reduce((s, c) => s + c.count, 0);
-  const drift = COLLECTIONS.slice(0, 6);
+  const { data: collections } = useCollections();
+  const allCollections = collections?.map(adaptCollectionResponse) ?? [];
+  const totalMedia = allCollections.reduce((s, c) => s + c.itemCount, 0);
+  const drift = allCollections.slice(0, 6);
 
   return (
     <div
@@ -41,7 +44,7 @@ export function CollectionsHero() {
             Every collection is a part of your personality &mdash; arranged the way only you would.
           </p>
           <div className="mt-8 grid grid-cols-3 gap-4 max-w-md">
-            <Stat label="Collections" value={COLLECTIONS.length} />
+            <Stat label="Collections" value={allCollections.length} />
             <Stat label="Total media" value={totalMedia} />
             <Stat label="Updated this week" value={3} />
           </div>
@@ -50,7 +53,8 @@ export function CollectionsHero() {
         {/* floating collage */}
         <div className="relative h-[360px] md:h-[440px]">
           {drift.map((c, i) => {
-            const cols = c.covers ?? [c.cover];
+            const covers = c.items?.slice(0, 4).map((item) => item.posterUrl).filter(Boolean) as string[] ?? [];
+            const coverImg = c.cover ?? covers[0] ?? "";
             const top = `${10 + (i % 3) * 28}%`;
             const left = `${5 + ((i * 14) % 75)}%`;
             const rot = (i % 2 === 0 ? -1 : 1) * (4 + i);
@@ -64,11 +68,11 @@ export function CollectionsHero() {
                 className="absolute h-28 w-44 overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-[0_20px_50px_-15px_oklch(0_0_0/0.7)]"
                 style={{ top, left, animation: `slow-float ${6 + i}s ease-in-out infinite` }}
               >
-                <img src={cols[0]} alt="" className="h-full w-full object-cover" />
+                <img src={coverImg} alt="" className="h-full w-full object-cover" />
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: `linear-gradient(180deg, transparent 40%, ${c.accent} / 0.5, oklch(0 0 0 / 0.8))`,
+                    background: `linear-gradient(180deg, transparent 40%, ${c.color ?? "oklch(0.72 0.18 255)"} / 0.5, oklch(0 0 0 / 0.8))`,
                   }}
                 />
                 <div className="absolute inset-x-0 bottom-0 p-2 text-[10px] text-white">

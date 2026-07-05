@@ -33,7 +33,7 @@ function AllLibraryPage() {
       );
     }
     if (status.length) r = r.filter((m) => status.includes(statusOf(m.id)));
-    if (kinds.length) r = r.filter((m) => kinds.includes(m.kind));
+    if (kinds.length) r = r.filter((m) => kinds.includes(m.kind as any));
     if (favOnly) r = r.filter((m) => metaOf(m.id).favorite);
     if (journaledOnly) r = r.filter((m) => Boolean(metaOf(m.id).journalExcerpt));
 
@@ -42,13 +42,13 @@ function AllLibraryPage() {
         r.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "Rating":
-        r.sort((a, b) => b.rating - a.rating);
+        r.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         break;
       case "Release Year":
         r.sort((a, b) => b.year - a.year);
         break;
       case "Personal Rating":
-        r.sort((a, b) => b.rating - a.rating);
+        r.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         break;
       case "Most Time Spent":
         r.sort((a, b) => (b.progress ?? 0) - (a.progress ?? 0));
@@ -111,7 +111,7 @@ function AllLibraryPage() {
             Nothing matches those filters. Try clearing a chip or changing the search.
           </div>
         ) : view === "grid" ? (
-          items.map((m) => <MediaCard key={m.id} item={m} />)
+          items.map((m) => <MediaCard key={m.id} item={m as any} />)
         ) : (
           items.map((m) => (
             <Link
@@ -136,7 +136,7 @@ function AllLibraryPage() {
                 </div>
               </div>
               <div className="hidden text-xs text-muted-foreground md:block">
-                ★ {m.rating.toFixed(1)}
+                ★ {((m.rating ?? 0) ?? 0).toFixed(1)}
               </div>
             </Link>
           ))

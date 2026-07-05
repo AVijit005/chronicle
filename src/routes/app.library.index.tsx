@@ -22,19 +22,47 @@ import { getPrimaryGoal } from "@/lib/goals";
 import { LibraryMap } from "@/components/intelligence/LibraryMap";
 import { Collage } from "@/components/editorial/Collage";
 import { PullQuote } from "@/components/editorial/PullQuote";
+import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
+import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 
-import { continueJourney, favorites, planning } from "@/lib/library";
-import { MEDIA } from "@/lib/mock";
+import { useLibrary, useLibraryByStatus, useLibraryStats } from "@/hooks/use-library";
+import { useCollections } from "@/hooks/use-collections";
+import { adaptLibraryItem } from "@/lib/adapters/media";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
 export const Route = createFileRoute("/app/library/")({
   component: LibraryIndex,
 });
 
 function LibraryIndex() {
-  const cont = continueJourney().slice(0, 8);
-  const plan = planning().slice(0, 5);
-  const favs = favorites().slice(0, 8);
-  const recentlyAdded = MEDIA.slice(0, 8);
+  const { data: stats } = useLibraryStats();
+  const { data: inProgressData, isLoading: isLoadingContinue } = useLibraryByStatus("WATCHING", { limit: 8 });
+  const { data: planningData, isLoading: isLoadingPlanning } = useLibraryByStatus("PLANNING", { limit: 5 });
+  const { data: favoritesData, isLoading: isLoadingFavorites } = useLibrary({ favorite: true, limit: 8 });
+  const { data: allData, isLoading: isLoadingAll } = useLibrary({ limit: 8 });
+  const { data: collections } = useCollections();
+
+  const isLoading = isLoadingContinue || isLoadingPlanning || isLoadingFavorites || isLoadingAll;
+
+  if (isLoading) {
+    return (
+      <div className="space-y-16 pt-2 pb-24">
+        <ShimmerSkeleton className="h-48 rounded-3xl" />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ShimmerSkeleton key={i} className="h-24 rounded-2xl" />
+          ))}
+        </div>
+        <ShimmerSkeleton className="h-64 rounded-3xl" />
+      </div>
+    );
+  }
+
+  const cont = (inProgressData?.pages.flatMap((p) => p.data) ?? []).map(adaptLibraryItem);
+  const plan = (planningData?.pages.flatMap((p) => p.data) ?? []).map(adaptLibraryItem);
+  const favs = (favoritesData?.pages.flatMap((p) => p.data) ?? []).map(adaptLibraryItem);
+  const recentlyAdded = (allData?.pages.flatMap((p) => p.data) ?? []).map(adaptLibraryItem);
+  const collectionList = collections?.map(adaptCollectionResponse) ?? [];
   const wall = favs.slice(0, 4);
 
   return (
@@ -64,7 +92,7 @@ function LibraryIndex() {
           />
           <Collage
             items={wall.map((m) => ({
-              id: m.id,
+              id: m.mediaId,
               image: m.poster,
               alt: m.title,
               node: (
@@ -106,7 +134,7 @@ function LibraryIndex() {
           />
           <div className="-mx-6 flex gap-4 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
             {cont.map((m) => (
-              <ContinueCard key={m.id} item={m} />
+              <ContinueCard key={m.id} item={m as any} />
             ))}
           </div>
         </RevealSection>
@@ -129,7 +157,7 @@ function LibraryIndex() {
           />
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {plan.map((m) => (
-              <PlanningRow key={m.id} item={m} />
+              <PlanningRow key={m.id} item={m as any} />
             ))}
           </div>
         </RevealSection>
@@ -183,7 +211,7 @@ function LibraryIndex() {
         />
         <motion.div className="-mx-6 flex gap-5 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
           {recentlyAdded.map((m) => (
-            <MediaCard key={m.id} item={m} />
+            <MediaCard key={m.id} item={m as any} />
           ))}
         </motion.div>
       </RevealSection>

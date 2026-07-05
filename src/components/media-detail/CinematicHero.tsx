@@ -1,17 +1,15 @@
 import { motion } from "motion/react";
 import { Star } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
 import { useArtworkAccent } from "@/lib/useArtworkAccent";
 import { PremiumProgress } from "@/components/ui/PremiumProgress";
 import { ItemActionBar } from "@/components/media/ItemActionBar";
-import { useLibraryStore } from "@/lib/store/libraryStore";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function CinematicHero({ item }: { item: MediaItem }) {
-  const accent = useArtworkAccent(item.accent);
-  const meta = useLibraryStore((s) => s.meta[item.id]);
-  const progress = meta?.progress ?? item.progress;
+export function CinematicHero({ item }: { item: UIMediaItem }) {
+  const accent = useArtworkAccent(item.accent ?? undefined);
+  const progress = item.progress;
 
   return (
     <section
@@ -123,7 +121,7 @@ export function CinematicHero({ item }: { item: MediaItem }) {
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/30 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-white/75 backdrop-blur"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            {item.status === "watching"
+            {(item.status === "in_progress")
               ? "Currently in your story"
               : item.status === "completed"
                 ? "A chapter you finished"
@@ -147,7 +145,7 @@ export function CinematicHero({ item }: { item: MediaItem }) {
           >
             <span className="inline-flex items-center gap-1 rounded-full bg-black/40 px-2.5 py-1">
               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-              {item.rating.toFixed(1)}
+              {(item.rating ?? 0).toFixed(1)}
             </span>
             <span className="rounded-full border border-white/15 px-2.5 py-1">{item.year}</span>
             {item.genres.map((g) => (
@@ -176,9 +174,9 @@ export function CinematicHero({ item }: { item: MediaItem }) {
             >
               <div className="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-white/55">
                 <span>{progress}% complete</span>
-                <span className="tabular-nums">{meta?.progressLabel ?? item.runtime}</span>
+                <span className="tabular-nums">{item.progressLabel ?? item.runtime}</span>
               </div>
-              <PremiumProgress value={progress} accent={accent.base} />
+              <PremiumProgress value={progress ?? 0} accent={accent.base} />
             </motion.div>
           )}
 

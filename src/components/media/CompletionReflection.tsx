@@ -6,7 +6,7 @@ export function CompletionReflection({ item }: { item: MediaItem }) {
   if (item.status !== "completed") return null;
   const r = getCompletionReflection(item);
   return (
-    <PremiumGlass variant="strong" glow={item.accent}>
+    <PremiumGlass variant="strong" glow={item.accent ?? undefined}>
       <div className="p-7 md:p-10">
         <div className="text-[10px] uppercase tracking-[0.24em] text-primary/85">Reflection</div>
         <p className="mt-3 font-display text-2xl leading-snug tracking-tight md:text-3xl">

@@ -21,7 +21,7 @@ export function CollectionExplorer({ collection }: { collection: Collection }) {
           : g === "Year"
             ? String(m.year)
             : g === "Rating"
-              ? `${Math.round(m.rating)}★`
+              ? `${Math.round((m.rating ?? 0))}★`
               : m.status;
     groups[key] = groups[key] ?? [];
     groups[key]!.push(m);

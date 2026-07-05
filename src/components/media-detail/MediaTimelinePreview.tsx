@@ -1,19 +1,54 @@
 import { motion } from "motion/react";
 import { Play, Pause, RotateCcw, Check, NotebookPen, FolderPlus } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
-import { MEDIA_DETAIL } from "@/lib/mock";
+import type { UIMediaItem } from "@/lib/adapters/types";
+import { useTimelineEvents } from "@/hooks/use-journal";
+import { adaptTimelineEvent } from "@/lib/adapters/journal";
 
-const ICONS = {
-  started: Play,
-  paused: Pause,
-  continued: RotateCcw,
-  completed: Check,
-  journal: NotebookPen,
-  collection: FolderPlus,
-} as const;
+const ICONS: Record<string, typeof Play> = {
+  STARTED: Play,
+  PAUSED: Pause,
+  CONTINUED: RotateCcw,
+  COMPLETED: Check,
+  JOURNAL: NotebookPen,
+  COLLECTION: FolderPlus,
+  REWATCHED: RotateCcw,
+  REREAD: RotateCcw,
+  REPLAYED: RotateCcw,
+  FAVORITED: Check,
+  RATED: Check,
+  MEMORY_CREATED: NotebookPen,
+  JOURNAL_CREATED: NotebookPen,
+  QUOTE_ADDED: NotebookPen,
+  HIGHLIGHT_ADDED: NotebookPen,
+};
 
-export function MediaTimelinePreview({ item }: { item: MediaItem }) {
-  const tl = MEDIA_DETAIL[item.id].timeline;
+export function MediaTimelinePreview({ item }: { item: UIMediaItem }) {
+  const { data: timelineData, isLoading } = useTimelineEvents();
+
+  if (isLoading) {
+    return (
+      <div className="glass rounded-2xl p-6">
+        <div className="h-4 w-32 animate-pulse rounded bg-white/10" />
+        <div className="mt-3 space-y-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-10 animate-pulse rounded bg-white/5" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const events = (timelineData ?? []).map(adaptTimelineEvent);
+  const recentEvents = events.slice(0, 6);
+
+  if (recentEvents.length === 0) {
+    return (
+      <div className="glass rounded-2xl p-6 text-sm text-muted-foreground">
+        No timeline events recorded yet. Your media journey will appear here.
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <span
@@ -24,11 +59,11 @@ export function MediaTimelinePreview({ item }: { item: MediaItem }) {
         }}
       />
       <ul className="space-y-3">
-        {tl.map((ev, i) => {
-          const Icon = ICONS[ev.type];
+        {recentEvents.map((ev, i) => {
+          const Icon = ICONS[ev.type] ?? Play;
           return (
             <motion.li
-              key={i}
+              key={ev.id}
               initial={{ opacity: 0, x: -10 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -39,8 +74,11 @@ export function MediaTimelinePreview({ item }: { item: MediaItem }) {
                 <Icon className="h-4 w-4" />
               </div>
               <div className="glass-subtle flex-1 rounded-2xl px-4 py-3">
-                <div className="text-sm">{ev.label}</div>
-                <div className="text-[11px] text-muted-foreground">{ev.when}</div>
+                <div className="text-sm">{ev.title}</div>
+                <div className="text-[11px] text-muted-foreground">
+                  {new Date(ev.eventDate).toLocaleDateString()}
+                  {ev.description ? ` · ${ev.description}` : ""}
+                </div>
               </div>
             </motion.li>
           );

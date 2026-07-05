@@ -38,13 +38,13 @@ function rec(
 
 export function getRecommendedToday(): Recommendation | null {
   // Highest rated planned or completed item, deterministic.
-  const pool = MEDIA.filter((m) => m.rating >= 4.6);
+  const pool = MEDIA.filter((m) => (m.rating ?? 0) >= 4.6);
   const m = pickDeterministic(pool, TODAY.getUTCDate() + TODAY.getUTCMonth() * 31);
   return m ? rec(m, "editorial", buildReason("editorial"), ["Today's Pick"]) : null;
 }
 
 export function getContinueMood(): Recommendation[] {
-  return MEDIA.filter((m) => m.status === "watching")
+  return MEDIA.filter((m) => (m.status === "watching" || m.status === "in_progress"))
     .slice(0, 6)
     .map((m) => rec(m, "mood", "Continue this mood", ["Continue"]));
 }
@@ -59,7 +59,7 @@ export function getSeasonRecommendations() {
 export function getHiddenGems(): Recommendation[] {
   return MEDIA.filter(
     (m) =>
-      m.rating >= 4.4 &&
+      (m.rating ?? 0) >= 4.4 &&
       (MEMORIES_BY_MEDIA[m.id]?.badges.includes("Hidden Gem") ||
         MEMORIES_BY_MEDIA[m.id]?.badges.includes("Underrated")),
   )
@@ -69,7 +69,7 @@ export function getHiddenGems(): Recommendation[] {
 
 export function getTrendingInLibrary(): Recommendation[] {
   return [...MEDIA]
-    .sort((a, b) => b.rating - a.rating)
+    .sort((a, b) => ((b.rating ?? 0) ?? 0) - ((a.rating ?? 0) ?? 0))
     .slice(0, 6)
     .map((m) => rec(m, "trending", buildReason("trending"), ["Trending"]));
 }
@@ -89,7 +89,7 @@ export function getGenreExpansion() {
 }
 
 export function getUndiscoveredFavorites(): Recommendation[] {
-  return MEDIA.filter((m) => m.status === "planned" && m.rating >= 4.5)
+  return MEDIA.filter((m) => m.status === "planned" && (m.rating ?? 0) >= 4.5)
     .slice(0, 6)
     .map((m) => rec(m, "editorial", "An undiscovered favorite waiting", ["Saved"]));
 }

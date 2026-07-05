@@ -58,7 +58,7 @@ export function getThisWeekYearsAgo() {
 export function getForgottenFavorites() {
   return all().filter(({ media, memory }) => {
     if (!memory.finishedAt) return false;
-    return media.rating >= 4.6 && daysBetween(TODAY, new Date(memory.finishedAt)) > 500;
+    return (media.rating ?? 0) >= 4.6 && daysBetween(TODAY, new Date(memory.finishedAt)) > 500;
   });
 }
 

@@ -37,7 +37,7 @@ function read(): Bookmark[] {
     return [];
   }
 }
-function write(list: Bookmark[]) {
+function writem(list: Bookmark[]) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(KEY, JSON.stringify(list));
@@ -58,17 +58,17 @@ export function toggleBookmark(b: Omit<Bookmark, "id" | "createdAt">): boolean {
   const idx = list.findIndex((x) => x.kind === b.kind && x.refId === b.refId);
   if (idx >= 0) {
     list.splice(idx, 1);
-    write(list);
+    writem(list);
     return false;
   }
   list.unshift({ ...b, id: `bm_${Date.now().toString(36)}`, createdAt: new Date().toISOString() });
-  write(list);
+  writem(list);
   return true;
 }
 
 export function pinBookmark(id: string) {
   const list = read().map((b) => (b.id === id ? { ...b, pinned: !b.pinned } : b));
-  write(list);
+  writem(list);
 }
 
 export function searchBookmarks(term: string): Bookmark[] {

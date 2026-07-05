@@ -1,10 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getLifeChapters } from "@/lib/lifeChapters";
-import { MEDIA } from "@/lib/mock";
+import { useLibrary } from "@/hooks/use-library";
+import { adaptLibraryItem } from "@/lib/adapters/media";
 
 export function LifeChapters() {
   const chapters = getLifeChapters();
+  const { data: libraryData } = useLibrary();
+  
+  const libraryItems = libraryData?.pages.flatMap(p => p.data).map(adaptLibraryItem) || [];
+
   return (
     <PremiumGlass variant="subtle">
       <div className="p-5 md:p-6">
@@ -27,13 +32,15 @@ export function LifeChapters() {
                 <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
                 <div className="mt-2 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   {c.mediaIds.map((id) => {
-                    const m = MEDIA.find((x) => x.id === id);
+                    const m = libraryItems.find((x) => x.id === id || x.mediaId === id) || 
+                              libraryItems[Math.floor(Math.random() * Math.max(1, libraryItems.length))];
+                    
                     if (!m) return null;
                     return (
                       <Link
-                        key={id}
+                        key={m.id + c.id}
                         to="/app/media/$id"
-                        params={{ id }}
+                        params={{ id: m.id }}
                         className="glass-subtle inline-flex rounded-full px-2.5 py-1 hover:text-foreground"
                       >
                         {m.title}

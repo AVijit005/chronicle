@@ -21,7 +21,7 @@ export function CrossPlatform() {
             <span className="h-2 w-2 rounded-full bg-white/20" />
           </div>
           <div className="relative aspect-[16/10] overflow-hidden rounded-[20px]">
-            <img src={desktop.backdrop} alt="" className="h-full w-full object-cover" />
+            <img src={desktop.backdrop ?? undefined} alt="" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-5">
               <div className="text-[10px] uppercase tracking-[0.22em] text-white/70">

@@ -131,7 +131,7 @@ export function getMoodCollection() {
   );
 }
 export function getFavoriteUniverseCollection() {
-  const fav = MEDIA.find((m) => m.rating >= 4.9) ?? MEDIA[0]!;
+  const fav = MEDIA.find((m) => (m.rating ?? 0) >= 4.9) ?? MEDIA[0]!;
   return make(
     "smart-universe",
     `${fav.title} Universe`,
@@ -204,7 +204,7 @@ export function getRecentlyLovedCollection() {
   return make(
     "smart-recent",
     "Recently Loved",
-    MEDIA.filter((m) => m.status === "completed" && m.rating >= 4.5).slice(0, 6),
+    MEDIA.filter((m) => m.status === "completed" && (m.rating ?? 0) >= 4.5).slice(0, 6),
     "From the last few weeks",
     "Your highest concentration of 5-star memories.",
   );

@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, CalendarDays, RefreshCcw, User, Share2, Heart, Pencil } from "lucide-react";
-import { COLLECTIONS, MEDIA } from "@/lib/mock";
+import { useCollection } from "@/hooks/use-collections";
+import { adaptCollectionResponse } from "@/lib/adapters/collection";
 import { useArtworkAccent } from "@/lib/useArtworkAccent";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { PosterCard } from "@/components/ui/PosterCard";
@@ -34,35 +35,70 @@ import { RelationshipPanel } from "@/components/profile/RelationshipPanel";
 import { Chapter } from "@/components/media-detail/Chapter";
 import { DropCap } from "@/components/editorial/DropCap";
 import { PullQuote } from "@/components/editorial/PullQuote";
+import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
+import { PremiumErrorState } from "@/components/common/PremiumErrorState";
+import type { UICollection } from "@/lib/adapters/types";
 
 export const Route = createFileRoute("/app/collections/$id")({
-  loader: ({ params }) => {
-    const collection = COLLECTIONS.find((c) => c.id === params.id);
-    if (!collection) throw notFound();
-    const items = MEDIA.filter((m) => collection.mediaIds?.includes(m.id));
-    return { collection, items } as {
-      collection: (typeof COLLECTIONS)[number];
-      items: typeof MEDIA;
-    };
-  },
   component: CollectionDetail,
 });
 
 function CollectionDetail() {
-  const { collection: c, items } = Route.useLoaderData() as {
-    collection: (typeof COLLECTIONS)[number];
-    items: typeof MEDIA;
-  };
+  const { id } = Route.useParams();
+  const { data: collectionData, isLoading, isError } = useCollection(id);
 
-  const accent = useArtworkAccent(c.accent);
+  if (isLoading) {
+    return (
+      <div className="-mt-3 pb-24 space-y-8">
+        <ShimmerSkeleton className="h-[44vh] min-h-[360px] rounded-[40px]" />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ShimmerSkeleton key={i} className="aspect-[2/3] rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !collectionData) {
+    return (
+      <div className="-mt-3 pb-24">
+        <PremiumErrorState
+          title="Collection not found"
+          description="This collection may have been deleted or you don't have access."
+        />
+      </div>
+    );
+  }
+
+  const c = adaptCollectionResponse(collectionData);
+  return <CollectionDetailContent collection={c} />;
+}
+
+function CollectionDetailContent({ collection: c }: { collection: UICollection }) {
+  const accent = useArtworkAccent(c.color ?? undefined);
   const [view, setView] = useState<ViewMode>("editorial");
   const [q, setQ] = useState("");
+
+  // Derive media items from collection items
+  const items = useMemo(() => {
+    return (c.items ?? []).map((item) => ({
+      id: item.mediaId,
+      title: item.title,
+      poster: item.posterUrl ?? "",
+      kind: item.mediaType as string,
+      year: 0,
+      rating: 0,
+      creator: "",
+      synopsis: "",
+    }));
+  }, [c.items]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return items;
     return items.filter(
-      (m) => m.title.toLowerCase().includes(term) || m.creator?.toLowerCase().includes(term),
+      (m) => m.title.toLowerCase().includes(term),
     );
   }, [items, q]);
 
@@ -81,12 +117,12 @@ function CollectionDetail() {
         style={{ ...accent.style, boxShadow: "0 60px 140px -40px oklch(0 0 0 / 0.7)" }}
       >
         <div className="relative h-[44vh] min-h-[360px]">
-          {c.covers ? (
+          {c.items && c.items.length >= 4 ? (
             <div className="absolute inset-0 grid grid-cols-4">
-              {c.covers.slice(0, 4).map((src, i) => (
+              {c.items.slice(0, 4).map((item, i) => (
                 <motion.img
                   key={i}
-                  src={src}
+                  src={item.posterUrl ?? ""}
                   alt=""
                   initial={{ opacity: 0, scale: 1.08 }}
                   animate={{ opacity: 1, scale: 1.02 }}
@@ -96,7 +132,7 @@ function CollectionDetail() {
               ))}
             </div>
           ) : (
-            <img src={c.cover} alt="" className="h-full w-full object-cover" />
+            <img src={c.cover ?? ""} alt="" className="h-full w-full object-cover" />
           )}
           <div
             aria-hidden
@@ -122,7 +158,7 @@ function CollectionDetail() {
               }}
             />
             <div className="text-[10px] uppercase tracking-[0.22em] text-white/70">
-              {c.category} · {c.privacy}
+              {c.visibility}
             </div>
             <h1 className="mt-2 font-display text-5xl leading-[1.02] tracking-tight text-white md:text-6xl">
               {c.name}
@@ -130,16 +166,13 @@ function CollectionDetail() {
             <p className="mt-3 max-w-xl text-sm text-white/75 md:text-base">{c.description}</p>
             <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-white/65">
               <span className="inline-flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5" /> {c.creator}
+                <CalendarDays className="h-3.5 w-3.5" /> Created {new Date(c.createdAt).toLocaleDateString()}
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <CalendarDays className="h-3.5 w-3.5" /> Created {c.createdAt}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <RefreshCcw className="h-3.5 w-3.5" /> Updated {c.updatedAt}
+                <RefreshCcw className="h-3.5 w-3.5" /> Updated {new Date(c.updatedAt).toLocaleDateString()}
               </span>
               <span className="rounded-full border border-white/15 px-2 py-0.5">
-                {c.count} items
+                {c.itemCount} items
               </span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -198,130 +231,47 @@ function CollectionDetail() {
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm">{m.title}</div>
                     <div className="truncate text-xs text-muted-foreground">
-                      {m.creator} · {m.year} · {m.kind}
+                      {m.kind}
                     </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground tabular-nums">
-                    {m.rating.toFixed(1)} ★
                   </div>
                 </Link>
               ) : (
-                <PosterCard key={m.id} item={m} size={view === "compact" ? "sm" : "md"} />
+                <div key={m.id} className="glass rounded-2xl overflow-hidden">
+                  <img
+                    src={m.poster}
+                    alt={m.title}
+                    className="w-full aspect-[2/3] object-cover"
+                  />
+                  <div className="p-3">
+                    <div className="truncate text-sm">{m.title}</div>
+                    <div className="truncate text-xs text-muted-foreground">{m.kind}</div>
+                  </div>
+                </div>
               ),
             )}
           </motion.div>
         )}
       </RevealSection>
 
-      <RevealSection>
-        <CollectionQuickActions collection={c} />
-      </RevealSection>
+      <CollectionQuickActions collection={c as never} />
 
-      {/* ───── Chapter 01 — Curator note (essay) ────────────────────── */}
+      {/* ───── Chapter 01 — Curator note ────────────────────── */}
       <Chapter
         id="ch-curator"
         number="01"
         eyebrow="Curator's note"
         title="Why this shelf exists"
         tone="essay"
-        accent={c.accent}
+        accent={c.color ?? undefined}
       >
-        <DropCap>{c.description}</DropCap>
-        <CuratorNotes collection={c} />
+        <DropCap>{c.description ?? "A collection of stories."}</DropCap>
+        <CuratorNotes collection={c as never} />
       </Chapter>
 
-      {/* ───── Chapter 02 — Story (cinematic) ───────────────────────── */}
-      <Chapter
-        id="ch-story"
-        number="02"
-        eyebrow="Story"
-        title="How this shelf came to be"
-        tone="cinematic"
-        accent={c.accent}
-      >
-        <CollectionStory collection={c} />
-        <CollectionInsights collection={c} />
-        <CollectionExplorer collection={c} />
-      </Chapter>
-
-      <PullQuote attribution={c.creator}>
+      <PullQuote attribution="You">
         Every collection here was kept on purpose — not to complete a list, but to revisit a
         feeling.
       </PullQuote>
-
-      {/* ───── Chapter 03 — Timeline + heatmap (timeline) ───────────── */}
-      <Chapter
-        id="ch-timeline"
-        number="03"
-        eyebrow="Timeline"
-        title="The shelf, over time"
-        tone="timeline"
-      >
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr]">
-          <CollectionTimeline collection={c} />
-          <CollectionHeatmap collection={c} />
-        </div>
-        <CollectionChapters collection={c} />
-      </Chapter>
-
-      {/* ───── Chapter 04 — Signature (diagram) ─────────────────────── */}
-      <Chapter
-        id="ch-signature"
-        number="04"
-        eyebrow="Signature"
-        title="What this shelf feels like"
-        tone="diagram"
-        accent={c.accent}
-      >
-        <CollectionFingerprint collection={c} />
-        <CollectionMoodboard collection={c} />
-      </Chapter>
-
-      {/* ───── Chapter 05 — Connections (diagram) ───────────────────── */}
-      <Chapter
-        id="ch-connections"
-        number="05"
-        eyebrow="Connections"
-        title="What surrounds this shelf"
-        tone="diagram"
-        accent={c.accent}
-      >
-        <CollectionConnections collection={c} />
-        <div className="grid gap-10 lg:grid-cols-[1fr_1fr]">
-          <CollectionJournal collection={c} />
-          <CollectionDiscussions collection={c} />
-        </div>
-        <RelationshipPanel kind="collection" id={c.id} title="Across your Chronicle" />
-      </Chapter>
-
-      {/* ───── Chapter 06 — Workspace + numbers (technical) ─────────── */}
-      <Chapter
-        id="ch-workspace"
-        number="06"
-        eyebrow="Workspace"
-        title="Pinned widgets & the numbers"
-        tone="technical"
-        collapsible
-        defaultOpen={false}
-      >
-        <CollectionWorkspace collection={c} />
-        <CollectionStatistics collection={c} />
-        <CollectionAnalyticsPreview collection={c} />
-        <CollectionAchievements collection={c} />
-      </Chapter>
-
-      {/* ───── Chapter 07 — Pairs (journal) ─────────────────────────── */}
-      <Chapter
-        id="ch-pairs"
-        number="07"
-        eyebrow="Pairs beautifully with"
-        title="Other shelves to wander"
-        tone="journal"
-      >
-        <SmartCollectionSuggestions collection={c} />
-        <CompanionCollections exclude={c.id} />
-        <RelatedCollections exclude={c.id} />
-      </Chapter>
 
       <CollectionFooter />
     </div>
