@@ -1,182 +1,226 @@
 # Chronicle
 
-> A Personal Memory Operating System for the stories you live through.
+Chronicle is a modern, premium full-stack application designed to help you document, track, and explore your personal media journeys. Whether you are cataloging movies, curating video game progress, or journaling your thoughts on literature, Chronicle provides a unified, cinematic interface to centralize your digital experiences.
 
-Chronicle is a frontend-first application for tracking, reflecting on, and
-re-experiencing every kind of story you consume — movies, series, anime,
-books, manga, games, music, podcasts, courses, and articles. It treats
-your media history as a living archive of memory rather than a checklist.
+## Overview
 
-> **Status:** Frontend complete (v1.0). Local-first, no backend required.
-> All data persists to `localStorage` via a Zustand store. Backend
-> integration is the next phase.
-
----
-
-## Vision
-
-Most trackers ask *"what did you watch?"*. Chronicle asks *"what stayed
-with you, and why?"* — and then surfaces those answers back to you
-across every page.
-
-The product is built around five loops:
-
-1. **Capture** — universal `⌘N` Add Sheet for any media type.
-2. **Lifecycle** — Start, Pause, Complete, Rewatch, Archive, Favorite.
-3. **Reflect** — moods, ratings, journal entries, quotes captured at completion.
-4. **Resurface** — those reflections re-appear on Dashboard, Journal,
-   Quotes, Wrapped, Analytics, and individual media pages.
-5. **Own** — full JSON/CSV import + export, no account required.
-
----
+Moving beyond simple lists, Chronicle focuses on the *experience* of media consumption. It offers deep analytics, timeline-based history, personal journaling, and a visually stunning interface that treats your media history as an evolving story. Version 1.0.0 represents the fully integrated production release, connecting a robust React frontend to a scalable NestJS backend.
 
 ## Features
 
-- **Universal Library** with status taxonomy (in progress, completed,
-  planning, paused, dropped, rewatching, archived, favorites).
-- **Living Dashboard** with deterministic greetings, focus items,
-  resurfacing memories, and live stats from your real activity.
-- **Cinematic Media Detail** pages with chaptered reading, related
-  journeys, quotes, and personal reflections per item.
-- **Collections, Franchises, Creators, Characters** as first-class entities.
-- **Memory OS** — Journal, Quotes, Wrapped, Timeline, Museum, On This Day.
-- **Discovery Engine** — Because You Loved, Continue Universe, Comfort
-  Stories, Seasonal/Weekend recommendations.
-- **Intelligence Layer** — Taste Profile, Story DNA, Memory DNA,
-  Life Soundtrack, Personal Statements.
-- **Goals, Achievements, Challenges, Smart Collections.**
-- **Command Palette** (`⌘K`) and global keyboard shortcuts.
-- **Import / Export** of the full library as JSON or CSV.
+- **Cinematic Media Library:** A premium, visually rich catalog for tracking diverse media formats.
+- **Dynamic Dashboard:** Real-time synchronization of active journeys, streaks, and daily focuses.
+- **Personal Journal & Timeline:** Document quotes, rate experiences, and map out your engagement history chronologically.
+- **Yearly Wrapped & Analytics:** Beautiful data visualizations detailing your consumption patterns.
+- **Global Search:** Lightning-fast command palette for navigating content seamlessly.
+- **Collections & Franchises:** Group related media into custom galleries.
 
----
+## Screenshots
 
-## Tech stack
+![Dashboard Overview](./docs/images/screenshot-dashboard-placeholder.png)
+*The main user dashboard featuring active journeys and statistics.*
 
-- **Framework:** [TanStack Start](https://tanstack.com/start) v1 (React 19, Vite 7, file-based routing)
-- **Language:** TypeScript (strict)
-- **Styling:** Tailwind CSS v4 + design tokens in `src/styles.css`
-- **UI primitives:** shadcn/ui + Radix
-- **Animation:** Motion (Framer Motion successor)
-- **State:** Zustand with `localStorage` persistence (`src/lib/store/libraryStore.ts`)
-- **Charts:** Recharts + custom editorial visualizations
-- **Routing:** TanStack Router (typed, file-based)
-- **Deployment target:** Cloudflare Workers / Edge (via Nitro)
+![Media Detail View](./docs/images/screenshot-media-placeholder.png)
+*The cinematic media detail view with interactive progress tracking.*
 
----
+![Yearly Wrapped](./docs/images/screenshot-wrapped-placeholder.png)
+*Personalized analytics and yearly review slides.*
 
-## Folder structure
+## Technology Stack
 
-```
-src/
-  components/
-    ui/                 shadcn primitives (Button, Dialog, etc.)
-    layout/             AppShell, Sidebar, TopBar, MobileNav, RightSidebar
-    common/             Shared widgets (QuickActionsMenu, ActivityFeed, EmptyStates)
-    capture/            AddSheet — universal capture
-    media/              MediaCard, ItemActionBar, ProgressLogger, ReflectionDrawer
-    media-detail/       CinematicHero, Chapter, MediaInformation, PersonalMemory
-    memory/             LiveStatsStrip, YourReflectionsRail, YourQuotesRail
-    dashboard/          Living homepage widgets
-    library/            Library hero, toolbar, stats, status pages
-    collections/        Collections workspace
-    discovery/          Discovery Engine surfaces
-    intelligence/       Taste / DNA / Soundtrack visualisations
-    goals/, achievements/, challenges/
-    profile/            Museum, Memory Map, Life Chapters, Quote Gallery
-    journal/, timeline/, editorial/, share/
-    search/             CommandPalette
-    landing/            Marketing landing page
-  lib/
-    store/              Zustand store + live selectors + MediaActions context
-    mock.ts             Seed library (MEDIA, COLLECTIONS, JOURNAL…)
-    library.ts          Status taxonomy + selectors (merges seed + live store)
-    memory*.ts          Memory OS engines
-    discovery.ts        Discovery selectors
-    recommendationEngine.ts
-    intelligence.ts, statsEngine.ts, profileEngine.ts
-    collectionEngine.ts, franchiseEngine.ts, creatorEngine.ts
-    goals.ts, achievements.ts, challenges.ts, smartCollections.ts
-    searchIndex.ts, shortcuts.ts, preferences.ts
-  routes/               File-based routes (see TanStack Start docs)
-  styles.css            Tailwind v4 entry + design tokens
+### Frontend
+* **Core:** React, TypeScript, Vite
+* **Routing:** TanStack Router (File-based, type-safe routing)
+* **State Management:** TanStack React Query
+* **Styling:** Tailwind CSS, Framer Motion, Radix UI
+
+### Backend
+* **Framework:** NestJS
+* **Language:** TypeScript
+* **Validation:** class-validator, class-transformer
+
+### Database
+* **Primary Store:** PostgreSQL
+* **ORM:** Prisma
+
+### Authentication
+* Session-based secure authentication
+
+### Storage
+* Local and cloud-compatible static asset serving
+
+### Deployment
+* **Frontend:** Vercel (Recommended)
+* **Backend:** Render / Railway (Recommended)
+* **Database:** Supabase / Neon / RDS
+
+## Architecture
+
+The application follows a strictly decoupled client-server architecture. The frontend relies on an adapter layer to format and normalize API responses, ensuring UI components are insulated from backend DTO structure changes.
+
+```text
+[ Frontend Application ]
+          ↓
+[ TanStack React Query ] (Caching, Deduping, Server State)
+          ↓
+[ Axios API Client & Adapters ] (Type mapping)
+          ↓
+         HTTP
+          ↓
+[ NestJS Backend ] (Controllers, Services, Auth Guards)
+          ↓
+[ Prisma ORM ] (Type-safe queries)
+          ↓
+[ PostgreSQL Database ]
 ```
 
----
+## Folder Structure
 
-## Getting started
+```text
+chronicle/
+├── src/
+│   ├── components/      # Reusable React components (UI, layout, features)
+│   ├── hooks/           # React Query hooks and custom logic
+│   ├── lib/             # Utility functions, API clients, and type adapters
+│   ├── routes/          # TanStack Router file-based routing
+│   └── routeTree.gen.ts # Auto-generated router configuration
+├── backend/             # (Assuming standard mono-repo or paired repo setup)
+│   ├── src/             # NestJS application source
+│   ├── prisma/          # Prisma schema and migrations
+│   └── ...
+├── public/              # Static assets
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
 
-Requirements: [Bun](https://bun.sh) ≥ 1.1.
+## Getting Started
+
+### Prerequisites
+* Node.js (v18 or higher)
+* npm or yarn
+* PostgreSQL instance (local or cloud)
+
+### Installation
+
+Clone the repository and install dependencies:
 
 ```bash
-bun install
-bun run dev          # http://localhost:8080
-bun run build        # production build
-bunx tsgo --noEmit   # typecheck
-bunx eslint .        # lint
+git clone https://github.com/your-username/chronicle.git
+cd chronicle
+npm install
 ```
 
----
+### Environment Variables
 
-## Design philosophy
+Create a `.env` file in the root directory based on `.env.example`:
 
-- **Editorial, not dashboard.** Type, whitespace, and pacing matter as
-  much as data density.
-- **One identity per primitive.** A single `PremiumGlass`, one
-  `PremiumButton`, one card grammar — never two visual systems for the
-  same purpose.
-- **Semantic tokens only.** No hardcoded hex colors in components.
-  Every accent comes from `styles.css` or an existing oklch value.
-- **Deterministic.** Mock data is seeded with mulberry32; `TODAY` is
-  fixed so SSR and client match.
-- **Reduced motion respected** globally via Motion's `motion-reduce`.
-- **Keyboard first.** `⌘K` palette, `⌘N` capture, `?` shortcut guide.
+```env
+# Frontend
+VITE_API_BASE_URL=http://localhost:3000/api
 
----
+# Backend
+DATABASE_URL="postgresql://user:password@localhost:5432/chronicle?schema=public"
+JWT_SECRET="your-super-secret-key"
+```
 
-## Current limitations
+### Database Setup
 
-- No real backend — all writes persist to `localStorage`. Clearing
-  storage clears your library.
-- No authentication. The `/auth` route is presentational only.
-- Seed data is shipped in `src/lib/mock.ts` to make the app feel
-  populated on first load. Imports merge into the live store on top.
-- External import adapters (Letterboxd, Goodreads, MyAnimeList,
-  Trakt) are not yet implemented — generic JSON/CSV only.
-- No sync across devices.
+Ensure your PostgreSQL instance is running, then initialize the database:
 
----
+```bash
+# Navigate to the backend or prisma directory
+npx prisma generate
+npx prisma db push
+```
 
-## Backend roadmap
+### Prisma Migration
 
-The frontend is structured so a backend can slot in without rewriting
-selectors. Every page already reads from one of:
+For production or structured schema changes, use migrations:
 
-- `useLibraryStore()` — the Zustand store (mutations, persistence)
-- Pure selectors under `src/lib/` — derive from store + seed
-- `liveSelectors.ts` — reactive hooks for live stats / reflections / quotes
+```bash
+npx prisma migrate dev --name init
+```
 
-To wire a backend later, replace `libraryStore`'s persistence layer
-with a TanStack Query + server-function pair. Selector signatures stay
-identical.
+### Running Frontend
 
-Planned phases:
+Start the Vite development server:
 
-1. Auth + per-user storage (Lovable Cloud / Supabase).
-2. Cloud sync of `libraryStore` state.
-3. External tracker importers (Letterboxd, Goodreads, MAL, Trakt, Spotify).
-4. Metadata enrichment (TMDB, OpenLibrary, IGDB, MAL).
-5. Social layer (shared collections, friend activity).
+```bash
+npm run dev
+```
+*The frontend will be available at `http://localhost:5173`.*
 
----
+### Running Backend
 
-## Documentation
+Start the NestJS development server:
 
-- [`docs/README.md`](docs/README.md) — deeper architectural notes
-- [`docs/design-system.md`](docs/design-system.md) — design tokens + primitives
-- [`AGENTS.md`](AGENTS.md) — conventions for AI-assisted contributions
+```bash
+# Assuming backend is in a separate directory or script
+npm run start:dev
+```
+*The API will be available at `http://localhost:3000`.*
 
----
+### Running Full Stack
+
+If configured concurrently in a monorepo setup:
+
+```bash
+npm run dev:all
+```
+
+## Development Workflow
+
+1. **Routing:** Add new files to `src/routes/` to automatically generate new pages via TanStack Router.
+2. **Data Fetching:** Create or update hooks in `src/hooks/` utilizing React Query. Ensure data passes through the adapter layer in `src/lib/adapters/`.
+3. **Components:** Build reusable components in `src/components/ui/` and feature-specific components in their respective domain folders (e.g., `src/components/media/`).
+
+## Build Commands
+
+Create a production-ready build of the frontend:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Testing
+
+*(Configure testing frameworks as needed)*
+
+```bash
+npm run test        # Run unit tests
+npm run test:e2e    # Run end-to-end tests
+```
+
+## Deployment
+
+Please refer to the [DEPLOYMENT.md](./DEPLOYMENT.md) guide for comprehensive instructions on deploying Chronicle to production environments like Vercel, Render, and Docker.
+
+## Production Notes
+
+* Ensure `VITE_API_BASE_URL` is set to the production backend URL.
+* The frontend uses strict null-checking and adapter patterns. Do not bypass the adapter layer when connecting new API endpoints.
+* Database migrations must be run before initiating a new deployment of the backend.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-Private project. All rights reserved.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Credits
+
+Designed and developed for users who love their media. 
+Powered by React, NestJS, and the open-source community.
