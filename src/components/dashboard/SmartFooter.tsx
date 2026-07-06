@@ -1,11 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { GOALS_FULL } from "@/lib/goals";
-import { UPCOMING } from "@/lib/mock";
 import { cn } from "@/lib/utils";
 
 export function SmartFooter({ className }: { className?: string }) {
-  const active = GOALS_FULL.filter((g) => g.status === "Active").slice(0, 3);
   return (
     <section aria-label="Your story continues" className={cn("relative pb-24", className)}>
       <div
@@ -25,11 +22,7 @@ export function SmartFooter({ className }: { className?: string }) {
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Active goals
             </div>
-            <ul className="mt-3 space-y-2 text-sm">
-              {active.map((g) => (
-                <li key={g.id}>{g.title}</li>
-              ))}
-            </ul>
+            <p className="mt-3 text-sm text-muted-foreground">No active goals found.</p>
             <Link
               to="/app/goals"
               className="story-link mt-3 inline-block text-xs text-muted-foreground hover:text-foreground"
@@ -43,13 +36,7 @@ export function SmartFooter({ className }: { className?: string }) {
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Upcoming
             </div>
-            <ul className="mt-3 space-y-2 text-sm">
-              {UPCOMING.slice(0, 3).map((u) => (
-                <li key={u.id}>
-                  {u.media.title} — <span className="text-muted-foreground">{u.label}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-3 text-sm text-muted-foreground">No upcoming releases tracked.</p>
             <Link
               to="/app/calendar"
               className="story-link mt-3 inline-block text-xs text-muted-foreground hover:text-foreground"
@@ -63,12 +50,12 @@ export function SmartFooter({ className }: { className?: string }) {
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Reminder
             </div>
-            <p className="mt-3 text-sm">You haven't journaled today.</p>
+            <p className="mt-3 text-sm">Write something quiet.</p>
             <Link
               to="/app/journal"
               className="story-link mt-3 inline-block text-xs text-muted-foreground hover:text-foreground"
             >
-              Write something quiet
+              Open Journal
             </Link>
           </div>
         </PremiumGlass>

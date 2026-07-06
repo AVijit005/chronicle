@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Plus, Search as SearchIcon, NotebookPen, Layers, ChevronRight } from "lucide-react";
 import { CinematicHero } from "@/components/media/CinematicHero";
@@ -31,6 +31,7 @@ import { useDashboard } from "@/hooks/use-analytics";
 import { useCollections } from "@/hooks/use-collections";
 import { adaptContinueItem } from "@/lib/adapters/media";
 import { adaptCollectionResponse } from "@/lib/adapters/collection";
+import { useMediaActions } from "@/lib/store/MediaActionsContext";
 import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -42,6 +43,8 @@ export const Route = createFileRoute("/app/")({
 function Home() {
   const { data: dashboard, isLoading, isError, error } = useDashboard();
   const { data: collections } = useCollections();
+  const navigate = useNavigate();
+  const { openAdd } = useMediaActions();
 
   if (isLoading) {
     return (
@@ -98,13 +101,14 @@ function Home() {
         className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4"
       >
         {[
-          { icon: Plus, label: "Add media" },
-          { icon: SearchIcon, label: "Spotlight" },
-          { icon: NotebookPen, label: "Journal entry" },
-          { icon: Layers, label: "New collection" },
+          { icon: Plus, label: "Add media", hint: "Press ⌘N", onClick: () => openAdd() },
+          { icon: SearchIcon, label: "Spotlight", hint: "Press ⌘K", onClick: () => window.dispatchEvent(new KeyboardEvent('keydown', { metaKey: true, key: 'k' })) },
+          { icon: NotebookPen, label: "Journal entry", hint: "Press ⇧J", onClick: () => navigate({ to: '/app/journal' }) },
+          { icon: Layers, label: "New collection", hint: "Press ⇧C", onClick: () => navigate({ to: '/app/collections' }) },
         ].map((q, i) => (
           <button
             key={i}
+            onClick={q.onClick}
             className="glass group flex items-center gap-3 rounded-2xl p-4 text-left transition hover-lift"
           >
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.06]">
@@ -112,7 +116,7 @@ function Home() {
             </div>
             <div className="flex-1">
               <div className="text-sm">{q.label}</div>
-              <div className="text-[11px] text-muted-foreground">Press ⌘K</div>
+              <div className="text-[11px] text-muted-foreground">{q.hint}</div>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-foreground" />
           </button>

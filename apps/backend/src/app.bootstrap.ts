@@ -32,7 +32,7 @@ export async function createApp(): Promise<INestApplication> {
     next();
   });
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || false,
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : 'http://localhost:5173',
     credentials: true,
   });
 

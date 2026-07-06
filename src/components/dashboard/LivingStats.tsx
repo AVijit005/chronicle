@@ -1,38 +1,41 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { STATS, ACTIVITY_30D } from "@/lib/mock";
+import { useOverview, useStreaks } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 
-const STATS_LIST = [
-  {
-    label: "Watched",
-    value: `${STATS.thisWeek}h`,
-    ctx: "Up from last week.",
-    accent: "oklch(0.72 0.18 255 / 0.35)",
-  },
-  {
-    label: "Streak",
-    value: `${STATS.streak}`,
-    ctx: "Days in a row.",
-    accent: "oklch(0.65 0.22 295 / 0.35)",
-  },
-  {
-    label: "Completed",
-    value: STATS.completed,
-    ctx: "All time.",
-    accent: "oklch(0.72 0.16 160 / 0.35)",
-  },
-  {
-    label: "In progress",
-    value: STATS.inProgress,
-    ctx: "Across categories.",
-    accent: "oklch(0.82 0.16 80 / 0.35)",
-  },
-];
-
 export function LivingStats({ className }: { className?: string }) {
+  const { data: overview } = useOverview();
+  const { data: streaks } = useStreaks();
+
+  const STATS_LIST = [
+    {
+      label: "Hours Tracked",
+      value: `${Math.round(overview?.hoursSpent ?? 0)}h`,
+      ctx: "Total time.",
+      accent: "oklch(0.72 0.18 255 / 0.35)",
+    },
+    {
+      label: "Streak",
+      value: `${streaks?.currentStreak ?? 0}`,
+      ctx: "Days in a row.",
+      accent: "oklch(0.65 0.22 295 / 0.35)",
+    },
+    {
+      label: "Completed",
+      value: overview?.totalItems ?? 0,
+      ctx: "All time.",
+      accent: "oklch(0.72 0.16 160 / 0.35)",
+    },
+    {
+      label: "Journals",
+      value: overview?.journalEntries ?? 0,
+      ctx: "Memories saved.",
+      accent: "oklch(0.82 0.16 80 / 0.35)",
+    },
+  ];
+
   return (
     <ul className={cn("grid grid-cols-2 gap-3 md:grid-cols-4", className)}>
-      {STATS_LIST.map((s, i) => (
+      {STATS_LIST.map((s) => (
         <li key={s.label}>
           <PremiumGlass variant="subtle" glow={s.accent}>
             <div className="p-5">
@@ -43,9 +46,6 @@ export function LivingStats({ className }: { className?: string }) {
                 {s.value}
               </div>
               <div className="mt-1 text-[11px] text-muted-foreground">{s.ctx}</div>
-              <div className="mt-3">
-                <Spark data={ACTIVITY_30D.slice(i * 7, i * 7 + 8).map((d) => d.hours)} />
-              </div>
             </div>
           </PremiumGlass>
         </li>

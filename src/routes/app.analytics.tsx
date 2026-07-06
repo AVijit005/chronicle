@@ -66,9 +66,6 @@ import {
   adaptInsights,
 } from "@/lib/adapters/analytics";
 import { MemoryInsights } from "@/components/memory/MemoryInsights";
-import { RecommendationInsights } from "@/components/discovery/RecommendationInsights";
-import { getGoalInsights, getJourneyStatistics } from "@/lib/goals";
-import { PersonalStatements } from "@/components/intelligence/PersonalStatements";
 import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
 
@@ -657,23 +654,19 @@ function AnalyticsPage() {
         <MemoryInsights max={6} />
       </Zone>
       <Zone eyebrow="Discovery" title="What Chronicle notices">
-        <RecommendationInsights />
+        <PremiumGlass className="p-8 text-center text-muted-foreground">
+          Discovery patterns unavailable (API limitation)
+        </PremiumGlass>
       </Zone>
       <Zone eyebrow="Portrait" title="What Chronicle has learned about you">
-        <PersonalStatements />
+        <PremiumGlass className="p-8 text-center text-muted-foreground">
+          Personal portrait unavailable (API limitation)
+        </PremiumGlass>
       </Zone>
       <Zone eyebrow="Goals" title="How your journeys behave">
-        <ul className="grid gap-2 md:grid-cols-2">
-          {getGoalInsights().map((l) => (
-            <li key={l} className="glass-subtle rounded-2xl p-4 text-sm text-foreground/80">
-              {l}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-4 text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
-          Completion rate {getJourneyStatistics().completionRate}% · Avg{" "}
-          {getJourneyStatistics().averageJourneyDays} days
-        </div>
+        <PremiumGlass className="p-8 text-center text-muted-foreground">
+          Journey goals unavailable (API limitation)
+        </PremiumGlass>
       </Zone>
     </div>
   );

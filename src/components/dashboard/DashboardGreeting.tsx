@@ -1,11 +1,22 @@
 import { motion } from "motion/react";
 import { getGreeting } from "@/lib/dashboardGreeting";
-import { getDashboardContext } from "@/lib/dashboardContext";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useDashboard, useStreaks, useOverview } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 
 export function DashboardGreeting({ className }: { className?: string }) {
-  const ctx = getDashboardContext();
-  const g = getGreeting(ctx.greeting);
+  const { data: user } = useCurrentUser();
+  const { data: dashboard } = useDashboard();
+  const { data: streaks } = useStreaks();
+  const { data: overview } = useOverview();
+  
+  const firstName = user?.fullName?.split(" ")[0] || "there";
+  const g = getGreeting({
+    name: firstName,
+    streak: streaks?.currentStreak,
+    recentCompletions: overview?.moviesCompleted, // using as proxy
+    unfinishedTitle: dashboard?.continueWatching?.[0]?.title
+  });
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}

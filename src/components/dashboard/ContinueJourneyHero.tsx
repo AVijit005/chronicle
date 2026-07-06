@@ -3,13 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { Play, NotebookPen, Clock, ChevronRight } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import { getDashboardContext } from "@/lib/dashboardContext";
+import { useDashboard } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 
 export function ContinueJourneyHero({ className }: { className?: string }) {
-  const { currentJourney: j } = getDashboardContext();
+  const { data: dashboard } = useDashboard();
+  const j = dashboard?.continueWatching?.[0];
   if (!j) return null;
-  const remaining = Math.max(0, 100 - (j.progress ?? 0));
+  const remaining = Math.max(0, 100 - (j.progressPercentage ?? 0));
   return (
     <motion.section
       initial={{ opacity: 0, y: 16 }}
@@ -18,10 +19,10 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
       aria-label="Continue your journey"
       className={cn("relative", className)}
     >
-      <PremiumGlass variant="strong" glow={j.accent ?? undefined} className="overflow-hidden">
+      <PremiumGlass variant="strong" className="overflow-hidden">
         <div className="relative grid gap-0 md:grid-cols-[1.1fr_1fr]">
           <div className="relative aspect-[16/9] md:aspect-auto md:min-h-[280px]">
-            <img src={j.backdrop ?? j.poster} alt="" className="h-full w-full object-cover" />
+            <img src={j.posterUrl ?? ""} alt="" className="h-full w-full object-cover" />
             <div
               className="absolute inset-0"
               style={{
@@ -34,29 +35,24 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
               Continue your journey
             </div>
             <h2 className="mt-2 font-display text-3xl tracking-tight md:text-4xl">{j.title}</h2>
-            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{j.synopsis}</p>
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">Continue where you left off.</p>
 
             <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-muted-foreground md:grid-cols-3">
-              <Meta k="Progress" v={`${j.progress ?? 0}%`} />
+              <Meta k="Progress" v={`${j.progressPercentage ?? 0}%`} />
               <Meta k="Remaining" v={`${remaining}%`} />
-              <Meta k="Last opened" v="Yesterday" />
-              <Meta k="Estimated finish" v="~4 days" />
-              <Meta k="Why continue" v="2 episodes remain" />
-              <Meta k="Streak" v="7 days" />
             </div>
 
             <div className="mt-5 h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
               <div
-                className="h-full rounded-full"
+                className="h-full rounded-full bg-primary"
                 style={{
-                  width: `${j.progress ?? 0}%`,
-                  background: j.accent ?? "oklch(0.78 0.18 50)",
+                  width: `${j.progressPercentage ?? 0}%`
                 }}
               />
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link to="/app/media/$id" params={{ id: j.id }}>
+              <Link to="/app/media/$id" params={{ id: j.mediaId }}>
                 <PremiumButton variant="primary" icon={<Play className="h-4 w-4" />}>
                   Continue
                 </PremiumButton>
@@ -73,7 +69,7 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
               </Link>
               <Link
                 to="/app/media/$id"
-                params={{ id: j.id }}
+                params={{ id: j.mediaId }}
                 className="story-link ml-auto inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
               >
                 Open <ChevronRight className="h-4 w-4" />

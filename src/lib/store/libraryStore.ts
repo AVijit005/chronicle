@@ -94,107 +94,7 @@ interface Actions {
   reset: () => void;
 }
 
-const SEED_META: Record<string, StoredMeta> = {
-  interstellar: {
-    status: "completed",
-    favorite: true,
-    completedAt: "Yesterday",
-    timesWatched: 6,
-    progress: 100,
-    journalExcerpt: "The docking scene still wrecks me — six viewings in.",
-  },
-  "one-piece": {
-    status: "in_progress",
-    favorite: true,
-    lastActivityAt: "2h ago",
-    timesWatched: 1,
-    progress: 67,
-    progressLabel: "Ep 1042",
-  },
-  cyberpunk: {
-    status: "paused",
-    lastActivityAt: "19 days ago",
-    progress: 42,
-    progressLabel: "Act II — 42%",
-    droppedAtLabel: "Paused at 42%",
-  },
-  dune: {
-    status: "completed",
-    favorite: true,
-    completedAt: "6 weeks ago",
-    timesWatched: 2,
-    progress: 100,
-    journalExcerpt: "The chants. The dunes. The silence after.",
-  },
-  "harry-potter": {
-    status: "in_progress",
-    lastActivityAt: "3 days ago",
-    progress: 38,
-    progressLabel: "Page 312/636",
-  },
-  succession: { status: "completed", completedAt: "Last week", timesWatched: 1, progress: 100 },
-  "chainsaw-man": {
-    status: "dropped",
-    droppedAtLabel: "Dropped at ch 58",
-    lastActivityAt: "2 months ago",
-    progress: 28,
-  },
-  "elden-ring": {
-    status: "rewatching",
-    favorite: true,
-    timesWatched: 3,
-    lastActivityAt: "Yesterday",
-    progress: 84,
-    progressLabel: "DLC — 84%",
-    journalExcerpt: "Beat Malenia after 41 tries. Felt nothing for an hour, then everything.",
-  },
-  "dark-side": {
-    status: "completed",
-    favorite: true,
-    completedAt: "1 month ago",
-    timesWatched: 22,
-    progress: 100,
-  },
-  lex: { status: "in_progress", lastActivityAt: "Today", progress: 22, progressLabel: "Ep #412" },
-  cs50: {
-    status: "in_progress",
-    lastActivityAt: "Last week",
-    progress: 55,
-    progressLabel: "Lecture 7/12",
-  },
-  mkbhd: { status: "archived", completedAt: "Mar 2024" },
-  // Planning seed items live alongside; library.ts owns the synthetic poster data.
-  "p-foundation": {
-    status: "planning",
-    priority: "high",
-    reasonSaved: "Loved season 2's score.",
-    addedAt: "3 days ago",
-  },
-  "p-pachinko": {
-    status: "planning",
-    priority: "high",
-    reasonSaved: "Mentioned by a friend at dinner.",
-    addedAt: "1 week ago",
-  },
-  "p-bg3": {
-    status: "planning",
-    priority: "med",
-    reasonSaved: "Saved for the long winter.",
-    addedAt: "2 weeks ago",
-  },
-  "p-shogun": {
-    status: "planning",
-    priority: "med",
-    reasonSaved: "Was #1 on three friends' lists.",
-    addedAt: "Yesterday",
-  },
-  "p-eclipse": {
-    status: "planning",
-    priority: "low",
-    reasonSaved: "Friend wouldn't shut up about it.",
-    addedAt: "1 month ago",
-  },
-};
+const SEED_META: Record<string, StoredMeta> = {};
 
 function deriveDefault(m: MediaItem): MediaStatus {
   if (m.status === "completed") return "completed";
@@ -204,11 +104,7 @@ function deriveDefault(m: MediaItem): MediaStatus {
 }
 
 const initialMeta = (): Record<string, StoredMeta> => {
-  const out: Record<string, StoredMeta> = {};
-  for (const m of MEDIA) out[m.id] = { status: deriveDefault(m), progress: m.progress ?? undefined };
-  for (const [id, s] of Object.entries(SEED_META))
-    out[id] = { ...(out[id] ?? { status: s.status }), ...s };
-  return out;
+  return {};
 };
 
 export const useLibraryStore = create<State & Actions>()(
@@ -491,7 +387,7 @@ export function snapshotMeta(id: string): StoredMeta {
 }
 
 export function snapshotAllItems(): MediaItem[] {
-  return [...useLibraryStore.getState().customItems, ...MEDIA];
+  return [...useLibraryStore.getState().customItems];
 }
 
 export const KIND_LABEL: Record<MediaKind | "article", string> = {

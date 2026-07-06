@@ -1,16 +1,27 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { getDashboardContext } from "@/lib/dashboardContext";
+import { useDashboard, useInsights, useStreaks } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 
+function currentSeason(): string {
+  const m = new Date().getMonth();
+  if (m < 2 || m === 11) return "Winter";
+  if (m < 5) return "Spring";
+  if (m < 8) return "Summer";
+  return "Autumn";
+}
+
 export function DashboardContext({ className }: { className?: string }) {
-  const c = getDashboardContext();
+  const { data: dashboard } = useDashboard();
+  const { data: insights } = useInsights();
+  const { data: streaks } = useStreaks();
+
   const items = [
-    { k: "Current journey", v: c.currentJourney?.title ?? "—" },
-    { k: "Mood", v: c.currentMood },
-    { k: "Season", v: c.season },
-    { k: "Streak", v: `${c.streak} days` },
-    { k: "Favorite creator", v: c.favoriteCreator },
-    { k: "Top genre", v: c.topGenre },
+    { k: "Current journey", v: dashboard?.continueWatching?.[0]?.title ?? "—" },
+    { k: "Top genre", v: insights?.favoriteGenre ?? "—" },
+    { k: "Season", v: currentSeason() },
+    { k: "Streak", v: `${streaks?.currentStreak ?? 0} days` },
+    { k: "Top Media", v: insights?.favoriteMediaType ?? "—" },
+    { k: "Hours Tracked", v: `${Math.round(insights?.totalHoursSpent ?? 0)}h` },
   ];
   return (
     <PremiumGlass variant="subtle" className={className}>

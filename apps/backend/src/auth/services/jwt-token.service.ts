@@ -31,6 +31,7 @@ export class JwtTokenService {
   verifyAccessToken(token: string): AccessTokenPayload {
     return this.jwt.verify<AccessTokenPayload>(token, {
       secret: this.config.get<string>('jwt.accessSecret'),
+      algorithms: ['HS256'],
     });
   }
 }

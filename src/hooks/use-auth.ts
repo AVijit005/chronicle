@@ -25,8 +25,12 @@ export function useLogin() {
 }
 
 export function useRegister() {
+  const queryClient = useQueryClient();
   return useMutation<UserResponse, Error, RegisterInput>({
     mutationFn: (input) => authApi.register(input),
+    onSuccess: (data) => {
+      queryClient.setQueryData(queryKeys.auth.me(), data);
+    }
   });
 }
 

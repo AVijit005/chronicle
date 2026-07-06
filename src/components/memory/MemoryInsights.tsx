@@ -1,5 +1,5 @@
 import { Sparkles } from "lucide-react";
-import { INSIGHT_LINES } from "@/lib/memoryInsights";
+import { useInsights } from "@/hooks/use-analytics";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,22 @@ interface Props {
 }
 
 export function MemoryInsights({ className, max = 4 }: Props) {
-  const lines = INSIGHT_LINES.slice(0, max);
+  const { data: insights } = useInsights();
+  
+  if (!insights) return null;
+
+  const lines = [
+    `Your most active weekday is usually ${insights.mostActiveWeekday}.`,
+    insights.favoriteGenre ? `You tend to gravitate towards ${insights.favoriteGenre} stories.` : null,
+    insights.mostProductiveMonth ? `Your most productive month for consumption was ${insights.mostProductiveMonth}.` : null,
+    insights.longestBinge ? `Your longest uninterrupted binge lasted ${insights.longestBinge}.` : null,
+    insights.averageCompletionTime ? `You average ${insights.averageCompletionTime} days to complete a story.` : null,
+  ].filter(Boolean) as string[];
+
+  const displayLines = lines.slice(0, max);
+  
+  if (displayLines.length === 0) return null;
+
   return (
     <PremiumGlass variant="subtle" className={className}>
       <section className="p-5 md:p-6" aria-label="Memory insights">
@@ -17,7 +32,7 @@ export function MemoryInsights({ className, max = 4 }: Props) {
           <Sparkles className="h-3 w-3" /> What Chronicle noticed
         </header>
         <ul className="mt-4 space-y-2.5">
-          {lines.map((l) => (
+          {displayLines.map((l) => (
             <li
               key={l}
               className={cn(

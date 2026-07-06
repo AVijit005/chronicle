@@ -1,12 +1,11 @@
 // Reactive selectors over libraryStore — real numbers, not mock seeds.
 import { useMemo } from "react";
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/mock";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 import type { StoredMeta } from "@/lib/store/libraryStore";
 
 function allItemsFrom(custom: MediaItem[]): MediaItem[] {
-  const ids = new Set(custom.map((c) => c.id));
-  return [...custom, ...MEDIA.filter((m) => !ids.has(m.id))];
+  return [...custom];
 }
 
 export interface ReflectionRow {
