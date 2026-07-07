@@ -61,11 +61,11 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
           style={{ boxShadow: "0 20px 40px -20px oklch(0 0 0 / 0.7)" }}
         >
           {errored ? (
-            <div className="grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
+            <div className="absolute inset-0 grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
               <Glyph className="h-8 w-8 text-muted-foreground/40" />
             </div>
           ) : (
-            <motion.div initial="hidden" animate={loaded ? "visible" : "hidden"} variants={imageReveal}>
+            <motion.div initial="hidden" animate={loaded ? "visible" : "hidden"} variants={imageReveal} className="absolute inset-0 h-full w-full">
               <motion.img
                 layoutId={`poster-${item.mediaId || item.id}`}
                 src={item.poster}
