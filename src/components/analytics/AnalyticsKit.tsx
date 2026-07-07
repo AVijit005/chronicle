@@ -156,7 +156,7 @@ export function ProgressRing({
   const c = 2 * Math.PI * r;
   const v = Math.max(0, Math.min(100, value));
   return (
-    <div className="relative grid place-items-center" style={{ width: size, height: size }}>
+    <div className="relative grid place-items-center" style={{ width: size + 24, height: size + 24 }}>
       <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
         <circle
           cx={size / 2}
