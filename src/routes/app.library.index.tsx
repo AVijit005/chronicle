@@ -138,7 +138,7 @@ function LibraryIndex() {
             action={
               <Link
                 to="/app/library/continue"
-                className="press-scale inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+                className="glass-subtle inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs text-muted-foreground transition-all duration-[300ms] ease-out hover:-translate-y-0.5 hover:border-white/20 hover:text-foreground hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-95 cursor-pointer"
               >
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
@@ -163,7 +163,7 @@ function LibraryIndex() {
             action={
               <Link
                 to="/app/library/planning"
-                className="press-scale inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+                className="glass-subtle inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs text-muted-foreground transition-all duration-[300ms] ease-out hover:-translate-y-0.5 hover:border-white/20 hover:text-foreground hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-95 cursor-pointer"
               >
                 Open queue <ArrowRight className="h-3 w-3" />
               </Link>
@@ -189,7 +189,7 @@ function LibraryIndex() {
           action={
             <Link
               to="/app/library/recently-finished"
-              className="press-scale inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+              className="glass-subtle inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs text-muted-foreground transition-all duration-[300ms] ease-out hover:-translate-y-0.5 hover:border-white/20 hover:text-foreground hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-95 cursor-pointer"
             >
               See timeline <ArrowRight className="h-3 w-3" />
             </Link>
@@ -207,7 +207,7 @@ function LibraryIndex() {
             action={
               <Link
                 to="/app/library/favorites"
-                className="press-scale inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+                className="glass-subtle inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs text-muted-foreground transition-all duration-[300ms] ease-out hover:-translate-y-0.5 hover:border-white/20 hover:text-foreground hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-95 cursor-pointer"
               >
                 Open gallery <ArrowRight className="h-3 w-3" />
               </Link>

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Star, NotebookPen } from "lucide-react";
 import type { MediaItem } from "@/lib/mock";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { bucketOfDate, metaOf, recentlyFinished } from "@/lib/library";
 
 const BUCKETS = ["Today", "Yesterday", "Last Week", "Last Month", "Older"] as const;
@@ -41,31 +42,36 @@ export function RecentlyFinishedTimeline({ limit }: { limit?: number }) {
                       key={m.id}
                       to="/app/media/$id"
                       params={{ id: m.id }}
-                      className="glass flex items-center gap-3 rounded-2xl p-3 transition hover-lift"
+                      className="block"
                     >
-                      <img
-                        src={m.poster}
-                        alt=""
-                        className="h-16 w-12 shrink-0 rounded-md object-cover"
-                        loading="lazy"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-medium">{m.title}</div>
-                        <div className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                          {meta.completedAt ?? "Recently"} · {m.kind}
-                        </div>
-                        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
-                          <span className="inline-flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />{" "}
-                            {(m.rating ?? 0).toFixed(1)}
-                          </span>
-                          {meta.journalExcerpt && (
-                            <span className="inline-flex items-center gap-1 text-primary/80">
-                              <NotebookPen className="h-3 w-3" /> journaled
+                      <PremiumGlass 
+                        interactive 
+                        className="flex items-center gap-3 rounded-2xl p-3"
+                      >
+                        <img
+                          src={m.poster}
+                          alt=""
+                          className="h-16 w-12 shrink-0 rounded-md object-cover"
+                          loading="lazy"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-medium">{m.title}</div>
+                          <div className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                            {meta.completedAt ?? "Recently"} · {m.kind}
+                          </div>
+                          <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
+                            <span className="inline-flex items-center gap-1">
+                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />{" "}
+                              {(m.rating ?? 0).toFixed(1)}
                             </span>
-                          )}
+                            {meta.journalExcerpt && (
+                              <span className="inline-flex items-center gap-1 text-primary/80">
+                                <NotebookPen className="h-3 w-3" /> journaled
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      </PremiumGlass>
                     </Link>
                   );
                 })}
