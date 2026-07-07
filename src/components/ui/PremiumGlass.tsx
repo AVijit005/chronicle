@@ -8,6 +8,7 @@ interface Props extends HTMLMotionProps<"div"> {
   variant?: Variant;
   reflection?: boolean;
   glow?: string; // oklch
+  interactive?: boolean;
 }
 
 const variantClass: Record<Variant, string> = {
@@ -28,6 +29,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
       variant = "default",
       reflection = true,
       glow,
+      interactive = false,
       className,
       children,
       style,
@@ -90,6 +92,8 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         className={cn(
           "group/glass relative overflow-hidden rounded-3xl",
           variantClass[variant],
+          interactive && 
+            "cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-[300ms] ease-out hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-[0.98]",
           className,
         )}
         style={
@@ -105,9 +109,10 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         {/* outer highlight */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px transition-opacity duration-300"
           style={{
             background: "linear-gradient(90deg, transparent, oklch(1 0 0 / 0.35), transparent)",
+            opacity: interactive ? "calc(0.5 + var(--glass-rev) * 0.5)" : "1"
           }}
         />
         {/* inner highlight + proximity border */}
@@ -134,9 +139,9 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
               aria-hidden
               className="pointer-events-none absolute inset-0 transition-opacity duration-[600ms] ease-out"
               style={{
-                opacity: "calc(var(--glass-rev) * 0.55)",
+                opacity: "calc(var(--glass-rev) * 0.65)",
                 background:
-                  "radial-gradient(420px circle at var(--glass-px) var(--glass-py), oklch(1 0 0 / 0.10), transparent 60%)",
+                  "radial-gradient(420px circle at var(--glass-px) var(--glass-py), oklch(0.72 0.18 255 / 0.15), transparent 60%)",
                 mixBlendMode: "screen",
               }}
             />
