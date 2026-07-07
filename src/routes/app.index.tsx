@@ -177,13 +177,13 @@ function Home() {
 
       {/* Stats — living, in a master glass panel */}
       <div className="mt-16 pointer-events-auto">
-        <PremiumGlass interactive className="group/master flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 p-6 md:p-10 rounded-[2rem]">
+        <PremiumGlass interactive className="group/master flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 p-8 lg:p-12 rounded-[2.5rem]">
           {/* Left Column: Context Typography */}
-          <div className="flex-1 max-w-md">
-            <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85">
+          <div className="flex-1 max-w-md w-full">
+            <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">
               This is you
             </div>
-            <h2 className="mt-3 font-display text-3xl tracking-tight md:text-4xl">
+            <h2 className="font-display text-3xl tracking-tight md:text-4xl">
               A quiet glance at your patterns
             </h2>
             <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-foreground/80">
@@ -193,8 +193,8 @@ function Home() {
           </div>
 
           {/* Right Column: The 4 Metric Pills */}
-          <div className="flex-[1.2] w-full">
-            <LivingStats />
+          <div className="w-full lg:w-auto flex-shrink-0 flex items-center lg:justify-end">
+            <LivingStats className="w-full gap-4" />
           </div>
         </PremiumGlass>
       </div>
