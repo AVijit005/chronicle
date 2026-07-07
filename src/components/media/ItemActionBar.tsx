@@ -227,7 +227,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
   // Style per variant
   const wrap = cn(
     variant === "overlay" &&
-      "absolute inset-0 h-full w-full bg-black/50 backdrop-blur-md grid grid-cols-2 auto-rows-fr gap-2 p-3",
+      "absolute inset-0 h-full w-full overflow-hidden bg-black/50 backdrop-blur-md grid grid-cols-2 auto-rows-fr gap-2 p-3 min-h-0 min-w-0",
     variant === "hero" && "flex flex-wrap items-center gap-2",
     variant === "inline" && "flex items-center gap-1.5",
     className,
@@ -242,9 +242,9 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
           title={v.label}
           {...heroMotion}
           className={cn(
-            "press-scale transition overflow-hidden",
+            "press-scale transition overflow-hidden min-h-0 min-w-0",
             variant === "overlay"
-              ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-[1rem] bg-white/[0.08] text-white shadow-lg ring-1 ring-white/20 hover:bg-white/[0.15]"
+              ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-white/[0.08] text-white shadow-lg ring-1 ring-white/20 hover:bg-white/[0.15]"
               : "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary text-xs font-medium text-primary-foreground",
             variant === "hero" ? "px-4 py-2 text-sm" : variant === "inline" ? "px-3 py-1.5" : ""
           )}
@@ -260,9 +260,9 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         aria-pressed={fav}
         {...heroMotion}
         className={cn(
-          "press-scale transition shrink-0",
+          "press-scale transition shrink-0 min-h-0 min-w-0 overflow-hidden",
           variant === "overlay"
-            ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-[1rem] shadow-lg ring-1 ring-white/20"
+            ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl shadow-lg ring-1 ring-white/20"
             : "grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10",
           variant === "hero" && "tap-target",
           fav
@@ -279,9 +279,9 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         aria-pressed={bookmarked}
         {...heroMotion}
         className={cn(
-          "press-scale transition shrink-0",
+          "press-scale transition shrink-0 min-h-0 min-w-0 overflow-hidden",
           variant === "overlay"
-            ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-[1rem] shadow-lg ring-1 ring-white/20"
+            ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl shadow-lg ring-1 ring-white/20"
             : "grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10",
           variant === "hero" && "tap-target",
           bookmarked
@@ -298,9 +298,9 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
             aria-label="More actions"
             {...heroMotion}
             className={cn(
-              "press-scale transition shrink-0",
+              "press-scale transition shrink-0 min-h-0 min-w-0 overflow-hidden",
               variant === "overlay"
-                ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-[1rem] bg-white/[0.08] text-white shadow-lg ring-1 ring-white/20 hover:bg-white/[0.15]"
+                ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-white/[0.08] text-white shadow-lg ring-1 ring-white/20 hover:bg-white/[0.15]"
                 : "grid h-8 w-8 place-items-center rounded-full bg-white/[0.06] text-muted-foreground ring-1 ring-white/10 hover:bg-white/[0.15] hover:text-foreground",
               variant === "hero" && "tap-target",
             )}

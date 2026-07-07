@@ -50,7 +50,7 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocused(false);
       }}
-      className={cn("group relative", size !== "full" && "shrink-0", w)}
+      className={cn("group relative flex flex-col min-w-0", size !== "full" && "shrink-0", w)}
     >
       <div className="relative">
         <Link to="/app/media/$id" params={{ id: item.mediaId || item.id }} className="block">
