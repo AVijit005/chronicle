@@ -244,7 +244,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
           className={cn(
             "press-scale overflow-hidden min-h-0 min-w-0 transition-all duration-300 ease-out",
             variant === "overlay"
-              ? "flex aspect-square flex-1 items-center justify-center rounded-full bg-white/[0.06] text-white ring-1 ring-white/10 hover:-translate-y-[2px] hover:bg-white/[0.15] hover:ring-white/20 hover:shadow-[0_8px_16px_-4px_oklch(0.72_0.18_255/0.3)]"
+              ? "flex aspect-square flex-1 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-[inset_0_1px_0_oklch(1_1_1/0.2)] ring-1 ring-white/20 hover:-translate-y-[2px] hover:brightness-110 hover:shadow-[0_8px_16px_-4px_oklch(0.72_0.18_255/0.5)]"
               : "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary text-xs font-medium text-primary-foreground",
             variant === "hero" ? "px-4 py-2 text-sm" : variant === "inline" ? "px-3 py-1.5" : ""
           )}
