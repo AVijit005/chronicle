@@ -32,8 +32,8 @@ const KIND_GLYPH: Record<UIMediaKind, LucideIcon> = {
   youtube: Youtube,
 };
 
-export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm" | "md" | "lg" }) {
-  const w = size === "sm" ? "w-36" : size === "lg" ? "w-56" : "w-44";
+export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "sm" | "md" | "lg" | "full" }) {
+  const w = size === "full" ? "w-full" : size === "sm" ? "w-36" : size === "lg" ? "w-56" : "w-44";
   const rating = item.rating ?? 0;
   const accent = item.accent ?? "oklch(0.72 0.18 255)";
   const [focused, setFocused] = useState(false);
@@ -46,9 +46,10 @@ export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocused(false);
       }}
-      className={cn("group relative shrink-0", w)}
+      className={cn("group relative", size !== "full" && "shrink-0", w)}
     >
-      <Link to="/app/media/$id" params={{ id: item.mediaId }} className="block">
+      <div className="relative">
+        <Link to="/app/media/$id" params={{ id: item.mediaId }} className="block">
         <motion.div
           variants={{ rest: { y: 0 }, hover: { y: -6 } }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -108,18 +109,18 @@ export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm
             </div>
           )}
         </motion.div>
-      </Link>
+          </Link>
 
-      {/* Hover-revealed action bar (sits over the bottom of the poster) */}
-      <motion.div
-        variants={{ rest: { opacity: 0, y: 6 }, hover: { opacity: 1, y: 0 } }}
-        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-1"
-      >
-        <div className="pointer-events-auto max-w-full">
-          <ItemActionBar id={item.id} title={item.title} variant="overlay" className="w-full justify-between" />
+          <motion.div
+            variants={{ rest: { opacity: 0, y: 6 }, hover: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none absolute inset-x-0 bottom-2 z-10 flex justify-center px-1"
+          >
+            <div className="pointer-events-auto">
+              <ItemActionBar id={item.id} title={item.title} variant="overlay" />
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
       <div className="mt-3 px-0.5">
         <div className="truncate text-sm font-medium">{item.title}</div>
         <div className="mt-0.5 truncate text-[11px] uppercase tracking-wider text-muted-foreground">

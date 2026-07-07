@@ -5,7 +5,7 @@ export function CreatorWorks({ works }: { works: MediaItem[] }) {
   return (
     <div className="flex flex-wrap gap-4">
       {works.map((w) => (
-        <MediaCard key={w.id} item={w as any} />
+        <MediaCard key={w.id} item={w as any} size="md" />
       ))}
     </div>
   );

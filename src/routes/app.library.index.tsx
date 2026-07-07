@@ -225,8 +225,8 @@ function LibraryIndex() {
         />
         <motion.div className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
           {recentlyAdded.map((m) => (
-            <div key={m.id} className="snap-start">
-              <MediaCard item={m as any} />
+            <div key={m.id} className="snap-start w-44">
+              <MediaCard item={m as any} size="md" />
             </div>
           ))}
         </motion.div>

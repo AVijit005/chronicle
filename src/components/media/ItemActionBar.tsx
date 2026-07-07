@@ -240,18 +240,18 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         <motion.button
           key={v.key}
           onClick={v.run}
+          title={v.label}
           {...heroMotion}
           className={cn(
-            "press-scale inline-flex items-center gap-1.5 rounded-full text-xs font-medium transition",
-            variant === "hero"
-              ? "bg-gradient-to-r from-primary to-secondary px-4 py-2 text-sm text-primary-foreground shrink-0"
-              : variant === "overlay"
-                ? "bg-white/[0.06] px-2.5 py-1.5 text-foreground hover:bg-white/[0.15] ring-1 ring-white/10 shrink min-w-0"
-                : "bg-gradient-to-r from-primary to-secondary px-3 py-1.5 text-primary-foreground shrink-0",
+            "press-scale rounded-full transition",
+            variant === "overlay"
+              ? "grid h-8 w-8 shrink-0 place-items-center bg-white/[0.06] text-white hover:bg-white/[0.15] ring-1 ring-white/10"
+              : "inline-flex items-center gap-1.5 shrink-0 text-xs font-medium text-primary-foreground bg-gradient-to-r from-primary to-secondary",
+            variant === "hero" ? "px-4 py-2 text-sm" : variant === "inline" ? "px-3 py-1.5" : ""
           )}
         >
-          <v.icon className="h-3.5 w-3.5 shrink-0" /> 
-          <span className="truncate">{v.label}</span>
+          <v.icon className={cn("shrink-0", variant === "overlay" ? "h-4 w-4" : "h-3.5 w-3.5")} /> 
+          {variant !== "overlay" && <span>{v.label}</span>}
         </motion.button>
       ))}
 
