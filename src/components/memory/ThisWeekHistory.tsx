@@ -12,11 +12,11 @@ export function ThisWeekHistory({ className }: Props) {
   
   if (!buckets.length) {
     return (
-      <div className={cn("relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-10 text-center", className)}>
+      <div className={cn("relative z-10 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-10 text-center pointer-events-auto", className)}>
         {/* Ambient Glow effect */}
         <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-32 w-48 bg-primary/20 blur-[40px] rounded-full pointer-events-none" />
         
-        <div className="relative z-10 flex flex-col items-center">
+        <div className="relative z-10 flex flex-col items-center pointer-events-auto">
           <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-white/[0.05] ring-1 ring-white/10 shadow-lg shadow-black/20">
             <Sparkles className="h-5 w-5 text-primary/80" />
           </div>
@@ -27,12 +27,12 @@ export function ThisWeekHistory({ className }: Props) {
           
           <div className="mt-8 w-full max-w-md">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-rose-300/30 rounded-2xl blur opacity-10 group-focus-within:opacity-30 transition duration-700 ease-out"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-rose-300/30 rounded-2xl blur opacity-10 group-focus-within:opacity-30 transition duration-700 ease-out pointer-events-none"></div>
               <textarea 
                 placeholder="What is captivating your mind right now?"
-                className="relative w-full rounded-2xl border border-white/10 bg-black/40 p-5 text-sm text-foreground/90 placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none h-28 shadow-inner transition-all"
+                className="relative w-full rounded-2xl border border-white/10 bg-black/40 p-5 text-sm text-foreground/90 placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none h-28 shadow-inner transition-all cursor-text pointer-events-auto"
               />
-              <button className="absolute bottom-4 right-4 rounded-xl bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/20 transition-colors">
+              <button className="absolute bottom-4 right-4 rounded-xl bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/20 transition-colors cursor-pointer pointer-events-auto">
                 Seal Capsule
               </button>
             </div>
