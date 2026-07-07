@@ -10,6 +10,9 @@ interface Props {
   className?: string;
 }
 
+const secondaryBtnClass =
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white/[0.03] text-xs text-muted-foreground ring-1 ring-white/10 backdrop-blur-xl transition-all duration-300 ease-out press-scale hover:-translate-y-[2px] hover:bg-white/[0.08] hover:text-foreground hover:ring-white/20 hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5),0_0_16px_oklch(1_1_1/0.1)]";
+
 export function DiscoveryHero({ className }: Props) {
   const r = getRecommendedToday();
   if (!r) return null;
@@ -51,17 +54,17 @@ export function DiscoveryHero({ className }: Props) {
               <Link to="/app/media/$id" params={{ id: media.id }}>
                 <PremiumButton>Explore</PremiumButton>
               </Link>
-              <button className="glass-subtle inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-muted-foreground transition hover:text-foreground">
+              <button className={cn(secondaryBtnClass, "px-4 py-2")}>
                 <BookmarkPlus className="h-3.5 w-3.5" /> Save
               </button>
-              <button className="glass-subtle inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-muted-foreground transition hover:text-foreground">
+              <button className={cn(secondaryBtnClass, "px-4 py-2")}>
                 <NotebookPen className="h-3.5 w-3.5" /> Journal later
               </button>
-              <button className="glass-subtle inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-muted-foreground transition hover:text-foreground">
+              <button className={cn(secondaryBtnClass, "px-4 py-2")}>
                 <RefreshCw className="h-3.5 w-3.5" /> Rotate
               </button>
               <button
-                className="glass-subtle inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-muted-foreground transition hover:text-foreground"
+                className={cn(secondaryBtnClass, "h-8 w-8")}
                 aria-label="Dismiss"
               >
                 <X className="h-3.5 w-3.5" />
