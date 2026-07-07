@@ -261,7 +261,6 @@ function CalendarPage() {
                 achievement
               </span>
             </div>
-            </div>
           </PremiumGlass>
           
           <MediaConstellation />
