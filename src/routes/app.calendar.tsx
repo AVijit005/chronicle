@@ -492,19 +492,22 @@ function CalendarPage() {
       <Zone eyebrow="Zone 09" title="Calendar insights">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {CALENDAR_INSIGHTS.map((line, i) => (
-            <motion.div
+            <PremiumGlass
               key={i}
+              variant="subtle"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.06 }}
-              className="glass-subtle flex items-start gap-4 rounded-2xl p-5"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-start gap-4 p-5 cursor-pointer press-scale relative z-10"
             >
               <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/[0.06]">
                 <Sparkles className="h-4 w-4 text-primary" />
               </div>
               <p className="text-sm text-foreground/90">{line}</p>
-            </motion.div>
+            </PremiumGlass>
           ))}
         </div>
         <div className="mt-8 flex justify-end">
