@@ -152,26 +152,49 @@ export function ProgressRing({
   accent?: string;
   children?: ReactNode;
 }) {
-  const pad = 16;
-  const svgSize = size + pad * 2;
   const r = (size - stroke) / 2;
-  const center = svgSize / 2;
   const c = 2 * Math.PI * r;
   const v = Math.max(0, Math.min(100, value));
+  
   return (
-    <div className="relative grid place-items-center !overflow-visible m-4 p-4" style={{ width: svgSize, height: svgSize }}>
-      <svg width={svgSize} height={svgSize} className="-rotate-90 !overflow-visible m-4 p-4">
+    <div className="relative grid place-items-center" style={{ width: size, height: size }}>
+      {/* Detached Glow Layer */}
+      <div 
+        className="absolute inset-0 grid place-items-center" 
+        style={{ zIndex: -1, filter: `blur(8px)` }}
+      >
+        <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
+          <motion.circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            stroke={accent}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            fill="none"
+            strokeDasharray={c}
+            initial={{ strokeDashoffset: c }}
+            whileInView={{ strokeDashoffset: c - (c * v) / 100 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{ opacity: 0.6 }}
+          />
+        </svg>
+      </div>
+
+      {/* Primary Rings */}
+      <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
         <circle
-          cx={center}
-          cy={center}
+          cx={size / 2}
+          cy={size / 2}
           r={r}
           stroke="oklch(1 0 0 / 0.08)"
           strokeWidth={stroke}
           fill="none"
         />
         <motion.circle
-          cx={center}
-          cy={center}
+          cx={size / 2}
+          cy={size / 2}
           r={r}
           stroke={accent}
           strokeWidth={stroke}
@@ -182,7 +205,6 @@ export function ProgressRing({
           whileInView={{ strokeDashoffset: c - (c * v) / 100 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          style={{ filter: `drop-shadow(0 0 10px ${accent})` }}
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">{children}</div>
