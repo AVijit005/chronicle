@@ -71,13 +71,17 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="glass relative overflow-hidden rounded-3xl p-10 text-center">
+    <PremiumGlass
+      className="relative overflow-hidden p-10 text-center cursor-pointer press-scale"
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
+    >
       <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-primary/30 to-secondary/30">
         <div className="h-6 w-6 rounded-md bg-gradient-to-br from-primary to-secondary animate-slow-float" />
       </div>
       <h3 className="font-display text-2xl">{title}</h3>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">{description}</p>
       {action && <div className="mt-6">{action}</div>}
-    </div>
+    </PremiumGlass>
   );
 }
