@@ -227,7 +227,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
   // Style per variant
   const wrap = cn(
     variant === "overlay" &&
-      "absolute inset-0 h-full w-full overflow-hidden bg-black/50 backdrop-blur-md grid grid-cols-2 auto-rows-fr gap-2 p-3 min-h-0 min-w-0",
+      "flex w-full items-center justify-between gap-1 rounded-full bg-black/60 p-1.5 shadow-2xl backdrop-blur-xl ring-1 ring-white/10",
     variant === "hero" && "flex flex-wrap items-center gap-2",
     variant === "inline" && "flex items-center gap-1.5",
     className,
@@ -244,7 +244,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
           className={cn(
             "press-scale transition overflow-hidden min-h-0 min-w-0",
             variant === "overlay"
-              ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-white/[0.08] text-white shadow-lg ring-1 ring-white/20 hover:bg-white/[0.15]"
+              ? "flex aspect-square flex-1 items-center justify-center rounded-full bg-white/[0.12] text-white shadow-sm ring-1 ring-white/20 hover:bg-white/[0.25]"
               : "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary text-xs font-medium text-primary-foreground",
             variant === "hero" ? "px-4 py-2 text-sm" : variant === "inline" ? "px-3 py-1.5" : ""
           )}
@@ -262,12 +262,12 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         className={cn(
           "press-scale transition shrink-0 min-h-0 min-w-0 overflow-hidden",
           variant === "overlay"
-            ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl shadow-lg ring-1 ring-white/20"
+            ? "flex aspect-square flex-1 items-center justify-center rounded-full shadow-sm ring-1 ring-white/20"
             : "grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10",
           variant === "hero" && "tap-target",
           fav
             ? variant === "overlay" ? "bg-rose-500/30 text-rose-300 hover:bg-rose-500/40" : "bg-rose-500/20 text-rose-300"
-            : variant === "overlay" ? "bg-white/[0.08] text-white hover:bg-white/[0.15]" : "bg-white/[0.06] text-muted-foreground hover:bg-white/[0.15] hover:text-foreground",
+            : variant === "overlay" ? "bg-white/[0.08] text-white hover:bg-white/[0.2]" : "bg-white/[0.06] text-muted-foreground hover:bg-white/[0.15] hover:text-foreground",
         )}
       >
         <Heart className={cn("h-3.5 w-3.5", fav && "fill-current")} />
@@ -281,12 +281,12 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         className={cn(
           "press-scale transition shrink-0 min-h-0 min-w-0 overflow-hidden",
           variant === "overlay"
-            ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl shadow-lg ring-1 ring-white/20"
+            ? "flex aspect-square flex-1 items-center justify-center rounded-full shadow-sm ring-1 ring-white/20"
             : "grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10",
           variant === "hero" && "tap-target",
           bookmarked
             ? variant === "overlay" ? "bg-primary/30 text-primary-foreground hover:bg-primary/40" : "bg-primary/15 text-primary"
-            : variant === "overlay" ? "bg-white/[0.08] text-white hover:bg-white/[0.15]" : "bg-white/[0.06] text-muted-foreground hover:bg-white/[0.15] hover:text-foreground",
+            : variant === "overlay" ? "bg-white/[0.08] text-white hover:bg-white/[0.2]" : "bg-white/[0.06] text-muted-foreground hover:bg-white/[0.15] hover:text-foreground",
         )}
       >
         <Bookmark className={cn("h-3.5 w-3.5", bookmarked && "fill-current")} />
@@ -300,7 +300,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
             className={cn(
               "press-scale transition shrink-0 min-h-0 min-w-0 overflow-hidden",
               variant === "overlay"
-                ? "flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-white/[0.08] text-white shadow-lg ring-1 ring-white/20 hover:bg-white/[0.15]"
+                ? "flex aspect-square flex-1 items-center justify-center rounded-full bg-white/[0.08] text-white shadow-sm ring-1 ring-white/20 hover:bg-white/[0.2]"
                 : "grid h-8 w-8 place-items-center rounded-full bg-white/[0.06] text-muted-foreground ring-1 ring-white/10 hover:bg-white/[0.15] hover:text-foreground",
               variant === "hero" && "tap-target",
             )}
