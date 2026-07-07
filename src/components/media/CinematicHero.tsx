@@ -16,44 +16,45 @@ export function CinematicHero({ item }: { item: MediaItem }) {
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(115deg, oklch(0.1 0.02 270 / 0.92) 0%, oklch(0.1 0.02 270 / 0.55) 40%, transparent 75%),
+            background: `linear-gradient(to right, oklch(0 0 0 / 0.95) 0%, oklch(0 0 0 / 0.6) 45%, transparent 100%),
+                         radial-gradient(circle at 75% 50%, transparent 20%, oklch(0 0 0 / 0.8) 100%),
                          radial-gradient(60% 80% at 100% 0%, ${item.accent ?? "var(--primary)"} / 0.25, transparent 60%)`,
           }}
         />
 
         <div className="absolute inset-0 flex items-end p-6 md:p-12">
-          <div className="max-w-xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/30 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/80 backdrop-blur-md">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="max-w-xl group/panel glass-subtle rounded-[2rem] border border-white/10 bg-black/40 p-8 shadow-2xl backdrop-blur-2xl transition-all duration-500 ease-out hover:-translate-y-2 hover:border-white/20 hover:shadow-[0_24px_48px_-12px_oklch(0_0_0/0.8),0_0_24px_oklch(0.72_0.18_255/0.15)]">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-emerald-200 backdrop-blur-xl shadow-[inset_0_0_12px_oklch(0.6_0.2_150/0.2)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_oklch(0.6_0.2_150/0.8)]" />
               Continue your story
             </div>
-            <h2 className="font-display text-4xl leading-[1.05] tracking-tight text-white md:text-6xl">
+            <h2 className="font-display text-4xl leading-[1.05] tracking-tight text-white md:text-6xl text-balance">
               {item.title}
             </h2>
-            <p className="mt-4 max-w-md text-sm text-white/70 md:text-base">{item.synopsis}</p>
+            <p className="mt-4 max-w-md text-sm text-white/70 md:text-base leading-relaxed text-balance">{item.synopsis}</p>
 
             {item.progress !== undefined && (
-              <div className="mt-5 max-w-sm">
-                <div className="mb-1.5 flex items-center justify-between text-[11px] uppercase tracking-wider text-white/60">
+              <div className="mt-6 max-w-sm">
+                <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-wider text-white/60 font-medium">
                   <span>{item.progress}% complete</span>
                   <span>{item.runtime}</span>
                 </div>
-                <div className="h-1 overflow-hidden rounded-full bg-white/15">
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${item.progress}%` }}
                     transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="h-full rounded-full bg-gradient-to-r from-primary to-secondary"
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-secondary shadow-[0_0_12px_oklch(0.72_0.18_255/0.6)] transition-all duration-500 group-hover/panel:shadow-[0_0_20px_oklch(0.72_0.18_255/0.9)] group-hover/panel:brightness-110"
                   />
                 </div>
               </div>
             )}
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <button className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black transition press-scale hover:bg-white/90">
-                <Play className="h-4 w-4 fill-black" /> Continue
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <button className="press-scale inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-white/30 hover:bg-white/15 hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5),0_0_16px_oklch(0.72_0.18_255/0.3)] cursor-pointer">
+                <Play className="h-4 w-4 fill-white" /> Continue
               </button>
-              <button className="glass inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-medium press-scale">
+              <button className="press-scale inline-flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/80 backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-white/15 hover:bg-white/10 hover:text-white hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5)] cursor-pointer">
                 <BookmarkPlus className="h-4 w-4" /> Add to journal
               </button>
             </div>
