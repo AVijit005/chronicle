@@ -113,7 +113,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         {/* inner highlight + proximity border */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-3xl transition-[box-shadow] duration-[260ms] ease-out"
+          className="pointer-events-none absolute inset-0 rounded-3xl transition-[box-shadow] duration-[450ms] ease-out"
           style={{
             boxShadow:
               "inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev) * 0.06))",

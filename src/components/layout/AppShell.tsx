@@ -1,6 +1,6 @@
 import { Outlet, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Plus } from "lucide-react";
 import { AtmosphereBackground } from "@/components/atmosphere/AtmosphereBackground";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -10,13 +10,14 @@ import { CommandPalette } from "@/components/search/CommandPalette";
 import { GlobalShortcuts } from "@/components/common/GlobalShortcuts";
 import { RightSidebar } from "@/components/layout/RightSidebar";
 import { ActivityFeed } from "@/components/common/ActivityFeed";
-import { pagePresence } from "@/lib/motion";
+import { pagePresence, pagePresenceReduced } from "@/lib/motion";
 import { MediaActionsProvider, useMediaActions } from "@/lib/store/MediaActionsContext";
 import { Toaster } from "@/components/ui/sonner";
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const [search, setSearch] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const reduced = useReducedMotion();
 
   return (
     <MediaActionsProvider>
@@ -32,7 +33,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={pathname}
-                variants={pagePresence}
+                variants={reduced ? pagePresenceReduced : pagePresence}
                 initial="hidden"
                 animate="visible"
                 exit="exit"

@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { motion, useMotionValue, useTransform, useSpring, useReducedMotion } from "motion/react";
-import { Heart, Star } from "lucide-react";
+import { Heart, Star, ImageOff } from "lucide-react";
 import type { MediaItem } from "@/lib/mock";
 import { useState, type MouseEvent } from "react";
+import { imageReveal } from "@/lib/motion";
 
 interface Props {
   item: MediaItem;
@@ -23,6 +24,8 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
   const rx = useSpring(useTransform(y, [-50, 50], [1, -1]), { stiffness: 200, damping: 20 });
   const ry = useSpring(useTransform(x, [-50, 50], [-1, 1]), { stiffness: 200, damping: 20 });
   const [fav, setFav] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
 
   const onMove = (e: MouseEvent<HTMLDivElement>) => {
     if (reduced) return;
@@ -48,12 +51,22 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
         className="focus-ring relative block aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/10 transition-shadow duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:shadow-[var(--shadow-poster-hover)]"
         aria-label={`${item.title} — ${item.kind} (${item.year})`}
       >
-        <img
-          src={item.poster}
-          alt=""
-          loading="lazy"
-          className="h-full w-full object-cover transition-[transform,filter] duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:scale-[1.03] group-hover:brightness-[1.02] motion-reduce:group-hover:scale-100"
-        />
+        {errored ? (
+          <div className="grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
+            <ImageOff className="h-6 w-6 text-white/30" />
+          </div>
+        ) : (
+          <motion.div initial="hidden" animate={loaded ? "visible" : "hidden"} variants={imageReveal}>
+            <img
+              src={item.poster}
+              alt=""
+              loading="lazy"
+              onLoad={() => setLoaded(true)}
+              onError={() => setErrored(true)}
+              className="h-full w-full object-cover transition-[transform,filter] duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:scale-[1.03] group-hover:brightness-[1.02] motion-reduce:group-hover:scale-100"
+            />
+          </motion.div>
+        )}
         {/* gradient base */}
         <div
           aria-hidden

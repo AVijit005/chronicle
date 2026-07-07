@@ -18,6 +18,7 @@ import type { LucideIcon } from "lucide-react";
 import type { UIMediaItem, UIMediaKind } from "@/lib/adapters/types";
 import { cn } from "@/lib/utils";
 import { ItemActionBar } from "@/components/media/ItemActionBar";
+import { imageReveal } from "@/lib/motion";
 
 const KIND_GLYPH: Record<UIMediaKind, LucideIcon> = {
   movie: Film,
@@ -37,6 +38,9 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
   const rating = item.rating ?? 0;
   const accent = item.accent ?? "oklch(0.72 0.18 255)";
   const [focused, setFocused] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
+  const Glyph = KIND_GLYPH[item.kind];
   return (
     <motion.div
       initial="rest"
@@ -56,13 +60,23 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
           className="relative aspect-[2/3] overflow-hidden rounded-2xl"
           style={{ boxShadow: "0 20px 40px -20px oklch(0 0 0 / 0.7)" }}
         >
-          <motion.img
-            layoutId={`poster-${item.mediaId || item.id}`}
-            src={item.poster}
-            alt={item.title}
-            loading="lazy"
-            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
-          />
+          {errored ? (
+            <div className="grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
+              <Glyph className="h-8 w-8 text-muted-foreground/40" />
+            </div>
+          ) : (
+            <motion.div initial="hidden" animate={loaded ? "visible" : "hidden"} variants={imageReveal}>
+              <motion.img
+                layoutId={`poster-${item.mediaId || item.id}`}
+                src={item.poster}
+                alt={item.title}
+                loading="lazy"
+                onLoad={() => setLoaded(true)}
+                onError={() => setErrored(true)}
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
+              />
+            </motion.div>
+          )}
           {/* gradient + sheen */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
           <motion.div
@@ -81,21 +95,16 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
           )}
 
           {/* Cross-media glyph — subtle medium identity */}
-          {(() => {
-            const Glyph = KIND_GLYPH[item.kind];
-            return (
-              <div
-                aria-hidden
-                className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-black/45 text-white/85 ring-1 ring-white/10 backdrop-blur-md"
-                title={item.kind}
-                style={{
-                  boxShadow: `inset 0 0 0 1px ${accent} / 0.0`,
-                }}
-              >
-                <Glyph className="h-3 w-3" />
-              </div>
-            );
-          })()}
+          <div
+            aria-hidden
+            className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-black/45 text-white/85 ring-1 ring-white/10 backdrop-blur-md"
+            title={item.kind}
+            style={{
+              boxShadow: `inset 0 0 0 1px ${accent} / 0.0`,
+            }}
+          >
+            <Glyph className="h-3 w-3" />
+          </div>
 
           {/* Progress bar (always when in-progress) */}
           {item.progress !== null && item.progress > 0 && item.progress < 100 && (

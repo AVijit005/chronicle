@@ -33,6 +33,10 @@ export const t = {
   page: { duration: dur.page, ease: ease.page } satisfies Transition,
   spring: { type: "spring", stiffness: 380, damping: 32 } satisfies Transition,
   drawer: { type: "spring", stiffness: 280, damping: 30 } satisfies Transition,
+  /** Snappier — for primary/high-emphasis hover feedback. */
+  springSnappy: { type: "spring", stiffness: 480, damping: 28 } satisfies Transition,
+  /** Softer — for secondary/glass-surface hover feedback. */
+  springGentle: { type: "spring", stiffness: 220, damping: 26 } satisfies Transition,
 } as const;
 
 /* ----- Reveal variants ----- */
@@ -40,6 +44,17 @@ export const t = {
 export const fadeBlurIn: Variants = {
   hidden: { opacity: 0, filter: "blur(12px)", y: 16 },
   visible: { opacity: 1, filter: "blur(0px)", y: 0, transition: { duration: 0.7, ease: ease.out } },
+};
+
+/** Blur-up image reveal — pair with an onLoad-gated `animate` state. */
+export const imageReveal: Variants = {
+  hidden: { opacity: 0, scale: 1.02, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: dur.large, ease: ease.out },
+  },
 };
 
 export const fadeUp: Variants = {
@@ -127,4 +142,11 @@ export const pagePresence: Variants = {
     scale: 0.995,
     transition: { duration: dur.normal, ease: ease.in },
   },
+};
+
+/** Reduced-motion alternative to pagePresence — opacity only, near-instant. */
+export const pagePresenceReduced: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.08 } },
+  exit: { opacity: 0, transition: { duration: 0.08 } },
 };

@@ -261,6 +261,7 @@
 @utility font-display {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
+  line-height: 1.06;
 }
 
 @utility noise-overlay {
@@ -457,6 +458,12 @@
     font-feature-settings: "cv11", "ss01", "ss03";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overscroll-behavior-y: contain;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   ::selection {
     background: oklch(0.72 0.18 255 / 0.35);

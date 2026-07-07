@@ -1,4 +1,5 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Loader2, Check } from "lucide-react";
 
@@ -25,6 +26,8 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
     { variant = "primary", size = "md", loading, success, icon, className, children, ...rest },
     ref,
   ) => {
+    const reduced = useReducedMotion();
+    const stateKey = loading ? "loading" : success ? "success" : "icon";
     const base =
       "group relative inline-flex shrink-0 select-none items-center justify-center gap-2 font-medium transition-[transform,box-shadow,filter,background] duration-[var(--dur-normal)] ease-[var(--ease-out)] disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] active:duration-[var(--dur-micro)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background overflow-hidden motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
@@ -77,13 +80,24 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
           />
         )}
         <span className="relative inline-flex items-center gap-2">
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : success ? (
-            <Check className="h-4 w-4" />
-          ) : (
-            icon
-          )}
+          <AnimatePresence initial={false}>
+            <motion.span
+              key={stateKey}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.75 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.75 }}
+              transition={{ duration: reduced ? 0.1 : 0.18 }}
+              className="inline-flex items-center"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : success ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                icon
+              )}
+            </motion.span>
+          </AnimatePresence>
           {children}
         </span>
       </button>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Star } from "lucide-react";
+import { Star, ImageOff } from "lucide-react";
 import type { UIMediaItem } from "@/lib/adapters/types";
 import { useArtworkAccent } from "@/lib/useArtworkAccent";
 import { PremiumProgress } from "@/components/ui/PremiumProgress";
@@ -15,6 +15,8 @@ export function CinematicHero({ item }: { item: UIMediaItem }) {
   const reduced = useReducedMotion();
   const [backdropLoaded, setBackdropLoaded] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
+  const [backdropErrored, setBackdropErrored] = useState(false);
+  const [posterErrored, setPosterErrored] = useState(false);
 
   return (
     <section
@@ -26,21 +28,31 @@ export function CinematicHero({ item }: { item: UIMediaItem }) {
     >
       {/* backdrop */}
       <div className="absolute inset-0">
-        <motion.img
-          layoutId={`poster-${item.mediaId || item.id}`}
-          src={item.backdrop ?? item.poster}
-          alt=""
-          onLoad={() => setBackdropLoaded(true)}
-          initial={{ scale: 1.08, opacity: 0, filter: "blur(14px)" }}
-          animate={
-            backdropLoaded
-              ? { scale: 1.04, opacity: 1, filter: "blur(0px)" }
-              : { opacity: 0 }
-          }
-          transition={{ duration: 1.4, ease }}
-          className="h-full w-full object-cover"
-          style={{ animation: "ken-burns 26s ease-in-out infinite" }}
-        />
+        {backdropErrored ? (
+          <div
+            className="h-full w-full"
+            style={{
+              background: `radial-gradient(120% 100% at 50% 0%, ${accent.deep}, oklch(0.14 0.012 270))`,
+            }}
+          />
+        ) : (
+          <motion.img
+            layoutId={`poster-${item.mediaId || item.id}`}
+            src={item.backdrop ?? item.poster}
+            alt=""
+            onLoad={() => setBackdropLoaded(true)}
+            onError={() => setBackdropErrored(true)}
+            initial={{ scale: 1.08, opacity: 0, filter: "blur(14px)" }}
+            animate={
+              backdropLoaded
+                ? { scale: 1.04, opacity: 1, filter: "blur(0px)" }
+                : { opacity: 0 }
+            }
+            transition={{ duration: 1.4, ease }}
+            className="h-full w-full object-cover"
+            style={{ animation: "ken-burns 26s ease-in-out infinite" }}
+          />
+        )}
         {/* dark gradient */}
         <div
           aria-hidden
@@ -94,15 +106,22 @@ export function CinematicHero({ item }: { item: UIMediaItem }) {
           className="relative hidden w-56 md:block lg:w-64"
         >
           <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/15 shadow-[0_40px_80px_-20px_oklch(0_0_0/0.7)]">
-            <motion.img
-              src={item.poster}
-              alt={item.title}
-              onLoad={() => setPosterLoaded(true)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: posterLoaded ? 1 : 0 }}
-              transition={{ duration: 0.5, ease }}
-              className="h-full w-full object-cover"
-            />
+            {posterErrored ? (
+              <div className="grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
+                <ImageOff className="h-8 w-8 text-white/30" />
+              </div>
+            ) : (
+              <motion.img
+                src={item.poster}
+                alt={item.title}
+                onLoad={() => setPosterLoaded(true)}
+                onError={() => setPosterErrored(true)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: posterLoaded ? 1 : 0 }}
+                transition={{ duration: 0.5, ease }}
+                className="h-full w-full object-cover"
+              />
+            )}
             <span
               aria-hidden
               className="pointer-events-none absolute inset-0"
