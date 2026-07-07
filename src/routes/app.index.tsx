@@ -27,6 +27,7 @@ import { SmartFooter } from "@/components/dashboard/SmartFooter";
 import { PullQuote } from "@/components/editorial/PullQuote";
 import { Collage } from "@/components/editorial/Collage";
 import { SplitBlock } from "@/components/editorial/SplitBlock";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { useDashboard } from "@/hooks/use-analytics";
 import { useCollections } from "@/hooks/use-collections";
 import { adaptContinueItem } from "@/lib/adapters/media";
@@ -174,26 +175,28 @@ function Home() {
 
       <TasteProfile className="mt-16" />
 
-      {/* Stats — living, in a split block with interpretive copy */}
-      <div className="mt-16">
-        <SplitBlock
-          ratio="60/40"
-          primary={<LivingStats />}
-          secondary={
-            <div className="pt-2">
-              <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85">
-                This is you
-              </div>
-              <h2 className="mt-3 font-display text-3xl tracking-tight md:text-4xl">
-                A quiet glance at your patterns
-              </h2>
-              <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-foreground/80">
-                Not metrics — moods. The shape of how you've been spending your stories this month.
-                Look softly. Nothing here demands a goal.
-              </p>
+      {/* Stats — living, in a master glass panel */}
+      <div className="mt-16 pointer-events-auto">
+        <PremiumGlass interactive className="group/master flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 p-6 md:p-10 rounded-[2rem]">
+          {/* Left Column: Context Typography */}
+          <div className="flex-1 max-w-md">
+            <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85">
+              This is you
             </div>
-          }
-        />
+            <h2 className="mt-3 font-display text-3xl tracking-tight md:text-4xl">
+              A quiet glance at your patterns
+            </h2>
+            <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-foreground/80">
+              Not metrics — moods. The shape of how you've been spending your stories this month.
+              Look softly. Nothing here demands a goal.
+            </p>
+          </div>
+
+          {/* Right Column: The 4 Metric Pills */}
+          <div className="flex-[1.2] w-full">
+            <LivingStats />
+          </div>
+        </PremiumGlass>
       </div>
 
       {/* Collections — editorial collage instead of yet another 4-up grid */}
