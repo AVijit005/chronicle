@@ -97,14 +97,20 @@ function CalendarPage() {
               { l: "Longest streak", v: CALENDAR_HERO.longestStreak, s: "d" },
               { l: "Favorite month", v: CALENDAR_HERO.favoriteMonth },
             ].map((s) => (
-              <div key={s.l} className="glass-subtle relative overflow-hidden rounded-2xl p-4">
+              <PremiumGlass 
+                key={s.l} 
+                variant="subtle"
+                className="relative z-10 overflow-hidden p-4 cursor-pointer press-scale"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
+              >
                 <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   {s.l}
                 </div>
                 <div className="mt-2 font-display text-3xl tracking-tight">
                   {typeof s.v === "number" ? <CountUp to={s.v} suffix={s.s ?? ""} /> : s.v}
                 </div>
-              </div>
+              </PremiumGlass>
             ))}
           </div>
         </PremiumGlass>
