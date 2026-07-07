@@ -445,19 +445,21 @@ function CalendarPage() {
       <Zone eyebrow="Zone 07" title="Memory streaks">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {MEMORY_STREAKS.map((s) => (
-            <PremiumGlass key={s.label} className="flex flex-col items-center justify-center text-center gap-4 px-3 py-8">
-              <ProgressRing value={(s.value / s.total) * 100} accent={s.accent}>
-                <div className="text-center">
-                  <div className="font-display text-2xl tracking-tight">
-                    <CountUp to={s.value} />
+            <PremiumGlass key={s.label} className="px-3 py-8">
+              <div className="flex flex-col items-center justify-center text-center gap-4 w-full">
+                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent}>
+                  <div className="text-center">
+                    <div className="font-display text-2xl tracking-tight">
+                      <CountUp to={s.value} />
+                    </div>
+                    <div className="text-[9px] uppercase tracking-wider text-muted-foreground">
+                      / {s.total}d
+                    </div>
                   </div>
-                  <div className="text-[9px] uppercase tracking-wider text-muted-foreground">
-                    / {s.total}d
-                  </div>
+                </ProgressRing>
+                <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
+                  {s.label}
                 </div>
-              </ProgressRing>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
-                {s.label}
               </div>
             </PremiumGlass>
           ))}
