@@ -157,7 +157,7 @@ export function ProgressRing({
   const v = Math.max(0, Math.min(100, value));
   
   return (
-    <div className="relative flex items-center justify-center mb-6" style={{ width: size, height: size }}>
+    <div className="relative flex items-center justify-center mb-5" style={{ width: size, height: size }}>
       {/* Detached Glow Layer (.ring-glow-layer) */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4/5 h-4/5 pointer-events-none rounded-full" 
