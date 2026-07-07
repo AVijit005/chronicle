@@ -190,8 +190,9 @@ function CalendarPage() {
         }
       >
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <PremiumGlass className="p-6 md:p-8">
-            <div className="mb-3 grid grid-cols-7 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          <div className="flex flex-col gap-6">
+            <PremiumGlass className="p-6 md:p-8">
+              <div className="mb-3 grid grid-cols-7 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
                 <div key={i} className="text-center">
                   {d}
@@ -260,7 +261,12 @@ function CalendarPage() {
                 achievement
               </span>
             </div>
+            </div>
           </PremiumGlass>
+          
+          <MediaConstellation />
+          
+          </div>
 
           {/* Daily memory panel */}
           <PremiumGlass className="p-6 md:p-8" glow={month.accent}>
@@ -522,10 +528,6 @@ function CalendarPage() {
         </div>
       </Zone>
 
-      {/* Zone 10 — Constellation */}
-      <Zone eyebrow="Zone 10" title="Media Constellation">
-        <MediaConstellation />
-      </Zone>
 
       {/* Memory · This week, in your life */}
       <Zone
