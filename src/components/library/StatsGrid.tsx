@@ -29,19 +29,32 @@ export function StatsGrid({ favoritesCount }: { favoritesCount: number }) {
           <PremiumGlass 
             key={it.key} 
             interactive 
-            className="group/pill overflow-hidden rounded-3xl px-4 py-4 transition-transform duration-300 hover:scale-105"
+            className="group/pill overflow-hidden rounded-3xl px-4 py-4 transition-all duration-300 hover:-translate-y-1.5 hover:scale-105"
             style={{ 
-              background: `color-mix(in oklab, ${tint} 8%, transparent)`,
-              borderColor: `color-mix(in oklab, ${tint} 15%, transparent)`
+              background: "rgba(255, 255, 255, 0.02)",
+              backdropFilter: "blur(24px)",
+              boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${tint} 25%, transparent)`
             }}
           >
+            {/* Centered internal radial bloom - fainter at rest, brightens on hover */}
             <div
               aria-hidden
-              className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full opacity-40 blur-3xl transition-opacity duration-300 group-hover/pill:opacity-80 group-hover/pill:scale-150"
-              style={{ background: tint }}
+              className="pointer-events-none absolute inset-0 opacity-30 blur-2xl transition-opacity duration-300 group-hover/pill:opacity-80"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, color-mix(in oklab, ${tint} 40%, transparent), transparent 70%)`
+              }}
             />
-            <div className="relative pointer-events-none">
-              <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: `color-mix(in oklab, ${tint} 80%, white)` }}>
+            {/* Edge lighting bleed on hover */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/pill:opacity-100"
+              style={{
+                boxShadow: `0 0 24px color-mix(in oklab, ${tint} 15%, transparent), inset 0 0 12px color-mix(in oklab, ${tint} 20%, transparent)`
+              }}
+            />
+            
+            <div className="relative pointer-events-none z-10">
+              <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/90">
                 {it.label}
               </div>
               <div className="mt-2 flex items-end gap-2">
@@ -51,10 +64,11 @@ export function StatsGrid({ favoritesCount }: { favoritesCount: number }) {
                 />
                 {trend !== 0 && (
                   <span
-                    className="mb-1 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-medium transition-colors"
+                    className="mb-1 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-bold transition-all duration-300"
                     style={{
                       background: `color-mix(in oklab, ${tint} 20%, transparent)`,
-                      color: `color-mix(in oklab, ${tint} 90%, white)`,
+                      color: "white",
+                      boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${tint} 30%, transparent)`
                     }}
                   >
                     <TrendIcon className="h-2.5 w-2.5" />
