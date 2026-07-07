@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
 export function Section({
   title,
@@ -47,17 +48,16 @@ export function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="glass relative overflow-hidden rounded-2xl p-5">
-      <div
-        className="absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl"
-        style={{ background: accent ?? "oklch(0.72 0.18 255 / 0.35)" }}
-      />
-      <div className="relative">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
-        <div className="mt-2 font-display text-4xl tracking-tight">{value}</div>
-        {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
-      </div>
-    </div>
+    <PremiumGlass
+      glow={accent ?? "oklch(0.72 0.18 255 / 0.35)"}
+      className="p-5 cursor-pointer press-scale"
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
+      <div className="mt-2 font-display text-4xl tracking-tight">{value}</div>
+      {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
+    </PremiumGlass>
   );
 }
 
