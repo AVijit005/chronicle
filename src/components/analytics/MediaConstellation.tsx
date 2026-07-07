@@ -102,9 +102,6 @@ export function MediaConstellation() {
       {/* Legend / Info Section */}
       <div className="flex flex-col gap-4 flex-1 z-10">
         <div>
-          <h3 className="font-display text-3xl tracking-tight text-foreground/90">
-            Media Constellation
-          </h3>
           <p className="text-sm text-muted-foreground leading-relaxed mt-2 max-w-sm">
             A beautiful breakdown of your digital universe this month. Hover over the orbital rings to explore your focus.
           </p>
