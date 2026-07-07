@@ -64,7 +64,7 @@ export function LivingStats({ className }: { className?: string }) {
           box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--stat-accent) 80%, transparent), 0 12px 32px -12px color-mix(in oklch, var(--stat-accent) 45%, transparent) !important;
         }
       `}} />
-      <ul className={cn("grid grid-cols-2 gap-3 md:grid-cols-4 pointer-events-auto", className)}>
+      <ul className={cn("flex flex-row gap-4 pointer-events-auto", className)}>
         {STATS_LIST.map((s, i) => (
           <motion.li
             key={s.label}
@@ -73,8 +73,9 @@ export function LivingStats({ className }: { className?: string }) {
             viewport={{ once: true, margin: "-40px" }}
             transition={cascade(i)}
             style={{ ["--stat-accent" as string]: s.accent }}
+            className="flex-shrink-0"
           >
-            <PremiumGlass interactive className="stat-glass-card-colored rounded-2xl px-4 py-3 h-full flex flex-col justify-center">
+            <PremiumGlass interactive className="stat-glass-card-colored rounded-2xl px-6 py-4 h-full flex flex-col justify-center min-w-[120px]">
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground cursor-pointer whitespace-nowrap">
                 {s.label}
               </div>
