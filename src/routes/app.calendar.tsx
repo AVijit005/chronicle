@@ -445,7 +445,7 @@ function CalendarPage() {
       <Zone eyebrow="Zone 07" title="Memory streaks">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {MEMORY_STREAKS.map((s) => (
-            <PremiumGlass key={s.label} className="flex flex-col items-center gap-4 p-6 py-8">
+            <PremiumGlass key={s.label} className="flex flex-col items-center gap-4 px-3 py-8">
               <ProgressRing value={(s.value / s.total) * 100} accent={s.accent}>
                 <div className="text-center">
                   <div className="font-display text-2xl tracking-tight">
