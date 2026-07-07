@@ -7,6 +7,14 @@ export function LibraryHero() {
   const c = statusCounts();
   return (
     <PremiumGlass className="relative overflow-hidden border border-border/60">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .stat-glass-card {
+          box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--stat-accent) 25%, transparent), 0 0 0 0 transparent;
+        }
+        .stat-glass-card:hover {
+          box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--stat-accent) 80%, transparent), 0 12px 32px -12px color-mix(in oklch, var(--stat-accent) 35%, transparent);
+        }
+      `}} />
       <div className="absolute inset-0 pointer-events-none">
         <div className="grid h-full w-full grid-cols-9 opacity-60">
           {posters.map((p, i) => (
@@ -45,10 +53,10 @@ export function LibraryHero() {
           </p>
         </motion.div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 md:max-w-3xl md:grid-cols-4 pointer-events-auto">
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-4 pointer-events-auto">
           {[
             {
-              k: "Total",
+              k: "TOTAL",
               v:
                 c.completed +
                 c.in_progress +
@@ -57,17 +65,28 @@ export function LibraryHero() {
                 c.dropped +
                 c.rewatching +
                 c.archived,
+              ctx: "All stories",
+              accent: "oklch(0.72 0.18 255)", // Neon cyan/blue
             },
-            { k: "Completed", v: c.completed },
-            { k: "In Progress", v: c.in_progress },
-            { k: "Planning", v: c.planning },
+            { k: "COMPLETED", v: c.completed, ctx: "Finished", accent: "oklch(0.72 0.16 160)" }, // Emerald green
+            { k: "IN PROGRESS", v: c.in_progress, ctx: "Currently", accent: "oklch(0.65 0.22 295)" }, // Violet
+            { k: "PLANNING", v: c.planning, ctx: "Up next", accent: "oklch(0.82 0.16 80)" }, // Amber
           ].map((s) => (
-            <PremiumGlass key={s.k} interactive className="rounded-2xl px-4 py-3">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground cursor-pointer">
+            <div 
+              key={s.k}
+              className="stat-glass-card group/stat flex h-full flex-col justify-between overflow-hidden rounded-3xl bg-white/[0.03] p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:bg-white/[0.05] cursor-pointer"
+              style={{ ["--stat-accent" as string]: s.accent }}
+            >
+              <div className="text-[10px] uppercase tracking-[0.22em] text-white/70 transition-colors group-hover/stat:text-white/90">
                 {s.k}
               </div>
-              <div className="mt-1 font-display text-2xl md:text-3xl cursor-pointer">{s.v}</div>
-            </PremiumGlass>
+              <div className="mt-4 font-display text-4xl tracking-tight text-white tabular-nums">
+                {s.v}
+              </div>
+              <div className="mt-2 text-xs text-white/50 transition-colors group-hover/stat:text-white/70">
+                {s.ctx}
+              </div>
+            </div>
           ))}
         </div>
       </div>
