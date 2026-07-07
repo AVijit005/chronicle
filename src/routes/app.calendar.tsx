@@ -12,6 +12,7 @@ import {
   Gamepad2,
   Music,
   CloudSun,
+  Plus,
 } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
@@ -317,12 +318,15 @@ function CalendarPage() {
                         note: "Gold tier",
                       },
                     ].map((t) => (
-                      <motion.div
+                      <PremiumGlass
                         key={t.label}
+                        variant="subtle"
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="glass-subtle flex items-center gap-3 rounded-xl p-3"
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex items-center gap-3 rounded-xl p-3 cursor-pointer press-scale relative z-10"
                       >
                         <div className="grid h-8 w-8 place-items-center rounded-lg bg-white/[0.06]">
                           <t.icon className="h-4 w-4 text-primary" />
@@ -334,9 +338,17 @@ function CalendarPage() {
                           <div className="truncate text-sm">{t.title}</div>
                         </div>
                         <div className="text-xs text-muted-foreground">{t.note}</div>
-                      </motion.div>
+                      </PremiumGlass>
                     ))}
-                    <div className="mt-3 flex items-center justify-between rounded-xl bg-white/[0.04] p-3 text-xs text-muted-foreground">
+                    <PremiumGlass
+                      variant="subtle"
+                      className="mt-2 flex items-center justify-center gap-2 rounded-xl border border-dashed border-white/10 p-3 text-xs text-muted-foreground hover:text-foreground cursor-pointer press-scale relative z-10"
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Plus className="h-3 w-3" /> Add memory
+                    </PremiumGlass>
+                    <div className="mt-4 flex items-center justify-between rounded-xl bg-white/[0.04] p-3 text-xs text-muted-foreground">
                       <span>Mood · Awe</span>
                       <span>Weather · Cold, clear</span>
                     </div>
