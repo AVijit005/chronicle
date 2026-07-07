@@ -50,7 +50,7 @@ export function IdentityHero({ compact = false }: { compact?: boolean }) {
               <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground flex items-center justify-between">
                 <span>{memoryAgeYears} years of memory · since {memberSince}</span>
                 {!compact && (
-                  <button onClick={() => setEditOpen(true)} className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                  <button onClick={() => setEditOpen(true)} className="relative z-10 flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 transition-colors hover:bg-white/10 hover:text-primary cursor-pointer press-scale">
                     <Pencil className="h-3 w-3" /> Edit Profile
                   </button>
                 )}
@@ -122,12 +122,17 @@ function ScoreCard({
   value: number;
 }) {
   return (
-    <div className="glass-subtle min-w-[88px] rounded-2xl px-3 py-2.5 text-center">
+    <PremiumGlass 
+      variant="subtle" 
+      className="min-w-[88px] px-3 py-2.5 text-center cursor-pointer press-scale relative z-10"
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.96 }}
+    >
       <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
         {icon}
         {label}
       </div>
       <div className="mt-1 font-display text-2xl tracking-tight">{value}</div>
-    </div>
+    </PremiumGlass>
   );
 }
