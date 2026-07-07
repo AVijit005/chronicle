@@ -27,6 +27,7 @@ import {
   YEAR_HEATMAP,
 } from "@/lib/analytics-mock";
 import { ThisWeekHistory } from "@/components/memory/ThisWeekHistory";
+import { MediaConstellation } from "@/components/analytics/MediaConstellation";
 
 export const Route = createFileRoute("/app/calendar")({ component: CalendarPage });
 
@@ -519,6 +520,11 @@ function CalendarPage() {
             Export year as image
           </PremiumButton>
         </div>
+      </Zone>
+
+      {/* Zone 10 — Constellation */}
+      <Zone eyebrow="Zone 10" title="Media Constellation">
+        <MediaConstellation />
       </Zone>
 
       {/* Memory · This week, in your life */}
