@@ -118,8 +118,9 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         {/* inner highlight + proximity border */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-3xl transition-[box-shadow] duration-[450ms] ease-out"
+          className="pointer-events-none absolute inset-0 transition-[box-shadow] duration-[450ms] ease-out"
           style={{
+            borderRadius: "inherit",
             boxShadow:
               "inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev) * 0.06))",
           }}
@@ -139,6 +140,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
               aria-hidden
               className="pointer-events-none absolute inset-0 transition-opacity duration-[600ms] ease-out"
               style={{
+                borderRadius: "inherit",
                 opacity: "calc(var(--glass-rev) * 0.65)",
                 background:
                   "radial-gradient(420px circle at var(--glass-px) var(--glass-py), oklch(0.72 0.18 255 / 0.15), transparent 60%)",
@@ -149,6 +151,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
               aria-hidden
               className="pointer-events-none absolute inset-0 transition-opacity duration-[700ms] ease-out"
               style={{
+                borderRadius: "inherit",
                 opacity: "calc(var(--glass-rev) * 0.5)",
                 background:
                   "linear-gradient(125deg, transparent calc(var(--glass-px) - 22%), oklch(1 0 0 / 0.08) var(--glass-px), transparent calc(var(--glass-px) + 22%))",
