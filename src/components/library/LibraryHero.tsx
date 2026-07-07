@@ -1,11 +1,12 @@
 import { motion } from "motion/react";
 import { collageRecent, statusCounts } from "@/lib/library";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
 export function LibraryHero() {
   const posters = collageRecent(9);
   const c = statusCounts();
   return (
-    <section className="library-hero-card relative overflow-hidden rounded-[2rem] border border-border/60">
+    <PremiumGlass className="relative overflow-hidden border border-border/60">
       <div className="absolute inset-0 pointer-events-none">
         <div className="grid h-full w-full grid-cols-9 opacity-60">
           {posters.map((p, i) => (
@@ -61,15 +62,15 @@ export function LibraryHero() {
             { k: "In Progress", v: c.in_progress },
             { k: "Planning", v: c.planning },
           ].map((s) => (
-            <div key={s.k} className="metric-button-card glass-subtle rounded-2xl px-4 py-3">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <PremiumGlass key={s.k} interactive className="rounded-2xl px-4 py-3">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground cursor-pointer">
                 {s.k}
               </div>
-              <div className="mt-1 font-display text-2xl md:text-3xl">{s.v}</div>
-            </div>
+              <div className="mt-1 font-display text-2xl md:text-3xl cursor-pointer">{s.v}</div>
+            </PremiumGlass>
           ))}
         </div>
       </div>
-    </section>
+    </PremiumGlass>
   );
 }
