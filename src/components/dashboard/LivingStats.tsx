@@ -39,7 +39,7 @@ export function LivingStats({ className }: { className?: string }) {
       suffix: "",
     },
     {
-      label: "Completed",
+      label: "Total",
       to: overview?.totalItems ?? 0,
       suffix: "",
     },
