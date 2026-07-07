@@ -2,6 +2,8 @@ import { motion } from "motion/react";
 import { collageRecent, statusCounts } from "@/lib/library";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
+import { CountUp } from "@/components/landing/CountUp";
+
 export function LibraryHero() {
   const posters = collageRecent(9);
   const c = statusCounts();
@@ -53,7 +55,7 @@ export function LibraryHero() {
           </p>
         </motion.div>
 
-        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-4 pointer-events-auto">
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 md:max-w-4xl pointer-events-auto">
           {[
             {
               k: "TOTAL",
@@ -81,7 +83,7 @@ export function LibraryHero() {
                 {s.k}
               </div>
               <div className="mt-4 font-display text-4xl tracking-tight text-white tabular-nums">
-                {s.v}
+                <CountUp to={s.v} />
               </div>
               <div className="mt-2 text-xs text-white/50 transition-colors group-hover/stat:text-white/70">
                 {s.ctx}
