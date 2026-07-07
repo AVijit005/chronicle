@@ -58,72 +58,14 @@ export function AppShell({ children }: { children?: ReactNode }) {
 function CaptureFab() {
   const { openAdd } = useMediaActions();
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: `
-        .fab-glass-pill {
-          background: rgba(0, 0, 0, 0.2);
-          backdrop-filter: blur(28px);
-          -webkit-backdrop-filter: blur(28px);
-        }
-        .fab-border-gradient {
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 1.5px;
-          background: linear-gradient(135deg, oklch(0.72 0.18 255 / 0.6) 0%, oklch(0.65 0.22 295 / 0.2) 100%);
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-          transition: background 0.4s ease-out;
-        }
-        .fab-container:hover .fab-border-gradient {
-          background: linear-gradient(135deg, oklch(0.72 0.18 255 / 1) 0%, oklch(0.65 0.22 295 / 0.8) 100%);
-        }
-        .fab-container {
-          box-shadow: 0 8px 32px -8px rgba(0,0,0,0.5);
-          transform: translateY(0);
-        }
-        .fab-container:hover {
-          box-shadow: 0 16px 40px -12px oklch(0.72 0.18 255 / 0.65);
-          transform: translateY(-3px);
-        }
-        .fab-container:active {
-          transform: translateY(-1px) scale(0.97);
-        }
-        .fab-text {
-          background: linear-gradient(to right, oklch(0.85 0.15 255), oklch(0.80 0.18 295));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          transition: filter 0.3s ease;
-        }
-        .fab-container:hover .fab-text {
-          filter: brightness(1.2) drop-shadow(0 0 8px oklch(0.72 0.18 255 / 0.4));
-        }
-        .fab-icon {
-          color: oklch(0.85 0.15 255);
-          transition: color 0.3s ease, filter 0.3s ease;
-        }
-        .fab-container:hover .fab-icon {
-          color: oklch(0.95 0.10 255);
-          filter: drop-shadow(0 0 10px oklch(0.72 0.18 255 / 0.7));
-        }
-      `}} />
-      <button
-        onClick={openAdd}
-        aria-label="Add to Chronicle"
-        title="Add to Chronicle (⌘N)"
-        className="fab-container group relative fixed bottom-24 right-5 z-40 flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-[transform,box-shadow] duration-[400ms] ease-out lg:bottom-10 lg:right-10"
-      >
-        <div className="absolute inset-0 fab-glass-pill transition-colors duration-400 group-hover:bg-black/40" />
-        <div className="fab-border-gradient" />
-        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_20px_oklch(0.72_0.18_255/0.1)] transition-shadow duration-400 group-hover:shadow-[inset_0_0_30px_oklch(0.72_0.18_255/0.25)] pointer-events-none" />
-        
-        <span className="relative flex items-center gap-2">
-          <Plus className="h-[18px] w-[18px] fab-icon" />
-          <span className="hidden sm:inline fab-text font-semibold tracking-wide text-[15px]">Add</span>
-        </span>
-      </button>
-    </>
+    <button
+      onClick={openAdd}
+      aria-label="Add to Chronicle"
+      title="Add to Chronicle (⌘N)"
+      className="press-scale fixed bottom-24 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-secondary px-4 py-3 text-sm font-medium text-primary-foreground shadow-[0_18px_44px_-18px_oklch(0_0_0_/0.7),0_0_28px_-6px_oklch(0.72_0.18_255_/0.5)] ring-1 ring-white/10 lg:bottom-10 lg:right-10"
+    >
+      <Plus className="h-4 w-4" />
+      <span className="hidden sm:inline">Add</span>
+    </button>
   );
 }
