@@ -516,3 +516,36 @@
     }
   }
 }
+
+/* ============================================================
+ * Login Input Styling (Replicates Time Capsule Bloom)
+ * ============================================================ */
+:root {
+  --accent-glow-rgb: 99, 102, 241; /* Matches oklch(0.72 0.18 255) electric blue bloom */
+}
+
+.login-input-field {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.4s ease;
+  color: #ffffff;
+}
+
+.login-input-field:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+  
+  /* Combined outer ambient glow and internal crisp lighting */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1),
+              0 0 30px rgba(var(--accent-glow-rgb), 0.25),
+              inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+.login-input-field:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
