@@ -41,6 +41,7 @@ export function StatsGrid({ favoritesCount }: { favoritesCount: number }) {
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-30 blur-2xl transition-opacity duration-300 group-hover/pill:opacity-80"
               style={{
+                borderRadius: "inherit",
                 background: `radial-gradient(circle at 50% 50%, color-mix(in oklab, ${tint} 40%, transparent), transparent 70%)`
               }}
             />
@@ -49,6 +50,7 @@ export function StatsGrid({ favoritesCount }: { favoritesCount: number }) {
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/pill:opacity-100"
               style={{
+                borderRadius: "inherit",
                 boxShadow: `0 0 24px color-mix(in oklab, ${tint} 15%, transparent), inset 0 0 12px color-mix(in oklab, ${tint} 20%, transparent)`
               }}
             />
