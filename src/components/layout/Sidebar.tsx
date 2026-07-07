@@ -65,8 +65,8 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
               <ul className="space-y-0.5">
                 {items.map((item) => {
                   const active =
-                    item.to === "/app"
-                      ? pathname === "/app"
+                    item.to === "/app" || item.to === "/app/library"
+                      ? pathname === item.to
                       : pathname === item.to || pathname.startsWith(item.to + "/");
                   return (
                     <li key={item.to}>
