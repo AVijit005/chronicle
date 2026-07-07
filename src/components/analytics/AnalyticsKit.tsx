@@ -161,7 +161,7 @@ export function ProgressRing({
       {/* Detached Glow Layer */}
       <div 
         className="absolute inset-0 grid place-items-center" 
-        style={{ zIndex: -1, filter: `blur(8px)` }}
+        style={{ zIndex: 0, filter: `blur(8px)` }}
       >
         <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
           <motion.circle
@@ -183,7 +183,7 @@ export function ProgressRing({
       </div>
 
       {/* Primary Rings */}
-      <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
+      <svg width={size} height={size} className="-rotate-90 relative z-10" style={{ overflow: "visible" }}>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -207,7 +207,7 @@ export function ProgressRing({
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         />
       </svg>
-      <div className="absolute inset-0 grid place-items-center text-center">{children}</div>
+      <div className="absolute inset-0 grid place-items-center text-center z-10">{children}</div>
     </div>
   );
 }
