@@ -62,10 +62,17 @@ function CaptureFab() {
       onClick={openAdd}
       aria-label="Add to Chronicle"
       title="Add to Chronicle (⌘N)"
-      className="press-scale fixed bottom-24 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-secondary px-4 py-3 text-sm font-medium text-primary-foreground shadow-[0_18px_44px_-18px_oklch(0_0_0_/0.7),0_0_28px_-6px_oklch(0.72_0.18_255_/0.5)] ring-1 ring-white/10 lg:bottom-10 lg:right-10"
+      className="group press-scale fixed bottom-24 right-5 z-40 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all duration-300 ease-out lg:bottom-10 lg:right-10
+      bg-black/40 backdrop-blur-xl 
+      ring-1 ring-white/15 
+      shadow-[inset_0_0_20px_oklch(0.72_0.18_255/0.15),0_8px_24px_-8px_rgba(0,0,0,0.5)]
+      hover:-translate-y-1 hover:bg-black/30 hover:ring-white/25
+      hover:shadow-[inset_0_0_30px_oklch(0.72_0.18_255/0.3),0_12px_32px_-10px_oklch(0.72_0.18_255/0.6)]"
     >
-      <Plus className="h-4 w-4" />
-      <span className="hidden sm:inline">Add</span>
+      <Plus className="h-[18px] w-[18px] text-cyan-300 transition-colors duration-300 group-hover:text-cyan-200" />
+      <span className="hidden sm:inline bg-gradient-to-r from-cyan-300 to-violet-300 bg-clip-text text-transparent transition-all duration-300 group-hover:from-cyan-200 group-hover:to-violet-200">
+        Add
+      </span>
     </button>
   );
 }
