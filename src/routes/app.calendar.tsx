@@ -446,11 +446,11 @@ function CalendarPage() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {MEMORY_STREAKS.map((s) => (
             <PremiumGlass key={s.label} className="h-full">
-              <div className="flex flex-col items-center justify-between px-4 py-6 h-full relative w-full">
+              <div className="flex flex-col items-center justify-start px-4 py-5 h-full relative box-border w-full">
                 
                 <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
 
-                <div className="flex flex-col items-center gap-1 z-10">
+                <div className="flex flex-col items-center gap-[6px] mt-auto w-full z-10">
                   <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
                     <CountUp to={s.value} />
                     <span className="text-[12px] uppercase tracking-wider text-muted-foreground ml-1">
