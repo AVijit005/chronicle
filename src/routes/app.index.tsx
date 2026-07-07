@@ -177,24 +177,36 @@ function Home() {
 
       {/* Stats — living, in a master glass panel */}
       <div className="mt-16 pointer-events-auto">
-        <PremiumGlass interactive className="group/master flex flex-row items-center justify-between p-8 gap-10 rounded-[2.5rem] w-full overflow-x-auto">
-          {/* Left Column: Context Typography */}
-          <div className="flex-1 max-w-[50%]">
-            <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">
-              This is you
+        <PremiumGlass interactive className="group/master rounded-[2.5rem]">
+          <div 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'row', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              padding: '40px', 
+              gap: '40px' 
+            }} 
+            className="w-full overflow-x-auto"
+          >
+            {/* Left Column: Context Typography */}
+            <div style={{ flex: 1, maxWidth: '50%' }}>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">
+                This is you
+              </div>
+              <h2 className="font-display text-3xl tracking-tight md:text-4xl">
+                A quiet glance at your patterns
+              </h2>
+              <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-foreground/80">
+                Not metrics — moods. The shape of how you've been spending your stories this month.
+                Look softly. Nothing here demands a goal.
+              </p>
             </div>
-            <h2 className="font-display text-3xl tracking-tight md:text-4xl">
-              A quiet glance at your patterns
-            </h2>
-            <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-foreground/80">
-              Not metrics — moods. The shape of how you've been spending your stories this month.
-              Look softly. Nothing here demands a goal.
-            </p>
-          </div>
 
-          {/* Right Column: The 4 Metric Pills */}
-          <div className="flex-shrink-0">
-            <LivingStats className="flex flex-row gap-4" />
+            {/* Right Column: The 4 Metric Pills */}
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', flexShrink: 0 }}>
+              <LivingStats className="flex flex-row gap-4 m-0 p-0" />
+            </div>
           </div>
         </PremiumGlass>
       </div>
