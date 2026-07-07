@@ -1,21 +1,35 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
+import { ListPlus } from "lucide-react";
 import type { UIMediaItem } from "@/lib/adapters/types";
 import { useCollections } from "@/hooks/use-collections";
 import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
 export function MediaCollections({ item }: { item: UIMediaItem }) {
-  const { data: collections } = useCollections();
+  const { data: collections, isLoading } = useCollections();
   const allCollections = collections?.map(adaptCollectionResponse) ?? [];
   // Find collections that contain this media item
   const cols = allCollections.filter((c) =>
     c.items?.some((i) => i.mediaId === item.mediaId)
   );
 
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="aspect-[16/9] animate-pulse rounded-2xl bg-white/5" />
+        ))}
+      </div>
+    );
+  }
+
   if (cols.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6 text-sm text-muted-foreground">
-        Not in any collection yet.
+      <div className="glass flex items-center gap-3 rounded-2xl p-6 text-sm text-muted-foreground">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/[0.05] text-primary ring-1 ring-white/10">
+          <ListPlus className="h-4 w-4" />
+        </span>
+        Not in any collection yet — group it with other stories when it fits one.
       </div>
     );
   }

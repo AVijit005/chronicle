@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown } from "lucide-react";
-import { ease } from "@/lib/motion";
+import { dur, ease } from "@/lib/motion";
 
 export type ChapterTone =
   | "cinematic" // Story
@@ -84,7 +84,8 @@ export function Chapter({
           >
             {open ? "Collapse" : "Read more"}
             <ChevronDown
-              className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+              className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+              style={{ transitionDuration: `${dur.large * 1000}ms`, transitionTimingFunction: `cubic-bezier(${ease.reveal.join(",")})` }}
             />
           </button>
         )}

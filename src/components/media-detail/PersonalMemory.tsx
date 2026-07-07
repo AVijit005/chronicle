@@ -10,6 +10,22 @@ export function PersonalMemory({ item }: { item: UIMediaItem }) {
   const memories = memoriesData?.pages.flatMap((p) => p.data).map(adaptMemory) ?? [];
   const latestMemory = memories[0];
 
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[auto_1fr]">
+        <div className="hidden h-64 w-44 animate-pulse rounded-2xl bg-white/5 md:block" />
+        <div className="glass rounded-3xl p-7 md:p-9">
+          <div className="h-3 w-24 animate-pulse rounded bg-white/10" />
+          <div className="mt-3 h-6 w-48 animate-pulse rounded bg-white/10" />
+          <div className="mt-4 space-y-2">
+            <div className="h-5 w-full animate-pulse rounded bg-white/5" />
+            <div className="h-5 w-3/4 animate-pulse rounded bg-white/5" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -56,7 +72,12 @@ export function PersonalMemory({ item }: { item: UIMediaItem }) {
           {latestMemory?.title || item.title}
         </h3>
         <p className="mt-3 font-display text-lg leading-snug text-foreground/85">
-          {latestMemory?.description || item.synopsis || "No memory recorded yet."}
+          {latestMemory?.description || item.synopsis || (
+            <span className="inline-flex items-center gap-2 text-base text-muted-foreground">
+              <Sparkles className="h-4 w-4 opacity-60" /> No memory recorded yet — this space is
+              waiting for your words.
+            </span>
+          )}
         </p>
       </div>
     </motion.div>

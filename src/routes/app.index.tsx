@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Plus, Search as SearchIcon, NotebookPen, Layers, ChevronRight } from "lucide-react";
 import { CinematicHero } from "@/components/media/CinematicHero";
 import { MediaCard } from "@/components/media/MediaCard";
@@ -35,6 +35,7 @@ import { useMediaActions } from "@/lib/store/MediaActionsContext";
 import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { t as motionT } from "@/lib/motion";
 
 export const Route = createFileRoute("/app/")({
   component: Home,
@@ -45,6 +46,7 @@ function Home() {
   const { data: collections } = useCollections();
   const navigate = useNavigate();
   const { openAdd } = useMediaActions();
+  const reduced = useReducedMotion();
 
   if (isLoading) {
     return (
@@ -54,6 +56,12 @@ function Home() {
           {Array.from({ length: 4 }).map((_, i) => (
             <ShimmerSkeleton key={i} className="h-20 rounded-2xl" />
           ))}
+        </div>
+        <ShimmerSkeleton className="h-24 rounded-3xl" />
+        <ShimmerSkeleton className="h-64 rounded-3xl" />
+        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+          <ShimmerSkeleton className="h-48 rounded-3xl" />
+          <ShimmerSkeleton className="h-48 rounded-3xl" />
         </div>
         <ShimmerSkeleton className="h-48 rounded-3xl" />
       </div>
@@ -106,10 +114,12 @@ function Home() {
           { icon: NotebookPen, label: "Journal entry", hint: "Press ⇧J", onClick: () => navigate({ to: '/app/journal' }) },
           { icon: Layers, label: "New collection", hint: "Press ⇧C", onClick: () => navigate({ to: '/app/collections' }) },
         ].map((q, i) => (
-          <button
+          <motion.button
             key={i}
             onClick={q.onClick}
-            className="glass group flex items-center gap-3 rounded-2xl p-4 text-left transition hover-lift"
+            whileHover={reduced ? undefined : { scale: 1.02, y: -4, transition: motionT.spring }}
+            whileTap={reduced ? undefined : { scale: 0.97, y: 0, transition: motionT.spring }}
+            className="glass group flex items-center gap-3 rounded-2xl p-4 text-left transition"
           >
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.06]">
               <q.icon className="h-4 w-4 text-primary" />
@@ -119,7 +129,7 @@ function Home() {
               <div className="text-[11px] text-muted-foreground">{q.hint}</div>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-foreground" />
-          </button>
+          </motion.button>
         ))}
       </motion.div>
 

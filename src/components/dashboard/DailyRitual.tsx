@@ -1,4 +1,7 @@
+import { motion } from "motion/react";
+import { Feather } from "lucide-react";
 import { TODAY } from "@/lib/memory";
+import { fadeBlurIn } from "@/lib/motion";
 
 export function DailyRitual({ className }: { className?: string }) {
   const dateLabel = TODAY.toLocaleDateString(undefined, {
@@ -17,7 +20,13 @@ export function DailyRitual({ className }: { className?: string }) {
         boxShadow: "inset 0 1px 0 oklch(1 0 0 / 0.04)",
       }}
     >
-      <header className="mb-8 flex items-baseline justify-between">
+      <motion.header
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+        variants={fadeBlurIn}
+        className="mb-8 flex items-baseline justify-between"
+      >
         <div>
           <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85">
             Today's ritual
@@ -32,10 +41,13 @@ export function DailyRitual({ className }: { className?: string }) {
         <div className="hidden text-[10px] uppercase tracking-[0.22em] text-muted-foreground md:block">
           {dateLabel}
         </div>
-      </header>
+      </motion.header>
 
-      <div className="glass-subtle rounded-2xl p-8 text-center text-muted-foreground">
-        Daily ritual unavailable (API limitation)
+      <div className="glass-subtle flex flex-col items-center gap-3 rounded-2xl p-8 text-center text-muted-foreground">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.05] text-primary ring-1 ring-white/10">
+          <Feather className="h-4 w-4" />
+        </span>
+        Your ritual is still gathering — check back once there's more to reflect on.
       </div>
     </section>
   );

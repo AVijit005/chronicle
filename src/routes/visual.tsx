@@ -32,9 +32,18 @@ const ITEM: MediaItem = {
   backdrop: POSTER,
   accent: "oklch(0.72 0.18 255)",
   progress: 64,
-  status: "watching",
+  status: "in_progress",
   genres: ["Drama"],
   synopsis: "Deterministic fixture for visual regression.",
+  mediaId: "vr-fixture",
+  progressLabel: null,
+  mediaType: "movie",
+  lastInteractionAt: null,
+  rewatchCount: 0,
+  slug: "vr-fixture",
+  favorite: false,
+  runtime: null,
+  creator: null,
 };
 
 function VisualHarness() {

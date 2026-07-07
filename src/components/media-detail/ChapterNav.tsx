@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion } from "motion/react";
+import { ArrowUp } from "lucide-react";
+import { useShortcuts } from "@/lib/shortcuts";
 
 export interface ChapterRef {
   id: string;
   label: string;
 }
 
-/** Sticky right-rail chapter nav + top reading-progress bar.
+/** Sticky right-rail chapter nav + top reading-progress bar + condensed
+ *  title bar once the hero has scrolled out of view.
  *  Watches anchor sections via IntersectionObserver. */
-export function ChapterNav({ chapters }: { chapters: ChapterRef[] }) {
+export function ChapterNav({ chapters, title }: { chapters: ChapterRef[]; title?: string }) {
   const [activeId, setActiveId] = useState(chapters[0]?.id);
   const [progress, setProgress] = useState(0);
+  const reduced = useReducedMotion();
+  const scaleX = useMotionValue(0);
+  const smoothScaleX = useSpring(scaleX, { stiffness: 300, damping: 40, mass: 0.2 });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -33,7 +39,9 @@ export function ChapterNav({ chapters }: { chapters: ChapterRef[] }) {
     const onScroll = () => {
       const doc = document.documentElement;
       const total = doc.scrollHeight - doc.clientHeight;
-      setProgress(total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0);
+      const p = total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0;
+      setProgress(p);
+      scaleX.set(p);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -41,12 +49,19 @@ export function ChapterNav({ chapters }: { chapters: ChapterRef[] }) {
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
-  }, [chapters]);
+  }, [chapters, scaleX]);
 
   const go = (id: string) => {
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el) el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   };
+
+  // Number keys jump straight to a chapter — this component renders once per page.
+  useShortcuts(
+    Object.fromEntries(chapters.map((c, i) => [String(i + 1), () => go(c.id)])),
+  );
+
+  const showSticky = Boolean(title) && progress > 0.06;
 
   return (
     <>
@@ -54,10 +69,34 @@ export function ChapterNav({ chapters }: { chapters: ChapterRef[] }) {
       <div className="pointer-events-none fixed inset-x-0 top-0 z-40 h-[2px]">
         <motion.div
           className="h-full origin-left bg-gradient-to-r from-primary via-secondary to-primary"
-          style={{ scaleX: progress }}
-          transition={{ duration: 0.15, ease: "linear" }}
+          style={{ scaleX: reduced ? progress : smoothScaleX }}
         />
       </div>
+
+      {/* Condensed sticky title bar — fades in once the hero has scrolled away */}
+      <AnimatePresence>
+        {showSticky && (
+          <motion.div
+            key="chapter-sticky-title"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="glass-subtle pointer-events-auto fixed inset-x-6 top-[88px] z-30 flex items-center justify-between gap-3 rounded-2xl px-4 py-2 lg:inset-x-10"
+          >
+            <span className="truncate font-display text-sm tracking-tight md:text-base">
+              {title}
+            </span>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" })}
+              aria-label="Back to top"
+              className="press-scale tap-target grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/[0.06] text-muted-foreground ring-1 ring-white/10 hover:text-foreground"
+            >
+              <ArrowUp className="h-3.5 w-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Right-rail nav — desktop only */}
       <nav

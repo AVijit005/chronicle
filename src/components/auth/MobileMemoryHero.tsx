@@ -10,8 +10,8 @@ import { MemoryQuote } from "./MemoryQuote";
  */
 export function MobileMemoryHero() {
   const reduced = useReducedMotion();
-  const hero = MEDIA.find((m) => m.id === "interstellar") ?? MEDIA[0];
-  const second = MEDIA.find((m) => m.id === "one-piece") ?? MEDIA[1];
+  const hero = { id: "interstellar", title: "Interstellar", rating: 4.8, poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" };
+  const second = { id: "one-piece", title: "One Piece", rating: 4.9, poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/fcNd3l6aK3vN73LzGIf9Yd4rPum.jpg" };
 
   return (
     <div

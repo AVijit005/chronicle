@@ -5,6 +5,7 @@ import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { useDashboard } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
+import { dur, ease } from "@/lib/motion";
 
 export function ContinueJourneyHero({ className }: { className?: string }) {
   const { data: dashboard } = useDashboard();
@@ -19,7 +20,7 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
       aria-label="Continue your journey"
       className={cn("relative", className)}
     >
-      <PremiumGlass variant="strong" className="overflow-hidden">
+      <PremiumGlass variant="strong" className="hover-lift overflow-hidden">
         <div className="relative grid gap-0 md:grid-cols-[1.1fr_1fr]">
           <div className="relative aspect-[16/9] md:aspect-auto md:min-h-[280px]">
             <img src={j.posterUrl ?? ""} alt="" className="h-full w-full object-cover" />
@@ -43,11 +44,11 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
             </div>
 
             <div className="mt-5 h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
-              <div
+              <motion.div
                 className="h-full rounded-full bg-primary"
-                style={{
-                  width: `${j.progressPercentage ?? 0}%`
-                }}
+                initial={{ width: 0 }}
+                animate={{ width: `${j.progressPercentage ?? 0}%` }}
+                transition={{ duration: dur.large, ease: ease.reveal, delay: 0.2 }}
               />
             </div>
 
@@ -58,12 +59,12 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
                 </PremiumButton>
               </Link>
               <Link to="/app/journal">
-                <PremiumButton variant="secondary" icon={<NotebookPen className="h-4 w-4" />}>
+                <PremiumButton variant="ghost" size="sm" icon={<NotebookPen className="h-3.5 w-3.5" />}>
                   Journal
                 </PremiumButton>
               </Link>
               <Link to="/app/timeline">
-                <PremiumButton variant="secondary" icon={<Clock className="h-4 w-4" />}>
+                <PremiumButton variant="ghost" size="sm" icon={<Clock className="h-3.5 w-3.5" />}>
                   Timeline
                 </PremiumButton>
               </Link>

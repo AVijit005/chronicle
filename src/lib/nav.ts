@@ -99,15 +99,15 @@ export const NAV: NavItem[] = [
   { to: "/app/library/archived", label: SURFACE.archived.nav, icon: Archive, group: "library" },
 
   // Shelves — by medium
-  { to: "/app/library/movies", label: "Movies", icon: Film, group: "shelves" },
+  { to: "/app/library/movie", label: "Movies", icon: Film, group: "shelves" },
   { to: "/app/library/anime", label: "Anime", icon: Sparkles, group: "shelves" },
   { to: "/app/library/series", label: "Series", icon: Tv, group: "shelves" },
-  { to: "/app/library/books", label: "Books", icon: BookOpen, group: "shelves" },
+  { to: "/app/library/book", label: "Books", icon: BookOpen, group: "shelves" },
   { to: "/app/library/manga", label: "Manga", icon: BookMarked, group: "shelves" },
-  { to: "/app/library/games", label: "Games", icon: Gamepad2, group: "shelves" },
+  { to: "/app/library/game", label: "Games", icon: Gamepad2, group: "shelves" },
   { to: "/app/library/music", label: "Music", icon: Music2, group: "shelves" },
-  { to: "/app/library/podcasts", label: "Podcasts", icon: Mic, group: "shelves" },
-  { to: "/app/library/courses", label: "Courses", icon: GraduationCap, group: "shelves" },
+  { to: "/app/library/podcast", label: "Podcasts", icon: Mic, group: "shelves" },
+  { to: "/app/library/course", label: "Courses", icon: GraduationCap, group: "shelves" },
   { to: "/app/library/youtube", label: "YouTube", icon: Youtube, group: "shelves" },
 
   // Collections — curated sets

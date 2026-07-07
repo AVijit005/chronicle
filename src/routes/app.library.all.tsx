@@ -4,9 +4,11 @@ import { motion } from "motion/react";
 import { MediaCard } from "@/components/media/MediaCard";
 import { LibraryToolbar, type SortKey } from "@/components/library/LibraryToolbar";
 import { StatusBadge } from "@/components/library/StatusBadge";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { ALL_LIBRARY, metaOf, statusOf, type MediaStatus } from "@/lib/library";
 import type { MediaKind } from "@/lib/mock";
 import { cn } from "@/lib/utils";
+import { cascade } from "@/lib/motion";
 
 export const Route = createFileRoute("/app/library/all")({
   component: AllLibraryPage,
@@ -62,6 +64,14 @@ function AllLibraryPage() {
     return r;
   }, [q, status, kinds, favOnly, journaledOnly, sort]);
 
+  const clearFilters = () => {
+    setQ("");
+    setStatus([]);
+    setKinds([]);
+    setFavOnly(false);
+    setJournaledOnly(false);
+  };
+
   return (
     <div className="pt-2">
       <div className="mb-2">
@@ -96,7 +106,7 @@ function AllLibraryPage() {
       </div>
 
       <motion.div
-        key={view + sort + q + status.join(",") + kinds.join(",") + favOnly + journaledOnly}
+        key={view + sort + status.join(",") + kinds.join(",") + favOnly + journaledOnly}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
@@ -107,38 +117,67 @@ function AllLibraryPage() {
         )}
       >
         {items.length === 0 ? (
-          <div className="col-span-full glass-subtle rounded-3xl p-12 text-center text-sm text-muted-foreground">
-            Nothing matches those filters. Try clearing a chip or changing the search.
+          <div className="col-span-full">
+            <EmptyState
+              title="Nothing matches those filters"
+              description="Try clearing a chip or changing the search."
+              action={
+                <button
+                  onClick={clearFilters}
+                  className="press-scale rounded-full bg-gradient-to-r from-primary to-secondary px-4 py-2 text-sm font-medium text-primary-foreground"
+                >
+                  Clear filters
+                </button>
+              }
+            />
           </div>
         ) : view === "grid" ? (
-          items.map((m) => <MediaCard key={m.id} item={m as any} />)
-        ) : (
-          items.map((m) => (
-            <Link
+          items.map((m, i) => (
+            <motion.div
               key={m.id}
-              to="/app/media/$id"
-              params={{ id: m.id }}
-              className="glass flex items-center gap-4 rounded-2xl p-3 transition hover-lift"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={cascade(i)}
             >
-              <img
-                src={m.poster}
-                alt=""
-                className="h-20 w-14 shrink-0 rounded-lg object-cover"
-                loading="lazy"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="truncate text-sm font-medium">{m.title}</span>
-                  <StatusBadge status={statusOf(m.id)} size="xs" />
+              <MediaCard item={m as any} />
+            </motion.div>
+          ))
+        ) : (
+          items.map((m, i) => (
+            <motion.div
+              key={m.id}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={cascade(i)}
+            >
+              <Link
+                to="/app/media/$id"
+                params={{ id: m.id }}
+                className="glass flex items-center gap-4 rounded-2xl p-3 transition hover-lift"
+              >
+                <motion.img
+                  layoutId={`poster-${m.id}`}
+                  src={m.poster}
+                  alt=""
+                  className="h-20 w-14 shrink-0 rounded-lg object-cover"
+                  loading="lazy"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-sm font-medium">{m.title}</span>
+                    <StatusBadge status={statusOf(m.id)} size="xs" />
+                  </div>
+                  <div className="mt-0.5 truncate text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {m.year} · {m.kind} · {m.creator}
+                  </div>
                 </div>
-                <div className="mt-0.5 truncate text-[11px] uppercase tracking-wider text-muted-foreground">
-                  {m.year} · {m.kind} · {m.creator}
+                <div className="hidden text-xs text-muted-foreground md:block">
+                  ★ {((m.rating ?? 0) ?? 0).toFixed(1)}
                 </div>
-              </div>
-              <div className="hidden text-xs text-muted-foreground md:block">
-                ★ {((m.rating ?? 0) ?? 0).toFixed(1)}
-              </div>
-            </Link>
+              </Link>
+            </motion.div>
           ))
         )}
       </motion.div>

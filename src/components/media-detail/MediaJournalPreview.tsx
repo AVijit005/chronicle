@@ -1,16 +1,31 @@
 import { motion } from "motion/react";
-import { Pencil, ArrowUpRight } from "lucide-react";
+import { Pencil, ArrowUpRight, NotebookPen } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { UIMediaItem } from "@/lib/adapters/types";
 import { useJournalEntries } from "@/hooks/use-journal";
 import { adaptJournalEntry } from "@/lib/adapters/journal";
 import { PremiumButton } from "@/components/ui/PremiumButton";
+import { useMediaActions } from "@/lib/store/MediaActionsContext";
 
 export function MediaJournalPreview({ item }: { item: UIMediaItem }) {
   const accent = item.accent ?? "oklch(0.72 0.18 255)";
   const { data: journalData, isLoading } = useJournalEntries({ limit: 1 });
   const entries = journalData?.pages.flatMap((p) => p.data).map(adaptJournalEntry) ?? [];
   const latestEntry = entries[0];
+  const { openReflection } = useMediaActions();
+
+  if (isLoading) {
+    return (
+      <div className="glass relative overflow-hidden rounded-[28px] p-7 md:p-9">
+        <div className="h-3 w-40 animate-pulse rounded bg-white/10" />
+        <div className="mt-3 h-7 w-56 animate-pulse rounded bg-white/10" />
+        <div className="mt-6 space-y-2">
+          <div className="h-6 w-full animate-pulse rounded bg-white/5" />
+          <div className="h-6 w-4/5 animate-pulse rounded bg-white/5" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -42,11 +57,23 @@ export function MediaJournalPreview({ item }: { item: UIMediaItem }) {
             {latestEntry ? latestEntry.title || "Untitled entry" : "Latest entry"}
           </h3>
         </div>
-        <PremiumButton variant="icon" icon={<Pencil className="h-4 w-4" />} aria-label="Edit" />
+        <PremiumButton
+          variant="icon"
+          icon={<Pencil className="h-4 w-4" />}
+          aria-label="Edit"
+          onClick={() => openReflection(item.id)}
+        />
       </div>
-      <p className="mt-5 font-display text-2xl leading-snug text-foreground/90 md:text-3xl">
-        &ldquo;{latestEntry ? latestEntry.content.slice(0, 200) : item.synopsis || "No journal entry yet."}&rdquo;
-      </p>
+      {latestEntry || item.synopsis ? (
+        <p className="mt-5 font-display text-2xl leading-snug text-foreground/90 md:text-3xl">
+          &ldquo;{latestEntry ? latestEntry.content.slice(0, 200) : item.synopsis}&rdquo;
+        </p>
+      ) : (
+        <p className="mt-5 flex items-center gap-2 text-base text-muted-foreground">
+          <NotebookPen className="h-4 w-4 opacity-60" /> No journal entry yet — your first
+          reflection will appear here.
+        </p>
+      )}
       <div className="mt-6 flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
           {item.genres.slice(0, 3).map((t) => `#${t}`).join(" ")}

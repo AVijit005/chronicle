@@ -19,10 +19,14 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
+import { motion, useReducedMotion } from "motion/react";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 import { useMediaActions } from "@/lib/store/MediaActionsContext";
 import { toggleBookmark, isBookmarked } from "@/lib/bookmarks";
 import { cn } from "@/lib/utils";
+import { t as motionT } from "@/lib/motion";
+import { useShortcuts } from "@/lib/shortcuts";
+import { QuickPromptDialog } from "@/components/media/QuickPromptDialog";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -63,6 +67,13 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
   const toggleCollectionItem = useLibraryStore((s) => s.toggleCollectionItem);
   const { openProgress, openReflection } = useMediaActions();
   const [bookmarked, setBookmarked] = useState(() => isBookmarked("media", id));
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [collectionOpen, setCollectionOpen] = useState(false);
+  const reduced = useReducedMotion();
+  const heroMotion =
+    variant === "hero" && !reduced
+      ? { whileHover: { scale: 1.03, transition: motionT.spring }, whileTap: { scale: 0.96, transition: motionT.spring } }
+      : {};
 
   const status = meta?.status;
   const fav = !!meta?.favorite;
@@ -72,6 +83,21 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
     setStatus(id, next);
     toast.success(msg, { description: title });
   }
+
+  function handleToggleFavorite() {
+    toggleFavorite(id);
+    toast(fav ? "Removed from favorites" : "Favorited", { description: title });
+  }
+
+  function handleToggleBookmark() {
+    const v = toggleBookmark({ kind: "media", refId: id, title, to: `/app/media/${id}` });
+    setBookmarked(v);
+    toast(v ? "Bookmarked" : "Bookmark removed");
+  }
+
+  // Media Detail hero row only — favorite/bookmark quick keys. Empty map on
+  // every other variant (e.g. MediaCard overlays) so they don't fire per-card.
+  useShortcuts(variant === "hero" ? { f: handleToggleFavorite, b: handleToggleBookmark } : {});
 
   const verbs = useMemo<Verb[]>(() => {
     if (!status)
@@ -200,77 +226,85 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
 
   // Style per variant
   const wrap = cn(
-    "flex items-center gap-1.5",
+    "flex items-center",
     variant === "overlay" &&
-      "rounded-full bg-black/55 px-1.5 py-1 backdrop-blur-md ring-1 ring-white/10",
+      "rounded-full bg-black/55 p-1 backdrop-blur-md ring-1 ring-white/10 gap-1",
     variant === "hero" && "flex-wrap gap-2",
+    variant === "inline" && "gap-1.5",
     className,
   );
 
   return (
     <div className={wrap} onClick={(e) => e.stopPropagation()}>
       {primary.map((v) => (
-        <button
+        <motion.button
           key={v.key}
           onClick={v.run}
+          {...heroMotion}
           className={cn(
-            "press-scale inline-flex items-center gap-1.5 rounded-full text-xs font-medium",
+            "press-scale inline-flex items-center gap-1.5 rounded-full text-xs font-medium transition",
             variant === "hero"
-              ? "bg-gradient-to-r from-primary to-secondary px-4 py-2 text-sm text-primary-foreground"
+              ? "bg-gradient-to-r from-primary to-secondary px-4 py-2 text-sm text-primary-foreground shrink-0"
               : variant === "overlay"
-                ? "bg-white/95 px-3 py-1.5 text-foreground"
-                : "bg-gradient-to-r from-primary to-secondary px-3 py-1.5 text-primary-foreground",
+                ? "bg-white/[0.06] px-2.5 py-1.5 text-foreground hover:bg-white/[0.15] ring-1 ring-white/10 shrink min-w-0"
+                : "bg-gradient-to-r from-primary to-secondary px-3 py-1.5 text-primary-foreground shrink-0",
           )}
         >
-          <v.icon className="h-3.5 w-3.5" /> {v.label}
-        </button>
+          <v.icon className="h-3.5 w-3.5 shrink-0" /> 
+          <span className="truncate">{v.label}</span>
+        </motion.button>
       ))}
 
-      <button
-        onClick={() => {
-          toggleFavorite(id);
-          toast(fav ? "Removed from favorites" : "Favorited", { description: title });
-        }}
+      <motion.button
+        onClick={handleToggleFavorite}
         aria-label="Favorite"
         aria-pressed={fav}
+        {...heroMotion}
         className={cn(
-          "press-scale grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10 transition",
+          "press-scale grid h-8 w-8 shrink-0 place-items-center rounded-full ring-1 ring-white/10 transition",
+          variant === "hero" && "tap-target",
           fav
             ? "bg-rose-500/20 text-rose-300"
-            : "bg-white/[0.06] text-muted-foreground hover:text-foreground",
+            : "bg-white/[0.06] text-muted-foreground hover:bg-white/[0.15] hover:text-foreground",
         )}
       >
         <Heart className={cn("h-3.5 w-3.5", fav && "fill-current")} />
-      </button>
+      </motion.button>
 
-      <button
-        onClick={() => {
-          const v = toggleBookmark({ kind: "media", refId: id, title, to: `/app/media/${id}` });
-          setBookmarked(v);
-          toast(v ? "Bookmarked" : "Bookmark removed");
-        }}
+      <motion.button
+        onClick={handleToggleBookmark}
         aria-label="Bookmark"
         aria-pressed={bookmarked}
+        {...heroMotion}
         className={cn(
-          "press-scale grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10 transition",
+          "press-scale grid h-8 w-8 shrink-0 place-items-center rounded-full ring-1 ring-white/10 transition",
+          variant === "hero" && "tap-target",
           bookmarked
             ? "bg-primary/15 text-primary"
-            : "bg-white/[0.06] text-muted-foreground hover:text-foreground",
+            : "bg-white/[0.06] text-muted-foreground hover:bg-white/[0.15] hover:text-foreground",
         )}
       >
         <Bookmark className={cn("h-3.5 w-3.5", bookmarked && "fill-current")} />
-      </button>
+      </motion.button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
+          <motion.button
             aria-label="More actions"
-            className="press-scale grid h-8 w-8 place-items-center rounded-full bg-white/[0.06] text-muted-foreground ring-1 ring-white/10 hover:text-foreground"
+            {...heroMotion}
+            className={cn(
+              "press-scale grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/[0.06] text-muted-foreground ring-1 ring-white/10 transition hover:bg-white/[0.15] hover:text-foreground",
+              variant === "hero" && "tap-target",
+            )}
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
-          </button>
+          </motion.button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent
+          align="end"
+          className="w-56"
+          onCloseAutoFocus={(e) => e.preventDefault()}
+        >
           <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             {title}
           </DropdownMenuLabel>
@@ -291,12 +325,9 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
             Add journal entry
           </DropdownMenuItem>
           <DropdownMenuItem
-            onSelect={() => {
-              const text = window.prompt(`Save a quote from ${title}`);
-              if (text?.trim()) {
-                useLibraryStore.getState().addUserQuote(text.trim(), { id, title });
-                toast.success("Quote saved", { description: title });
-              }
+            onSelect={(e) => {
+              e.preventDefault();
+              setQuoteOpen(true);
             }}
           >
             <Quote className="mr-2 h-4 w-4" />
@@ -331,13 +362,9 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={() => {
-                  const name = window.prompt("New collection name");
-                  if (name?.trim()) {
-                    const cid = createCollection(name.trim());
-                    toggleCollectionItem(cid, id);
-                    toast.success(`Added to ${name.trim()}`);
-                  }
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setCollectionOpen(true);
                 }}
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -362,6 +389,31 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <QuickPromptDialog
+        open={quoteOpen}
+        onOpenChange={setQuoteOpen}
+        title={`Save a quote from ${title}`}
+        placeholder="Type or paste the quote…"
+        confirmLabel="Save quote"
+        multiline
+        onConfirm={(text) => {
+          useLibraryStore.getState().addUserQuote(text, { id, title });
+          toast.success("Quote saved", { description: title });
+        }}
+      />
+      <QuickPromptDialog
+        open={collectionOpen}
+        onOpenChange={setCollectionOpen}
+        title="New collection"
+        placeholder="Collection name…"
+        confirmLabel="Create"
+        onConfirm={(name) => {
+          const cid = createCollection(name);
+          toggleCollectionItem(cid, id);
+          toast.success(`Added to ${name}`);
+        }}
+      />
     </div>
   );
 }

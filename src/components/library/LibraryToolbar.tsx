@@ -73,6 +73,7 @@ export function LibraryToolbar(p: Props) {
         <div className="ml-auto flex items-center gap-1">
           <button
             onClick={() => p.onFavOnly(!p.favOnly)}
+            aria-pressed={p.favOnly}
             className={cn(
               "press-scale inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs",
               p.favOnly ? "bg-amber-300/15 text-amber-200" : "glass-subtle text-muted-foreground",
@@ -82,6 +83,7 @@ export function LibraryToolbar(p: Props) {
           </button>
           <button
             onClick={() => p.onJournaledOnly(!p.journaledOnly)}
+            aria-pressed={p.journaledOnly}
             className={cn(
               "press-scale inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs",
               p.journaledOnly ? "bg-primary/15 text-primary" : "glass-subtle text-muted-foreground",
@@ -102,6 +104,7 @@ export function LibraryToolbar(p: Props) {
           </select>
           <button
             onClick={() => p.onView("grid")}
+            aria-pressed={p.view === "grid"}
             className={cn(
               "press-scale grid h-8 w-8 place-items-center rounded-full",
               p.view === "grid" ? "bg-white/[0.08]" : "text-muted-foreground",
@@ -111,6 +114,7 @@ export function LibraryToolbar(p: Props) {
           </button>
           <button
             onClick={() => p.onView("rows")}
+            aria-pressed={p.view === "rows"}
             className={cn(
               "press-scale grid h-8 w-8 place-items-center rounded-full",
               p.view === "rows" ? "bg-white/[0.08]" : "text-muted-foreground",
@@ -121,7 +125,13 @@ export function LibraryToolbar(p: Props) {
         </div>
       </div>
 
-      <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
+      <div
+        className="mt-3 flex items-center gap-2 overflow-x-auto pb-1"
+        style={{
+          maskImage: "linear-gradient(to right, black calc(100% - 32px), transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to right, black calc(100% - 32px), transparent 100%)",
+        }}
+      >
         <Filter className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         {STATUSES.map((s) => {
           const active = p.status.includes(s);
@@ -130,6 +140,7 @@ export function LibraryToolbar(p: Props) {
             <button
               key={s}
               onClick={() => p.onStatus(toggle(p.status, s))}
+              aria-pressed={active}
               className="press-scale shrink-0 rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em]"
               style={
                 active
@@ -156,6 +167,7 @@ export function LibraryToolbar(p: Props) {
             <button
               key={k}
               onClick={() => p.onKinds(toggle(p.kinds, k))}
+              aria-pressed={active}
               className={cn(
                 "press-scale shrink-0 rounded-full border px-2.5 py-1 text-[11px]",
                 active

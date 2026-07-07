@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Download, Upload, FileText, FileJson, AlertCircle, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useLibraryStore } from "@/lib/store/libraryStore";
-import type { MediaItem } from "@/lib/mock";
+import type { UIMediaItem as MediaItem } from "@/lib/adapters/types";
 import type { MediaStatus } from "@/lib/library";
 
 export const Route = createFileRoute("/app/import")({
@@ -86,23 +86,34 @@ function ImportExportPage() {
           .slice(0, 40)}_${Date.now().toString(36)}_${added}`;
         const item: MediaItem = {
           id,
+          mediaId: id,
           title,
           kind,
           year,
           poster:
             "https://images.unsplash.com/photo-1489599577372-39e9b94f2bb4?auto=format&fit=crop&w=800&h=1200&q=80",
+          backdrop: null,
           rating: Number(cells[idx("rating")]) || 0,
+          progress: 0,
+          progressLabel: null,
           status:
             status === "completed"
               ? "completed"
               : status === "planning"
-                ? "planned"
+                ? "planning"
                 : status === "paused"
                   ? "paused"
-                  : "watching",
+                  : "in_progress",
           genres: [],
-          creator: cells[idx("creator")]?.trim() || undefined,
+          runtime: null,
+          creator: cells[idx("creator")]?.trim() || null,
           synopsis: cells[idx("reason")]?.trim() || "Imported from CSV.",
+          accent: null,
+          favorite: false,
+          slug: id,
+          mediaType: kind,
+          lastInteractionAt: new Date().toISOString(),
+          rewatchCount: 0,
         };
         addCustomItem(item, { status, addedAt: "Imported" });
         added++;

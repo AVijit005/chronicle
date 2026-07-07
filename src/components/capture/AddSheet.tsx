@@ -19,7 +19,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import type { MediaItem, MediaKind } from "@/lib/mock";
+import type { UIMediaItem as MediaItem, UIMediaKind as MediaKind } from "@/lib/adapters/types";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 import type { MediaStatus } from "@/lib/library";
 import { cn } from "@/lib/utils";
@@ -98,22 +98,33 @@ export function AddSheet({
     const storeKind: MediaKind = kind === "article" ? "youtube" : kind;
     const item: MediaItem = {
       id,
+      mediaId: id,
       title: title.trim(),
       kind: storeKind,
       year: yearNum,
       poster: poster.trim() || DEFAULT_POSTER,
+      backdrop: null,
       rating: 0,
+      progress: 0,
+      progressLabel: null,
       status:
         status === "completed"
           ? "completed"
           : status === "planning"
-            ? "planned"
+            ? "planning"
             : status === "paused"
               ? "paused"
-              : "watching",
+              : "in_progress",
       genres: [],
-      creator: creator.trim() || undefined,
+      runtime: null,
+      creator: creator.trim() || null,
       synopsis: reason.trim() || "Added by you.",
+      accent: null,
+      favorite: favorite,
+      slug: id,
+      mediaType: storeKind,
+      lastInteractionAt: new Date().toISOString(),
+      rewatchCount: 0,
     };
     addCustomItem(item, {
       status,

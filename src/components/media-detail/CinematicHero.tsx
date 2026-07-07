@@ -1,15 +1,20 @@
-import { motion } from "motion/react";
+import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { Star } from "lucide-react";
 import type { UIMediaItem } from "@/lib/adapters/types";
 import { useArtworkAccent } from "@/lib/useArtworkAccent";
 import { PremiumProgress } from "@/components/ui/PremiumProgress";
 import { ItemActionBar } from "@/components/media/ItemActionBar";
+import { t as motionT } from "@/lib/motion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function CinematicHero({ item }: { item: UIMediaItem }) {
   const accent = useArtworkAccent(item.accent ?? undefined);
   const progress = item.progress;
+  const reduced = useReducedMotion();
+  const [backdropLoaded, setBackdropLoaded] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
 
   return (
     <section
@@ -22,10 +27,16 @@ export function CinematicHero({ item }: { item: UIMediaItem }) {
       {/* backdrop */}
       <div className="absolute inset-0">
         <motion.img
+          layoutId={`poster-${item.mediaId || item.id}`}
           src={item.backdrop ?? item.poster}
           alt=""
+          onLoad={() => setBackdropLoaded(true)}
           initial={{ scale: 1.08, opacity: 0, filter: "blur(14px)" }}
-          animate={{ scale: 1.04, opacity: 1, filter: "blur(0px)" }}
+          animate={
+            backdropLoaded
+              ? { scale: 1.04, opacity: 1, filter: "blur(0px)" }
+              : { opacity: 0 }
+          }
           transition={{ duration: 1.4, ease }}
           className="h-full w-full object-cover"
           style={{ animation: "ken-burns 26s ease-in-out infinite" }}
@@ -78,11 +89,20 @@ export function CinematicHero({ item }: { item: UIMediaItem }) {
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
+          whileHover={reduced ? undefined : { scale: 1.015, transition: motionT.spring }}
           transition={{ duration: 0.9, delay: 0.15, ease }}
           className="relative hidden w-56 md:block lg:w-64"
         >
-          <div className="relative aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-[0_40px_80px_-20px_oklch(0_0_0/0.7)]">
-            <img src={item.poster} alt={item.title} className="h-full w-full object-cover" />
+          <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/15 shadow-[0_40px_80px_-20px_oklch(0_0_0/0.7)]">
+            <motion.img
+              src={item.poster}
+              alt={item.title}
+              onLoad={() => setPosterLoaded(true)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: posterLoaded ? 1 : 0 }}
+              transition={{ duration: 0.5, ease }}
+              className="h-full w-full object-cover"
+            />
             <span
               aria-hidden
               className="pointer-events-none absolute inset-0"
@@ -184,7 +204,7 @@ export function CinematicHero({ item }: { item: UIMediaItem }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.7, ease }}
-            className="mt-7"
+            className="mt-8"
           >
             <ItemActionBar id={item.id} title={item.title} variant="hero" />
           </motion.div>

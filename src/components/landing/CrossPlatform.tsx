@@ -2,9 +2,9 @@ import { motion } from "motion/react";
 import { MEDIA } from "@/lib/mock";
 
 export function CrossPlatform() {
-  const desktop = MEDIA.find((m) => m.id === "interstellar")!;
-  const tablet = MEDIA.find((m) => m.id === "elden-ring")!;
-  const mobile = MEDIA.find((m) => m.id === "one-piece")!;
+  const desktop = { id: "interstellar", title: "Interstellar", creator: "Christopher Nolan", kind: "movie", progress: 68, backdrop: "https://image.tmdb.org/t/p/w1280/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" };
+  const tablet = { id: "elden-ring", title: "Elden Ring", creator: "FromSoftware", kind: "game", progress: 75, backdrop: "https://images.igdb.com/igdb/image/upload/t_1080p/ar16b.jpg", poster: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.png" };
+  const mobile = { id: "one-piece", title: "One Piece", creator: "Eiichiro Oda", kind: "anime", progress: 42, backdrop: "https://image.tmdb.org/t/p/w1280/2rmK7mnchw9Xr3XdiTFSxTTLXqv.jpg", poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/fcNd3l6aK3vN73LzGIf9Yd4rPum.jpg" };
 
   return (
     <div className="relative grid grid-cols-12 items-center gap-6">

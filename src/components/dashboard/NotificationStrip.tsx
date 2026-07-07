@@ -12,7 +12,13 @@ export function NotificationStrip({ className }: { className?: string }) {
 
   return (
     <section aria-label="Notifications" className={cn(className)}>
-      <PremiumGlass variant="subtle">
+      <PremiumGlass
+        variant="subtle"
+        initial={{ opacity: 0, y: -8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="flex items-center gap-3 p-4">
           <div className="grid h-8 w-8 place-items-center rounded-lg bg-white/[0.06]">
             <Bell className="h-4 w-4 text-primary" />

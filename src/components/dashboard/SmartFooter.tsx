@@ -1,10 +1,20 @@
 import { Link } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { Target, CalendarClock } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
+import { dur, ease } from "@/lib/motion";
 
 export function SmartFooter({ className }: { className?: string }) {
   return (
-    <section aria-label="Your story continues" className={cn("relative pb-24", className)}>
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: dur.large, ease: ease.out }}
+      aria-label="Your story continues"
+      className={cn("relative pb-24", className)}
+    >
       <div
         className="pointer-events-none absolute inset-x-0 -top-24 h-24"
         style={{ background: "linear-gradient(180deg, transparent, oklch(0.1 0.02 270 / 0.4))" }}
@@ -17,10 +27,10 @@ export function SmartFooter({ className }: { className?: string }) {
       </div>
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">
-        <PremiumGlass variant="subtle">
+        <PremiumGlass variant="subtle" className="hover-lift">
           <div className="p-5">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              Active goals
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              <Target className="h-3 w-3" /> Active goals
             </div>
             <p className="mt-3 text-sm text-muted-foreground">No active goals found.</p>
             <Link
@@ -31,10 +41,10 @@ export function SmartFooter({ className }: { className?: string }) {
             </Link>
           </div>
         </PremiumGlass>
-        <PremiumGlass variant="subtle">
+        <PremiumGlass variant="subtle" className="hover-lift">
           <div className="p-5">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              Upcoming
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              <CalendarClock className="h-3 w-3" /> Upcoming
             </div>
             <p className="mt-3 text-sm text-muted-foreground">No upcoming releases tracked.</p>
             <Link
@@ -45,7 +55,7 @@ export function SmartFooter({ className }: { className?: string }) {
             </Link>
           </div>
         </PremiumGlass>
-        <PremiumGlass variant="subtle">
+        <PremiumGlass variant="subtle" className="hover-lift">
           <div className="p-5">
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Reminder
@@ -60,6 +70,6 @@ export function SmartFooter({ className }: { className?: string }) {
           </div>
         </PremiumGlass>
       </div>
-    </section>
+    </motion.section>
   );
 }

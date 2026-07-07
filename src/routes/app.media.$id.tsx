@@ -72,6 +72,12 @@ function MediaDetailPage() {
           <ShimmerSkeleton className="h-12 w-64 rounded-2xl" />
           <ShimmerSkeleton className="h-8 w-96 rounded-xl" />
           <ShimmerSkeleton className="h-48 rounded-3xl" />
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ShimmerSkeleton key={i} className="h-24 rounded-2xl" />
+            ))}
+          </div>
+          <ShimmerSkeleton className="h-64 rounded-3xl" />
         </div>
       </div>
     );
@@ -95,7 +101,7 @@ function MediaDetailPage() {
 function MediaDetailContent({ item }: { item: UIMediaItem }) {
   return (
     <div className="-mt-3">
-      <ChapterNav chapters={CHAPTERS} />
+      <ChapterNav chapters={CHAPTERS} title={item.title} />
 
       <Link
         to="/app/library"

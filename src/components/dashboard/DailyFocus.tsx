@@ -2,13 +2,22 @@ import { Target } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { useDashboard } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
+import { dur, ease } from "@/lib/motion";
 
 export function DailyFocus({ className }: { className?: string }) {
   const { data: dashboard } = useDashboard();
   const currentJourney = dashboard?.continueWatching?.[0];
   const focus = currentJourney ? `Continue ${currentJourney.title}.` : "Write today's journal.";
   return (
-    <PremiumGlass variant="strong" className={className}>
+    <PremiumGlass
+      variant="strong"
+      className={className}
+      initial={{ opacity: 0, y: 16, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ y: -3 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: dur.large, ease: ease.out }}
+    >
       <div className="p-6 md:p-7">
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-primary/85">
           <Target className="h-3 w-3" /> Today's focus

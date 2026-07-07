@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Play, Pause, RotateCcw, Check, NotebookPen, FolderPlus } from "lucide-react";
+import { Play, Pause, RotateCcw, Check, NotebookPen, FolderPlus, History } from "lucide-react";
 import type { UIMediaItem } from "@/lib/adapters/types";
 import { useTimelineEvents } from "@/hooks/use-journal";
 import { adaptTimelineEvent } from "@/lib/adapters/journal";
@@ -43,8 +43,11 @@ export function MediaTimelinePreview({ item }: { item: UIMediaItem }) {
 
   if (recentEvents.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6 text-sm text-muted-foreground">
-        No timeline events recorded yet. Your media journey will appear here.
+      <div className="glass flex items-center gap-3 rounded-2xl p-6 text-sm text-muted-foreground">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/[0.05] text-primary ring-1 ring-white/10">
+          <History className="h-4 w-4" />
+        </span>
+        No timeline events recorded yet — your media journey will appear here.
       </div>
     );
   }

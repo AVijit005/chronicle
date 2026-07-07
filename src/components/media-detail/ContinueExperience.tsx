@@ -3,6 +3,7 @@ import { Play, RefreshCw } from "lucide-react";
 import type { UIMediaItem } from "@/lib/adapters/types";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { PremiumProgress } from "@/components/ui/PremiumProgress";
+import { useMediaActions } from "@/lib/store/MediaActionsContext";
 
 const CONTINUE_LABEL: Record<string, string> = {
   movie: "Continue Watching",
@@ -20,6 +21,7 @@ const CONTINUE_LABEL: Record<string, string> = {
 export function ContinueExperience({ item }: { item: UIMediaItem }) {
   const continueLabel = CONTINUE_LABEL[item.kind] ?? "Continue";
   const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const { openProgress } = useMediaActions();
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -49,10 +51,18 @@ export function ContinueExperience({ item }: { item: UIMediaItem }) {
           </div>
         </div>
         <div className="flex shrink-0 flex-col gap-2 md:flex-row">
-          <PremiumButton variant="primary" icon={<Play className="h-4 w-4 fill-black" />}>
+          <PremiumButton
+            variant="primary"
+            icon={<Play className="h-4 w-4 fill-black" />}
+            onClick={() => openProgress(item.id)}
+          >
             Continue
           </PremiumButton>
-          <PremiumButton variant="secondary" icon={<RefreshCw className="h-4 w-4" />}>
+          <PremiumButton
+            variant="secondary"
+            icon={<RefreshCw className="h-4 w-4" />}
+            onClick={() => openProgress(item.id)}
+          >
             Update progress
           </PremiumButton>
         </div>

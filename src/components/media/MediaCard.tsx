@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -35,11 +36,16 @@ export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm
   const w = size === "sm" ? "w-36" : size === "lg" ? "w-56" : "w-44";
   const rating = item.rating ?? 0;
   const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const [focused, setFocused] = useState(false);
   return (
     <motion.div
       initial="rest"
       whileHover="hover"
-      animate="rest"
+      animate={focused ? "hover" : "rest"}
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocused(false);
+      }}
       className={cn("group relative shrink-0", w)}
     >
       <Link to="/app/media/$id" params={{ id: item.mediaId }} className="block">
@@ -49,7 +55,8 @@ export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm
           className="relative aspect-[2/3] overflow-hidden rounded-2xl"
           style={{ boxShadow: "0 20px 40px -20px oklch(0 0 0 / 0.7)" }}
         >
-          <img
+          <motion.img
+            layoutId={`poster-${item.mediaId}`}
             src={item.poster}
             alt={item.title}
             loading="lazy"
@@ -107,10 +114,10 @@ export function MediaCard({ item, size = "md" }: { item: UIMediaItem; size?: "sm
       <motion.div
         variants={{ rest: { opacity: 0, y: 6 }, hover: { opacity: 1, y: 0 } }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="pointer-events-none absolute inset-x-2 bottom-16 z-10 flex justify-center"
+        className="pointer-events-none absolute inset-x-0 bottom-16 z-10 flex justify-center px-1"
       >
-        <div className="pointer-events-auto">
-          <ItemActionBar id={item.id} title={item.title} variant="overlay" />
+        <div className="pointer-events-auto max-w-full">
+          <ItemActionBar id={item.id} title={item.title} variant="overlay" className="w-full justify-between" />
         </div>
       </motion.div>
       <div className="mt-3 px-0.5">

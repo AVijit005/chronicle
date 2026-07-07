@@ -47,7 +47,9 @@ export function MiniTimeline({ className }: { className?: string }) {
       <PremiumGlass variant="subtle" className={className}>
         <div className="p-6">
           <div className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">Lately</div>
-          <div className="mt-4 text-sm text-muted-foreground">No recent activity.</div>
+          <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+            <Film className="h-4 w-4 opacity-60" /> No recent activity.
+          </div>
         </div>
       </PremiumGlass>
     );

@@ -229,7 +229,24 @@ export function AuthStage() {
               }
             >
               {items.map((p, i) => {
-                const media = MEDIA.find((m) => m.id === p.id) ?? MEDIA[0];
+                const MOCK_POSTERS: Record<string, string> = {
+                  "succession": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7bMGiBXwaqcKU9XWdNKtbP8z3T4.jpg",
+                  "harry-potter": "https://covers.openlibrary.org/b/id/10521270-L.jpg",
+                  "dark-side": "https://i.scdn.co/image/ab67616d0000b273ea7caaff71dea1051d49b2fe",
+                  "lex": "https://i.scdn.co/image/ab6765630000ba8aa3b02ce859ce87391807d919",
+                  "mkbhd": "https://yt3.googleusercontent.com/ytc/AIdro_m_LwQ6ZpWbE2O5zZ_Yt3o4yP5a0O_L7V9mF6wK7w=s900-c-k-c0x00ffffff-no-rj",
+                  "chainsaw-man": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/npDBpuLlFFcgqsqEb0ebn4B48Vj.jpg",
+                  "interstellar": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+                  "one-piece": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/fcNd3l6aK3vN73LzGIf9Yd4rPum.jpg",
+                  "elden-ring": "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.png",
+                  "dune": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
+                  "cyberpunk": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7f.png"
+                };
+                const media = MEDIA.find((m) => m.id === p.id) ?? {
+                  title: p.id,
+                  poster: MOCK_POSTERS[p.id] || "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+                  rating: 5
+                };
                 const blur =
                   layerNum === 2 ? 4 : layerNum === 3 ? 0 : 0;
                 const opacity =

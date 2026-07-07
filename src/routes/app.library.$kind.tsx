@@ -1,7 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { motion } from "motion/react";
 import { MediaCard } from "@/components/media/MediaCard";
 import { MEDIA, KIND_LABEL, type MediaKind } from "@/lib/mock";
 import { EmptyState } from "@/components/common/Section";
+import { cascade } from "@/lib/motion";
 
 const KINDS = new Set<MediaKind>([
   "movie",
@@ -47,8 +49,16 @@ function LibraryKind() {
         />
       ) : (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {items.map((m) => (
-            <MediaCard key={m.id} item={m as any} />
+          {items.map((m, i) => (
+            <motion.div
+              key={m.id}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={cascade(i)}
+            >
+              <MediaCard item={m as any} />
+            </motion.div>
           ))}
         </div>
       )}

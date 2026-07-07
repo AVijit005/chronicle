@@ -9,7 +9,7 @@ import { MagneticButton } from "./MagneticButton";
 const heroCards = [
   {
     id: "movie",
-    item: MEDIA.find((m) => m.id === "interstellar")!,
+    item: { title: "Interstellar", kind: "movie", poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" },
     x: -36,
     y: -8,
     rot: -8,
@@ -17,7 +17,7 @@ const heroCards = [
   },
   {
     id: "anime",
-    item: MEDIA.find((m) => m.id === "one-piece")!,
+    item: { title: "One Piece", kind: "anime", poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/fcNd3l6aK3vN73LzGIf9Yd4rPum.jpg" },
     x: -14,
     y: 18,
     rot: 4,
@@ -25,7 +25,7 @@ const heroCards = [
   },
   {
     id: "book",
-    item: MEDIA.find((m) => m.id === "harry-potter")!,
+    item: { title: "Harry Potter", kind: "book", poster: "https://covers.openlibrary.org/b/id/10521270-L.jpg" },
     x: 14,
     y: -14,
     rot: -3,
@@ -33,13 +33,13 @@ const heroCards = [
   },
   {
     id: "game",
-    item: MEDIA.find((m) => m.id === "elden-ring")!,
+    item: { title: "Elden Ring", kind: "game", poster: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.png" },
     x: 36,
     y: 10,
     rot: 6,
     depth: 0.55,
   },
-  { id: "music", item: MEDIA.find((m) => m.id === "dark-side")!, x: 0, y: 28, rot: 0, depth: 1 },
+  { id: "music", item: { title: "The Dark Side of the Moon", kind: "music", poster: "https://i.scdn.co/image/ab67616d0000b273ea7caaff71dea1051d49b2fe" }, x: 0, y: 28, rot: 0, depth: 1 },
 ];
 
 export function LivingHero() {

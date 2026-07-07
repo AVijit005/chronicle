@@ -255,7 +255,7 @@ function TimelinePage() {
               />
               <div className="relative">
                 <div className="flex gap-1">
-                  {c.covers.map((src, i) => (
+                  {c.covers.map((src: string, i: number) => (
                     <img key={i} src={src} alt="" className="h-20 w-14 rounded-md object-cover" />
                   ))}
                 </div>

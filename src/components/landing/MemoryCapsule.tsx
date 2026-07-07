@@ -3,19 +3,19 @@ import { MEDIA } from "@/lib/mock";
 
 const MEMORIES = [
   {
-    media: MEDIA[0],
+    media: { id: "interstellar", title: "Interstellar", backdrop: "https://image.tmdb.org/t/p/w1280/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", poster: "" },
     moment: "Late 2017 · Studio City",
     note: "Watched alone at 2 AM. Felt small in the best way.",
     mood: "Awe",
   },
   {
-    media: MEDIA[2],
+    media: { id: "elden-ring", title: "Elden Ring", backdrop: "https://images.igdb.com/igdb/image/upload/t_1080p/ar16b.jpg", poster: "" },
     moment: "Winter 2021 · Long flight",
     note: "12 hours, one save file. Lost track of time entirely.",
     mood: "Immersed",
   },
   {
-    media: MEDIA[8],
+    media: { id: "dark-side", title: "The Dark Side of the Moon", backdrop: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1280", poster: "" },
     moment: "Spring 2019 · Roadtrip",
     note: "On loop crossing Arizona. Still tastes like that summer.",
     mood: "Wistful",

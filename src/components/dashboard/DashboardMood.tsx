@@ -1,14 +1,22 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { useInsights } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
+import { fadeBlurIn } from "@/lib/motion";
 
 export function DashboardMood({ className }: { className?: string }) {
   const { data: insights } = useInsights();
-  
+
   if (!insights) return null;
-  
+
   return (
-    <PremiumGlass variant="subtle" className={className}>
+    <PremiumGlass
+      variant="subtle"
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-60px" }}
+      variants={fadeBlurIn}
+    >
       <div className="p-6">
         <div className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
           Current atmosphere

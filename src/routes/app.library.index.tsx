@@ -54,6 +54,18 @@ function LibraryIndex() {
           ))}
         </div>
         <ShimmerSkeleton className="h-64 rounded-3xl" />
+        <div className="flex gap-4 overflow-hidden">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ShimmerSkeleton key={i} className="h-56 w-40 shrink-0 rounded-2xl" />
+          ))}
+        </div>
+        <ShimmerSkeleton className="h-40 rounded-3xl" />
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ShimmerSkeleton key={i} className="h-64 rounded-2xl" />
+          ))}
+        </div>
+        <ShimmerSkeleton className="h-72 rounded-3xl" />
       </div>
     );
   }
@@ -132,9 +144,11 @@ function LibraryIndex() {
               </Link>
             }
           />
-          <div className="-mx-6 flex gap-4 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
+          <div className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
             {cont.map((m) => (
-              <ContinueCard key={m.id} item={m as any} />
+              <div key={m.id} className="snap-start">
+                <ContinueCard item={m as any} />
+              </div>
             ))}
           </div>
         </RevealSection>
@@ -209,9 +223,11 @@ function LibraryIndex() {
           title="Recently added"
           subtitle="Newest additions to your library."
         />
-        <motion.div className="-mx-6 flex gap-5 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
+        <motion.div className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 lg:-mx-10 lg:px-10">
           {recentlyAdded.map((m) => (
-            <MediaCard key={m.id} item={m as any} />
+            <div key={m.id} className="snap-start">
+              <MediaCard item={m as any} />
+            </div>
           ))}
         </motion.div>
       </RevealSection>
