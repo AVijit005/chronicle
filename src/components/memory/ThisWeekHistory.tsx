@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { getThisWeekYearsAgo } from "@/lib/resurfacing";
 import { cn } from "@/lib/utils";
 import { Sparkles } from "lucide-react";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
 interface Props {
   className?: string;
@@ -12,11 +13,17 @@ export function ThisWeekHistory({ className }: Props) {
   
   if (!buckets.length) {
     return (
-      <div className={cn("relative z-10 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-10 text-center pointer-events-auto", className)}>
+      <PremiumGlass 
+        className={cn(
+          "relative z-10 overflow-hidden p-8 md:p-10 text-center pointer-events-auto cursor-pointer group", 
+          "transition-all duration-300 ease-out hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_30px_oklch(0.72_0.18_255/0.15)]",
+          className
+        )}
+      >
         {/* Ambient Glow effect */}
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-32 w-48 bg-primary/20 blur-[40px] rounded-full pointer-events-none" />
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-32 w-48 bg-primary/20 blur-[40px] rounded-full pointer-events-none transition-opacity duration-300 group-hover:opacity-100 opacity-60" />
         
-        <div className="relative z-10 flex flex-col items-center pointer-events-auto">
+        <div className="relative z-10 flex flex-col items-center pointer-events-auto cursor-default">
           <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-white/[0.05] ring-1 ring-white/10 shadow-lg shadow-black/20">
             <Sparkles className="h-5 w-5 text-primary/80" />
           </div>
@@ -25,9 +32,9 @@ export function ThisWeekHistory({ className }: Props) {
             There is no media logged from this exact week in previous years. Plant a seed now—leave a snapshot of your current state for Future You to discover next year.
           </p>
           
-          <div className="mt-8 w-full max-w-md">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-rose-300/30 rounded-2xl blur opacity-10 group-focus-within:opacity-30 transition duration-700 ease-out pointer-events-none"></div>
+          <div className="mt-8 w-full max-w-md cursor-default">
+            <div className="relative group/input">
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-rose-300/30 rounded-2xl blur opacity-10 group-focus-within/input:opacity-30 transition duration-700 ease-out pointer-events-none"></div>
               <textarea 
                 placeholder="What is captivating your mind right now?"
                 className="relative w-full rounded-2xl border border-white/10 bg-black/40 p-5 text-sm text-foreground/90 placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none h-28 shadow-inner transition-all cursor-text pointer-events-auto"
@@ -38,7 +45,7 @@ export function ThisWeekHistory({ className }: Props) {
             </div>
           </div>
         </div>
-      </div>
+      </PremiumGlass>
     );
   }
 
