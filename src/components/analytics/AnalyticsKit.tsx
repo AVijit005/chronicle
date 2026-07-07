@@ -157,30 +157,12 @@ export function ProgressRing({
   const v = Math.max(0, Math.min(100, value));
   
   return (
-    <div className="relative grid place-items-center" style={{ width: size, height: size }}>
-      {/* Detached Glow Layer */}
+    <div className="relative flex items-center justify-center mb-4" style={{ width: size, height: size }}>
+      {/* Detached Glow Layer (.ring-glow-layer) */}
       <div 
-        className="absolute inset-0 grid place-items-center" 
-        style={{ zIndex: 0, filter: `blur(8px)` }}
-      >
-        <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
-          <motion.circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            stroke={accent}
-            strokeWidth={stroke}
-            strokeLinecap="round"
-            fill="none"
-            strokeDasharray={c}
-            initial={{ strokeDashoffset: c }}
-            whileInView={{ strokeDashoffset: c - (c * v) / 100 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            style={{ opacity: 0.6 }}
-          />
-        </svg>
-      </div>
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4/5 h-4/5 pointer-events-none rounded-full" 
+        style={{ zIndex: 0, filter: `blur(24px)`, background: accent, opacity: 0.25 }}
+      />
 
       {/* Primary Rings */}
       <svg width={size} height={size} className="-rotate-90 relative z-10" style={{ overflow: "visible" }}>
