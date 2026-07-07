@@ -152,23 +152,26 @@ export function ProgressRing({
   accent?: string;
   children?: ReactNode;
 }) {
+  const pad = 16;
+  const svgSize = size + pad * 2;
   const r = (size - stroke) / 2;
+  const center = svgSize / 2;
   const c = 2 * Math.PI * r;
   const v = Math.max(0, Math.min(100, value));
   return (
-    <div className="relative grid place-items-center" style={{ width: size + 24, height: size + 24 }}>
-      <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
+    <div className="relative grid place-items-center" style={{ width: svgSize, height: svgSize, overflow: "visible" }}>
+      <svg width={svgSize} height={svgSize} className="-rotate-90" style={{ overflow: "visible" }}>
         <circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={center}
+          cy={center}
           r={r}
           stroke="oklch(1 0 0 / 0.08)"
           strokeWidth={stroke}
           fill="none"
         />
         <motion.circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={center}
+          cy={center}
           r={r}
           stroke={accent}
           strokeWidth={stroke}
@@ -179,7 +182,7 @@ export function ProgressRing({
           whileInView={{ strokeDashoffset: c - (c * v) / 100 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          style={{ filter: `drop-shadow(0 0 8px ${accent})` }}
+          style={{ filter: `drop-shadow(0 0 10px ${accent})` }}
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">{children}</div>
