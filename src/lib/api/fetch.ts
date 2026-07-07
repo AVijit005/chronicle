@@ -133,7 +133,18 @@ export async function apiFetch<T>(
         }
       }
 
-      const responseBody = await response.json();
+      let responseBody;
+      const contentType = response.headers.get('content-type');
+      
+      if (contentType && contentType.includes('application/json')) {
+        responseBody = await response.json();
+      } else {
+        const text = await response.text();
+        if (!response.ok) {
+          throw new ApiError(`HTTP Error ${response.status}: ${text.slice(0, 50)}`, response.status);
+        }
+        responseBody = text as unknown;
+      }
 
       if (!response.ok) {
         const errorBody = responseBody as ApiErrorResponse;

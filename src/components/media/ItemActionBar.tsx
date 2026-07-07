@@ -245,12 +245,12 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
           className={cn(
             "press-scale rounded-full transition",
             variant === "overlay"
-              ? "grid h-8 w-8 shrink-0 place-items-center bg-white/[0.06] text-white hover:bg-white/[0.15] ring-1 ring-white/10"
+              ? "grid h-10 w-10 shrink-0 place-items-center bg-white/[0.12] text-white hover:bg-white/[0.2] ring-1 ring-white/20 shadow-lg"
               : "inline-flex items-center gap-1.5 shrink-0 text-xs font-medium text-primary-foreground bg-gradient-to-r from-primary to-secondary",
             variant === "hero" ? "px-4 py-2 text-sm" : variant === "inline" ? "px-3 py-1.5" : ""
           )}
         >
-          <v.icon className={cn("shrink-0", variant === "overlay" ? "h-4 w-4" : "h-3.5 w-3.5")} /> 
+          <v.icon className={cn("shrink-0", variant === "overlay" ? "h-5 w-5" : "h-3.5 w-3.5")} /> 
           {variant !== "overlay" && <span>{v.label}</span>}
         </motion.button>
       ))}

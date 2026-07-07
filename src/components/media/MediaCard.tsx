@@ -49,7 +49,7 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
       className={cn("group relative", size !== "full" && "shrink-0", w)}
     >
       <div className="relative">
-        <Link to="/app/media/$id" params={{ id: item.mediaId }} className="block">
+        <Link to="/app/media/$id" params={{ id: item.mediaId || item.id }} className="block">
         <motion.div
           variants={{ rest: { y: 0 }, hover: { y: -6 } }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
