@@ -57,7 +57,7 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
           style={{ boxShadow: "0 20px 40px -20px oklch(0 0 0 / 0.7)" }}
         >
           <motion.img
-            layoutId={`poster-${item.mediaId}`}
+            layoutId={`poster-${item.mediaId || item.id}`}
             src={item.poster}
             alt={item.title}
             loading="lazy"
