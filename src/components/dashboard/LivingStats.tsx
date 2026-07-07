@@ -29,7 +29,7 @@ export function LivingStats({ className }: { className?: string }) {
 
   const STATS_LIST = [
     {
-      label: "Hours Tracked",
+      label: "Hours",
       to: Math.round(overview?.hoursSpent ?? 0),
       suffix: "h",
     },
@@ -61,7 +61,7 @@ export function LivingStats({ className }: { className?: string }) {
           transition={cascade(i)}
         >
           <PremiumGlass interactive className="rounded-2xl px-4 py-3 h-full flex flex-col justify-center">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground cursor-pointer">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground cursor-pointer truncate">
               {s.label}
             </div>
             <div className="mt-1 font-display text-2xl md:text-3xl cursor-pointer">
