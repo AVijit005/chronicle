@@ -9,7 +9,7 @@ import {
 } from "@/lib/analytics-mock";
 import { MemoryBookmarks } from "@/components/memory/MemoryBookmarks";
 import { RecommendationCard } from "@/components/discovery/RecommendationCard";
-import { getContinueMood } from "@/lib/discovery";
+import { getContinueMood, getHiddenGems } from "@/lib/discovery";
 import { ChallengeCard } from "@/components/challenges/ChallengeCard";
 import { getActiveChallenge } from "@/lib/challenges";
 import { MemoryDNA } from "@/components/intelligence/MemoryDNA";
@@ -178,7 +178,10 @@ function JournalPage() {
       {/* Intelligence integration: Contextual continuation */}
       <Zone eyebrow="Next" title="Follow the thread">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <RecommendationCard rec={getContinueMood("Reflective")} />
+          {(() => {
+            const rec = getContinueMood()[0] || getHiddenGems()[0];
+            return rec ? <RecommendationCard rec={rec} /> : null;
+          })()}
           <ChallengeCard challenge={getActiveChallenge("writer")} />
         </div>
       </Zone>
