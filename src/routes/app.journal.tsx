@@ -344,17 +344,19 @@ function JournalPage() {
                       </motion.g>
                     );
                   })}
-                  {/* Minimalist X-Axis Labels */}
-                  <g fill="oklch(1 1 1 / 0.4)" fontSize="8" fontWeight="600" letterSpacing="0.1em" className="uppercase font-display">
-                    <text x={0 * (w / 30) + 4} y={h + 16}>Week 1</text>
-                    <text x={7 * (w / 30) + 4} y={h + 16}>Week 2</text>
-                    <text x={14 * (w / 30) + 4} y={h + 16}>Week 3</text>
-                    <text x={21 * (w / 30) + 4} y={h + 16}>Week 4</text>
-                  </g>
                 </>
               );
             })()}
           </svg>
+
+          {/* Premium HTML Axis Labels */}
+          <div className="mt-4 flex justify-between px-1 text-[9px] font-bold uppercase tracking-[0.25em] text-white/30">
+            <span>Week 1</span>
+            <span>Week 2</span>
+            <span>Week 3</span>
+            <span>Week 4</span>
+            <span className="opacity-0">Week 5</span> {/* spacer for perfect alignment */}
+          </div>
 
           {/* Interactive Floating Tooltip */}
           <AnimatePresence>
