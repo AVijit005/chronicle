@@ -253,13 +253,24 @@ function JournalPage() {
 
       {/* Authentic Mood Pulse Activity Chart */}
       <Zone eyebrow="Mood" title="Moods across the month">
-        <PremiumGlass interactive className="p-6 md:p-8 transform-gpu isolate">
+        <PremiumGlass 
+          interactive 
+          variant="strong"
+          glow="oklch(0.7 0.18 35 / 0.15)"
+          className="p-6 md:p-8 transform-gpu isolate shadow-2xl backdrop-blur-xl"
+        >
           <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
             <defs>
               <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feGaussianBlur stdDeviation="6" result="blur" />
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
               </filter>
+              {moodTimeline.map((d, i) => (
+                <linearGradient key={i} id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={d.color} stopOpacity="1" />
+                  <stop offset="100%" stopColor={d.color} stopOpacity="0.1" />
+                </linearGradient>
+              ))}
             </defs>
             {(() => {
               const w = 600, h = 160;
@@ -267,7 +278,7 @@ function JournalPage() {
               
               return (
                 <>
-                  <g stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 4">
+                  <g stroke="rgba(255,255,255,0.03)" strokeWidth="0.5">
                     <line x1="0" y1={h * 0.25} x2={w} y2={h * 0.25} />
                     <line x1="0" y1={h * 0.5} x2={w} y2={h * 0.5} />
                     <line x1="0" y1={h * 0.75} x2={w} y2={h * 0.75} />
@@ -278,7 +289,7 @@ function JournalPage() {
                     const y = h - barH;
                     return (
                       <g key={i} className="group/bar cursor-pointer">
-                        {/* Glow Layer */}
+                        {/* Soft Ambient Core Glow */}
                         <rect
                           x={x}
                           y={y}
@@ -286,19 +297,18 @@ function JournalPage() {
                           height={barH}
                           rx={barWidth / 2}
                           fill={d.color}
-                          opacity={0.3}
+                          opacity={0.4}
                           filter="url(#neon-glow)"
                           className="transition-opacity duration-500 group-hover/bar:opacity-80"
                         />
-                        {/* Core Solid Layer */}
+                        {/* High-Fidelity 3D Glossy Fill */}
                         <rect
                           x={x}
                           y={y}
                           width={barWidth}
                           height={barH}
                           rx={barWidth / 2}
-                          fill={d.color}
-                          opacity={0.9}
+                          fill={`url(#grad-${i})`}
                           className="transition-opacity duration-300 group-hover/bar:opacity-100"
                         />
                       </g>
@@ -320,26 +330,21 @@ function JournalPage() {
               ][i];
               
               return (
-                <PremiumGlass
+                <button
                   key={m}
-                  interactive
-                  variant="subtle"
-                  glow={color}
-                  className="group flex items-center gap-2.5 rounded-full px-5 py-2.5 cursor-pointer press-scale"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+                  className="group flex items-center gap-2.5 rounded-full px-4 py-2 cursor-pointer transition-all duration-300 hover:bg-white/[0.04] border border-transparent hover:border-white/5 active:scale-95"
                 >
                   <span
                     className="h-2 w-2 rounded-full transition-transform duration-300 group-hover:scale-110"
                     style={{
                       backgroundColor: color,
-                      boxShadow: `0 0 12px ${color}90`,
+                      boxShadow: `0 0 12px ${color}80`,
                     }}
                   />
                   <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
                     {m}
                   </span>
-                </PremiumGlass>
+                </button>
               );
             })}
           </div>
