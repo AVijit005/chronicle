@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { NotebookPen, Sparkles, Heart, Bookmark, Clock } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
@@ -22,11 +22,12 @@ import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { useJournalEntries, useJournalStats, useTimelineEvents } from "@/hooks/use-journal";
 import { adaptJournalEntry, adaptTimelineEvent } from "@/lib/adapters/journal";
 import { MEDIA } from "@/lib/mock";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/app/journal")({ component: JournalPage });
 
 function JournalPage() {
+  const [hoveredDay, setHoveredDay] = useState<number | null>(null);
   const { data: journalData, isLoading: isLoadingJournal } = useJournalEntries();
   const { data: statsData } = useJournalStats();
   const { data: timelineData } = useTimelineEvents();
@@ -257,10 +258,11 @@ function JournalPage() {
           interactive 
           variant="strong"
           glow="oklch(0.7 0.18 35 / 0.15)"
-          className="p-6 md:p-8 transform-gpu isolate shadow-2xl backdrop-blur-xl"
+          className="p-6 md:p-8"
         >
-          <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
-            <defs>
+          <div className="relative">
+            <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
+              <defs>
               <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="6" result="blur" />
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -287,37 +289,108 @@ function JournalPage() {
                     const x = i * (w / 30) + 4;
                     const barH = Math.max(12, d.intensity * (h - 20)); // Min height 12px
                     const y = h - barH;
+                    const isHovered = hoveredDay === i;
+                    const isDimmed = hoveredDay !== null && !isHovered;
+                    
                     return (
-                      <g key={i} className="group/bar cursor-pointer">
+                      <motion.g
+                        key={i}
+                        className="cursor-pointer"
+                        onHoverStart={() => setHoveredDay(i)}
+                        onHoverEnd={() => setHoveredDay(null)}
+                        initial={{ opacity: 0, y: h }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.02, type: "spring", stiffness: 300, damping: 25 }}
+                      >
+                        {/* Interactive Pill Outline on Hover */}
+                        {isHovered && (
+                          <rect
+                            x={x - 2}
+                            y={y - 2}
+                            width={barWidth + 4}
+                            height={barH + 4}
+                            rx={(barWidth + 4) / 2}
+                            fill="none"
+                            stroke={d.color}
+                            strokeWidth="1.5"
+                            opacity={0.8}
+                            filter="url(#neon-glow)"
+                          />
+                        )}
                         {/* Soft Ambient Core Glow */}
-                        <rect
+                        <motion.rect
                           x={x}
                           y={y}
                           width={barWidth}
                           height={barH}
                           rx={barWidth / 2}
                           fill={d.color}
-                          opacity={0.4}
                           filter="url(#neon-glow)"
-                          className="transition-opacity duration-500 group-hover/bar:opacity-80"
+                          animate={{ opacity: isHovered ? 0.8 : isDimmed ? 0.1 : 0.4 }}
+                          transition={{ duration: 0.3 }}
                         />
                         {/* High-Fidelity 3D Glossy Fill */}
-                        <rect
+                        <motion.rect
                           x={x}
                           y={y}
                           width={barWidth}
                           height={barH}
                           rx={barWidth / 2}
                           fill={`url(#grad-${i})`}
-                          className="transition-opacity duration-300 group-hover/bar:opacity-100"
+                          animate={{ opacity: isHovered ? 1 : isDimmed ? 0.3 : 1 }}
+                          transition={{ duration: 0.3 }}
                         />
-                      </g>
+                      </motion.g>
                     );
                   })}
+                  {/* Minimalist X-Axis Labels */}
+                  <g fill="oklch(1 1 1 / 0.4)" fontSize="8" fontWeight="600" letterSpacing="0.1em" className="uppercase font-display">
+                    <text x={0 * (w / 30) + 4} y={h + 16}>Week 1</text>
+                    <text x={7 * (w / 30) + 4} y={h + 16}>Week 2</text>
+                    <text x={14 * (w / 30) + 4} y={h + 16}>Week 3</text>
+                    <text x={21 * (w / 30) + 4} y={h + 16}>Week 4</text>
+                  </g>
                 </>
               );
             })()}
           </svg>
+
+          {/* Interactive Floating Tooltip */}
+          <AnimatePresence>
+            {hoveredDay !== null && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
+                className="pointer-events-none absolute bottom-[calc(100%-20px)] mb-4 whitespace-nowrap rounded-2xl border border-white/10 bg-black/60 px-4 py-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+                style={{ 
+                  left: `max(40px, min(100% - 40px, ${(hoveredDay / 29) * 100}%))`,
+                  transform: `translateX(-50%)`,
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="h-2 w-2 rounded-full shadow-[0_0_8px_currentColor]"
+                    style={{ 
+                      backgroundColor: moodTimeline[hoveredDay].color,
+                      color: moodTimeline[hoveredDay].color 
+                    }}
+                  />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">
+                    Day {moodTimeline[hoveredDay].day}
+                  </span>
+                </div>
+                <div 
+                  className="mt-1 font-display text-lg font-medium tracking-tight"
+                  style={{ color: moodTimeline[hoveredDay].color }}
+                >
+                  {moodTimeline[hoveredDay].mood}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => {
               const color = [
