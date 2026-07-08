@@ -67,15 +67,14 @@ function JournalPage() {
     <div className="pb-32 pt-2">
       {/* Hero */}
       <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <PremiumGlass
-          interactive
           variant="strong"
-          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16 transform-gpu isolate"
-          glow="oklch(0.65 0.22 295 / 0.4)"
+          className="relative overflow-hidden rounded-[40px] p-10 md:p-16"
+          glow="oklch(0.7 0.18 35 / 0.35)"
         >
           {/* Subtle top inner reflective edge */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
@@ -100,23 +99,25 @@ function JournalPage() {
             </h1>
             <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
               {[
-                { l: "Entries", v: statsData?.journalCount ?? 0, s: "", accent: "oklch(0.72 0.18 255)" }, // Cyan/Blue
-                { l: "Current streak", v: statsData?.writingStreak ?? 0, s: "d", accent: "oklch(0.65 0.22 295)" }, // Violet
-                { l: "Words written", v: entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) | 0, s: "", accent: "oklch(0.72 0.16 160)" }, // Emerald
-                { l: "Favorite mood", v: "Reflective" as string | number, s: "", accent: "oklch(0.82 0.16 80)" }, // Amber
+                { l: "Entries", v: statsData?.journalCount ?? 0, s: "" },
+                { l: "Current streak", v: statsData?.writingStreak ?? 0, s: "d" },
+                { l: "Words written", v: entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) | 0, s: "" },
+                { l: "Favorite mood", v: "Reflective" as string | number, s: "" },
               ].map((s) => (
-                <div 
+                <PremiumGlass 
                   key={s.l} 
-                  className="journal-stat-card group relative cursor-pointer overflow-hidden rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-5 transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-white/[0.06] hover:ring-white/20 active:translate-y-0 active:scale-95"
-                  style={{ "--journal-accent": s.accent } as React.CSSProperties}
+                  variant="subtle"
+                  className="relative z-10 overflow-hidden p-4 cursor-pointer press-scale"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
                 >
-                  <div className="relative z-10 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-white">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     {s.l}
                   </div>
-                  <div className="relative z-10 mt-2 font-display text-3xl tracking-tight text-white drop-shadow-sm transition-transform duration-300">
+                  <div className="mt-2 font-display text-3xl tracking-tight">
                     {typeof s.v === "number" ? <CountUp to={s.v} suffix={s.s ?? ""} /> : s.v}
                   </div>
-                </div>
+                </PremiumGlass>
               ))}
             </div>
           </div>
