@@ -155,7 +155,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
                 opacity: "calc(var(--glass-rev) * 0.5)",
                 background:
                   "linear-gradient(125deg, transparent calc(var(--glass-px) - 22%), oklch(1 0 0 / 0.08) var(--glass-px), transparent calc(var(--glass-px) + 22%))",
-                mixBlendMode: "overlay",
+                mixBlendMode: "screen",
               }}
             />
           </>
