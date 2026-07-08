@@ -72,8 +72,9 @@ function JournalPage() {
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <PremiumGlass
+          interactive
           variant="strong"
-          className="relative overflow-hidden rounded-[40px] p-10 md:p-16"
+          className="relative overflow-hidden rounded-[40px] p-10 md:p-16 transform-gpu isolate"
           glow="oklch(0.7 0.18 35 / 0.35)"
         >
           <div className="relative z-10 pointer-events-auto">
@@ -93,7 +94,8 @@ function JournalPage() {
                 { l: "Favorite mood", v: "Reflective" as string | number, s: "" },
               ].map((s) => (
                 <PremiumGlass 
-                  key={s.l} 
+                  key={s.l}
+                  interactive
                   variant="subtle"
                   className="relative z-10 overflow-hidden p-4 cursor-pointer press-scale"
                   whileHover={{ y: -2 }}
