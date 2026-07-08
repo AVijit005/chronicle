@@ -308,7 +308,7 @@ function JournalPage() {
               );
             })()}
           </svg>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => {
               const color = [
                 "oklch(0.78 0.16 80)",
@@ -325,21 +325,18 @@ function JournalPage() {
                   interactive
                   variant="subtle"
                   glow={color}
-                  className="group flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer press-scale"
+                  className="group flex items-center gap-2.5 rounded-full px-5 py-2.5 cursor-pointer press-scale"
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <span
-                    className="h-2 w-2 rounded-full"
+                    className="h-2 w-2 rounded-full transition-transform duration-300 group-hover:scale-110"
                     style={{
                       backgroundColor: color,
-                      boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+                      boxShadow: `0 0 12px ${color}90`,
                     }}
                   />
-                  <span 
-                    className="text-[11px] font-medium uppercase tracking-[0.18em] transition-all duration-300"
-                    style={{ color: color, textShadow: `0 0 12px ${color}60` }}
-                  >
+                  <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
                     {m}
                   </span>
                 </PremiumGlass>
