@@ -261,7 +261,7 @@ function JournalPage() {
           className="p-6 md:p-8"
         >
           <div className="relative">
-            <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
+            <svg viewBox="0 0 600 180" className="h-[180px] w-full overflow-visible">
               <defs>
               <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="6" result="blur" />
@@ -344,18 +344,17 @@ function JournalPage() {
                       </motion.g>
                     );
                   })}
+                  {/* Perfectly scaled SVG Axis Labels */}
+                  <g fill="currentColor" opacity="0.3" fontSize="10" fontWeight="700" letterSpacing="0.2em" style={{ fontFamily: "inherit", textTransform: "uppercase" }}>
+                    <text x={0 * (w / 30) + 4} y={176}>Week 1</text>
+                    <text x={7 * (w / 30) + 4} y={176}>Week 2</text>
+                    <text x={14 * (w / 30) + 4} y={176}>Week 3</text>
+                    <text x={21 * (w / 30) + 4} y={176}>Week 4</text>
+                  </g>
                 </>
               );
             })()}
           </svg>
-
-          {/* Premium HTML Axis Labels */}
-          <div className="relative mt-3 h-4 w-full text-[9px] font-bold uppercase tracking-[0.25em] text-white/30">
-            <span className="absolute top-0" style={{ left: `${(0 / 30) * 100}%` }}>Week 1</span>
-            <span className="absolute top-0" style={{ left: `${(7 / 30) * 100}%` }}>Week 2</span>
-            <span className="absolute top-0" style={{ left: `${(14 / 30) * 100}%` }}>Week 3</span>
-            <span className="absolute top-0" style={{ left: `${(21 / 30) * 100}%` }}>Week 4</span>
-          </div>
 
           {/* Interactive Floating Tooltip */}
           <AnimatePresence>
@@ -366,8 +365,8 @@ function JournalPage() {
                 exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
                 className="pointer-events-none absolute top-4 z-20 whitespace-nowrap rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 shadow-[0_16px_32px_-8px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)_inset] backdrop-blur-[40px] saturate-200"
                 style={{ 
-                  left: `max(60px, min(100% - 60px, ${(hoveredDay / 29) * 100}%))`,
-                  transform: `translateX(-50%)`,
+                  left: `${(hoveredDay / 29) * 100}%`,
+                  transform: `translateX(-${(hoveredDay / 29) * 100}%)`,
                 }}
               >
                 <div className="flex items-center gap-2">
