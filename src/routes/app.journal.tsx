@@ -66,22 +66,9 @@ function JournalPage() {
   return (
     <div className="pb-32 pt-2">
       {/* Hero */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .journal-stat-card {
-          box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--journal-accent) 25%, transparent), 0 0 0 0 transparent !important;
-          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease !important;
-        }
-        .journal-stat-card:hover {
-          transform: translateY(-4px) scale(1.02);
-          box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--journal-accent) 80%, transparent), 0 16px 40px -12px color-mix(in oklch, var(--journal-accent) 50%, transparent) !important;
-        }
-        .journal-stat-card:active {
-          transform: translateY(-1px) scale(0.98);
-        }
-      `}} />
       <motion.section
-        initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <PremiumGlass
