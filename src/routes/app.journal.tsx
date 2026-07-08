@@ -86,11 +86,12 @@ function JournalPage() {
       >
         <PremiumGlass
           interactive
-          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16"
-          glow="oklch(0.65 0.22 295 / 0.4)"
+          variant="strong"
+          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16 transform-gpu isolate"
         >
           {/* Subtle top inner reflective edge */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
           
           {/* paper texture overlay */}
           <div
