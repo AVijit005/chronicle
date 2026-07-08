@@ -83,7 +83,6 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
     );
 
     return (
-      {/* 1. ANCHOR / ANIMATION WRAPPER */}
       <motion.div
         ref={setRefs}
         {...rest}
