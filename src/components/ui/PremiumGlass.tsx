@@ -83,6 +83,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
     );
 
     return (
+      {/* 1. ANCHOR / ANIMATION WRAPPER */}
       <motion.div
         ref={setRefs}
         {...rest}
@@ -90,77 +91,85 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         onPointerEnter={handleEnter}
         onPointerLeave={handleLeave}
         className={cn(
-          "group/glass relative overflow-hidden rounded-3xl",
-          variantClass[variant],
+          "group/glass relative rounded-3xl",
           interactive && 
-            "cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-[300ms] ease-out hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-[0.98]",
-          className,
+            "cursor-pointer transition-all duration-[300ms] ease-out hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-[0.98]",
+          className
         )}
         style={
           {
             ...style,
-            // defaults consumed by reflection layers
             ["--glass-px" as string]: "50%",
             ["--glass-py" as string]: "0%",
             ["--glass-rev" as string]: "0",
           } as React.CSSProperties
         }
       >
-        {/* outer highlight */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px transition-opacity duration-300"
-          style={{
-            background: "linear-gradient(90deg, transparent, oklch(1 0 0 / 0.35), transparent)",
-            opacity: interactive ? "calc(0.5 + var(--glass-rev) * 0.5)" : "1"
-          }}
-        />
-        {/* inner highlight + proximity border */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 transition-[box-shadow] duration-[450ms] ease-out"
-          style={{
-            borderRadius: "inherit",
-            boxShadow:
-              "inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev) * 0.06))",
-          }}
-        />
-        {/* artwork tint glow */}
-        {glow && (
+        {/* 2. ISOLATION / CLIPPING CONTAINER */}
+        <div className={cn("pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]", variantClass[variant])}>
+          
+          {/* 3. ABSOLUTE REFLECTION LAYERS */}
+          {/* outer highlight */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full opacity-40 blur-3xl"
-            style={{ background: glow }}
+            className="pointer-events-none absolute inset-x-0 top-0 h-px transition-opacity duration-300"
+            style={{
+              background: "linear-gradient(90deg, transparent, oklch(1 0 0 / 0.35), transparent)",
+              opacity: interactive ? "calc(0.5 + var(--glass-rev)*0.5)" : "1"
+            }}
           />
-        )}
-        {/* Living diagonal reflection — follows pointer, fades on leave. */}
-        {reflection && (
-          <>
+          
+          {/* inner highlight + proximity border */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 transition-[box-shadow] duration-[450ms] ease-out"
+            style={{
+              borderRadius: "inherit",
+              boxShadow:
+                "inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev)*0.06))",
+            }}
+          />
+          
+          {/* artwork tint glow */}
+          {glow && (
             <span
               aria-hidden
-              className="pointer-events-none absolute inset-0 transition-opacity duration-[600ms] ease-out"
-              style={{
-                borderRadius: "inherit",
-                opacity: "calc(var(--glass-rev) * 0.65)",
-                background:
-                  "radial-gradient(420px circle at var(--glass-px) var(--glass-py), oklch(0.72 0.18 255 / 0.15), transparent 60%)",
-                mixBlendMode: "screen",
-              }}
+              className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full opacity-40 blur-3xl"
+              style={{ background: glow }}
             />
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 transition-opacity duration-[700ms] ease-out"
-              style={{
-                borderRadius: "inherit",
-                opacity: "calc(var(--glass-rev) * 0.5)",
-                background:
-                  "linear-gradient(125deg, transparent calc(var(--glass-px) - 22%), oklch(1 0 0 / 0.08) var(--glass-px), transparent calc(var(--glass-px) + 22%))",
-                mixBlendMode: "overlay",
-              }}
-            />
-          </>
-        )}
-        <div className="relative">{children as React.ReactNode}</div>
+          )}
+          
+          {/* Living diagonal reflection — follows pointer, fades on leave. */}
+          {reflection && (
+            <>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 transition-opacity duration-[600ms] ease-out mix-blend-screen"
+                style={{
+                  borderRadius: "inherit",
+                  opacity: "calc(var(--glass-rev)*0.65)",
+                  background:
+                    "radial-gradient(420px circle at var(--glass-px) var(--glass-py), oklch(0.72 0.18 255 / 0.15), transparent 60%)"
+                }}
+              />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 transition-opacity duration-[700ms] ease-out mix-blend-overlay"
+                style={{
+                  borderRadius: "inherit",
+                  opacity: "calc(var(--glass-rev)*0.5)",
+                  background:
+                    "linear-gradient(125deg, transparent calc(var(--glass-px) - 22%), oklch(1 0 0 / 0.08) var(--glass-px), transparent calc(var(--glass-px) + 22%))"
+                }}
+              />
+            </>
+          )}
+        </div>
+        
+        {/* 4. CONTENT LAYER */}
+        <div className="relative z-10 h-full w-full">
+          {children as React.ReactNode}
+        </div>
       </motion.div>
     );
   },
