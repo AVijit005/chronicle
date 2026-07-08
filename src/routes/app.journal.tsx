@@ -309,41 +309,42 @@ function JournalPage() {
             })()}
           </svg>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => (
-              <PremiumGlass
-                key={m}
-                interactive
-                variant="subtle"
-                className="flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer press-scale"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span
-                  className="h-2 w-2 rounded-full shadow-[0_0_8px_currentColor]"
-                  style={{
-                    background: [
-                      "oklch(0.78 0.16 80)",
-                      "oklch(0.7 0.2 145)",
-                      "oklch(0.65 0.22 295)",
-                      "oklch(0.7 0.18 25)",
-                      "oklch(0.72 0.18 255)",
-                      "oklch(0.55 0.18 280)",
-                    ][i],
-                    color: [
-                      "oklch(0.78 0.16 80)",
-                      "oklch(0.7 0.2 145)",
-                      "oklch(0.65 0.22 295)",
-                      "oklch(0.7 0.18 25)",
-                      "oklch(0.72 0.18 255)",
-                      "oklch(0.55 0.18 280)",
-                    ][i],
-                  }}
-                />
-                <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
-                  {m}
-                </span>
-              </PremiumGlass>
-            ))}
+            {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => {
+              const color = [
+                "oklch(0.78 0.16 80)",
+                "oklch(0.7 0.2 145)",
+                "oklch(0.65 0.22 295)",
+                "oklch(0.7 0.18 25)",
+                "oklch(0.72 0.18 255)",
+                "oklch(0.55 0.18 280)",
+              ][i];
+              
+              return (
+                <PremiumGlass
+                  key={m}
+                  interactive
+                  variant="subtle"
+                  glow={color}
+                  className="group flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer press-scale"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{
+                      backgroundColor: color,
+                      boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+                    }}
+                  />
+                  <span 
+                    className="text-[11px] font-medium uppercase tracking-[0.18em] transition-all duration-300"
+                    style={{ color: color, textShadow: `0 0 12px ${color}60` }}
+                  >
+                    {m}
+                  </span>
+                </PremiumGlass>
+              );
+            })}
           </div>
         </PremiumGlass>
       </Zone>
