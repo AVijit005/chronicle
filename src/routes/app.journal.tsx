@@ -76,18 +76,6 @@ function JournalPage() {
           className="relative overflow-hidden rounded-[40px] p-10 md:p-16"
           glow="oklch(0.7 0.18 35 / 0.35)"
         >
-          {/* Subtle top inner reflective edge */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          
-          {/* paper texture overlay */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-            }}
-          />
-          
           <div className="relative z-10 pointer-events-auto">
             <div className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground flex items-center gap-2">
               <NotebookPen className="h-3 w-3 text-primary" /> Journal
