@@ -257,7 +257,7 @@ function JournalPage() {
           interactive 
           variant="strong"
           glow="oklch(0.7 0.18 35 / 0.15)"
-          className="p-6 md:p-8"
+          className="p-6 md:p-8 transform-gpu isolate shadow-2xl backdrop-blur-xl"
         >
           <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
             <defs>
