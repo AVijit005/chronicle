@@ -350,12 +350,11 @@ function JournalPage() {
           </svg>
 
           {/* Premium HTML Axis Labels */}
-          <div className="mt-4 flex justify-between px-1 text-[9px] font-bold uppercase tracking-[0.25em] text-white/30">
-            <span>Week 1</span>
-            <span>Week 2</span>
-            <span>Week 3</span>
-            <span>Week 4</span>
-            <span className="opacity-0">Week 5</span> {/* spacer for perfect alignment */}
+          <div className="relative mt-3 h-4 w-full text-[9px] font-bold uppercase tracking-[0.25em] text-white/30">
+            <span className="absolute top-0" style={{ left: `${(0 / 30) * 100}%` }}>Week 1</span>
+            <span className="absolute top-0" style={{ left: `${(7 / 30) * 100}%` }}>Week 2</span>
+            <span className="absolute top-0" style={{ left: `${(14 / 30) * 100}%` }}>Week 3</span>
+            <span className="absolute top-0" style={{ left: `${(21 / 30) * 100}%` }}>Week 4</span>
           </div>
 
           {/* Interactive Floating Tooltip */}
