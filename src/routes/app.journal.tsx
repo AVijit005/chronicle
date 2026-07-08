@@ -67,24 +67,29 @@ function JournalPage() {
     <div className="pb-32 pt-2">
       {/* Hero */}
       <motion.section
-        initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <PremiumGlass
+          interactive
           variant="strong"
-          className="relative overflow-hidden rounded-[40px] p-10 md:p-16"
-          glow="oklch(0.7 0.18 35 / 0.35)"
+          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16 transform-gpu isolate"
+          glow="oklch(0.65 0.22 295 / 0.4)"
         >
+          {/* Subtle top inner reflective edge */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          
           {/* paper texture overlay */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            className="pointer-events-none absolute inset-0 opacity-[0.06]"
             style={{
               backgroundImage:
                 "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
             }}
           />
-          <div className="relative">
+          
+          <div className="relative z-10 pointer-events-auto">
             <div className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground flex items-center gap-2">
               <NotebookPen className="h-3 w-3 text-primary" /> Journal
             </div>
@@ -95,16 +100,20 @@ function JournalPage() {
             </h1>
             <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
               {[
-                { l: "Entries", v: statsData?.journalCount ?? 0 },
-                { l: "Current streak", v: statsData?.writingStreak ?? 0, s: "d" },
-                { l: "Words written", v: entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) | 0 },
-                { l: "Favorite mood", v: "Reflective" as string | number },
+                { l: "Entries", v: statsData?.journalCount ?? 0, s: "", accent: "oklch(0.72 0.18 255)" }, // Cyan/Blue
+                { l: "Current streak", v: statsData?.writingStreak ?? 0, s: "d", accent: "oklch(0.65 0.22 295)" }, // Violet
+                { l: "Words written", v: entries.reduce((acc, cur) => acc + cur.content.length / 5, 0) | 0, s: "", accent: "oklch(0.72 0.16 160)" }, // Emerald
+                { l: "Favorite mood", v: "Reflective" as string | number, s: "", accent: "oklch(0.82 0.16 80)" }, // Amber
               ].map((s) => (
-                <div key={s.l} className="glass-subtle rounded-2xl p-4">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                <div 
+                  key={s.l} 
+                  className="journal-stat-card group relative cursor-pointer overflow-hidden rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-5 transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-white/[0.06] hover:ring-white/20 active:translate-y-0 active:scale-95"
+                  style={{ "--journal-accent": s.accent } as React.CSSProperties}
+                >
+                  <div className="relative z-10 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-white">
                     {s.l}
                   </div>
-                  <div className="mt-2 font-display text-3xl tracking-tight">
+                  <div className="relative z-10 mt-2 font-display text-3xl tracking-tight text-white drop-shadow-sm transition-transform duration-300">
                     {typeof s.v === "number" ? <CountUp to={s.v} suffix={s.s ?? ""} /> : s.v}
                   </div>
                 </div>
