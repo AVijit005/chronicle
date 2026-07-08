@@ -1,17 +1,32 @@
 import { motion } from "motion/react";
 import { Library as LibraryIcon } from "lucide-react";
-import { statusCounts } from "@/lib/library";
+import { statusCounts, collageRecent } from "@/lib/library";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
 
 export function LibraryHero() {
   const c = statusCounts();
+  const posters = collageRecent(9);
+  
   return (
     <motion.section
       initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
     >
+      {/* Background poster grid that sits BEHIND the glass, allowing the PremiumGlass to blur it natively */}
+      <div className="absolute inset-0 -z-10 overflow-hidden rounded-[40px]">
+        <div className="grid h-full w-full grid-cols-9 opacity-40 grayscale-[0.2]">
+          {posters.map((p, i) => (
+            <div key={i} className="relative overflow-hidden">
+              <img src={p} alt="" className="h-full w-full object-cover" loading="lazy" />
+            </div>
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+      </div>
+
       <PremiumGlass 
         interactive
         variant="strong"
