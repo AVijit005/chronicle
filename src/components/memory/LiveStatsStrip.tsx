@@ -1,6 +1,7 @@
 // Live numbers strip — sourced from libraryStore, not editorial mocks.
 import { CountUp } from "@/components/analytics/AnalyticsKit";
 import { useLiveStats } from "@/lib/store/liveSelectors";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
 export function LiveStatsStrip({
   eyebrow = "Your real numbers",
@@ -19,7 +20,7 @@ export function LiveStatsStrip({
     { l: "Quotes", v: s.userQuotes, a: "oklch(0.72 0.16 160 / 0.45)" },
   ];
   return (
-    <section className="glass relative overflow-hidden rounded-3xl p-5 md:p-7">
+    <PremiumGlass interactive className="p-5 md:p-7 flex flex-col justify-center">
       <div className="flex items-baseline justify-between">
         <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           {eyebrow}
@@ -30,22 +31,22 @@ export function LiveStatsStrip({
           </div>
         )}
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-3 md:grid-cols-6">
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         {cells.map((c) => (
-          <div key={c.l} className="glass-subtle relative overflow-hidden rounded-2xl p-3">
-            <div
-              className="absolute -right-8 -top-8 h-20 w-20 rounded-full blur-2xl"
-              style={{ background: c.a }}
-            />
-            <div className="relative">
-              <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                {c.l}
-              </div>
-              <div className="mt-1.5 font-display text-2xl tracking-tight">
-                {typeof c.v === "number" ? <CountUp to={c.v} suffix={c.suffix ?? ""} /> : c.v}
-              </div>
+          <PremiumGlass 
+            key={c.l} 
+            interactive 
+            variant="default"
+            glow={c.a}
+            className="p-4"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">
+              {c.l}
             </div>
-          </div>
+            <div className="mt-2 font-display text-3xl tracking-tight text-foreground">
+              {typeof c.v === "number" ? <CountUp to={c.v} suffix={c.suffix ?? ""} /> : c.v}
+            </div>
+          </PremiumGlass>
         ))}
       </div>
       {(s.avgRating > 0 || s.topMood) && (
@@ -63,6 +64,6 @@ export function LiveStatsStrip({
           )}
         </div>
       )}
-    </section>
+    </PremiumGlass>
   );
 }
