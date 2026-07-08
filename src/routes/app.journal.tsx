@@ -72,9 +72,9 @@ function JournalPage() {
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <PremiumGlass
-          interactive
           variant="strong"
-          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16 transform-gpu isolate"
+          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16"
+          glow="oklch(0.7 0.18 35 / 0.35)"
         >
           {/* Subtle top inner reflective edge */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
