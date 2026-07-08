@@ -218,8 +218,12 @@ function JournalPage() {
       {/* Mood timeline */}
       <Zone eyebrow="Mood" title="Moods across the month">
         <PremiumGlass interactive className="p-6 md:p-8 transform-gpu isolate">
-          <svg viewBox="0 0 600 160" className="h-44 w-full">
+          <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
             <defs>
+              <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
               <linearGradient id="mood-stroke" x1="0" x2="1">
                 <stop offset="0%" stopColor="oklch(0.65 0.22 295)" />
                 <stop offset="50%" stopColor="oklch(0.72 0.18 255)" />
@@ -227,27 +231,48 @@ function JournalPage() {
               </linearGradient>
               <linearGradient id="mood-fill" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.5} />
+                <stop offset="50%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.15} />
                 <stop offset="100%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0} />
               </linearGradient>
             </defs>
             {(() => {
-              const w = 600,
-                h = 160;
-              const max = 5;
+              const w = 600, h = 160, max = 5;
               const pts = moodTimeline.map(
                 (d, i) =>
                   [
                     (i / (moodTimeline.length - 1 || 1)) * w,
-                    h - (d.mood / max) * (h - 20) - 10,
+                    h - (d.mood / max) * (h - 40) - 20,
                   ] as const,
               );
               if (pts.length === 0) return null;
-              const path = pts
-                .map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`))
-                .join(" ");
+              
+              const smoothPath = (points: readonly (readonly [number, number])[]) => {
+                let d = `M ${points[0][0]},${points[0][1]}`;
+                for (let i = 0; i < points.length - 1; i++) {
+                  const p0 = points[i === 0 ? 0 : i - 1];
+                  const p1 = points[i];
+                  const p2 = points[i + 1];
+                  const p3 = points[i + 2 === points.length ? i + 1 : i + 2];
+                  
+                  const cp1x = p1[0] + (p2[0] - p0[0]) * 0.18;
+                  const cp1y = p1[1] + (p2[1] - p0[1]) * 0.18;
+                  const cp2x = p2[0] - (p3[0] - p1[0]) * 0.18;
+                  const cp2y = p2[1] - (p3[1] - p1[1]) * 0.18;
+                  d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0]},${p2[1]}`;
+                }
+                return d;
+              };
+
+              const path = smoothPath(pts);
               const fill = `${path} L${w},${h} L0,${h} Z`;
+              
               return (
                 <>
+                  <g stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 4">
+                    <line x1="0" y1={h * 0.2} x2={w} y2={h * 0.2} />
+                    <line x1="0" y1={h * 0.5} x2={w} y2={h * 0.5} />
+                    <line x1="0" y1={h * 0.8} x2={w} y2={h * 0.8} />
+                  </g>
                   <motion.path
                     d={fill}
                     fill="url(#mood-fill)"
@@ -259,19 +284,23 @@ function JournalPage() {
                   <motion.path
                     d={path}
                     stroke="url(#mood-stroke)"
-                    strokeWidth={2.5}
+                    strokeWidth={4}
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    filter="url(#neon-glow)"
                     initial={{ pathLength: 0 }}
                     whileInView={{ pathLength: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
                   />
                   {pts
-                    .filter((_, i) => i % 4 === 0)
+                    .filter((_, i) => i % 3 === 0 || i === pts.length - 1)
                     .map((p, i) => (
-                      <circle key={i} cx={p[0]} cy={p[1]} r={3} fill="oklch(0.95 0 0)" />
+                      <g key={i} transform={`translate(${p[0]},${p[1]})`}>
+                        <circle r={8} fill="oklch(0.72 0.18 255 / 0.4)" filter="blur(2px)" />
+                        <circle r={3.5} fill="#fff" />
+                      </g>
                     ))}
                 </>
               );
