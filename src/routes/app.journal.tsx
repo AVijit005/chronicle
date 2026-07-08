@@ -360,12 +360,12 @@ function JournalPage() {
           <AnimatePresence>
             {hoveredDay !== null && (
               <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
-                className="pointer-events-none absolute bottom-[calc(100%-20px)] mb-4 whitespace-nowrap rounded-2xl border border-white/10 bg-black/60 px-4 py-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+                className="pointer-events-none absolute top-4 z-20 whitespace-nowrap rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 shadow-[0_16px_32px_-8px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)_inset] backdrop-blur-[40px] saturate-200"
                 style={{ 
-                  left: `max(40px, min(100% - 40px, ${(hoveredDay / 29) * 100}%))`,
+                  left: `max(60px, min(100% - 60px, ${(hoveredDay / 29) * 100}%))`,
                   transform: `translateX(-50%)`,
                 }}
               >
