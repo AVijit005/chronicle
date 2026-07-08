@@ -257,10 +257,14 @@ function JournalPage() {
           interactive 
           variant="strong"
           glow="oklch(0.7 0.18 35 / 0.15)"
-          className="p-6 md:p-8 transform-gpu isolate shadow-2xl backdrop-blur-xl"
+          className="p-6 md:p-8"
         >
           <svg viewBox="0 0 600 160" className="h-44 w-full overflow-visible">
             <defs>
+              <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
               {moodTimeline.map((d, i) => (
                 <linearGradient key={i} id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={d.color} stopOpacity="1" />
@@ -285,7 +289,7 @@ function JournalPage() {
                     const y = h - barH;
                     return (
                       <g key={i} className="group/bar cursor-pointer">
-                        {/* Soft Ambient Core Glow using CSS drop-shadow instead of SVG filter */}
+                        {/* Soft Ambient Core Glow */}
                         <rect
                           x={x}
                           y={y}
@@ -294,7 +298,7 @@ function JournalPage() {
                           rx={barWidth / 2}
                           fill={d.color}
                           opacity={0.4}
-                          style={{ filter: `drop-shadow(0 0 8px ${d.color})` }}
+                          filter="url(#neon-glow)"
                           className="transition-opacity duration-500 group-hover/bar:opacity-80"
                         />
                         {/* High-Fidelity 3D Glossy Fill */}
