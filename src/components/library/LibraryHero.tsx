@@ -6,7 +6,12 @@ export function LibraryHero() {
   const posters = collageRecent(9);
   const c = statusCounts();
   return (
-    <PremiumGlass className="relative overflow-hidden border border-border/60">
+    <PremiumGlass 
+      interactive
+      variant="strong"
+      className="relative overflow-hidden rounded-[40px] p-10 md:p-16 transform-gpu isolate"
+      glow="oklch(0.72 0.18 255 / 0.35)"
+    >
       <div className="absolute inset-0 pointer-events-none">
         <div className="grid h-full w-full grid-cols-9 opacity-60">
           {posters.map((p, i) => (
@@ -29,7 +34,7 @@ export function LibraryHero() {
         />
       </div>
 
-      <div className="relative px-6 py-12 md:px-12 md:py-20 cursor-default">
+      <div className="relative cursor-default">
         <motion.div
           initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
