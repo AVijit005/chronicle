@@ -71,11 +71,12 @@ function JournalPage() {
         animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="relative overflow-hidden rounded-[40px] p-10 md:p-16 bg-white/[0.02] backdrop-blur-2xl ring-1 ring-white/[0.08] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)] transition-all duration-500">
-          {/* Soft ambient background glows for layered depth */}
-          <div className="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-amber-500/10 blur-[100px]" />
-          <div className="pointer-events-none absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-violet-500/10 blur-[100px]" />
-          
+        <PremiumGlass
+          variant="strong"
+          interactive
+          className="relative overflow-hidden rounded-[40px] p-10 md:p-16 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)]"
+          glow="oklch(0.7 0.18 35 / 0.35)"
+        >
           {/* Subtle top inner reflective edge */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           
@@ -88,7 +89,7 @@ function JournalPage() {
             }}
           />
           
-          <div className="relative z-10">
+          <div className="relative z-10 pointer-events-auto">
             <div className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground flex items-center gap-2">
               <NotebookPen className="h-3 w-3 text-primary" /> Journal
             </div>
@@ -106,10 +107,10 @@ function JournalPage() {
               ].map((s) => (
                 <div 
                   key={s.l} 
-                  className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white/[0.03] backdrop-blur-lg ring-1 ring-white/5 p-5 transition-all duration-300 ease-in-out hover:-translate-y-[2px] hover:bg-white/[0.06] hover:ring-white/20 hover:shadow-[0_12px_24px_-8px_rgba(255,255,255,0.08)] active:scale-95"
+                  className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white/[0.04] backdrop-blur-xl ring-1 ring-white/10 p-5 transition-all duration-300 ease-in-out hover:-translate-y-[2px] hover:bg-white/[0.08] hover:ring-white/30 hover:shadow-[0_12px_32px_-8px_rgba(255,255,255,0.15)] active:scale-95"
                 >
-                  {/* Subtle inner radial glow on hover */}
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,transparent_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  {/* Intense inner radial glow on hover */}
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   
                   <div className="relative z-10 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground/90">
                     {s.l}
@@ -121,7 +122,7 @@ function JournalPage() {
               ))}
             </div>
           </div>
-        </div>
+        </PremiumGlass>
       </motion.section>
 
       {/* Today's prompt — wrapped as a notebook page */}
