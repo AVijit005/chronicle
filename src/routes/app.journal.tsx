@@ -365,8 +365,8 @@ function JournalPage() {
                 exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
                 className="pointer-events-none absolute top-4 z-20 whitespace-nowrap rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 shadow-[0_16px_32px_-8px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)_inset] backdrop-blur-[40px] saturate-200"
                 style={{ 
-                  left: `${(hoveredDay / 29) * 100}%`,
-                  transform: `translateX(-${(hoveredDay / 29) * 100}%)`,
+                  left: `${((hoveredDay + 0.5) / 30) * 100}%`,
+                  transform: `translateX(-50%)`,
                 }}
               >
                 <div className="flex items-center gap-2">
