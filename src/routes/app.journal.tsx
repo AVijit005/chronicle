@@ -217,7 +217,7 @@ function JournalPage() {
 
       {/* Mood timeline */}
       <Zone eyebrow="Mood" title="Moods across the month">
-        <PremiumGlass className="p-6 md:p-8">
+        <PremiumGlass interactive className="p-6 md:p-8 transform-gpu isolate">
           <svg viewBox="0 0 600 160" className="h-44 w-full">
             <defs>
               <linearGradient id="mood-stroke" x1="0" x2="1">
@@ -277,11 +277,18 @@ function JournalPage() {
               );
             })()}
           </svg>
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => (
-              <span key={m} className="flex items-center gap-1.5">
+              <PremiumGlass
+                key={m}
+                interactive
+                variant="subtle"
+                className="flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer press-scale"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <span
-                  className="h-2 w-2 rounded-full"
+                  className="h-2 w-2 rounded-full shadow-[0_0_8px_currentColor]"
                   style={{
                     background: [
                       "oklch(0.78 0.16 80)",
@@ -291,10 +298,20 @@ function JournalPage() {
                       "oklch(0.72 0.18 255)",
                       "oklch(0.55 0.18 280)",
                     ][i],
+                    color: [
+                      "oklch(0.78 0.16 80)",
+                      "oklch(0.7 0.2 145)",
+                      "oklch(0.65 0.22 295)",
+                      "oklch(0.7 0.18 25)",
+                      "oklch(0.72 0.18 255)",
+                      "oklch(0.55 0.18 280)",
+                    ][i],
                   }}
                 />
-                {m}
-              </span>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
+                  {m}
+                </span>
+              </PremiumGlass>
             ))}
           </div>
         </PremiumGlass>
