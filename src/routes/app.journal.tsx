@@ -86,7 +86,7 @@ function JournalPage() {
       >
         <PremiumGlass
           interactive
-          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)]"
+          className="group/master relative overflow-hidden rounded-[40px] p-10 md:p-16"
           glow="oklch(0.65 0.22 295 / 0.4)"
         >
           {/* Subtle top inner reflective edge */}
@@ -120,7 +120,7 @@ function JournalPage() {
                 <PremiumGlass 
                   key={s.l} 
                   interactive
-                  className="journal-stat-card cursor-pointer overflow-hidden rounded-2xl bg-black/20 backdrop-blur-xl p-5"
+                  className="journal-stat-card cursor-pointer rounded-2xl p-5"
                   style={{ "--journal-accent": s.accent } as React.CSSProperties}
                 >
                   <div className="relative z-10 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-white">
