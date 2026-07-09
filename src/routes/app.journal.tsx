@@ -33,6 +33,14 @@ function JournalPage() {
   const { data: statsData } = useJournalStats();
   const { data: timelineData } = useTimelineEvents();
 
+  // Dynamically calculate the time of day for the prompt header
+  const hour = new Date().getHours();
+  const timeContext = 
+    hour < 12 ? "This morning" :
+    hour < 17 ? "This afternoon" :
+    hour < 21 ? "This evening" :
+    "Tonight";
+
   const entries = useMemo(() => {
     return journalData?.pages.flatMap((p) => p.data).map(adaptJournalEntry) ?? [];
   }, [journalData]);
