@@ -125,7 +125,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
             style={{
               borderRadius: "inherit",
               boxShadow:
-                "inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev)*0.06))",
+                "inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev)*0.06))",
             }}
           />
           
