@@ -577,67 +577,72 @@ function CalendarPage() {
         <AnimatePresence>
           {isAddModalOpen && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 bg-background/80 backdrop-blur-md"
-                onClick={() => setIsAddModalOpen(false)}
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-                className="relative w-full max-w-2xl z-10"
-              >
-                <PremiumGlass className="overflow-hidden p-0" glow="oklch(0.7 0.1 250)">
-                  <div className="relative p-6 md:p-8">
-                    <button
-                      onClick={() => setIsAddModalOpen(false)}
-                      className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground z-10"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0 bg-background/60 backdrop-blur-[32px] saturate-150"
+                  onClick={() => setIsAddModalOpen(false)}
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                  transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
+                  className="relative w-full max-w-3xl z-10"
+                >
+                  <PremiumGlass className="overflow-hidden p-0 rounded-[2.5rem]" glow="oklch(0.7 0.1 250)">
+                    {/* Liquid glass inner overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
                     
-                    <div className="mb-8">
-                      <h2 className="font-display text-3xl tracking-tight">Log a memory</h2>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        What do you want to chronicle for {selectedDay ? `March ${selectedDay}` : "this day"}?
-                      </p>
-                    </div>
+                    <div className="relative p-8 md:p-12">
+                      <button
+                        onClick={() => setIsAddModalOpen(false)}
+                        className="absolute right-6 top-6 rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground z-10"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                      
+                      <div className="mb-10 text-center">
+                        <h2 className="font-display text-4xl tracking-tight text-foreground/90">Log a memory</h2>
+                        <p className="mt-2 text-sm text-muted-foreground/80">
+                          {selectedDay ? `March ${selectedDay}, 2026` : "Select a medium to chronicle"}
+                        </p>
+                      </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-h-[60vh] overflow-y-auto pr-2 pb-2 -mr-2">
-                      {[
-                        { id: "movies", icon: Film, label: "Movies", desc: "Film releases", color: "text-blue-400", bg: "bg-blue-400/10" },
-                        { id: "anime", icon: Sparkles, label: "Anime", desc: "Episodes & Movies", color: "text-pink-400", bg: "bg-pink-400/10" },
-                        { id: "series", icon: Tv, label: "Series", desc: "TV Shows", color: "text-indigo-400", bg: "bg-indigo-400/10" },
-                        { id: "books", icon: BookOpen, label: "Books", desc: "Novels & Non-fiction", color: "text-amber-400", bg: "bg-amber-400/10" },
-                        { id: "manga", icon: BookImage, label: "Manga", desc: "Comics & Volumes", color: "text-orange-400", bg: "bg-orange-400/10" },
-                        { id: "games", icon: Gamepad2, label: "Games", desc: "Play sessions", color: "text-emerald-400", bg: "bg-emerald-400/10" },
-                        { id: "music", icon: Music, label: "Music", desc: "Albums & Tracks", color: "text-purple-400", bg: "bg-purple-400/10" },
-                        { id: "podcasts", icon: Mic, label: "Podcasts", desc: "Episodes", color: "text-violet-400", bg: "bg-violet-400/10" },
-                        { id: "courses", icon: GraduationCap, label: "Courses", desc: "Learning", color: "text-teal-400", bg: "bg-teal-400/10" },
-                        { id: "youtube", icon: PlaySquare, label: "YouTube", desc: "Videos & Creators", color: "text-red-400", bg: "bg-red-400/10" },
-                      ].map((type) => (
-                        <motion.button
-                          key={type.id}
-                          whileHover={{ y: -2, scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setIsAddModalOpen(false)}
-                          className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.04] bg-white/[0.02] p-5 text-center transition-colors hover:bg-white/[0.06] hover:border-white/[0.1]"
-                        >
-                          <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${type.bg} transition-transform duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_-5px_currentColor] ${type.color}`}>
-                            <type.icon className="h-6 w-6" />
-                          </div>
-                          <div>
-                            <div className="font-medium text-foreground/90">{type.label}</div>
-                            <div className="text-[10px] text-muted-foreground mt-0.5">{type.desc}</div>
-                          </div>
-                        </motion.button>
-                      ))}
-                    </div>
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-y-8 gap-x-4">
+                        {[
+                          { id: "movies", icon: Film, label: "Movies", color: "text-blue-400", bg: "bg-blue-500/10" },
+                          { id: "anime", icon: Sparkles, label: "Anime", color: "text-pink-400", bg: "bg-pink-500/10" },
+                          { id: "series", icon: Tv, label: "Series", color: "text-indigo-400", bg: "bg-indigo-500/10" },
+                          { id: "books", icon: BookOpen, label: "Books", color: "text-amber-400", bg: "bg-amber-500/10" },
+                          { id: "manga", icon: BookImage, label: "Manga", color: "text-orange-400", bg: "bg-orange-500/10" },
+                          { id: "games", icon: Gamepad2, label: "Games", color: "text-emerald-400", bg: "bg-emerald-500/10" },
+                          { id: "music", icon: Music, label: "Music", color: "text-purple-400", bg: "bg-purple-500/10" },
+                          { id: "podcasts", icon: Mic, label: "Podcasts", color: "text-violet-400", bg: "bg-violet-500/10" },
+                          { id: "courses", icon: GraduationCap, label: "Courses", color: "text-teal-400", bg: "bg-teal-500/10" },
+                          { id: "youtube", icon: PlaySquare, label: "YouTube", color: "text-red-400", bg: "bg-red-500/10" },
+                        ].map((type) => (
+                          <motion.button
+                            key={type.id}
+                            whileHover={{ y: -6, scale: 1.05 }}
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => setIsAddModalOpen(false)}
+                            className="group flex flex-col items-center justify-center gap-3"
+                          >
+                            <div className={`relative flex h-[72px] w-[72px] sm:h-[84px] sm:w-[84px] items-center justify-center rounded-[1.5rem] sm:rounded-[1.75rem] border border-white/[0.06] ${type.bg} transition-all duration-500 group-hover:shadow-[0_0_40px_-10px_currentColor] group-hover:border-white/[0.2] ${type.color} overflow-hidden shadow-xl`}>
+                              {/* Liquid glass highlight */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/0 to-white/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                              <type.icon className="h-7 w-7 sm:h-8 sm:w-8 relative z-10 drop-shadow-md transition-transform duration-500 group-hover:scale-110" />
+                            </div>
+                            <div className="text-[11px] sm:text-xs font-medium text-foreground/60 tracking-wide transition-colors duration-300 group-hover:text-foreground/90">
+                              {type.label}
+                            </div>
+                          </motion.button>
+                        ))}
+                      </div>
                   </div>
                 </PremiumGlass>
               </motion.div>
