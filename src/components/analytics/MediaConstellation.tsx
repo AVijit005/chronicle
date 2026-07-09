@@ -16,11 +16,13 @@ export function MediaConstellation() {
   return (
     <PremiumGlass className="relative flex flex-col p-6 md:p-10 overflow-hidden min-h-[420px]">
       
-      {/* Background Ambient Aura */}
+      {/* Background Ambient Aura - MASKED to prevent dual line artifacts at the top edge */}
       <div 
-        className="absolute inset-0 transition-colors duration-1000 ease-out pointer-events-none opacity-[0.08]"
+        className="absolute inset-0 transition-colors duration-1000 ease-out pointer-events-none opacity-[0.1]"
         style={{ 
-          background: `radial-gradient(ellipse at 50% 0%, ${activeItem?.color || 'transparent'}, transparent 70%)`,
+          background: `radial-gradient(circle at 50% 30%, ${activeItem?.color || 'transparent'}, transparent 70%)`,
+          maskImage: 'radial-gradient(ellipse at 50% 40%, black 50%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, black 50%, transparent 100%)'
         }}
       />
       
@@ -40,7 +42,7 @@ export function MediaConstellation() {
             </div>
             <div className="flex items-baseline gap-4">
               <div 
-                className="font-display text-8xl md:text-9xl tracking-tighter leading-none" 
+                className="font-display text-[7rem] md:text-9xl tracking-tighter leading-none" 
                 style={{ 
                   color: "white", 
                   textShadow: `0 0 60px ${activeItem?.color}, 0 4px 20px rgba(0,0,0,0.6)` 
@@ -84,6 +86,14 @@ export function MediaConstellation() {
                   style={{ 
                     background: `linear-gradient(to bottom, ${item.color} 0%, color-mix(in srgb, ${item.color} 40%, black) 100%)`,
                     boxShadow: `inset 0 2px 6px rgba(255,255,255,0.4), inset 0 -6px 12px rgba(0,0,0,0.6)`
+                  }}
+                />
+                
+                {/* Premium Diagonal Glass Shine overlay */}
+                <div 
+                  className="absolute inset-0 w-full h-full pointer-events-none mix-blend-overlay"
+                  style={{
+                    background: 'linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.4) 30%, transparent 40%)'
                   }}
                 />
               </motion.div>
