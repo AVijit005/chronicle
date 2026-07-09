@@ -143,9 +143,9 @@ function JournalPage() {
           {/* Premium Glowing Squircle Icon */}
           <PremiumSquircle 
             icon={<Sparkles />} 
-            size="md" 
+            size="xl" 
             variant="glass" 
-            className="mx-auto mt-2 mb-6"
+            className="py-4"
           />
           <p className="mt-4 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
             "{JOURNAL_PROMPTS[0]}"
