@@ -507,51 +507,58 @@ function CalendarPage() {
       {/* Zone 7 — Streaks */}
       <Zone eyebrow="Zone 07" title="Memory streaks">
         <PremiumGlass className="p-6 md:p-8 flex flex-col relative overflow-hidden">
-          {/* Sci-Fi Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-60" />
+          {/* Very faint background pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50" />
           
-          <div className="relative z-10 w-full flex flex-col gap-6">
+          <div className="relative z-10 w-full flex flex-col gap-5 md:gap-7 mt-2">
             {MEMORY_STREAKS.map((s, idx) => {
               const progress = (s.value / s.total) * 100;
               return (
                 <div key={s.label} className="w-full flex items-center gap-4 md:gap-6 group/track">
                   {/* Label Side */}
-                  <div className="w-24 md:w-32 shrink-0 flex flex-col items-end text-right">
-                    <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold transition-colors duration-500" style={{ color: s.accent }}>
+                  <div className="w-28 md:w-36 shrink-0 flex flex-col items-end text-right">
+                    <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold opacity-80" style={{ color: s.accent }}>
                       {s.label}
                     </div>
                     <div className="flex items-baseline gap-1 mt-0.5">
-                      <div className="font-display tracking-tighter text-lg md:text-xl leading-none text-white drop-shadow-md">
+                      <div className="font-display tracking-tight text-xl md:text-2xl leading-none text-white drop-shadow-sm">
                         <CountUp to={s.value} />
                       </div>
-                      <div className="text-[9px] text-muted-foreground uppercase tracking-widest font-medium opacity-70">
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
                         / {s.total}d
                       </div>
                     </div>
                   </div>
                   
-                  {/* The Race Track */}
-                  <div className="flex-1 h-4 md:h-5 bg-black/50 rounded-r-full rounded-l-sm overflow-hidden p-[2px] shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] relative border border-white/[0.05]">
-                    {/* Tick marks on the empty track */}
-                    <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_49px,rgba(255,255,255,0.05)_50px)] bg-[size:50px_100%] pointer-events-none" />
+                  {/* The Race Track Container (No overflow-hidden so glows can bloom!) */}
+                  <div className="flex-1 relative h-6 md:h-8 rounded-full bg-black/40 border border-white/5 shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)] flex items-center px-1">
+                    {/* Empty Track Tick Marks */}
+                    <div className="absolute inset-x-4 inset-y-0 bg-[linear-gradient(90deg,transparent_39px,rgba(255,255,255,0.05)_40px)] bg-[size:40px_100%] pointer-events-none" />
 
                     <motion.div 
-                      className="h-full rounded-r-full rounded-l-sm relative"
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${progress}%` }}
+                      className="h-[calc(100%-6px)] relative"
+                      initial={{ width: '0%' }}
+                      whileInView={{ width: `${Math.max(progress, 4)}%` }}
                       viewport={{ once: true }}
-                      transition={{ duration: 1.5 + (idx * 0.15), type: "spring", bounce: 0.1, delay: 0.1 }}
-                      style={{ 
-                        background: `linear-gradient(90deg, color-mix(in srgb, ${s.accent} 20%, transparent), ${s.accent})`,
-                      }}
+                      transition={{ duration: 2 + (idx * 0.15), type: "spring", bounce: 0.2, delay: 0.1 }}
                     >
-                      {/* Leading edge bright core */}
-                      <div className="absolute right-0 top-0 bottom-0 w-3 md:w-6 bg-white mix-blend-overlay rounded-full" />
-                      
-                      {/* Ambient Glow at the leading edge */}
+                      {/* The Fading Trail (Masked to prevent color muddiness) */}
                       <div 
-                        className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 blur-[12px] pointer-events-none mix-blend-screen opacity-90"
-                        style={{ backgroundColor: s.accent }}
+                        className="absolute inset-0 rounded-full"
+                        style={{ 
+                          backgroundColor: s.accent,
+                          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+                          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)'
+                        }}
+                      />
+                      
+                      {/* The Leading Edge Core */}
+                      <div className="absolute right-0 top-0 bottom-0 w-3 md:w-5 bg-white rounded-full opacity-90 shadow-[0_0_12px_white]" />
+                      
+                      {/* The Massive Blooming Glow (Unmasked so it escapes the track bounds) */}
+                      <div 
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-20 md:w-24 md:h-24 blur-[16px] pointer-events-none mix-blend-screen z-10"
+                        style={{ backgroundColor: s.accent, opacity: 0.55 }}
                       />
                     </motion.div>
                   </div>
