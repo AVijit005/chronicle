@@ -21,7 +21,6 @@ import {
   CloudSun,
   Plus,
   X,
-  Flame,
 } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
@@ -511,41 +510,8 @@ function CalendarPage() {
           {MEMORY_STREAKS.map((s) => (
             <PremiumGlass key={s.label} className="h-full">
               <div className="flex flex-col items-center justify-start px-4 py-6 h-full relative box-border w-full">
-                <div className="relative w-24 h-24 mb-4 mt-2 flex items-center justify-center">
-                  {/* Background Empty Glass Flame */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Flame className="w-14 h-14 text-white/10" strokeWidth={1.5} />
-                  </div>
-                  
-                  {/* Foreground Animated Fire Masked */}
-                  <div className="absolute inset-0 flex items-center justify-center" style={{ clipPath: `inset(${100 - (s.value / s.total) * 100}% 0 0 0)` }}>
-                    <motion.div
-                      animate={{ scale: [0.95, 1.05, 0.95], rotate: [-2, 2, -2] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <Flame 
-                        className="w-14 h-14" 
-                        style={{ 
-                          color: s.accent, 
-                          filter: `drop-shadow(0 0 ${(s.value / s.total) > 0.5 ? 20 : 8}px ${s.accent})` 
-                        }}
-                        fill={s.accent}
-                        fillOpacity={0.9}
-                        strokeWidth={1.5}
-                      />
-                    </motion.div>
-                  </div>
-
-                  {/* Intense Ambient Glow for high streaks */}
-                  {(s.value / s.total) > 0.8 && (
-                    <motion.div 
-                      className="absolute inset-0 rounded-full mix-blend-screen pointer-events-none"
-                      animate={{ opacity: [0.3, 0.6, 0.3], scale: [0.9, 1.2, 0.9] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                      style={{ background: `radial-gradient(circle at center, ${s.accent}60 0%, transparent 60%)` }}
-                    />
-                  )}
-                </div>
+                
+                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
 
                 <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
                   <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
