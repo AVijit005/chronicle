@@ -1,203 +1,135 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { PremiumGlass } from "../ui/PremiumGlass";
 
 const CONSTELLATION_DATA = [
-  { label: "Movies", value: 45, count: 12, color: "oklch(0.65 0.2 250)" }, // Bright Blue
+  { label: "Movies", value: 45, count: 12, color: "var(--primary)" },
   { label: "Books", value: 25, count: 4, color: "oklch(0.65 0.18 30)" }, // Amber
   { label: "Games", value: 20, count: 2, color: "oklch(0.65 0.15 150)" }, // Emerald Green
   { label: "Journals", value: 10, count: 8, color: "oklch(0.65 0.18 330)" }, // Rose Pink
 ];
 
-// Map data to physical star coordinates and sizes
-const STARS = [
-  { ...CONSTELLATION_DATA[0], cx: 140, cy: 110, r: 38 }, // Movies
-  { ...CONSTELLATION_DATA[1], cx: 280, cy: 70, r: 28 }, // Books
-  { ...CONSTELLATION_DATA[2], cx: 240, cy: 240, r: 24 }, // Games
-  { ...CONSTELLATION_DATA[3], cx: 70, cy: 230, r: 16 }, // Journals
-];
-
-// Define the connections between stars (lines)
-const CONNECTIONS = [
-  [0, 1], // Movies to Books
-  [0, 2], // Movies to Games
-  [0, 3], // Movies to Journals
-  [1, 2], // Books to Games
-  [2, 3], // Games to Journals
-];
-
 export function MediaConstellation() {
   const [hovered, setHovered] = useState<string | null>(null);
 
+  const size = 260;
+  const stroke = 12;
+  const pad = 24;
+  const svgSize = size + pad * 2;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  
+  let currentOffset = 0;
   const activeItem = hovered ? CONSTELLATION_DATA.find(d => d.label === hovered) : CONSTELLATION_DATA[0];
 
   return (
-    <PremiumGlass className="relative flex flex-col md:flex-row items-center justify-between gap-12 p-8 md:p-12 overflow-hidden min-h-[440px]">
-      
-      {/* Deep Space Ambient Glow */}
+    <PremiumGlass className="relative flex flex-col md:flex-row items-center gap-10 p-8 overflow-hidden">
+      {/* Dynamic Background Glow */}
       <div 
-        className="absolute inset-0 transition-colors duration-1000 ease-out pointer-events-none opacity-[0.15]"
+        className="absolute inset-0 transition-colors duration-700 ease-out pointer-events-none opacity-[0.12]"
         style={{ 
-          background: `radial-gradient(circle at 40% 50%, ${activeItem?.color || 'transparent'} 0%, transparent 60%)`,
+          background: `radial-gradient(circle at 30% 50%, ${activeItem?.color || 'transparent'}, transparent 60%)`,
+          WebkitMaskImage: 'radial-gradient(closest-side at 50% 50%, black 70%, transparent 100%)',
+          maskImage: 'radial-gradient(closest-side at 50% 50%, black 70%, transparent 100%)'
         }}
       />
       
-      {/* Star Map Section */}
-      <div className="relative flex items-center justify-center shrink-0 w-full md:w-auto z-10">
-        
-        {/* The Constellation Canvas */}
-        <motion.svg 
-          width="360" height="320" viewBox="0 0 360 320" 
-          className="relative z-10 overflow-visible"
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {/* Distant background stars (deterministic positions) */}
-          {[...Array(30)].map((_, i) => {
-            const seed = (i * 997) % 1000;
-            const x = (seed / 1000) * 360;
-            const y = ((seed * 73) % 1000 / 1000) * 320;
-            return (
-              <circle
-                key={`bg-${i}`}
-                cx={x} cy={y}
-                r={seed % 3 === 0 ? 1.5 : 0.8}
-                fill="white"
-                opacity={(seed % 100) / 200 + 0.1}
-                className="animate-pulse"
-                style={{ animationDelay: `${(seed % 5)}s`, animationDuration: `${3 + (seed % 4)}s` }}
-              />
-            );
-          })}
-
-          {/* Glowing Laser Connections */}
-          {CONNECTIONS.map(([i, j], idx) => {
-            const s1 = STARS[i];
-            const s2 = STARS[j];
-            const isConnected = hovered === s1.label || hovered === s2.label;
-            const isDimmed = hovered !== null && !isConnected;
+      {/* Chart Section */}
+      <div className="relative flex items-center justify-center" style={{ width: svgSize, height: svgSize }}>
+        <svg width={svgSize} height={svgSize} className="-rotate-90 relative z-10" style={{ overflow: "visible" }}>
+          {/* Track background */}
+          <circle cx={svgSize / 2} cy={svgSize / 2} r={r} stroke="oklch(1 0 0 / 0.04)" strokeWidth={stroke} fill="none" />
+          
+          {CONSTELLATION_DATA.map((item, i) => {
+            const fraction = item.value / 100;
+            const segment = c * fraction;
+            // Gap between segments
+            const gap = 6;
+            const dash = Math.max(0, segment - gap);
+            const isHovered = hovered === item.label || hovered === null;
             
-            // If connected to hovered, color line with hovered star's color
-            const lineColor = isConnected ? (hovered === s1.label ? s1.color : s2.color) : "white";
-
-            return (
-              <motion.line
-                key={`line-${idx}`}
-                x1={s1.cx} y1={s1.cy} 
-                x2={s2.cx} y2={s2.cy}
-                stroke={lineColor}
-                strokeWidth={isConnected ? 3 : 1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: isDimmed ? 0.05 : isConnected ? 0.8 : 0.2 }}
-                transition={{ pathLength: { duration: 1.5, delay: idx * 0.15 }, opacity: { duration: 0.5 } }}
-                style={{ filter: isConnected ? `drop-shadow(0 0 10px ${lineColor})` : 'none' }}
-                className="transition-colors duration-500"
-              />
-            );
-          })}
-
-          {/* The Data Stars */}
-          {STARS.map((star, i) => {
-            const isHovered = hovered === star.label;
-            const isDimmed = hovered !== null && !isHovered;
-            
-            return (
-              <motion.g 
-                key={star.label}
-                onMouseEnter={() => setHovered(star.label)}
+            const circle = (
+              <motion.circle
+                key={item.label}
+                cx={svgSize / 2}
+                cy={svgSize / 2}
+                r={r}
+                stroke={item.color}
+                strokeWidth={stroke}
+                strokeLinecap="round"
+                fill="none"
+                strokeDasharray={`${dash} ${c - dash}`}
+                strokeDashoffset={-currentOffset}
+                initial={{ strokeDashoffset: c }}
+                whileInView={{ strokeDashoffset: -currentOffset }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                style={{ 
+                  opacity: isHovered ? 1 : 0.25, 
+                  filter: hovered === item.label ? `drop-shadow(0 0 12px ${item.color})` : 'none',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={() => setHovered(item.label)}
                 onMouseLeave={() => setHovered(null)}
-                className="cursor-pointer"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: isDimmed ? 0.2 : 1 }}
-                transition={{ scale: { type: "spring", bounce: 0.5, delay: 0.5 + i * 0.1 }, opacity: { duration: 0.4 } }}
-              >
-                {/* Hit Area */}
-                <circle cx={star.cx} cy={star.cy} r={star.r + 20} fill="transparent" />
-                
-                {/* Outer Glow Core */}
-                <circle 
-                  cx={star.cx} cy={star.cy} 
-                  r={isHovered ? star.r + 6 : star.r} 
-                  fill={star.color} 
-                  style={{ filter: `drop-shadow(0 0 ${isHovered ? 40 : 20}px ${star.color})` }}
-                  className="transition-all duration-500"
-                />
-                
-                {/* Inner White Hot Core */}
-                <circle 
-                  cx={star.cx} cy={star.cy} 
-                  r={star.r * (isHovered ? 0.5 : 0.35)} 
-                  fill="white" 
-                  opacity={0.9} 
-                  className="transition-all duration-500"
-                />
-                
-                {/* Floating Label */}
-                <text
-                  x={star.cx} y={star.cy + star.r + 24}
-                  textAnchor="middle"
-                  fill="white"
-                  className={`font-bold text-[10px] tracking-[0.2em] uppercase pointer-events-none transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-70'}`}
-                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }}
-                >
-                  {star.label}
-                </text>
-                
-                {/* Floating Value */}
-                <text
-                  x={star.cx} y={star.cy + star.r + 40}
-                  textAnchor="middle"
-                  fill="white"
-                  className={`font-display text-sm pointer-events-none transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-50'}`}
-                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }}
-                >
-                  {star.value}%
-                </text>
-              </motion.g>
+              />
             );
+            currentOffset += segment;
+            return circle;
           })}
-        </motion.svg>
+        </svg>
+
+        {/* Center Readout */}
+        <div className="absolute inset-0 grid place-items-center text-center pointer-events-none z-10">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={activeItem?.label || 'default'}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="flex flex-col items-center"
+            >
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+                {activeItem?.label}
+              </div>
+              <div className="font-display text-5xl tracking-tight leading-none" style={{ color: activeItem?.color, textShadow: `0 0 24px ${activeItem?.color}80` }}>
+                {activeItem?.value}%
+              </div>
+              <div className="text-[11px] text-muted-foreground mt-2 font-medium tracking-wide uppercase">
+                {activeItem?.count} Entries
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Legend / Control Panel Section */}
-      <div className="flex flex-col gap-6 flex-1 z-10 w-full max-w-sm">
+      {/* Legend / Info Section */}
+      <div className="flex flex-col gap-4 flex-1 z-10">
         <div>
-          <h3 className="font-display text-3xl mb-2 text-foreground/90 tracking-tight">Digital Cosmos</h3>
-          <p className="text-sm text-muted-foreground/80 leading-relaxed">
-            Your media consumption mapped as a physical constellation. Hover over the stars to reveal your focus.
+          <p className="text-sm text-muted-foreground leading-relaxed mt-2 max-w-sm">
+            A beautiful breakdown of your digital universe this month. Hover over the orbital rings to explore your focus.
           </p>
         </div>
         
-        <div className="flex flex-col gap-2 mt-4">
-          {CONSTELLATION_DATA.map((item) => {
-            const isHovered = hovered === item.label;
-            return (
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          {CONSTELLATION_DATA.map((item) => (
+            <div 
+              key={item.label}
+              className={`flex items-center gap-3 p-3 rounded-2xl transition-colors cursor-pointer group ${hovered === item.label ? 'bg-white/10' : 'hover:bg-white/[0.04]'}`}
+              onMouseEnter={() => setHovered(item.label)}
+              onMouseLeave={() => setHovered(null)}
+            >
               <div 
-                key={item.label}
-                className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 cursor-pointer border ${isHovered ? 'bg-white/10 border-white/10 shadow-lg scale-[1.02]' : 'border-transparent hover:bg-white/[0.04]'}`}
-                onMouseEnter={() => setHovered(item.label)}
-                onMouseLeave={() => setHovered(null)}
-              >
-                <div className="flex items-center gap-4">
-                  <div 
-                    className="w-3.5 h-3.5 rounded-full transition-transform duration-300" 
-                    style={{ 
-                      background: item.color, 
-                      boxShadow: isHovered ? `0 0 16px ${item.color}, 0 0 32px ${item.color}` : `0 0 8px ${item.color}60`,
-                      transform: isHovered ? 'scale(1.4)' : 'scale(1)'
-                    }} 
-                  />
-                  <div className={`text-xs font-bold tracking-widest uppercase transition-colors ${isHovered ? 'text-foreground' : 'text-foreground/80'}`}>
-                    {item.label}
-                  </div>
-                </div>
-                <div className="flex items-center gap-5">
-                  <div className="text-[11px] text-muted-foreground font-medium uppercase tracking-wide">{item.count} items</div>
-                  <div className="text-xl font-display font-semibold w-12 text-right text-foreground/90">{item.value}%</div>
-                </div>
+                className="w-2.5 h-2.5 rounded-full shadow-sm transition-transform duration-300 group-hover:scale-125" 
+                style={{ background: item.color, boxShadow: `0 0 10px ${item.color}` }} 
+              />
+              <div className="flex-1">
+                <div className="text-xs font-bold text-foreground/90 tracking-wide uppercase">{item.label}</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">{item.count} items</div>
               </div>
-            );
-          })}
+              <div className="text-sm font-display text-foreground/80">{item.value}%</div>
+            </div>
+          ))}
         </div>
       </div>
     </PremiumGlass>
