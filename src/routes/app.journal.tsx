@@ -150,12 +150,14 @@ function JournalPage() {
               interactive 
               variant="default"
               glow="oklch(0.7 0.18 255 / 0.5)"
-              className="group flex cursor-pointer items-center gap-3 rounded-full bg-white/[0.08] px-8 py-4 ring-1 ring-white/20 transition-all hover:bg-white/[0.12] hover:ring-white/40"
+              className="group cursor-pointer rounded-full bg-white/[0.08] px-8 py-4 ring-1 ring-white/20 transition-all hover:bg-white/[0.12] hover:ring-white/40"
               whileHover={{ y: -3, scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
             >
-              <NotebookPen className="h-5 w-5 text-primary drop-shadow-[0_0_12px_currentColor] transition-transform duration-500 ease-out group-hover:rotate-12 group-hover:scale-110" />
-              <span className="font-display text-lg font-medium text-foreground tracking-wide">Start writing</span>
+              <div className="flex h-full w-full items-center justify-center gap-3">
+                <NotebookPen className="h-5 w-5 text-primary drop-shadow-[0_0_12px_currentColor] transition-transform duration-500 ease-out group-hover:rotate-12 group-hover:scale-110" />
+                <span className="font-display text-lg font-medium text-foreground tracking-wide">Start writing</span>
+              </div>
             </PremiumGlass>
             
             <PremiumGlass 
@@ -165,9 +167,11 @@ function JournalPage() {
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span className="text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
-                Different prompt
-              </span>
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+                  Different prompt
+                </span>
+              </div>
             </PremiumGlass>
           </div>
         </PremiumGlass>
