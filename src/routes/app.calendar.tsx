@@ -13,6 +13,7 @@ import {
   Music,
   CloudSun,
   Plus,
+  X,
 } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
@@ -43,6 +44,7 @@ const seasonOf = (m: number) =>
 function CalendarPage() {
   const [monthIdx, setMonthIdx] = useState(2); // March
   const [selectedDay, setSelectedDay] = useState<number | null>(14);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const month = CALENDAR_YEAR[monthIdx];
   const season = seasonOf(monthIdx);
 
@@ -351,6 +353,7 @@ function CalendarPage() {
                       className="mt-2 flex items-center justify-center gap-2 rounded-xl border border-dashed border-white/10 p-3 text-xs text-muted-foreground hover:text-foreground cursor-pointer press-scale relative z-10"
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => setIsAddModalOpen(true)}
                     >
                       <Plus className="h-3 w-3" /> Add memory
                     </PremiumGlass>
@@ -561,6 +564,73 @@ function CalendarPage() {
       >
         <ThisWeekHistory />
       </Zone>
+
+      {/* Add Memory Modal Overlay */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+              onClick={() => setIsAddModalOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+              className="relative w-full max-w-lg z-10"
+            >
+              <PremiumGlass className="overflow-hidden p-0" glow="oklch(0.7 0.1 250)">
+                <div className="relative p-6 md:p-8">
+                  <button
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  
+                  <div className="mb-8">
+                    <h2 className="font-display text-3xl tracking-tight">Log a memory</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      What do you want to chronicle for {selectedDay ? `March ${selectedDay}` : "this day"}?
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { id: "movie", icon: Film, label: "Movie", desc: "Film or TV", color: "text-blue-400", bg: "bg-blue-400/10" },
+                      { id: "book", icon: BookOpen, label: "Book", desc: "Reading", color: "text-amber-400", bg: "bg-amber-400/10" },
+                      { id: "game", icon: Gamepad2, label: "Game", desc: "Play session", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+                      { id: "music", icon: Music, label: "Music", desc: "Album or live", color: "text-purple-400", bg: "bg-purple-400/10" },
+                      { id: "journal", icon: NotebookPen, label: "Journal", desc: "Text entry", color: "text-rose-400", bg: "bg-rose-400/10", colSpan: true },
+                    ].map((type) => (
+                      <motion.button
+                        key={type.id}
+                        whileHover={{ y: -2, scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setIsAddModalOpen(false)}
+                        className={`group flex items-center gap-4 rounded-2xl border border-white/[0.04] bg-white/[0.02] p-4 text-left transition-colors hover:bg-white/[0.06] hover:border-white/[0.1] ${type.colSpan ? "col-span-2" : ""}`}
+                      >
+                        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${type.bg} transition-transform duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_-5px_currentColor] ${type.color}`}>
+                          <type.icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-foreground/90">{type.label}</div>
+                          <div className="text-xs text-muted-foreground">{type.desc}</div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </PremiumGlass>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
