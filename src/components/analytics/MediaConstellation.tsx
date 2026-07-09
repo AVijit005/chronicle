@@ -47,10 +47,10 @@ export function MediaConstellation() {
     : constellationData[activeIndex] || constellationData[0];
 
   return (
-    <PremiumGlass className="relative flex flex-col p-4 md:p-5 overflow-hidden min-h-[280px]">
+    <PremiumGlass className="relative flex flex-col p-4 md:p-5 min-h-[280px]">
       
       {/* Option A: Glassmorphic Filter Chips */}
-      <div className="relative z-20 w-full overflow-x-auto pb-2 mb-0 flex items-center gap-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-20 w-full overflow-x-auto pt-3 pb-3 -mt-3 mb-0 flex items-center gap-1.5 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 mr-1 shrink-0">Filter:</div>
         {AVAILABLE_CATEGORIES.map(cat => {
           const isSelected = selectedCategories.includes(cat);
@@ -78,7 +78,7 @@ export function MediaConstellation() {
         <>
           {/* Background Ambient Aura */}
           <div 
-            className="absolute inset-0 transition-colors duration-1000 ease-out pointer-events-none opacity-[0.08]"
+            className="absolute inset-0 transition-colors duration-1000 ease-out pointer-events-none opacity-[0.08] rounded-[inherit] overflow-hidden"
             style={{ 
               background: `radial-gradient(circle at 50% 30%, ${activeItem?.color || 'transparent'}, transparent 70%)`,
               maskImage: 'radial-gradient(circle at 50% 50%, black 30%, transparent 80%)',
