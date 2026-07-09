@@ -105,7 +105,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         }
       >
         {/* 2. ISOLATION / CLIPPING CONTAINER */}
-        <div className={cn("pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]", variantClass[variant])}>
+        <div className={cn("pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] border-none", variantClass[variant])} style={{ border: "none" }}>
           
           {/* 3. ABSOLUTE REFLECTION LAYERS */}
           {/* outer highlight */}
