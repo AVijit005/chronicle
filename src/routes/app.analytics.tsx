@@ -335,12 +335,17 @@ function AnalyticsPage() {
             </div>
             <div className="mt-8 h-72">
               <ResponsiveContainer>
-                <AreaChart data={s.monthlyActivity || []}>
+                <AreaChart data={s.monthlyActivity || []} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.7} />
+                      <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.8} />
+                      <stop offset="60%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.2} />
                       <stop offset="100%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0} />
                     </linearGradient>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="6" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
                   </defs>
                   <XAxis
                     dataKey="date"
@@ -349,6 +354,7 @@ function AnalyticsPage() {
                     tickLine={false}
                     axisLine={false}
                     interval={6}
+                    tick={{ fill: "oklch(0.7 0 0)" }}
                   />
                   <YAxis
                     stroke="oklch(0.55 0 0)"
@@ -356,17 +362,21 @@ function AnalyticsPage() {
                     tickLine={false}
                     axisLine={false}
                     width={28}
+                    tick={{ fill: "oklch(0.7 0 0)" }}
                   />
                   <Tooltip
                     content={<GlassTooltip />}
-                    cursor={{ stroke: "oklch(1 0 0 / 0.1)", strokeWidth: 1 }}
+                    cursor={{ stroke: "oklch(1 0 0 / 0.1)", strokeWidth: 1, strokeDasharray: "4 4" }}
                   />
                   <Area
+                    type="monotone"
                     dataKey="count"
                     name="Count"
                     stroke="oklch(0.78 0.18 255)"
-                    strokeWidth={2}
+                    strokeWidth={3}
                     fill="url(#aGrad)"
+                    activeDot={{ r: 6, fill: "white", stroke: "oklch(0.78 0.18 255)", strokeWidth: 2, filter: "drop-shadow(0 0 8px oklch(0.78 0.18 255))" }}
+                    style={{ filter: "url(#glow)" }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -379,25 +389,48 @@ function AnalyticsPage() {
       <Zone eyebrow="Zone 4" title="Media distribution" sub="The shape of your library.">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <PremiumGlass className="p-6 md:p-8">
-            <div className="h-72">
+            <div className="h-72 relative flex items-center justify-center">
+              {/* Subtle ambient glow behind the pie chart */}
+              <div className="absolute inset-0 bg-[oklch(0.72_0.18_255)]/5 blur-[80px] pointer-events-none rounded-full" />
+              
               <ResponsiveContainer>
                 <PieChart>
+                  <defs>
+                    {mediaDistribution.map((d, i) => (
+                      <filter key={`glow-${i}`} id={`pie-glow-${i}`} x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor={d.color} floodOpacity="0.6" />
+                      </filter>
+                    ))}
+                  </defs>
                   <Pie
                     data={mediaDistribution}
                     dataKey="value"
                     nameKey="name"
-                    innerRadius={70}
-                    outerRadius={110}
-                    paddingAngle={2}
+                    innerRadius={75}
+                    outerRadius={115}
+                    paddingAngle={4}
                     stroke="none"
+                    cornerRadius={8}
                   >
                     {mediaDistribution.map((d, i) => (
-                      <Cell key={i} fill={d.color} />
+                      <Cell 
+                        key={i} 
+                        fill={d.color} 
+                        style={{ filter: `url(#pie-glow-${i})`, transition: 'all 0.4s ease' }} 
+                        className="hover:opacity-90 cursor-pointer outline-none"
+                      />
                     ))}
                   </Pie>
-                  <Tooltip content={<GlassTooltip />} />
+                  <Tooltip content={<GlassTooltip />} cursor={{ fill: 'transparent' }} />
                 </PieChart>
               </ResponsiveContainer>
+              
+              {/* Center decorative element */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-24 h-24 rounded-full border border-white/[0.05] flex items-center justify-center bg-black/20 backdrop-blur-xl shadow-[inset_0_2px_10px_rgba(255,255,255,0.05)]">
+                  <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground/60 font-medium">Library</span>
+                </div>
+              </div>
             </div>
           </PremiumGlass>
           <PremiumGlass className="p-6 md:p-8">
