@@ -26,8 +26,12 @@ export function MediaConstellation() {
     <PremiumGlass className="relative flex flex-col md:flex-row items-center gap-10 p-8 overflow-hidden">
       {/* Dynamic Background Glow */}
       <div 
-        className="absolute inset-0 transition-colors duration-700 ease-out pointer-events-none opacity-[0.08]"
-        style={{ background: `radial-gradient(circle at 30% 50%, ${activeItem?.color || 'transparent'}, transparent 60%)` }}
+        className="absolute inset-0 transition-colors duration-700 ease-out pointer-events-none opacity-[0.12]"
+        style={{ 
+          background: `radial-gradient(circle at 30% 50%, ${activeItem?.color || 'transparent'}, transparent 60%)`,
+          WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+          maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+        }}
       />
       
       {/* Chart Section */}
