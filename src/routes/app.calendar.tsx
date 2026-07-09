@@ -224,33 +224,51 @@ function CalendarPage() {
                     <motion.button
                       key={i}
                       onClick={() => setSelectedDay(c.day)}
-                      whileHover={{ scale: 1.05 }}
-                      className={`group relative aspect-square overflow-hidden rounded-lg border ${isSel ? "border-primary/70" : "border-white/[0.05]"} transition`}
+                      whileHover={{ scale: 1.1, zIndex: 10 }}
+                      className={`group relative aspect-square overflow-hidden rounded-[12px] transition-all duration-400 ease-out`}
                       style={{
-                        background: c.hasMedia
-                          ? `oklch(0.72 0.18 255 / ${0.05 + c.intensity * 0.4})`
-                          : "oklch(1 0 0 / 0.02)",
+                        background: c.hasMedia ? "transparent" : "rgba(255,255,255,0.02)",
+                        backdropFilter: c.hasMedia ? "none" : "blur(12px)",
+                        WebkitBackdropFilter: c.hasMedia ? "none" : "blur(12px)",
+                        boxShadow: isSel 
+                          ? `inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.2), 0 8px 24px -4px rgba(0,0,0,0.6), 0 0 0 2px oklch(0.72 0.18 255 / 0.8)`
+                          : `inset 0 1px 1px rgba(255,255,255,0.2), inset 0 0 0 1px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.2)`
                       }}
                     >
+                      {/* Fully visible poster */}
                       {c.hasMedia && (
-                        <img
-                          src={c.poster}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover opacity-0 transition group-hover:opacity-40"
-                        />
+                        <>
+                          <img
+                            src={c.poster}
+                            alt=""
+                            className="absolute inset-0 h-full w-full object-cover scale-100 transition-transform duration-500 group-hover:scale-110"
+                          />
+                          {/* Smooth gradient fade so the white day number is always readable */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/20" />
+                        </>
                       )}
-                      <div className="absolute inset-0 grid place-items-center">
-                        <span className="text-xs text-foreground/80">{c.day}</span>
+
+                      {/* Day number */}
+                      <div className="absolute inset-0 grid place-items-center z-10">
+                        <span className={`text-xs font-semibold tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${isSel || c.hasMedia ? 'text-white' : 'text-foreground/90'}`}>
+                          {c.day}
+                        </span>
                       </div>
+
                       {c.hasJournal && (
-                        <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-rose-300/80" />
+                        <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.8)] z-10" />
                       )}
                       {c.hasAchievement && (
-                        <Trophy className="absolute left-1 top-1 h-2.5 w-2.5 text-amber-300" />
+                        <Trophy className="absolute left-1.5 top-1.5 h-2.5 w-2.5 text-amber-300 drop-shadow-[0_0_6px_rgba(252,211,77,0.8)] z-10" />
                       )}
-                      {isSel && (
-                        <span className="absolute inset-0 ring-2 ring-primary/60 rounded-lg" />
-                      )}
+                      
+                      {/* Apple-style Diagonal Glass Reflection Overlay */}
+                      <div 
+                        className="absolute inset-0 pointer-events-none rounded-[12px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay z-20"
+                        style={{
+                          background: 'linear-gradient(110deg, transparent 15%, rgba(255,255,255,0.5) 30%, transparent 45%)'
+                        }}
+                      />
                     </motion.button>
                   );
                 })}
