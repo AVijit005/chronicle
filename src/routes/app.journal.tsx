@@ -139,8 +139,24 @@ function JournalPage() {
             <span className="italic text-foreground/70">Reflective</span>
           </header>
 
-          <Sparkles className="mx-auto h-6 w-6 text-primary drop-shadow-[0_0_12px_rgba(255,255,255,0.5)]" />
-          <p className="mt-6 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
+          <motion.div
+            animate={{ 
+              y: [0, -6, 0],
+              rotate: [0, 5, -5, 0],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{ 
+              duration: 6, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+            whileHover={{ scale: 1.3, rotate: 45, filter: "brightness(1.5)" }}
+            whileTap={{ scale: 0.8, rotate: -45 }}
+            className="mx-auto flex cursor-pointer items-center justify-center p-4"
+          >
+            <Sparkles className="h-7 w-7 text-primary drop-shadow-[0_0_15px_currentColor]" />
+          </motion.div>
+          <p className="mt-2 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
             "{JOURNAL_PROMPTS[0]}"
           </p>
 
