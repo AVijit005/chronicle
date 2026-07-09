@@ -127,7 +127,7 @@ function JournalPage() {
       </motion.section>
 
       {/* Today's prompt — upgraded to full interactive PremiumGlass */}
-      <Zone eyebrow="Today" title="A prompt for tonight" sub="One question. No pressure.">
+      <Zone eyebrow="Today" title={`A prompt for ${timeContext.toLowerCase()}`} sub="One question. No pressure.">
         <PremiumGlass 
           interactive 
           variant="strong"
@@ -136,7 +136,7 @@ function JournalPage() {
         >
           {/* Running Header */}
           <header className="mb-10 flex w-full items-baseline justify-between border-b border-foreground/10 pb-4 text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-            <span>Tonight</span>
+            <span>{timeContext}</span>
             <span className="italic text-foreground/70">Reflective</span>
           </header>
 
