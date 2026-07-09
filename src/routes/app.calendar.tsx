@@ -354,21 +354,34 @@ function CalendarPage() {
                     >
                       <Plus className="h-3 w-3" /> Add memory
                     </PremiumGlass>
-                    <div className="mt-4 flex flex-col sm:flex-row items-center gap-2">
-                      <div className="flex w-full flex-1 items-center gap-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] p-2.5 pl-3 transition-colors hover:bg-white/[0.06] cursor-pointer">
-                        <Sparkles className="h-4 w-4 text-amber-300/80" />
-                        <div className="flex flex-col">
-                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-semibold">Mood</span>
-                          <span className="text-xs font-medium text-foreground/90">Awe</span>
+                    <div className="mt-5 flex flex-col xl:flex-row items-center gap-3">
+                      <motion.div 
+                        whileHover={{ y: -2, scale: 1.01 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group flex w-full flex-1 items-center gap-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-3 transition-colors hover:bg-white/[0.04] hover:border-white/[0.08] cursor-pointer shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                      >
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20 shadow-[0_0_12px_-2px_rgba(245,158,11,0.3)] transition-transform duration-300 group-hover:scale-110">
+                          <Sparkles className="h-4 w-4 text-amber-300" />
                         </div>
-                      </div>
-                      <div className="flex w-full flex-1 items-center gap-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] p-2.5 pl-3 transition-colors hover:bg-white/[0.06] cursor-pointer">
-                        <CloudSun className="h-4 w-4 text-sky-300/80" />
                         <div className="flex flex-col">
-                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-semibold">Weather</span>
-                          <span className="text-xs font-medium text-foreground/90">Cold, clear</span>
+                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold mb-0.5">Mood</span>
+                          <span className="font-display text-lg tracking-tight text-foreground/90 leading-none">Awe</span>
                         </div>
-                      </div>
+                      </motion.div>
+                      
+                      <motion.div 
+                        whileHover={{ y: -2, scale: 1.01 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group flex w-full flex-1 items-center gap-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-3 transition-colors hover:bg-white/[0.04] hover:border-white/[0.08] cursor-pointer shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                      >
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/10 border border-sky-500/20 shadow-[0_0_12px_-2px_rgba(14,165,233,0.3)] transition-transform duration-300 group-hover:scale-110">
+                          <CloudSun className="h-4 w-4 text-sky-300" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold mb-0.5">Weather</span>
+                          <span className="font-display text-lg tracking-tight text-foreground/90 leading-none">Cold, clear</span>
+                        </div>
+                      </motion.div>
                     </div>
                   </div>
                 )}
