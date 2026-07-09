@@ -333,43 +333,43 @@ function AnalyticsPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 h-72 flex items-end justify-between gap-[2px] md:gap-1 w-full pt-10 px-2 pb-6 relative group">
-              {/* Background horizontal grid lines */}
-              <div className="absolute inset-0 pointer-events-none flex flex-col justify-between pt-10 pb-6 opacity-20">
-                <div className="w-full h-px bg-white/20" />
-                <div className="w-full h-px bg-white/20" />
-                <div className="w-full h-px bg-white/20" />
-              </div>
-              
-              {s.monthlyActivity?.map((d: any, i: number) => {
-                const maxCount = Math.max(...(s.monthlyActivity || []).map((x: any) => x.count), 1);
-                const height = (d.count / maxCount) * 100;
-                return (
-                  <div key={i} className="group/bar relative w-full h-full flex flex-col justify-end items-center z-10">
-                    {/* Floating Glass Tooltip */}
-                    <div className="absolute bottom-full mb-2 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 translate-y-2 group-hover/bar:translate-y-0 whitespace-nowrap bg-black/60 backdrop-blur-xl px-3 py-1.5 rounded-lg text-xs border border-white/[0.08] shadow-2xl pointer-events-none flex flex-col items-center z-50">
-                      <span className="font-display font-medium text-lg text-white">{d.count}</span>
-                      <span className="text-muted-foreground/80 text-[10px] uppercase tracking-wider">{d.date}</span>
-                    </div>
-                    
-                    {/* The Physics Bar */}
-                    <motion.div
-                      initial={{ height: 0 }}
-                      whileInView={{ height: `${Math.max(height, 2)}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.2, type: "spring", bounce: 0.25, delay: i * 0.015 }}
-                      className="w-full rounded-t-[4px] md:rounded-t-md transition-all duration-300 relative cursor-pointer"
-                      style={{ 
-                         background: 'linear-gradient(to top, rgba(255,255,255,0.02), oklch(0.72 0.18 255 / 0.9))',
-                         boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 20px rgba(255,255,255,0.05)'
-                      }}
-                    >
-                      {/* Active Hover Glow */}
-                      <div className="absolute inset-x-0 top-0 h-10 bg-[oklch(0.72_0.18_255)] blur-[12px] opacity-0 group-hover/bar:opacity-100 transition-opacity duration-300 mix-blend-screen" />
-                    </motion.div>
-                  </div>
-                );
-              })}
+            <div className="mt-8 h-72">
+              <ResponsiveContainer>
+                <AreaChart data={s.monthlyActivity || []}>
+                  <defs>
+                    <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.7} />
+                      <stop offset="100%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="date"
+                    stroke="oklch(0.55 0 0)"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    interval={6}
+                  />
+                  <YAxis
+                    stroke="oklch(0.55 0 0)"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    width={28}
+                  />
+                  <Tooltip
+                    content={<GlassTooltip />}
+                    cursor={{ stroke: "oklch(1 0 0 / 0.1)", strokeWidth: 1 }}
+                  />
+                  <Area
+                    dataKey="count"
+                    name="Count"
+                    stroke="oklch(0.78 0.18 255)"
+                    strokeWidth={2}
+                    fill="url(#aGrad)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </PremiumGlass>
         </ChartStory>
@@ -379,51 +379,25 @@ function AnalyticsPage() {
       <Zone eyebrow="Zone 4" title="Media distribution" sub="The shape of your library.">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <PremiumGlass className="p-6 md:p-8">
-            <div className="h-72 relative flex items-center justify-center">
-              {/* Subtle ambient glow behind the radial chart */}
-              <div className="absolute inset-0 bg-[oklch(0.72_0.18_255)]/5 blur-[80px] pointer-events-none rounded-full" />
-              
-              <svg width="260" height="260" viewBox="0 0 260 260" className="-rotate-90 relative z-10 drop-shadow-2xl">
-                {mediaDistribution.map((d, i) => {
-                  // Apple Watch style rings
-                  const radiusStart = 45;
-                  const ringGap = 22;
-                  const r = radiusStart + (i * ringGap);
-                  const c = 2 * Math.PI * r;
-                  const maxVal = Math.max(...mediaDistribution.map(x => x.value), 1);
-                  const pct = (d.value / maxVal) * 85; // Max 85% to leave a gap like high-end dashboards
-                  
-                  return (
-                    <g key={d.name} className="group/ring cursor-pointer">
-                      {/* Faint Background Track */}
-                      <circle cx="130" cy="130" r={r} stroke="oklch(1 1 1 / 0.04)" strokeWidth="14" fill="none" className="transition-colors duration-300 group-hover/ring:stroke-white/10" />
-                      
-                      {/* Active Progress Ring */}
-                      <motion.circle
-                        cx="130" cy="130" r={r}
-                        stroke={d.color}
-                        strokeWidth="14"
-                        strokeLinecap="round"
-                        fill="none"
-                        strokeDasharray={c}
-                        initial={{ strokeDashoffset: c }}
-                        whileInView={{ strokeDashoffset: c - (c * pct) / 100 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.8, type: "spring", bounce: 0.2, delay: i * 0.15 }}
-                        className="transition-all duration-300 group-hover/ring:brightness-125"
-                        style={{ filter: `drop-shadow(0 4px 10px ${d.color}60)` }}
-                      />
-                    </g>
-                  );
-                })}
-              </svg>
-              
-              {/* Center decorative element */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                <div className="w-16 h-16 rounded-full border border-white/[0.08] flex items-center justify-center bg-black/40 backdrop-blur-xl shadow-[inset_0_2px_20px_rgba(255,255,255,0.05)]">
-                  <span className="text-[9px] uppercase tracking-[0.25em] text-white/80 font-bold drop-shadow-sm">Total</span>
-                </div>
-              </div>
+            <div className="h-72">
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={mediaDistribution}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={70}
+                    outerRadius={110}
+                    paddingAngle={2}
+                    stroke="none"
+                  >
+                    {mediaDistribution.map((d, i) => (
+                      <Cell key={i} fill={d.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<GlassTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </PremiumGlass>
           <PremiumGlass className="p-6 md:p-8">

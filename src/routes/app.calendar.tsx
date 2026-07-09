@@ -69,8 +69,9 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
   const rotateY = useTransform(x, [-100, 100], [-10, 10], { clamp: true });
   
   const progress = (s.value / s.total) * 100;
-  const dashes = 40;
-  const activeDashes = Math.round((progress / 100) * dashes);
+  const r = 36;
+  const c = 2 * Math.PI * r;
+  const easing = [0.16, 1, 0.3, 1];
 
   return (
     <motion.div
@@ -81,86 +82,66 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className="h-full relative group cursor-pointer"
     >
-      <PremiumGlass className="h-full border-white/[0.04] group-hover:border-white/[0.15] shadow-lg group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] transition-all duration-500 overflow-hidden bg-black/40">
+      <PremiumGlass className="h-full border-white/[0.04] group-hover:border-white/[0.1] shadow-lg group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 overflow-hidden">
         
         <div className="flex flex-col items-center justify-between px-4 py-8 h-full relative box-border w-full z-10 min-h-[230px]">
           
           <div className="relative flex items-center justify-center w-24 h-24 mb-6">
             
-            {/* Soft Ambient Core */}
             <div 
-              className="absolute inset-0 rounded-full blur-[24px] opacity-0 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none mix-blend-screen"
+              className="absolute inset-0 rounded-full blur-[20px] opacity-0 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none mix-blend-screen"
               style={{ backgroundColor: s.accent }}
             />
             
-            {/* Speedometer Dashes */}
-            <svg width="96" height="96" className="relative z-10 drop-shadow-xl" style={{ overflow: "visible" }} viewBox="0 0 96 96">
-              {Array.from({ length: dashes }).map((_, i) => {
-                const angle = (i / dashes) * 360;
-                const isActive = i < activeDashes;
-                
-                return (
-                  <motion.rect
-                    key={i}
-                    x="47"
-                    y="6"
-                    width="2"
-                    height="8"
-                    rx="1"
-                    style={{
-                      transformOrigin: "48px 48px",
-                      rotate: `${angle}deg`
-                    }}
-                    initial={{ fill: "oklch(1 1 1 / 0.05)" }}
-                    whileInView={{ 
-                      fill: isActive ? s.accent : "oklch(1 1 1 / 0.05)"
-                    }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: i * 0.035 }}
-                    className="transition-colors duration-300"
-                  />
-                );
-              })}
-              
-              {/* Outer active glow overlays to avoid SVG filter clipping issues on Chrome */}
-              {Array.from({ length: dashes }).map((_, i) => {
-                const angle = (i / dashes) * 360;
-                const isActive = i < activeDashes;
-                
-                if (!isActive) return null;
-                
-                return (
-                  <motion.rect
-                    key={`glow-${i}`}
-                    x="47"
-                    y="6"
-                    width="2"
-                    height="8"
-                    rx="1"
-                    fill={s.accent}
-                    style={{
-                      transformOrigin: "48px 48px",
-                      rotate: `${angle}deg`,
-                      filter: `drop-shadow(0 0 6px ${s.accent}) drop-shadow(0 0 12px ${s.accent})`
-                    }}
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: i * 0.035 }}
-                  />
-                );
-              })}
-            </svg>
+            <svg width="96" height="96" className="-rotate-90 relative z-10" style={{ overflow: "visible" }} viewBox="0 0 96 96">
+              <defs>
+                <linearGradient id={`grad-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={s.accent} stopOpacity="0.4" />
+                  <stop offset="50%" stopColor={s.accent} stopOpacity="0.8" />
+                  <stop offset="100%" stopColor={s.accent} stopOpacity="1" />
+                </linearGradient>
+              </defs>
 
-            {/* Minimalist Center Percentage */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-              <span className="font-display font-medium text-[20px] text-white tracking-tight drop-shadow-md">
+              <circle cx="48" cy="48" r={r} stroke="oklch(1 1 1 / 0.05)" strokeWidth="4" fill="none" />
+              
+              <motion.circle
+                cx="48" cy="48" r={r}
+                stroke={`url(#grad-${idx})`}
+                strokeWidth="5"
+                strokeLinecap="round"
+                fill="none"
+                strokeDasharray={c}
+                initial={{ strokeDashoffset: c }}
+                whileInView={{ strokeDashoffset: c - (c * Math.max(progress, 1)) / 100 }}
+                viewport={{ once: true }}
+                transition={{ duration: 2.2 + idx * 0.1, ease: easing }}
+                style={{ filter: `drop-shadow(0 4px 12px ${s.accent}80)` }}
+              />
+            </svg>
+            
+            <motion.div 
+              className="absolute inset-0 pointer-events-none z-20 flex justify-center"
+              initial={{ rotate: 0 }}
+              whileInView={{ rotate: (Math.max(progress, 1) / 100) * 360 }}
+              viewport={{ once: true }}
+              transition={{ duration: 2.2 + idx * 0.1, ease: easing }}
+            >
+              <div 
+                className="w-[5px] h-[5px] bg-white rounded-full"
+                style={{ 
+                  marginTop: 12 - 2.5, 
+                  boxShadow: `0 0 12px 3px ${s.accent}, 0 0 4px white` 
+                }} 
+              />
+            </motion.div>
+
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <span className="font-display font-medium text-[16px] text-white tracking-tight drop-shadow-md">
                 <CountUp to={Math.round(progress)} />%
               </span>
             </div>
           </div>
 
-          {/* Refined Typography */}
           <div className="flex flex-col items-center justify-center text-center mt-auto">
             <div className="flex items-baseline justify-center gap-1.5">
               <div className="font-display text-[32px] font-medium tracking-tighter text-white drop-shadow-sm group-hover:scale-105 transition-transform duration-500 ease-out">
@@ -171,7 +152,7 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
               </span>
             </div>
             
-            <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-60 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent, textShadow: `0 0 10px ${s.accent}` }}>
+            <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-60 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent }}>
               {s.label}
             </div>
           </div>
