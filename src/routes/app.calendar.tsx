@@ -507,27 +507,72 @@ function CalendarPage() {
       {/* Zone 7 — Streaks */}
       <Zone eyebrow="Zone 07" title="Memory streaks">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-          {MEMORY_STREAKS.map((s) => (
-            <PremiumGlass key={s.label} className="h-full">
-              <div className="flex flex-col items-center justify-start px-4 py-6 h-full relative box-border w-full">
-                
-                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
+          {MEMORY_STREAKS.map((s, idx) => {
+            const progress = (s.value / s.total) * 100;
+            const r = 36;
+            const c = 2 * Math.PI * r;
+            
+            return (
+              <PremiumGlass key={s.label} className="h-full group hover:-translate-y-1 transition-transform duration-500 ease-out">
+                <div className="flex flex-col items-center justify-between px-4 py-8 h-full relative box-border w-full z-10 min-h-[220px]">
+                  
+                  {/* Elegant Floating Ring */}
+                  <div className="relative flex items-center justify-center w-24 h-24 mb-6">
+                    
+                    {/* Soft Ambient Core */}
+                    <div 
+                      className="absolute inset-0 rounded-full blur-[20px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none"
+                      style={{ backgroundColor: s.accent }}
+                    />
+                    
+                    <svg width="96" height="96" className="-rotate-90 relative z-10" style={{ overflow: "visible" }} viewBox="0 0 96 96">
+                      {/* Very faint background track */}
+                      <circle cx="48" cy="48" r={r} stroke="oklch(1 1 1 / 0.04)" strokeWidth="5" fill="none" />
+                      
+                      {/* Premium Solid Progress */}
+                      <motion.circle
+                        cx="48" cy="48" r={r}
+                        stroke={s.accent}
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                        fill="none"
+                        strokeDasharray={c}
+                        initial={{ strokeDashoffset: c }}
+                        whileInView={{ strokeDashoffset: c - (c * Math.max(progress, 1)) / 100 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 2 + idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ filter: `drop-shadow(0 4px 10px ${s.accent}50)` }}
+                      />
+                    </svg>
+                    
+                    {/* Minimalist Center Percentage */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <span className="font-medium text-[15px] text-white/90 tracking-tight">
+                        {Math.round(progress)}%
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
-                  <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
-                    <CountUp to={s.value} />
-                    <span className="text-[12px] uppercase tracking-wider text-muted-foreground ml-1">
-                      / {s.total}d
-                    </span>
+                  {/* Refined Typography */}
+                  <div className="flex flex-col items-center justify-center text-center mt-auto">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <div className="font-display text-3xl font-medium tracking-tight text-white/90">
+                        <CountUp to={s.value} />
+                      </div>
+                      <span className="text-[11px] font-medium text-muted-foreground/50">
+                        / {s.total}d
+                      </span>
+                    </div>
+                    
+                    <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-70 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent }}>
+                      {s.label}
+                    </div>
                   </div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
-                    {s.label}
-                  </div>
+
                 </div>
-
-              </div>
-            </PremiumGlass>
-          ))}
+              </PremiumGlass>
+            );
+          })}
         </div>
       </Zone>
 
