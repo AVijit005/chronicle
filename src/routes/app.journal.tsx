@@ -140,13 +140,16 @@ function JournalPage() {
             <span className="italic text-foreground/70">Reflective</span>
           </header>
 
-          {/* Premium Glowing Squircle Icon */}
-          <PremiumSquircle 
-            icon={<Sparkles />} 
-            size="md" 
-            variant="glass" 
-            className="mx-auto mt-2 mb-6"
-          />
+          {/* Gently Floating Prompt Icon (Original Location footprint) */}
+          <motion.div
+            animate={{ y: [0, -4, 0], scale: [1, 1.05, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            whileHover={{ scale: 1.2, rotate: 15 }}
+            whileTap={{ scale: 0.9, rotate: -15 }}
+            className="mx-auto mt-4 mb-4 inline-block cursor-pointer"
+          >
+            <Sparkles className="h-6 w-6 text-primary drop-shadow-[0_0_12px_currentColor]" />
+          </motion.div>
           <p className="mt-4 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
             "{JOURNAL_PROMPTS[0]}"
           </p>
