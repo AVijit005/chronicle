@@ -354,9 +354,21 @@ function CalendarPage() {
                     >
                       <Plus className="h-3 w-3" /> Add memory
                     </PremiumGlass>
-                    <div className="mt-4 flex items-center justify-between rounded-xl bg-white/[0.04] p-3 text-xs text-muted-foreground">
-                      <span>Mood · Awe</span>
-                      <span>Weather · Cold, clear</span>
+                    <div className="mt-4 flex flex-col sm:flex-row items-center gap-2">
+                      <div className="flex w-full flex-1 items-center gap-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] p-2.5 pl-3 transition-colors hover:bg-white/[0.06] cursor-pointer">
+                        <Sparkles className="h-4 w-4 text-amber-300/80" />
+                        <div className="flex flex-col">
+                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-semibold">Mood</span>
+                          <span className="text-xs font-medium text-foreground/90">Awe</span>
+                        </div>
+                      </div>
+                      <div className="flex w-full flex-1 items-center gap-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] p-2.5 pl-3 transition-colors hover:bg-white/[0.06] cursor-pointer">
+                        <CloudSun className="h-4 w-4 text-sky-300/80" />
+                        <div className="flex flex-col">
+                          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-semibold">Weather</span>
+                          <span className="text-xs font-medium text-foreground/90">Cold, clear</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
