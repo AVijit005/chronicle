@@ -145,27 +145,27 @@ function JournalPage() {
           </p>
 
           {/* Interactive Glass Buttons */}
-          <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-4">
+          <div className="mt-12 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
             <PremiumGlass 
               interactive 
-              variant="strong"
-              glow="oklch(0.7 0.18 255 / 0.3)"
-              className="group flex cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5"
-              whileHover={{ y: -2, scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              variant="default"
+              glow="oklch(0.7 0.18 255 / 0.5)"
+              className="group flex cursor-pointer items-center gap-3 rounded-full bg-white/[0.08] px-8 py-4 ring-1 ring-white/20 transition-all hover:bg-white/[0.12] hover:ring-white/40"
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
             >
-              <NotebookPen className="h-4 w-4 text-primary transition-transform group-hover:rotate-12" />
-              <span className="text-sm font-medium text-foreground">Start writing</span>
+              <NotebookPen className="h-5 w-5 text-primary drop-shadow-[0_0_12px_currentColor] transition-transform duration-500 ease-out group-hover:rotate-12 group-hover:scale-110" />
+              <span className="font-display text-lg font-medium text-foreground tracking-wide">Start writing</span>
             </PremiumGlass>
             
             <PremiumGlass 
               interactive 
               variant="subtle"
-              className="cursor-pointer rounded-2xl px-6 py-3.5"
+              className="cursor-pointer rounded-full px-6 py-3.5 transition-colors hover:bg-white/[0.04]"
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <span className="text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
                 Different prompt
               </span>
             </PremiumGlass>
