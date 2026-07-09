@@ -29,8 +29,8 @@ export function MediaConstellation() {
         className="absolute inset-0 transition-colors duration-700 ease-out pointer-events-none opacity-[0.12]"
         style={{ 
           background: `radial-gradient(circle at 30% 50%, ${activeItem?.color || 'transparent'}, transparent 60%)`,
-          WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
-          maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+          WebkitMaskImage: 'radial-gradient(closest-side at 50% 50%, black 70%, transparent 100%)',
+          maskImage: 'radial-gradient(closest-side at 50% 50%, black 70%, transparent 100%)'
         }}
       />
       
