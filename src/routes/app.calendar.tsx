@@ -77,7 +77,7 @@ function CalendarPage() {
       <div
         className="pointer-events-none fixed inset-0 -z-10 transition-colors duration-1000"
         style={{
-          background: `radial-gradient(ellipse 80% 50% at 50% 0%, ${SEASON_TINT[season]}, transparent 70%)`,
+          background: `radial-gradient(ellipse 150% 100% at 50% 0%, ${SEASON_TINT[season]}, transparent 80%)`,
         }}
       />
 
