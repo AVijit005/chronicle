@@ -506,67 +506,29 @@ function CalendarPage() {
 
       {/* Zone 7 — Streaks */}
       <Zone eyebrow="Zone 07" title="Memory streaks">
-        <PremiumGlass className="p-6 md:p-8 flex flex-col relative overflow-hidden">
-          {/* Very faint background pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50" />
-          
-          <div className="relative z-10 w-full flex flex-col gap-5 md:gap-7 mt-2">
-            {MEMORY_STREAKS.map((s, idx) => {
-              const progress = (s.value / s.total) * 100;
-              return (
-                <div key={s.label} className="w-full flex items-center gap-4 md:gap-6 group/track">
-                  {/* Label Side */}
-                  <div className="w-28 md:w-36 shrink-0 flex flex-col items-end text-right">
-                    <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold opacity-80" style={{ color: s.accent }}>
-                      {s.label}
-                    </div>
-                    <div className="flex items-baseline gap-1 mt-0.5">
-                      <div className="font-display tracking-tight text-xl md:text-2xl leading-none text-white drop-shadow-sm">
-                        <CountUp to={s.value} />
-                      </div>
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
-                        / {s.total}d
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* The Race Track Container (No overflow-hidden so glows can bloom!) */}
-                  <div className="flex-1 relative h-6 md:h-8 rounded-full bg-black/40 border border-white/5 shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)] flex items-center px-1">
-                    {/* Empty Track Tick Marks */}
-                    <div className="absolute inset-x-4 inset-y-0 bg-[linear-gradient(90deg,transparent_39px,rgba(255,255,255,0.05)_40px)] bg-[size:40px_100%] pointer-events-none" />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+          {MEMORY_STREAKS.map((s) => (
+            <PremiumGlass key={s.label} className="h-full">
+              <div className="flex flex-col items-center justify-start px-4 py-6 h-full relative box-border w-full">
+                
+                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
 
-                    <motion.div 
-                      className="h-[calc(100%-6px)] relative"
-                      initial={{ width: '0%' }}
-                      whileInView={{ width: `${Math.max(progress, 4)}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 2 + (idx * 0.15), type: "spring", bounce: 0.2, delay: 0.1 }}
-                    >
-                      {/* The Fading Trail (Masked to prevent color muddiness) */}
-                      <div 
-                        className="absolute inset-0 rounded-full"
-                        style={{ 
-                          backgroundColor: s.accent,
-                          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
-                          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)'
-                        }}
-                      />
-                      
-                      {/* The Leading Edge Core */}
-                      <div className="absolute right-0 top-0 bottom-0 w-3 md:w-5 bg-white rounded-full opacity-90 shadow-[0_0_12px_white]" />
-                      
-                      {/* The Massive Blooming Glow (Unmasked so it escapes the track bounds) */}
-                      <div 
-                        className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-20 md:w-24 md:h-24 blur-[16px] pointer-events-none mix-blend-screen z-10"
-                        style={{ backgroundColor: s.accent, opacity: 0.55 }}
-                      />
-                    </motion.div>
+                <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
+                  <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
+                    <CountUp to={s.value} />
+                    <span className="text-[12px] uppercase tracking-wider text-muted-foreground ml-1">
+                      / {s.total}d
+                    </span>
+                  </div>
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
+                    {s.label}
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </PremiumGlass>
+
+              </div>
+            </PremiumGlass>
+          ))}
+        </div>
       </Zone>
 
       {/* Zone 8 — Upcoming releases */}
