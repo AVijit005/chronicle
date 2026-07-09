@@ -204,12 +204,16 @@ export async function getConstellation(categories?: string[]): Promise<Constella
   } catch (e) {
     // Fallback Mock while backend is building
     const baseMock = [
-      { label: "Movies", count: 12, value: 45, color: "oklch(0.65 0.2 250)" },
-      { label: "Books", count: 4, value: 25, color: "oklch(0.65 0.18 30)" },
-      { label: "Games", count: 2, value: 20, color: "oklch(0.65 0.15 150)" },
-      { label: "Journals", count: 8, value: 10, color: "oklch(0.65 0.18 330)" },
-      { label: "Anime", count: 15, value: 30, color: "oklch(0.65 0.22 15)" },
-      { label: "Music", count: 120, value: 50, color: "oklch(0.75 0.15 150)" }
+      { label: "Movies", count: 12, value: 0, color: "oklch(0.65 0.2 250)" },
+      { label: "Anime", count: 15, value: 0, color: "oklch(0.65 0.22 15)" },
+      { label: "Series", count: 8, value: 0, color: "oklch(0.60 0.18 280)" },
+      { label: "Books", count: 4, value: 0, color: "oklch(0.65 0.18 30)" },
+      { label: "Manga", count: 24, value: 0, color: "oklch(0.70 0.15 60)" },
+      { label: "Games", count: 2, value: 0, color: "oklch(0.65 0.15 150)" },
+      { label: "Music", count: 120, value: 0, color: "oklch(0.75 0.15 150)" },
+      { label: "Podcasts", count: 18, value: 0, color: "oklch(0.72 0.18 200)" },
+      { label: "Courses", count: 1, value: 0, color: "oklch(0.68 0.12 220)" },
+      { label: "YouTube", count: 350, value: 0, color: "oklch(0.60 0.25 20)" }
     ];
     
     let filtered = baseMock;

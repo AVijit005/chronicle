@@ -4,13 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { getConstellation } from "@/lib/api/analytics";
 import { PremiumGlass } from "../ui/PremiumGlass";
 
-const AVAILABLE_CATEGORIES = ["Movies", "Books", "Games", "Journals", "Anime", "Music"];
+const AVAILABLE_CATEGORIES = [
+  "Movies", "Anime", "Series", "Books", "Manga", 
+  "Games", "Music", "Podcasts", "Courses", "YouTube"
+];
 
 export function MediaConstellation() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    "Movies", "Books", "Games", "Journals"
+    "Movies", "Books", "Games", "Anime"
   ]);
 
   const { data: constellationData = [], isLoading } = useQuery({
