@@ -506,29 +506,60 @@ function CalendarPage() {
 
       {/* Zone 7 — Streaks */}
       <Zone eyebrow="Zone 07" title="Memory streaks">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-          {MEMORY_STREAKS.map((s) => (
-            <PremiumGlass key={s.label} className="h-full">
-              <div className="flex flex-col items-center justify-start px-4 py-6 h-full relative box-border w-full">
-                
-                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
-
-                <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
-                  <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
-                    <CountUp to={s.value} />
-                    <span className="text-[12px] uppercase tracking-wider text-muted-foreground ml-1">
-                      / {s.total}d
-                    </span>
+        <PremiumGlass className="p-6 md:p-8 flex flex-col relative overflow-hidden">
+          {/* Sci-Fi Grid Background */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-60" />
+          
+          <div className="relative z-10 w-full flex flex-col gap-6">
+            {MEMORY_STREAKS.map((s, idx) => {
+              const progress = (s.value / s.total) * 100;
+              return (
+                <div key={s.label} className="w-full flex items-center gap-4 md:gap-6 group/track">
+                  {/* Label Side */}
+                  <div className="w-24 md:w-32 shrink-0 flex flex-col items-end text-right">
+                    <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold transition-colors duration-500" style={{ color: s.accent }}>
+                      {s.label}
+                    </div>
+                    <div className="flex items-baseline gap-1 mt-0.5">
+                      <div className="font-display tracking-tighter text-lg md:text-xl leading-none text-white drop-shadow-md">
+                        <CountUp to={s.value} />
+                      </div>
+                      <div className="text-[9px] text-muted-foreground uppercase tracking-widest font-medium opacity-70">
+                        / {s.total}d
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
-                    {s.label}
+                  
+                  {/* The Race Track */}
+                  <div className="flex-1 h-4 md:h-5 bg-black/50 rounded-r-full rounded-l-sm overflow-hidden p-[2px] shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] relative border border-white/[0.05]">
+                    {/* Tick marks on the empty track */}
+                    <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_49px,rgba(255,255,255,0.05)_50px)] bg-[size:50px_100%] pointer-events-none" />
+
+                    <motion.div 
+                      className="h-full rounded-r-full rounded-l-sm relative"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${progress}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5 + (idx * 0.15), type: "spring", bounce: 0.1, delay: 0.1 }}
+                      style={{ 
+                        background: `linear-gradient(90deg, color-mix(in srgb, ${s.accent} 20%, transparent), ${s.accent})`,
+                      }}
+                    >
+                      {/* Leading edge bright core */}
+                      <div className="absolute right-0 top-0 bottom-0 w-3 md:w-6 bg-white mix-blend-overlay rounded-full" />
+                      
+                      {/* Ambient Glow at the leading edge */}
+                      <div 
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 blur-[12px] pointer-events-none mix-blend-screen opacity-90"
+                        style={{ backgroundColor: s.accent }}
+                      />
+                    </motion.div>
                   </div>
                 </div>
-
-              </div>
-            </PremiumGlass>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        </PremiumGlass>
       </Zone>
 
       {/* Zone 8 — Upcoming releases */}
