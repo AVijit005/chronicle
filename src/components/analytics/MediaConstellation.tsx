@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PremiumGlass } from "../ui/PremiumGlass";
 
 const CONSTELLATION_DATA = [
@@ -11,7 +11,22 @@ const CONSTELLATION_DATA = [
 
 export function MediaConstellation() {
   const [hovered, setHovered] = useState<string | null>(null);
-  const activeItem = hovered ? CONSTELLATION_DATA.find(d => d.label === hovered) : CONSTELLATION_DATA[0];
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Cinematic Autoplay
+  useEffect(() => {
+    if (hovered !== null) return; // Pause when user interacts
+
+    const interval = setInterval(() => {
+      setActiveIndex((current) => (current + 1) % CONSTELLATION_DATA.length);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [hovered]);
+
+  const activeItem = hovered 
+    ? CONSTELLATION_DATA.find(d => d.label === hovered) || CONSTELLATION_DATA[0] 
+    : CONSTELLATION_DATA[activeIndex];
 
   return (
     <PremiumGlass className="relative flex flex-col p-6 md:p-10 overflow-hidden min-h-[420px]">
@@ -42,7 +57,7 @@ export function MediaConstellation() {
             </div>
             
             <div 
-              className="font-display text-[7rem] md:text-9xl tracking-tighter leading-none bg-clip-text text-transparent pb-2" 
+              className="font-display text-[7rem] md:text-9xl tracking-tighter leading-none bg-clip-text text-transparent pb-2 transition-all duration-1000" 
               style={{ 
                 backgroundImage: `linear-gradient(to bottom, white 20%, ${activeItem?.color} 100%)`,
                 filter: `drop-shadow(0 0 60px ${activeItem?.color}80) drop-shadow(0 4px 10px rgba(0,0,0,0.5))` 
@@ -65,7 +80,9 @@ export function MediaConstellation() {
         <div className="w-full flex items-end gap-2 md:gap-3 h-20">
           {CONSTELLATION_DATA.map((item) => {
             const isHovered = hovered === item.label;
-            const isDimmed = hovered !== null && !isHovered;
+            const isAutoActive = hovered === null && activeItem.label === item.label;
+            const isActive = isHovered || isAutoActive;
+            const isDimmed = !isActive;
             
             return (
               <motion.div
@@ -74,9 +91,9 @@ export function MediaConstellation() {
                 style={{ width: `${item.value}%` }}
                 initial={{ height: 16, opacity: 0 }}
                 animate={{ 
-                  height: isHovered ? 56 : (hovered ? 12 : 20),
+                  height: isActive ? 56 : 20,
                   opacity: isDimmed ? 0.3 : 1,
-                  filter: isHovered ? `drop-shadow(0 0 24px ${item.color}80)` : 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))'
+                  filter: isActive ? `drop-shadow(0 0 24px ${item.color}80)` : 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))'
                 }}
                 transition={{ type: "spring", bounce: 0.5, duration: 0.7 }}
                 onMouseEnter={() => setHovered(item.label)}
@@ -117,23 +134,26 @@ export function MediaConstellation() {
       <div className="relative z-10 mt-auto grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full pt-4">
         {CONSTELLATION_DATA.map((item) => {
           const isHovered = hovered === item.label;
+          const isAutoActive = hovered === null && activeItem.label === item.label;
+          const isActive = isHovered || isAutoActive;
+          
           return (
             <div 
               key={item.label}
-              className={`flex flex-col gap-3 p-4 rounded-2xl transition-all duration-300 cursor-pointer border ${isHovered ? 'bg-white/10 border-white/10 shadow-xl scale-[1.02]' : 'border-transparent hover:bg-white/[0.04]'}`}
+              className={`flex flex-col gap-3 p-4 rounded-2xl transition-all duration-500 cursor-pointer border ${isActive ? 'bg-white/10 border-white/10 shadow-xl scale-[1.02]' : 'border-transparent hover:bg-white/[0.04]'}`}
               onMouseEnter={() => setHovered(item.label)}
               onMouseLeave={() => setHovered(null)}
             >
               <div className="flex items-center gap-3">
                 <div 
-                  className="w-2.5 h-2.5 rounded-full transition-transform duration-300" 
+                  className="w-2.5 h-2.5 rounded-full transition-transform duration-500" 
                   style={{ 
                     background: item.color, 
-                    boxShadow: isHovered ? `0 0 16px ${item.color}, 0 0 24px ${item.color}` : `0 0 8px ${item.color}60`,
-                    transform: isHovered ? 'scale(1.5)' : 'scale(1)'
+                    boxShadow: isActive ? `0 0 16px ${item.color}, 0 0 24px ${item.color}` : `0 0 8px ${item.color}60`,
+                    transform: isActive ? 'scale(1.5)' : 'scale(1)'
                   }} 
                 />
-                <div className={`text-[11px] font-bold tracking-widest uppercase transition-colors ${isHovered ? 'text-foreground' : 'text-foreground/70'}`}>
+                <div className={`text-[11px] font-bold tracking-widest uppercase transition-colors duration-500 ${isActive ? 'text-foreground' : 'text-foreground/70'}`}>
                   {item.label}
                 </div>
               </div>
