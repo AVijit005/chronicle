@@ -81,8 +81,8 @@ export function MediaConstellation() {
             className="absolute inset-0 transition-colors duration-1000 ease-out pointer-events-none opacity-[0.08]"
             style={{ 
               background: `radial-gradient(circle at 50% 30%, ${activeItem?.color || 'transparent'}, transparent 70%)`,
-              maskImage: 'radial-gradient(circle at 50% 50%, black 30%, transparent 80%)',
-              WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 30%, transparent 80%)'
+              maskImage: 'radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%)'
             }}
           />
           
@@ -102,10 +102,12 @@ export function MediaConstellation() {
                 </div>
                 
                 <div 
-                  className="font-display text-5xl md:text-7xl tracking-tighter leading-none bg-clip-text text-transparent pb-0 transition-all duration-1000" 
+                  className="font-display font-semibold tracking-tighter"
                   style={{ 
-                    backgroundImage: `linear-gradient(to bottom, white 20%, ${activeItem?.color} 100%)`,
-                    filter: `drop-shadow(0 0 40px ${activeItem?.color}80) drop-shadow(0 4px 10px rgba(0,0,0,0.5))` 
+                    fontSize: 'clamp(2.5rem, 8vw, 4rem)',
+                    lineHeight: 1,
+                    color: 'white',
+                    textShadow: `0 0 40px ${activeItem?.color}, 0 4px 10px rgba(0,0,0,0.5)`
                   }}
                 >
                   {activeItem?.value}%
