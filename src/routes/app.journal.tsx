@@ -150,7 +150,7 @@ function JournalPage() {
               interactive 
               variant="default"
               glow="oklch(0.7 0.18 255 / 0.5)"
-              className="group cursor-pointer rounded-full bg-white/[0.08] px-8 py-4 ring-1 ring-white/20 transition-all hover:bg-white/[0.12] hover:ring-white/40"
+              className="group cursor-pointer rounded-2xl bg-white/[0.08] px-8 py-4 transition-colors hover:bg-white/[0.12]"
               whileHover={{ y: -3, scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
             >
@@ -163,7 +163,7 @@ function JournalPage() {
             <PremiumGlass 
               interactive 
               variant="subtle"
-              className="cursor-pointer rounded-full px-6 py-3.5 transition-colors hover:bg-white/[0.04]"
+              className="cursor-pointer rounded-2xl px-6 py-3.5 transition-colors hover:bg-white/[0.04]"
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
