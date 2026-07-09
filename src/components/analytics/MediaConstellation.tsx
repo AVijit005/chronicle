@@ -174,7 +174,7 @@ export function MediaConstellation() {
           </div>
 
           {/* Bottom Section: The Legend Grid */}
-          <div className="relative z-10 mt-auto flex flex-wrap justify-center gap-1.5 md:gap-2 w-full pt-1">
+          <div className="relative z-10 mt-auto flex flex-wrap justify-center gap-3 md:gap-4 w-full pt-4">
             <AnimatePresence mode="popLayout">
               {constellationData.map((item) => {
                 const isHovered = hovered === item.label;
@@ -188,7 +188,7 @@ export function MediaConstellation() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     key={item.label}
-                    className={`flex-1 min-w-[100px] max-w-[180px] flex flex-col gap-1.5 p-2.5 rounded-xl transition-all duration-500 cursor-pointer border ${isActive ? 'bg-white/10 border-white/10 shadow-lg scale-[1.02]' : 'border-transparent hover:bg-white/[0.04]'}`}
+                    className={`flex-1 min-w-[140px] max-w-[200px] flex flex-col gap-3 p-4 rounded-2xl transition-all duration-300 cursor-pointer border ${isActive ? 'bg-white/10 border-white/10 shadow-xl scale-[1.02]' : 'border-transparent hover:bg-white/[0.04]'}`}
                     onMouseEnter={() => setHovered(item.label)}
                     onMouseLeave={() => setHovered(null)}
                   >
