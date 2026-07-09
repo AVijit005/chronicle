@@ -507,82 +507,27 @@ function CalendarPage() {
       {/* Zone 7 — Streaks */}
       <Zone eyebrow="Zone 07" title="Memory streaks">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-          {MEMORY_STREAKS.map((s, idx) => {
-            const progress = (s.value / s.total) * 100;
-            const r = 40;
-            const c = 2 * Math.PI * r;
-            return (
-              <PremiumGlass key={s.label} className="h-full group relative overflow-hidden border-white/[0.03]">
-                {/* Massive ambient glow on hover */}
-                <div 
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at center, ${s.accent}15 0%, transparent 80%)` }}
-                />
+          {MEMORY_STREAKS.map((s) => (
+            <PremiumGlass key={s.label} className="h-full">
+              <div className="flex flex-col items-center justify-start px-4 py-6 h-full relative box-border w-full">
                 
-                <div className="flex flex-col items-center justify-start px-4 py-8 h-full relative box-border w-full z-10">
-                  
-                  {/* The Holographic Sphere */}
-                  <div className="relative w-28 h-28 mb-6 flex items-center justify-center">
-                    
-                    {/* Pulsing Core Glow */}
-                    <motion.div 
-                      className="absolute inset-0 rounded-full blur-[24px] mix-blend-screen opacity-50"
-                      animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.3, 0.6, 0.3] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: idx * 0.2 }}
-                      style={{ backgroundColor: s.accent }}
-                    />
+                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
 
-                    {/* Outer Dashed Orbit (Rotating) */}
-                    <motion.svg width="112" height="112" className="absolute inset-0 opacity-40 pointer-events-none" viewBox="0 0 112 112"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 25 + idx * 5, repeat: Infinity, ease: "linear" }}
-                    >
-                      <circle cx="56" cy="56" r="54" stroke="white" strokeWidth="1" strokeDasharray="4 8" fill="none" opacity="0.4" />
-                    </motion.svg>
-
-                    {/* Inner Track & Progress */}
-                    <svg width="96" height="96" className="-rotate-90 relative z-10 drop-shadow-xl" style={{ overflow: "visible" }} viewBox="0 0 96 96">
-                      <circle cx="48" cy="48" r={r} stroke="oklch(1 0 0 / 0.04)" strokeWidth="6" fill="none" />
-                      
-                      <motion.circle
-                        cx="48" cy="48" r={r}
-                        stroke={s.accent}
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        fill="none"
-                        strokeDasharray={c}
-                        initial={{ strokeDashoffset: c }}
-                        whileInView={{ strokeDashoffset: c - (c * Math.max(progress, 2)) / 100 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 2, ease: "easeOut", delay: 0.1 }}
-                        style={{ filter: `drop-shadow(0 0 8px ${s.accent})` }}
-                      />
-                    </svg>
-
-                    {/* Center Percentage Text */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <div className="font-display text-xl font-bold text-white drop-shadow-md">
-                        {Math.round(progress)}%
-                      </div>
-                    </div>
+                <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
+                  <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
+                    <CountUp to={s.value} />
+                    <span className="text-[12px] uppercase tracking-wider text-muted-foreground ml-1">
+                      / {s.total}d
+                    </span>
                   </div>
-
-                  <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
-                    <div className="font-display text-3xl tracking-tighter leading-none flex items-baseline justify-center drop-shadow-sm text-white">
-                      <CountUp to={s.value} />
-                      <span className="text-[11px] uppercase tracking-wider text-muted-foreground ml-1">
-                        / {s.total}d
-                      </span>
-                    </div>
-                    <div className="text-[10px] uppercase tracking-[0.2em] font-bold mt-2 opacity-80" style={{ color: s.accent }}>
-                      {s.label}
-                    </div>
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
+                    {s.label}
                   </div>
-
                 </div>
-              </PremiumGlass>
-            );
-          })}
+
+              </div>
+            </PremiumGlass>
+          ))}
         </div>
       </Zone>
 
