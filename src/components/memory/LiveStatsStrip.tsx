@@ -20,7 +20,7 @@ export function LiveStatsStrip({
     { l: "Quotes", v: s.userQuotes, a: "oklch(0.72 0.16 160 / 0.45)" },
   ];
   return (
-    <PremiumGlass interactive className="p-5 md:p-7 flex flex-col justify-center">
+    <PremiumGlass className="flex flex-col justify-center p-5 md:p-7">
       <div className="flex items-baseline justify-between">
         <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           {eyebrow}
