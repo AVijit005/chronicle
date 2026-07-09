@@ -185,3 +185,43 @@ export async function getInsights(): Promise<InsightsResponse> {
     };
   }
 }
+
+export interface ConstellationEntry {
+  label: string;
+  count: number;
+  value: number;
+  color: string;
+}
+
+export async function getConstellation(categories?: string[]): Promise<ConstellationEntry[]> {
+  const params = new URLSearchParams();
+  if (categories && categories.length > 0) {
+    params.set('categories', categories.join(','));
+  }
+  const qs = params.toString();
+  try {
+    return await apiGet<ConstellationEntry[]>(`/analytics/constellation${qs ? `?${qs}` : ''}`);
+  } catch (e) {
+    // Fallback Mock while backend is building
+    const baseMock = [
+      { label: "Movies", count: 12, value: 45, color: "oklch(0.65 0.2 250)" },
+      { label: "Books", count: 4, value: 25, color: "oklch(0.65 0.18 30)" },
+      { label: "Games", count: 2, value: 20, color: "oklch(0.65 0.15 150)" },
+      { label: "Journals", count: 8, value: 10, color: "oklch(0.65 0.18 330)" },
+      { label: "Anime", count: 15, value: 30, color: "oklch(0.65 0.22 15)" },
+      { label: "Music", count: 120, value: 50, color: "oklch(0.75 0.15 150)" }
+    ];
+    
+    let filtered = baseMock;
+    if (categories && categories.length > 0) {
+      filtered = baseMock.filter(m => categories.includes(m.label));
+    }
+    
+    // Recalculate percentages (value) so they add up to 100%
+    const total = filtered.reduce((sum, item) => sum + item.count, 0);
+    return filtered.map(item => ({
+      ...item,
+      value: total === 0 ? 0 : Math.round((item.count / total) * 100)
+    }));
+  }
+}
