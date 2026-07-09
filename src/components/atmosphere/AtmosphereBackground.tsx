@@ -21,24 +21,24 @@ export function AtmosphereBackground({
   const reduced = useReducedMotion();
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-background">
-      {/* deep gradient - changed to linear to prevent curved banding lines */}
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      {/* deep gradient */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, oklch(0.20 0.03 270) 0%, oklch(0.14 0.012 270) 30%, oklch(0.09 0.01 270) 100%)",
+            "radial-gradient(125% 80% at 50% -10%, oklch(0.22 0.04 270) 0%, oklch(0.14 0.012 270) 55%, oklch(0.09 0.01 270) 100%)",
         }}
       />
 
-      {/* time-of-day mood wash - flattened and widened to prevent sharp arcs */}
+      {/* time-of-day mood wash */}
       <motion.div
         className="absolute inset-0"
-        animate={reduced ? undefined : { opacity: [0.15, 0.22, 0.15] }}
+        animate={reduced ? undefined : { opacity: [0.18, 0.28, 0.18] }}
         transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
         style={{
-          background: `radial-gradient(150% 100% at 50% 0%, ${tint} 0%, transparent 80%)`,
-          opacity: 0.18,
+          background: `radial-gradient(80% 60% at 50% 0%, ${tint} 0%, transparent 60%)`,
+          opacity: 0.22,
         }}
       />
 
