@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { NotebookPen, Sparkles, Heart, Bookmark, Clock } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
+import { PremiumSquircle } from "@/components/ui/PremiumSquircle";
 import { CountUp, ZoneHeading, StatCardPremium } from "@/components/analytics/AnalyticsKit";
 import {
   JOURNAL_PROMPTS,
@@ -139,14 +140,13 @@ function JournalPage() {
             <span className="italic text-foreground/70">Reflective</span>
           </header>
 
-          {/* Premium Glowing Squircle Icon (Matches Daily Ritual) */}
-          <div className="group/sparkle mx-auto flex cursor-pointer items-center justify-center py-4">
-            <span
-              className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-[inset_0_1px_0_oklch(1_1_1/0.1)] ring-1 ring-primary/20 transition-all duration-500 ease-out group-hover/sparkle:scale-110 group-hover/sparkle:from-primary/20 group-hover/sparkle:to-primary/10 group-hover/sparkle:text-primary-foreground group-hover/sparkle:shadow-[0_0_40px_oklch(0.72_0.18_255/0.6)] group-hover/sparkle:ring-primary/50 active:scale-95"
-            >
-              <Sparkles className="h-7 w-7 transition-transform duration-500 group-hover/sparkle:rotate-12" />
-            </span>
-          </div>
+          {/* Premium Glowing Squircle Icon */}
+          <PremiumSquircle 
+            icon={<Sparkles />} 
+            size="xl" 
+            variant="glass" 
+            className="py-4"
+          />
           <p className="mt-4 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
             "{JOURNAL_PROMPTS[0]}"
           </p>
