@@ -4,9 +4,9 @@ import { PremiumGlass } from "../ui/PremiumGlass";
 
 const CONSTELLATION_DATA = [
   { label: "Movies", value: 45, count: 12, color: "var(--primary)" },
-  { label: "Books", value: 25, count: 4, color: "oklch(0.65 0.18 30)" },
-  { label: "Games", value: 20, count: 2, color: "oklch(0.7 0.15 250)" },
-  { label: "Journals", value: 10, count: 8, color: "oklch(0.6 0.1 180)" },
+  { label: "Books", value: 25, count: 4, color: "oklch(0.65 0.18 30)" }, // Amber
+  { label: "Games", value: 20, count: 2, color: "oklch(0.65 0.15 150)" }, // Emerald Green
+  { label: "Journals", value: 10, count: 8, color: "oklch(0.65 0.18 330)" }, // Rose Pink
 ];
 
 export function MediaConstellation() {
