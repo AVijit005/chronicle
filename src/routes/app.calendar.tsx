@@ -511,28 +511,37 @@ function CalendarPage() {
             const progress = (s.value / s.total) * 100;
             const r = 36;
             const c = 2 * Math.PI * r;
+            const easing = [0.16, 1, 0.3, 1];
             
             return (
-              <PremiumGlass key={s.label} className="h-full group hover:-translate-y-1 transition-transform duration-500 ease-out">
-                <div className="flex flex-col items-center justify-between px-4 py-8 h-full relative box-border w-full z-10 min-h-[220px]">
+              <PremiumGlass key={s.label} className="h-full group hover:-translate-y-1.5 transition-all duration-500 ease-out border-white/[0.03] hover:border-white/[0.08] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+                <div className="flex flex-col items-center justify-between px-4 py-8 h-full relative box-border w-full z-10 min-h-[230px]">
                   
                   {/* Elegant Floating Ring */}
                   <div className="relative flex items-center justify-center w-24 h-24 mb-6">
                     
                     {/* Soft Ambient Core */}
                     <div 
-                      className="absolute inset-0 rounded-full blur-[20px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none"
+                      className="absolute inset-0 rounded-full blur-[20px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none mix-blend-screen"
                       style={{ backgroundColor: s.accent }}
                     />
                     
                     <svg width="96" height="96" className="-rotate-90 relative z-10" style={{ overflow: "visible" }} viewBox="0 0 96 96">
+                      <defs>
+                        {/* Dynamic Gradient for the Stroke */}
+                        <linearGradient id={`grad-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor={s.accent} stopOpacity="0.6" />
+                          <stop offset="100%" stopColor={s.accent} stopOpacity="1" />
+                        </linearGradient>
+                      </defs>
+
                       {/* Very faint background track */}
-                      <circle cx="48" cy="48" r={r} stroke="oklch(1 1 1 / 0.04)" strokeWidth="5" fill="none" />
+                      <circle cx="48" cy="48" r={r} stroke="oklch(1 1 1 / 0.05)" strokeWidth="4" fill="none" />
                       
                       {/* Premium Solid Progress */}
                       <motion.circle
                         cx="48" cy="48" r={r}
-                        stroke={s.accent}
+                        stroke={`url(#grad-${idx})`}
                         strokeWidth="5"
                         strokeLinecap="round"
                         fill="none"
@@ -540,31 +549,48 @@ function CalendarPage() {
                         initial={{ strokeDashoffset: c }}
                         whileInView={{ strokeDashoffset: c - (c * Math.max(progress, 1)) / 100 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 2 + idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                        style={{ filter: `drop-shadow(0 4px 10px ${s.accent}50)` }}
+                        transition={{ duration: 2.2 + idx * 0.1, ease: easing }}
+                        style={{ filter: `drop-shadow(0 4px 12px ${s.accent}60)` }}
                       />
                     </svg>
                     
+                    {/* Glowing Leading Edge Dot */}
+                    <motion.div 
+                      className="absolute inset-0 pointer-events-none z-20 flex justify-center"
+                      initial={{ rotate: 0 }}
+                      whileInView={{ rotate: (Math.max(progress, 1) / 100) * 360 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 2.2 + idx * 0.1, ease: easing }}
+                    >
+                      <div 
+                        className="w-[5px] h-[5px] bg-white rounded-full"
+                        style={{ 
+                          marginTop: 12 - 2.5, 
+                          boxShadow: `0 0 10px 2px ${s.accent}, 0 0 4px white` 
+                        }} 
+                      />
+                    </motion.div>
+
                     {/* Minimalist Center Percentage */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <span className="font-medium text-[15px] text-white/90 tracking-tight">
-                        {Math.round(progress)}%
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                      <span className="font-display font-medium text-[16px] text-white tracking-tight drop-shadow-md">
+                        <CountUp to={Math.round(progress)} />%
                       </span>
                     </div>
                   </div>
 
                   {/* Refined Typography */}
                   <div className="flex flex-col items-center justify-center text-center mt-auto">
-                    <div className="flex items-baseline justify-center gap-1">
-                      <div className="font-display text-3xl font-medium tracking-tight text-white/90">
+                    <div className="flex items-baseline justify-center gap-1.5">
+                      <div className="font-display text-[32px] font-medium tracking-tighter text-white drop-shadow-sm">
                         <CountUp to={s.value} />
                       </div>
-                      <span className="text-[11px] font-medium text-muted-foreground/50">
+                      <span className="text-[11px] font-medium text-muted-foreground/60 uppercase tracking-widest">
                         / {s.total}d
                       </span>
                     </div>
                     
-                    <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-70 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent }}>
+                    <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-60 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent }}>
                       {s.label}
                     </div>
                   </div>
