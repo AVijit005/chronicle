@@ -125,22 +125,52 @@ function JournalPage() {
         </PremiumGlass>
       </motion.section>
 
-      {/* Today's prompt — wrapped as a notebook page */}
+      {/* Today's prompt — upgraded to full interactive PremiumGlass */}
       <Zone eyebrow="Today" title="A prompt for tonight" sub="One question. No pressure.">
-        <PaperPage date="Tonight" mood="Reflective" mode="reflect">
-          <Sparkles className="mx-auto h-5 w-5 text-primary" />
-          <p className="mt-4 font-display text-3xl tracking-tight md:text-4xl leading-snug">
+        <PremiumGlass 
+          interactive 
+          variant="strong"
+          glow="oklch(0.7 0.18 255 / 0.15)"
+          className="mx-auto flex max-w-2xl flex-col items-center p-8 md:p-14"
+        >
+          {/* Running Header */}
+          <header className="mb-10 flex w-full items-baseline justify-between border-b border-foreground/10 pb-4 text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+            <span>Tonight</span>
+            <span className="italic text-foreground/70">Reflective</span>
+          </header>
+
+          <Sparkles className="mx-auto h-6 w-6 text-primary drop-shadow-[0_0_12px_rgba(255,255,255,0.5)]" />
+          <p className="mt-6 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
             "{JOURNAL_PROMPTS[0]}"
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <PremiumButton variant="primary" icon={<NotebookPen className="h-4 w-4" />}>
-              Start writing
-            </PremiumButton>
-            <PremiumButton variant="ghost" size="sm">
-              Different prompt
-            </PremiumButton>
+
+          {/* Interactive Glass Buttons */}
+          <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-4">
+            <PremiumGlass 
+              interactive 
+              variant="strong"
+              glow="oklch(0.7 0.18 255 / 0.3)"
+              className="group flex cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5"
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <NotebookPen className="h-4 w-4 text-primary transition-transform group-hover:rotate-12" />
+              <span className="text-sm font-medium text-foreground">Start writing</span>
+            </PremiumGlass>
+            
+            <PremiumGlass 
+              interactive 
+              variant="subtle"
+              className="cursor-pointer rounded-2xl px-6 py-3.5"
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Different prompt
+              </span>
+            </PremiumGlass>
           </div>
-        </PaperPage>
+        </PremiumGlass>
       </Zone>
 
       {/* Live: your real numbers */}
