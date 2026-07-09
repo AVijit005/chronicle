@@ -50,7 +50,7 @@ export function MediaConstellation() {
     <PremiumGlass className="relative flex flex-col p-4 md:p-5 overflow-hidden min-h-[280px]">
       
       {/* Option A: Glassmorphic Filter Chips */}
-      <div className="relative z-20 w-full overflow-x-auto pb-2 mb-0 flex items-center gap-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-20 w-full overflow-x-auto pt-4 pb-4 -mt-4 mb-0 flex items-center gap-1.5 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 mr-1 shrink-0">Filter:</div>
         {AVAILABLE_CATEGORIES.map(cat => {
           const isSelected = selectedCategories.includes(cat);
