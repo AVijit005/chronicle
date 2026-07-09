@@ -108,24 +108,14 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         <div className={cn("pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]", variantClass[variant])}>
           
           {/* 3. ABSOLUTE REFLECTION LAYERS */}
-          {/* outer highlight */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px transition-opacity duration-300"
-            style={{
-              background: "linear-gradient(90deg, transparent, oklch(1 0 0 / 0.35), transparent)",
-              opacity: interactive ? "calc(0.5 + var(--glass-rev)*0.5)" : "1"
-            }}
-          />
-          
-          {/* inner highlight + proximity border */}
+          {/* single flawless inner border */}
           <span
             aria-hidden
             className="pointer-events-none absolute inset-0 transition-[box-shadow] duration-[450ms] ease-out"
             style={{
               borderRadius: "inherit",
               boxShadow:
-                "inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev)*0.06))",
+                "inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.06 + var(--glass-rev)*0.08))",
             }}
           />
           
