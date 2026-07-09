@@ -125,7 +125,7 @@ export function MediaConstellation() {
           {/* Middle Section: The Tactical Lightbar */}
           <div className="relative z-10 w-full flex flex-col items-center my-2">
             <div className="w-full flex items-end gap-1 md:gap-1.5 h-12">
-              {constellationData.map((item) => {
+              {constellationData.map((item, index) => {
                 const isHovered = hovered === item.label;
                 const isAutoActive = hovered === null && activeItem?.label === item.label;
                 const isActive = isHovered || isAutoActive;
@@ -134,29 +134,56 @@ export function MediaConstellation() {
                 return (
                   <motion.div
                     key={item.label}
-                    className="relative rounded-full cursor-pointer overflow-hidden origin-bottom"
-                    style={{ width: `${item.value}%` }}
+                    className="relative rounded-t-md cursor-pointer overflow-hidden origin-bottom"
+                    style={{ width: `${Math.max(item.value, 2)}%` }}
                     initial={{ height: 8, opacity: 0 }}
                     animate={{ 
-                      height: isActive ? 36 : 12,
-                      opacity: isDimmed ? 0.3 : 1,
-                      filter: isActive ? `drop-shadow(0 0 12px ${item.color}80)` : 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))'
+                      height: isActive ? [36, 48, 40, 52, 36] : [12, 18, 14, 20, 12],
+                      opacity: isDimmed ? 0.35 : 1,
+                      filter: isActive ? `drop-shadow(0 0 16px ${item.color}) drop-shadow(0 0 24px ${item.color})` : 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))'
                     }}
-                    transition={{ type: "spring", bounce: 0.5, duration: 0.7 }}
+                    transition={{ 
+                      height: {
+                        duration: isActive ? 1.2 : 2.5 + (index * 0.15),
+                        repeat: Infinity,
+                        repeatType: "mirror",
+                        ease: "easeInOut"
+                      },
+                      opacity: { duration: 0.4 },
+                      filter: { duration: 0.4 }
+                    }}
                     onMouseEnter={() => setHovered(item.label)}
                     onMouseLeave={() => setHovered(null)}
                   >
+                    {/* Intense Glowing Core */}
                     <div 
-                      className="absolute inset-0 w-full h-full"
+                      className="absolute inset-x-0 bottom-0 w-full opacity-90"
                       style={{ 
-                        background: `linear-gradient(180deg, color-mix(in srgb, ${item.color} 70%, white) 0%, ${item.color} 40%, color-mix(in srgb, ${item.color} 40%, black) 100%)`,
-                        boxShadow: `inset 0 1px 1px rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.8)`
+                        height: '150%',
+                        background: `linear-gradient(to top, ${item.color}, transparent)`,
+                        filter: 'blur(3px)'
                       }}
                     />
+                    
+                    {/* 3D Glass Surface */}
                     <div 
-                      className="absolute inset-0 w-full h-full pointer-events-none mix-blend-overlay"
-                      style={{
-                        background: 'linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.4) 30%, transparent 40%)'
+                      className="absolute inset-0 w-full h-full mix-blend-overlay"
+                      style={{ 
+                        background: `linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.05) 100%)`,
+                        boxShadow: `inset 0 1px 2px rgba(255,255,255,0.8), inset 0 -1px 4px rgba(0,0,0,0.9)`
+                      }}
+                    />
+                    
+                    {/* Energy Scanline */}
+                    <motion.div 
+                      className="absolute inset-x-0 w-full h-px bg-white/70"
+                      animate={{
+                        top: ['10%', '90%', '10%']
+                      }}
+                      transition={{
+                        duration: 1.5 + (index * 0.2),
+                        repeat: Infinity,
+                        ease: "linear"
                       }}
                     />
                   </motion.div>
