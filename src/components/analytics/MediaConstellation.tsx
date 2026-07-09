@@ -47,10 +47,10 @@ export function MediaConstellation() {
     : constellationData[activeIndex] || constellationData[0];
 
   return (
-    <PremiumGlass className="relative flex flex-col p-6 md:p-10 overflow-hidden min-h-[460px]">
+    <PremiumGlass className="relative flex flex-col p-5 md:p-6 overflow-hidden min-h-[380px]">
       
       {/* Option A: Glassmorphic Filter Chips */}
-      <div className="relative z-20 w-full overflow-x-auto pb-4 mb-2 flex items-center gap-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-20 w-full overflow-x-auto pb-3 mb-1 flex items-center gap-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mr-2 shrink-0">Filter:</div>
         {AVAILABLE_CATEGORIES.map(cat => {
           const isSelected = selectedCategories.includes(cat);
@@ -58,7 +58,7 @@ export function MediaConstellation() {
             <button
               key={cat}
               onClick={() => toggleCategory(cat)}
-              className={`shrink-0 px-4 py-1.5 rounded-[20px] text-xs font-semibold tracking-wide transition-all duration-300 border ${
+              className={`shrink-0 px-3 py-1 rounded-[20px] text-xs font-semibold tracking-wide transition-all duration-300 border ${
                 isSelected 
                   ? 'bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.1)] backdrop-blur-md' 
                   : 'bg-transparent border-white/5 text-muted-foreground/60 hover:bg-white/5 hover:text-white'
@@ -87,7 +87,7 @@ export function MediaConstellation() {
           />
           
           {/* Top Section: The Huge Readout */}
-          <div className="relative z-10 flex flex-col items-center justify-center pt-2 pb-8 pointer-events-none">
+          <div className="relative z-10 flex flex-col items-center justify-center pt-2 pb-4 pointer-events-none">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={activeItem?.label || 'default'}
@@ -97,12 +97,12 @@ export function MediaConstellation() {
                 transition={{ duration: 0.35, ease: "easeOut" }}
                 className="flex flex-col items-center text-center"
               >
-                <div className="text-xs font-bold uppercase tracking-[0.4em] text-muted-foreground/80 mb-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.4em] text-muted-foreground/80 mb-2">
                   {activeItem?.label}
                 </div>
                 
                 <div 
-                  className="font-display text-[7rem] md:text-9xl tracking-tighter leading-none bg-clip-text text-transparent pb-2 transition-all duration-1000" 
+                  className="font-display text-6xl md:text-8xl tracking-tighter leading-none bg-clip-text text-transparent pb-1 transition-all duration-1000" 
                   style={{ 
                     backgroundImage: `linear-gradient(to bottom, white 20%, ${activeItem?.color} 100%)`,
                     filter: `drop-shadow(0 0 60px ${activeItem?.color}80) drop-shadow(0 4px 10px rgba(0,0,0,0.5))` 
@@ -111,18 +111,18 @@ export function MediaConstellation() {
                   {activeItem?.value}%
                 </div>
                 
-                <div className="text-xs text-muted-foreground font-medium tracking-widest uppercase mt-4 opacity-80 flex items-center gap-3">
-                  <span className="w-8 h-px bg-white/20" />
+                <div className="text-[10px] text-muted-foreground font-medium tracking-widest uppercase mt-2 opacity-80 flex items-center gap-3">
+                  <span className="w-6 h-px bg-white/20" />
                   {activeItem?.count} entries logged
-                  <span className="w-8 h-px bg-white/20" />
+                  <span className="w-6 h-px bg-white/20" />
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
           {/* Middle Section: The Tactical Lightbar */}
-          <div className="relative z-10 w-full flex flex-col items-center my-6">
-            <div className="w-full flex items-end gap-2 md:gap-3 h-20">
+          <div className="relative z-10 w-full flex flex-col items-center my-4">
+            <div className="w-full flex items-end gap-1.5 md:gap-2 h-16">
               {constellationData.map((item) => {
                 const isHovered = hovered === item.label;
                 const isAutoActive = hovered === null && activeItem?.label === item.label;
@@ -134,11 +134,11 @@ export function MediaConstellation() {
                     key={item.label}
                     className="relative rounded-full cursor-pointer overflow-hidden origin-bottom"
                     style={{ width: `${item.value}%` }}
-                    initial={{ height: 16, opacity: 0 }}
+                    initial={{ height: 12, opacity: 0 }}
                     animate={{ 
-                      height: isActive ? 56 : 20,
+                      height: isActive ? 48 : 16,
                       opacity: isDimmed ? 0.3 : 1,
-                      filter: isActive ? `drop-shadow(0 0 24px ${item.color}80)` : 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))'
+                      filter: isActive ? `drop-shadow(0 0 16px ${item.color}80)` : 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))'
                     }}
                     transition={{ type: "spring", bounce: 0.5, duration: 0.7 }}
                     onMouseEnter={() => setHovered(item.label)}
@@ -149,7 +149,7 @@ export function MediaConstellation() {
                       className="absolute inset-0 w-full h-full"
                       style={{ 
                         background: `linear-gradient(180deg, color-mix(in srgb, ${item.color} 70%, white) 0%, ${item.color} 40%, color-mix(in srgb, ${item.color} 40%, black) 100%)`,
-                        boxShadow: `inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -4px 8px rgba(0,0,0,0.8)`
+                        boxShadow: `inset 0 1px 2px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.8)`
                       }}
                     />
                     
@@ -166,7 +166,7 @@ export function MediaConstellation() {
             </div>
             
             {/* Precision Tick Marks */}
-            <div className="w-full flex justify-between px-1 mt-3 opacity-30">
+            <div className="w-full flex justify-between px-1 mt-2 opacity-30">
               {[...Array(11)].map((_, i) => (
                 <div key={i} className="flex flex-col items-center gap-1">
                   <div className={`w-px ${i % 5 === 0 ? 'h-2 bg-white' : 'h-1 bg-white/50'}`} />
@@ -176,7 +176,7 @@ export function MediaConstellation() {
           </div>
 
           {/* Bottom Section: The Legend Grid */}
-          <div className="relative z-10 mt-auto grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full pt-4">
+          <div className="relative z-10 mt-auto grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 w-full pt-2">
             <AnimatePresence mode="popLayout">
               {constellationData.map((item) => {
                 const isHovered = hovered === item.label;
