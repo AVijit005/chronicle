@@ -507,77 +507,27 @@ function CalendarPage() {
       {/* Zone 7 — Streaks */}
       <Zone eyebrow="Zone 07" title="Memory streaks">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-          {MEMORY_STREAKS.map((s, idx) => {
-            const progress = (s.value / s.total) * 100;
-            return (
-              <PremiumGlass key={s.label} className="h-full relative overflow-hidden group">
-                <div className="flex flex-col items-center justify-between px-4 py-8 h-full min-h-[300px] relative box-border w-full z-10">
-                  
-                  {/* The 3D Glass Vial */}
-                  <div className="relative w-14 h-40 md:h-44 rounded-[20px] bg-black/40 border border-white/5 shadow-[inset_0_4px_12px_rgba(0,0,0,0.9),inset_0_0_0_1px_rgba(255,255,255,0.05)] overflow-hidden flex items-end">
-                    
-                    {/* Glass Cylinder Specular Highlights */}
-                    <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.1)_20%,rgba(255,255,255,0.02)_50%,transparent_100%)] pointer-events-none z-20" />
-                    <div className="absolute left-1.5 top-2 bottom-2 w-1.5 bg-white/30 rounded-full blur-[2px] z-20 pointer-events-none" />
-                    <div className="absolute right-1 top-2 bottom-2 w-0.5 bg-white/20 rounded-full blur-[1px] z-20 pointer-events-none" />
+          {MEMORY_STREAKS.map((s) => (
+            <PremiumGlass key={s.label} className="h-full">
+              <div className="flex flex-col items-center justify-start px-4 py-6 h-full relative box-border w-full">
+                
+                <ProgressRing value={(s.value / s.total) * 100} accent={s.accent} />
 
-                    {/* The Glowing Liquid */}
-                    <motion.div
-                      className="w-full relative rounded-b-[18px] rounded-t-[4px] z-10"
-                      initial={{ height: '0%' }}
-                      whileInView={{ height: `${Math.max(progress, 5)}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 2.5 + (idx * 0.2), type: "spring", bounce: 0.15 }}
-                      style={{ 
-                        background: `linear-gradient(to top, color-mix(in srgb, ${s.accent} 20%, black), ${s.accent})`,
-                        boxShadow: `0 -10px 20px ${s.accent}90`
-                      }}
-                    >
-                      {/* Liquid Meniscus (Surface tension line) */}
-                      <div className="absolute top-0 inset-x-0 h-1.5 bg-white/80 rounded-full blur-[1px] mix-blend-overlay" />
-                      <div className="absolute top-1 inset-x-0 h-3 bg-white/40 blur-[2px]" />
-                      
-                      {/* Floating Energy Particles */}
-                      <motion.div 
-                        className="absolute bottom-4 left-[20%] w-1.5 h-1.5 bg-white rounded-full mix-blend-screen"
-                        animate={{ y: [0, -80], opacity: [0, 0.9, 0], scale: [0.5, 1.5, 0.5] }}
-                        transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut", delay: 0.2 }}
-                      />
-                      <motion.div 
-                        className="absolute bottom-8 right-[30%] w-2 h-2 bg-white rounded-full mix-blend-screen"
-                        animate={{ y: [0, -100], opacity: [0, 0.7, 0], scale: [0.8, 1.2, 0.5] }}
-                        transition={{ duration: 2.8, repeat: Infinity, ease: "easeOut", delay: 1.1 }}
-                      />
-                      <motion.div 
-                        className="absolute bottom-2 left-[60%] w-1 h-1 bg-white rounded-full mix-blend-screen"
-                        animate={{ y: [0, -60], opacity: [0, 1, 0], scale: [1, 2, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut", delay: 0.7 }}
-                      />
-                    </motion.div>
+                <div className="flex flex-col items-center justify-center gap-1 mt-auto w-full z-10 text-center">
+                  <div className="font-display text-2xl tracking-tight leading-none flex items-baseline justify-center">
+                    <CountUp to={s.value} />
+                    <span className="text-[12px] uppercase tracking-wider text-muted-foreground ml-1">
+                      / {s.total}d
+                    </span>
                   </div>
-
-                  {/* Cinematic Typography below vial */}
-                  <div className="flex flex-col items-center justify-center gap-1 mt-6 w-full z-10 text-center">
-                    <div className="font-display text-3xl md:text-4xl tracking-tighter leading-none flex items-baseline justify-center text-white drop-shadow-md">
-                      <CountUp to={s.value} />
-                      <span className="text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground ml-1 opacity-70">
-                        / {s.total}
-                      </span>
-                    </div>
-                    <div className="text-[10px] uppercase tracking-[0.25em] font-bold mt-2 transition-colors duration-500 drop-shadow-sm" style={{ color: s.accent }}>
-                      {s.label}
-                    </div>
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">
+                    {s.label}
                   </div>
                 </div>
 
-                {/* Massive Interactive Ambient Glow */}
-                <motion.div 
-                  className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[150%] h-[70%] blur-[50px] pointer-events-none mix-blend-screen opacity-10 group-hover:opacity-60 transition-opacity duration-1000 ease-out z-0"
-                  style={{ backgroundColor: s.accent }}
-                />
-              </PremiumGlass>
-            );
-          })}
+              </div>
+            </PremiumGlass>
+          ))}
         </div>
       </Zone>
 
