@@ -36,6 +36,7 @@ export function LiveStatsStrip({
           <PremiumGlass 
             key={c.l} 
             interactive 
+            reflection={false}
             variant="default"
             glow={c.a}
             className="p-4"
