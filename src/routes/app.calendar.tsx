@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "motion/react";
+import { motion, AnimatePresence, useMotionValue, useTransform, useMotionTemplate } from "motion/react";
 import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -683,22 +683,7 @@ function CalendarPage() {
       <Zone eyebrow="Zone 08" title="Upcoming releases">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {UPCOMING_RELEASES.map((u) => (
-            <PremiumGlass
-              key={u.title}
-              className="group flex items-center gap-3 overflow-hidden p-3"
-            >
-              <img src={u.poster} alt="" className="h-20 w-14 shrink-0 rounded-xl object-cover" />
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-medium">{u.title}</div>
-                <div className="mt-0.5 text-xs text-muted-foreground">{u.when}</div>
-                <span
-                  className="mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider"
-                  style={{ background: u.accent, color: "oklch(0.12 0 0)" }}
-                >
-                  {u.countdown}
-                </span>
-              </div>
-            </PremiumGlass>
+            <HolographicReleaseCard key={u.title} u={u} />
           ))}
         </div>
       </Zone>
@@ -849,5 +834,78 @@ function Zone({
       <ZoneHeading eyebrow={eyebrow} title={title} sub={sub} action={action} />
       {children}
     </motion.section>
+  );
+}
+
+function HolographicReleaseCard({ u }: { u: any }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Tilt calculations
+    tiltX.set(event.clientX - centerX);
+    tiltY.set(event.clientY - centerY);
+    
+    // Glare position
+    x.set(event.clientX - rect.left);
+    y.set(event.clientY - rect.top);
+  }
+
+  function handleMouseLeave() {
+    tiltX.set(0);
+    tiltY.set(0);
+  }
+
+  // Smooth out the rotation
+  const rotateX = useTransform(tiltY, [-150, 150], [15, -15], { clamp: true });
+  const rotateY = useTransform(tiltX, [-150, 150], [-15, 15], { clamp: true });
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
+      whileHover={{ scale: 1.05, zIndex: 30 }}
+      transition={{ type: "spring", stiffness: 350, damping: 20 }}
+      className="relative flex items-center gap-5 overflow-hidden p-4 rounded-[22px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-pointer group hover:border-white/[0.15] transition-colors duration-500"
+    >
+      {/* Dynamic Holographic Glare Overlay */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+        style={{
+          background: useMotionTemplate`radial-gradient(200px circle at ${x}px ${y}px, rgba(255,255,255,0.4), transparent 70%)`,
+        }}
+      />
+      
+      {/* 3D Poster Case */}
+      <div className="relative shrink-0 perspective-1000">
+        <motion.img 
+          src={u.poster} 
+          alt="" 
+          className="h-[90px] w-[64px] rounded-xl object-cover shadow-[0_8px_16px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-110"
+        />
+        {/* Shiny edge reflection on the poster */}
+        <div className="absolute inset-0 rounded-xl border border-white/20 pointer-events-none mix-blend-overlay group-hover:border-white/40 transition-colors duration-500" />
+      </div>
+
+      <div className="min-w-0 flex-1 relative z-10">
+        <div className="truncate text-lg font-display tracking-tight text-white/90 group-hover:text-white transition-colors duration-300">{u.title}</div>
+        <div className="mt-1 text-[11px] font-medium text-muted-foreground/70 uppercase tracking-wide group-hover:text-muted-foreground/90 transition-colors duration-300">{u.when}</div>
+        <div className="mt-3">
+          <span
+            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+            style={{ background: u.accent, color: "oklch(0.12 0 0)" }}
+          >
+            {u.countdown}
+          </span>
+        </div>
+      </div>
+    </motion.div>
   );
 }
