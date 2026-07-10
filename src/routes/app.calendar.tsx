@@ -910,10 +910,10 @@ function BentoCard({ h, colSpan, index }: { h: any; colSpan: string; index: numb
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
 
-  // Spring-smoothed tilt — feels physical and liquid
-  const springConfig = { stiffness: 260, damping: 28 };
-  const rotateY = useSpring(useTransform(rawX, [0, 1], [-10, 10]), springConfig);
-  const rotateX = useSpring(useTransform(rawY, [0, 1], [8, -8]), springConfig);
+  // Spring-smoothed tilt — subtle and premium
+  const springConfig = { stiffness: 180, damping: 32 };
+  const rotateY = useSpring(useTransform(rawX, [0, 1], [-4, 4]), springConfig);
+  const rotateX = useSpring(useTransform(rawY, [0, 1], [3, -3]), springConfig);
 
   // Radial glow follows cursor exactly
   const radialGlow = useMotionTemplate`radial-gradient(180px circle at ${cursorX}px ${cursorY}px, rgba(139,92,246,0.18), transparent 70%)`;
