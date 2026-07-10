@@ -55,7 +55,8 @@ function CalendarPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const { data: calendarYearData, isLoading: isCalendarLoading, isError: isCalendarError } = useCalendarYear(displayYear);
-  const apiMonth = calendarYearData ? adaptCalendarYear(calendarYearData).months[monthIdx] : null;
+  const calendarUI = calendarYearData ? adaptCalendarYear(calendarYearData) : null;
+  const apiMonth = calendarUI?.months[monthIdx] ?? null;
   const month = apiMonth ?? CALENDAR_YEAR[monthIdx];
   const season = seasonOf(monthIdx);
 
@@ -143,11 +144,21 @@ function CalendarPage() {
         </div>
       </MemoryZone>
 
-      <MemoryZone title="Media heatmap" sub="52 weeks of attention."><MediaHeatmap /></MemoryZone>
-      <MemoryZone title="Memory highlights"><MemoryHighlights /></MemoryZone>
-      <MemoryZone title="Memory streaks"><MemoryStreaks /></MemoryZone>
-      <MemoryZone title="Upcoming releases"><UpcomingReleases /></MemoryZone>
-      <MemoryZone title="Calendar insights"><CalendarInsights /></MemoryZone>
+      <MemoryZone title="Media heatmap" sub="52 weeks of attention.">
+        <MediaHeatmap heatmap={calendarUI?.heatmap} />
+      </MemoryZone>
+      <MemoryZone title="Memory highlights">
+        <MemoryHighlights highlights={calendarUI?.highlights as any} />
+      </MemoryZone>
+      <MemoryZone title="Memory streaks">
+        <MemoryStreaks streaks={calendarUI?.streaks} />
+      </MemoryZone>
+      <MemoryZone title="Upcoming releases">
+        <UpcomingReleases releases={calendarUI?.releases} />
+      </MemoryZone>
+      <MemoryZone title="Calendar insights">
+        <CalendarInsights insights={calendarUI?.insights} />
+      </MemoryZone>
       <MemoryZone title="This week, in your life" sub="The same week of the year, across previous years.">
         <ThisWeekHistory />
       </MemoryZone>

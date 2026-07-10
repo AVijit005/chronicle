@@ -254,3 +254,43 @@ export interface CalendarYearUpcomingResponse {
 export async function getCalendarYear(year: number): Promise<CalendarYearResponse> {
   return apiGet<CalendarYearResponse>(`/analytics/calendar/rich/${year}`);
 }
+
+export interface ConstellationEntry {
+  label: string;
+  count: number;
+  value: number;
+  color: string;
+}
+
+export async function getConstellation(categories?: string[]): Promise<ConstellationEntry[]> {
+  const params = new URLSearchParams();
+  if (categories && categories.length > 0) {
+    params.set('categories', categories.join(','));
+  }
+  const qs = params.toString();
+  try {
+    return await apiGet<ConstellationEntry[]>(`/analytics/constellation${qs ? `?${qs}` : ''}`);
+  } catch (e) {
+    const baseMock = [
+      { label: "Movies", count: 12, value: 0, color: "oklch(0.65 0.2 250)" },
+      { label: "Anime", count: 15, value: 0, color: "oklch(0.65 0.22 15)" },
+      { label: "Series", count: 8, value: 0, color: "oklch(0.60 0.18 280)" },
+      { label: "Books", count: 4, value: 0, color: "oklch(0.65 0.18 30)" },
+      { label: "Manga", count: 24, value: 0, color: "oklch(0.70 0.15 60)" },
+      { label: "Games", count: 2, value: 0, color: "oklch(0.65 0.15 150)" },
+      { label: "Music", count: 120, value: 0, color: "oklch(0.75 0.15 150)" },
+      { label: "Podcasts", count: 18, value: 0, color: "oklch(0.72 0.18 200)" },
+      { label: "Courses", count: 1, value: 0, color: "oklch(0.68 0.12 220)" },
+      { label: "YouTube", count: 350, value: 0, color: "oklch(0.60 0.25 20)" }
+    ];
+    let filtered = baseMock;
+    if (categories && categories.length > 0) {
+      filtered = baseMock.filter(m => categories.includes(m.label));
+    }
+    const total = filtered.reduce((sum, item) => sum + item.count, 0);
+    return filtered.map(item => ({
+      ...item,
+      value: total === 0 ? 0 : Math.round((item.count / total) * 100)
+    }));
+  }
+}
