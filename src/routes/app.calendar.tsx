@@ -669,82 +669,22 @@ function CalendarPage() {
       {/* Zone 9 — Insights */}
       <Zone eyebrow="Zone 09" title="Calendar insights">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {([
-            {
-              icon: Film,
-              label: "Habit",
-              text: "You watch more movies on Fridays.",
-              color: "text-blue-400",
-              bg: "bg-blue-500/10",
-              border: "border-blue-500/20",
-              glow: "rgba(59,130,246,0.15)",
-            },
-            {
-              icon: BookOpen,
-              label: "Habit",
-              text: "Books dominate your Sundays.",
-              color: "text-emerald-400",
-              bg: "bg-emerald-500/10",
-              border: "border-emerald-500/20",
-              glow: "rgba(16,185,129,0.15)",
-            },
-            {
-              icon: NotebookPen,
-              label: "Pattern",
-              text: "You usually journal after emotional films.",
-              color: "text-rose-400",
-              bg: "bg-rose-500/10",
-              border: "border-rose-500/20",
-              glow: "rgba(244,63,94,0.15)",
-            },
-            {
-              icon: Trophy,
-              label: "Record",
-              text: "Your longest streak was in October.",
-              color: "text-amber-400",
-              bg: "bg-amber-500/10",
-              border: "border-amber-500/20",
-              glow: "rgba(245,158,11,0.15)",
-            },
-            {
-              icon: Sparkles,
-              label: "Peak",
-              text: "Saturdays average 3 stories — your most active day.",
-              color: "text-violet-400",
-              bg: "bg-violet-500/10",
-              border: "border-violet-500/20",
-              glow: "rgba(139,92,246,0.15)",
-            },
-          ] as const).map((insight, i) => (
+          {CALENDAR_INSIGHTS.map((line, i) => (
             <PremiumGlass
               key={i}
               variant="subtle"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.07 }}
+              transition={{ duration: 0.5, delay: i * 0.06 }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="flex items-start gap-4 p-5 cursor-pointer press-scale relative z-10 overflow-hidden"
+              className="flex items-start gap-4 p-5 cursor-pointer press-scale relative z-10"
             >
-              {/* Subtle ambient glow behind icon */}
-              <div
-                className="pointer-events-none absolute left-0 top-0 h-full w-32 opacity-40"
-                style={{ background: `linear-gradient(to right, ${insight.glow}, transparent)` }}
-              />
-
-              {/* Icon */}
-              <div className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border ${insight.bg} ${insight.border}`}>
-                <insight.icon className={`h-4 w-4 ${insight.color}`} />
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/[0.06]">
+                <Sparkles className="h-4 w-4 text-primary" />
               </div>
-
-              {/* Text */}
-              <div className="relative flex flex-col gap-1">
-                <span className={`text-[9px] font-bold uppercase tracking-[0.2em] ${insight.color} opacity-70`}>
-                  {insight.label}
-                </span>
-                <p className="text-sm text-foreground/90 leading-relaxed">{insight.text}</p>
-              </div>
+              <p className="text-sm text-foreground/90">{line}</p>
             </PremiumGlass>
           ))}
         </div>
