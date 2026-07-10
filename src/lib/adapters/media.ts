@@ -10,7 +10,7 @@ import { adaptMediaType } from "./mediatype";
 import { adaptStatus } from "./status";
 import type { MediaResponse } from "@/lib/api/media";
 import type { LibraryItemResponse } from "@/lib/api/library";
-import type { ContinueItem } from "@/lib/api/analytics";
+import type { ContinueItem, RecentActivityItem } from "@/lib/api/analytics";
 
 const PLACEHOLDER_POSTER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='450' fill='%231a1a2e'%3E%3Crect width='300' height='450'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23555' font-family='system-ui' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
 
@@ -115,9 +115,21 @@ export function adaptContinueItem(item: ContinueItem): UIMediaItem {
 }
 
 /**
- * Extract the library item ID from a UI media item.
- * Returns undefined if the item was created from a media catalog response.
+ * Transform a RecentActivityItem (from dashboard) into a ContinueItem shape for adaptContinueItem.
  */
+export function activityToContinueItem(item: RecentActivityItem): ContinueItem {
+  return {
+    libraryId: item.id,
+    mediaId: item.id,
+    title: item.title,
+    slug: item.id,
+    posterUrl: null,
+    mediaType: item.type ?? "movie",
+    progress: 100,
+    progressPercentage: 100,
+  };
+}
+
 export function getLibraryId(item: UIMediaItem): string | null {
   // If the item's id differs from its mediaId, the id is the library ID
   return item.id !== item.mediaId ? item.id : null;

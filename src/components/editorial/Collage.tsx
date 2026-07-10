@@ -24,7 +24,11 @@ export function Collage({ items }: { items: CollageItem[] }) {
         className="relative aspect-[4/5] overflow-hidden rounded-3xl ring-1 ring-white/8"
         style={{ boxShadow: "0 40px 80px -40px oklch(0 0 0 / 0.8)" }}
       >
-        <img src={hero.image} alt={hero.alt ?? ""} className="h-full w-full object-cover" />
+        {hero.image ? (
+          <img src={hero.image} alt={hero.alt ?? ""} className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10" />
+        )}
         {hero.node && <div className="absolute inset-x-0 bottom-0 p-5">{hero.node}</div>}
       </motion.div>
       <div className="grid grid-cols-3 gap-3 md:grid-cols-1 md:gap-4">

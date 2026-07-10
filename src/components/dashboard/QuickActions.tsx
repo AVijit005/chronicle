@@ -1,101 +1,113 @@
-import { motion } from "motion/react";
-import { Plus, Search, NotebookPen, Layers, Clock, CalendarDays, Sparkles } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { motion, useReducedMotion, useMotionValue, useTransform, useMotionTemplate } from "motion/react";
+import { ChevronRight, Plus, Search, NotebookPen, Layers } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useMediaActions } from "@/lib/store/MediaActionsContext";
 
 const ACTIONS = [
-  {
-    icon: Plus,
-    label: "Add media",
-    hint: "Anything",
-    to: "/app/library",
-    color: "oklch(0.72 0.18 255)",
-  },
-  {
-    icon: Search,
-    label: "Spotlight",
-    hint: "⌘K",
-    to: "/app/search",
-    color: "oklch(0.65 0.22 295)",
-  },
-  {
-    icon: Layers,
-    label: "New collection",
-    hint: "Curate",
-    to: "/app/collections",
-    color: "oklch(0.7 0.16 25)",
-  },
-  {
-    icon: NotebookPen,
-    label: "Write journal",
-    hint: "A memory",
-    to: "/app/journal",
-    color: "oklch(0.72 0.16 160)",
-  },
-  {
-    icon: Clock,
-    label: "Timeline",
-    hint: "Your year",
-    to: "/app/timeline",
-    color: "oklch(0.78 0.16 50)",
-  },
-  {
-    icon: CalendarDays,
-    label: "Today",
-    hint: "Calendar",
-    to: "/app/calendar",
-    color: "oklch(0.7 0.18 200)",
-  },
-  {
-    icon: Sparkles,
-    label: "Wrapped",
-    hint: "Preview",
-    to: "/app/wrapped",
-    color: "oklch(0.65 0.25 25)",
-  },
+  { icon: Plus, label: "Add media", hint: "Press ⌘N", id: "add" },
+  { icon: Search, label: "Spotlight", hint: "Press ⌘K", id: "spotlight" },
+  { icon: NotebookPen, label: "Journal entry", hint: "Press ⇧J", id: "journal" },
+  { icon: Layers, label: "New collection", hint: "Press ⇧C", id: "collections" },
 ];
 
-export function QuickActions({ onOpenSearch }: { onOpenSearch?: () => void }) {
+export function InteractiveWidgets() {
+  const navigate = useNavigate();
+  const { openAdd } = useMediaActions();
+  const reduced = useReducedMotion() ?? false;
+
   return (
-    <div className="-mx-6 overflow-x-auto px-6 pb-2 lg:mx-0 lg:overflow-visible lg:px-0">
-      <div className="flex gap-3 lg:grid lg:grid-cols-7 lg:gap-3">
-        {ACTIONS.map((a, i) => {
-          const inner = (
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -3 }}
-              className="glass group relative flex w-[160px] shrink-0 flex-col gap-3 overflow-hidden rounded-2xl p-4 lg:w-auto"
-            >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full opacity-50 blur-2xl transition group-hover:opacity-90"
-                style={{ background: a.color }}
-              />
-              <div className="relative grid h-9 w-9 place-items-center rounded-xl bg-white/[0.06] ring-1 ring-white/10">
-                <a.icon className="h-4 w-4 text-foreground" />
-              </div>
-              <div className="relative">
-                <div className="text-sm font-medium">{a.label}</div>
-                <div className="text-[11px] text-muted-foreground">{a.hint}</div>
-              </div>
-            </motion.div>
-          );
-          if (a.label === "Spotlight" && onOpenSearch) {
-            return (
-              <button key={a.label} onClick={onOpenSearch} className="text-left">
-                {inner}
-              </button>
-            );
-          }
-          return (
-            <Link key={a.label} to={a.to}>
-              {inner}
-            </Link>
-          );
-        })}
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4"
+    >
+      {ACTIONS.map((q, i) => (
+        <InteractiveWidget
+          key={q.id}
+          q={q}
+          reduced={reduced}
+          onClick={() => {
+            switch (q.id) {
+              case "add":
+                openAdd();
+                break;
+              case "spotlight":
+                window.dispatchEvent(new KeyboardEvent("keydown", { metaKey: true, key: "k" }));
+                break;
+              case "journal":
+                navigate({ to: "/app/journal" });
+                break;
+              case "collections":
+                navigate({ to: "/app/collections" });
+                break;
+            }
+          }}
+        />
+      ))}
+    </motion.div>
+  );
+}
+
+function InteractiveWidget({
+  q,
+  reduced,
+  onClick,
+}: {
+  q: { icon: typeof Plus; label: string; hint: string };
+  reduced: boolean;
+  onClick: () => void;
+}) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+
+  function handleMouse(event: React.MouseEvent<HTMLButtonElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    tiltX.set(event.clientX - centerX);
+    tiltY.set(event.clientY - centerY);
+    x.set(event.clientX - rect.left);
+    y.set(event.clientY - rect.top);
+  }
+
+  function handleMouseLeave() {
+    tiltX.set(0);
+    tiltY.set(0);
+  }
+
+  const rotateX = useTransform(tiltY, [-100, 100], [8, -8], { clamp: true });
+  const rotateY = useTransform(tiltX, [-100, 100], [-8, 8], { clamp: true });
+
+  return (
+    <motion.button
+      onClick={onClick}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleMouseLeave}
+      aria-label={q.label}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
+      whileHover={reduced ? undefined : { scale: 1.02, y: -4, zIndex: 10 }}
+      whileTap={reduced ? undefined : { scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="relative group flex items-center gap-3 rounded-2xl p-4 text-left border border-white/[0.05] bg-black/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),_0_4px_12px_rgba(0,0,0,0.2)] overflow-hidden hover:border-white/[0.12] transition-colors duration-500"
+    >
+      <motion.div
+        className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: useMotionTemplate`radial-gradient(120px circle at ${x}px ${y}px, rgba(255,255,255,0.4), transparent 80%)`,
+        }}
+      />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none mix-blend-screen bg-primary/20 blur-[20px]" />
+      <div className="relative grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] shadow-sm transition-all duration-300 group-hover:bg-primary/20 group-hover:border-primary/40 group-hover:shadow-[0_0_12px_rgba(var(--primary),0.3)] z-10">
+        <q.icon className="h-[18px] w-[18px] text-muted-foreground group-hover:text-primary transition-colors duration-300 drop-shadow-sm group-hover:drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]" />
       </div>
-    </div>
+      <div className="flex-1 relative z-10">
+        <div className="text-[13px] font-medium text-foreground/90 tracking-tight group-hover:text-white transition-colors drop-shadow-sm">{q.label}</div>
+        <div className="text-[10px] font-bold text-muted-foreground/60 tracking-widest uppercase mt-0.5 transition-colors group-hover:text-primary/70">{q.hint}</div>
+      </div>
+      <ChevronRight className="h-4 w-4 text-muted-foreground/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary relative z-10" />
+    </motion.button>
   );
 }

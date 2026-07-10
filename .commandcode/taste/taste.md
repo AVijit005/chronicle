@@ -15,7 +15,13 @@
 - Create proper DTO validation classes for analytics, wrapped generate, and storage endpoints. Confidence: 0.70
 
 # frontend
-- Never create duplicate component implementations (e.g., two CinemaHero, two FavoriteMoments). Merge into canonical versions instead. Confidence: 0.70
-- All frontend data fetching must use React Query hooks from a centralized API client, not direct mock data. Confidence: 0.85
-- Every page must handle loading, error, empty, and offline states before connecting to real API. Confidence: 0.70
-- ComingSoon placeholders should be replaced with functional implementations before public release. Confidence: 0.70
+See [frontend/taste.md](frontend/taste.md)
+
+# typescript
+- useReducedMotion() returns boolean | null — always use ?? false fallback before passing to components expecting boolean. Confidence: 0.70
+- Replace dangerouslySetInnerHTML style blocks with CSS custom properties set via inline style prop. Confidence: 0.70
+- Replace unsafe `as any` type casts with proper adapter functions that bridge incompatible types (e.g., RecentActivityItem → ContinueItem → UIMediaItem). Confidence: 0.70
+
+# workflow
+- Run 'npx tsc --noEmit' after each phase of refactoring to verify TypeScript compilation. Confidence: 0.85
+- When the user asks you to fix pre-existing TypeScript errors before continuing, solve all of them immediately — don't dismiss them as "pre-existing" and move on. Confidence: 0.75

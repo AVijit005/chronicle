@@ -1,17 +1,25 @@
 import { motion } from "motion/react";
-import { Feather } from "lucide-react";
+import { Feather, TrendingUp } from "lucide-react";
 import { TODAY } from "@/lib/memory";
 import { fadeBlurIn } from "@/lib/motion";
+import type { UIInsights } from "@/lib/adapters/types";
 
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumSquircle } from "@/components/ui/PremiumSquircle";
 
-export function DailyRitual({ className }: { className?: string }) {
+interface Props {
+  className?: string;
+  insights: UIInsights | null;
+}
+
+export function DailyRitual({ className, insights }: Props) {
   const dateLabel = TODAY.toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
+
+  const hasData = insights && insights.totalHoursSpent > 0;
 
   return (
     <PremiumGlass
@@ -43,16 +51,29 @@ export function DailyRitual({ className }: { className?: string }) {
         </div>
       </motion.header>
 
-      <div className="group/empty relative z-10 flex flex-col items-center gap-4 rounded-2xl border border-white/[0.03] bg-white/[0.02] p-10 text-center shadow-2xl backdrop-blur-xl transition duration-500 ease-out hover:border-white/[0.08] hover:bg-white/[0.04]">
-        <PremiumSquircle 
-          icon={<Feather />} 
-          size="lg" 
-          variant="glass" 
-        />
-        <p className="text-sm text-foreground/70">
-          Your ritual is still gathering — check back once there's more to reflect on.
-        </p>
-      </div>
+      {hasData ? (
+        <div className="group/empty relative z-10 flex flex-col items-center gap-4 rounded-2xl border border-white/[0.03] bg-white/[0.02] p-10 text-center shadow-2xl backdrop-blur-xl transition duration-500 ease-out hover:border-white/[0.08] hover:bg-white/[0.04]">
+          <PremiumSquircle icon={<TrendingUp />} size="lg" variant="glass" />
+          <p className="text-sm text-foreground/70">
+            Your most active day is <span className="text-foreground font-medium">{insights.mostActiveWeekday}</span>
+            {insights.favoriteGenre ? (
+              <>. You've spent most of your time in <span className="text-foreground font-medium">{insights.favoriteGenre}</span>.</>
+            ) : (
+              ". Today's a good day to pick up where you left off."
+            )}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {insights.totalHoursSpent}h across {insights.totalUniqueMedia} stories so far.
+          </p>
+        </div>
+      ) : (
+        <div className="group/empty relative z-10 flex flex-col items-center gap-4 rounded-2xl border border-white/[0.03] bg-white/[0.02] p-10 text-center shadow-2xl backdrop-blur-xl transition duration-500 ease-out hover:border-white/[0.08] hover:bg-white/[0.04]">
+          <PremiumSquircle icon={<Feather />} size="lg" variant="glass" />
+          <p className="text-sm text-foreground/70">
+            Your ritual is still gathering — check back once there's more to reflect on.
+          </p>
+        </div>
+      )}
     </PremiumGlass>
   );
 }

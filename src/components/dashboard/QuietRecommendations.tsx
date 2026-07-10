@@ -3,8 +3,16 @@ import { Compass } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
 import { fadeBlurIn } from "@/lib/motion";
+import type { UIInsights } from "@/lib/adapters/types";
 
-export function QuietRecommendations({ className }: { className?: string }) {
+interface Props {
+  className?: string;
+  insights: UIInsights | null;
+}
+
+export function QuietRecommendations({ className, insights }: Props) {
+  const hasData = insights && (insights.favoriteDecade || insights.favoriteGenre);
+
   return (
     <section aria-label="Because today" className={cn(className)}>
       <div className="mb-4">
@@ -23,7 +31,21 @@ export function QuietRecommendations({ className }: { className?: string }) {
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.05] text-primary ring-1 ring-white/10">
             <Compass className="h-4 w-4" />
           </span>
-          Nothing quiet to surface yet — keep exploring and this space will start noticing patterns.
+          {hasData ? (
+            <p>
+              You seem drawn to{" "}
+              <span className="text-foreground font-medium">
+                {insights.favoriteDecade ? `${insights.favoriteDecade}s` : insights.favoriteGenre}
+              </span>
+              {insights.favoriteGenre && insights.favoriteDecade && (
+                <> <span className="text-foreground font-medium">{insights.favoriteGenre}</span></>
+              )}
+              . Your library is mostly{" "}
+              <span className="text-foreground font-medium">{insights.totalUniqueMedia} stories</span> deep.
+            </p>
+          ) : (
+            <p>Nothing quiet to surface yet — keep exploring and this space will start noticing patterns.</p>
+          )}
         </PremiumGlass>
       </motion.div>
     </section>

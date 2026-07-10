@@ -13,20 +13,34 @@ import { ActivityFeed } from "@/components/common/ActivityFeed";
 import { pagePresence, pagePresenceReduced } from "@/lib/motion";
 import { MediaActionsProvider, useMediaActions } from "@/lib/store/MediaActionsContext";
 import { Toaster } from "@/components/ui/sonner";
+import { useOnline } from "@/hooks/use-online";
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const [search, setSearch] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const reduced = useReducedMotion();
+  const online = useOnline();
 
   return (
     <MediaActionsProvider>
       <div className="relative min-h-dvh">
+        {!online && (
+          <div className="sticky top-0 z-[150] bg-amber-500/90 text-black text-center py-2 text-sm font-medium">
+            You're offline. Changes will sync when you reconnect.
+          </div>
+        )}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-3 focus:text-sm focus:font-medium focus:text-primary-foreground focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
         <AtmosphereBackground />
         <Sidebar onOpenSearch={() => setSearch(true)} />
         <div className="lg:pl-[296px]">
           <TopBar onOpenSearch={() => setSearch(true)} />
           <main
+            id="main-content"
             className="px-6 lg:px-10 lg:pb-16"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 8rem)" }}
           >

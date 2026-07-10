@@ -24,8 +24,8 @@ export function CinematicHero({ item }: { item: MediaItem }) {
 
         <div className="absolute inset-0 flex items-end p-6 md:p-12">
           <div className="max-w-xl group/panel glass-subtle rounded-[2rem] border border-white/10 bg-black/40 p-8 shadow-2xl backdrop-blur-2xl transition-all duration-500 ease-out hover:-translate-y-2 hover:border-white/20 hover:shadow-[0_24px_48px_-12px_oklch(0_0_0/0.8),0_0_24px_oklch(0.72_0.18_255/0.15)]">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-emerald-200 backdrop-blur-xl shadow-[inset_0_0_12px_oklch(0.6_0.2_150/0.2)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_oklch(0.6_0.2_150/0.8)]" />
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-primary-foreground/80 backdrop-blur-xl shadow-[inset_0_0_12px_oklch(0.72_0.18_255/0.2)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_oklch(0.72_0.18_255/0.8)]" />
               Continue your story
             </div>
             <h2 className="font-display text-4xl leading-[1.05] tracking-tight text-white md:text-6xl text-balance">

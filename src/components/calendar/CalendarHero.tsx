@@ -1,0 +1,79 @@
+import { motion } from "motion/react";
+import { CloudSun, ChevronLeft, ChevronRight } from "lucide-react";
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { CountUp } from "@/components/analytics/AnalyticsKit";
+import { CALENDAR_HERO } from "@/lib/analytics-mock";
+
+interface Props {
+  currentYear: number;
+  yearOffset: number;
+  onChangeYear: (offset: number) => void;
+}
+
+export function CalendarHero({ currentYear, yearOffset, onChangeYear }: Props) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <PremiumGlass
+        variant="strong"
+        className="relative overflow-hidden rounded-[40px] p-10 md:p-16"
+        glow="oklch(0.65 0.2 250 / 0.4)"
+      >
+        <div className="flex items-center justify-between">
+          <div className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground flex items-center gap-2">
+            <CloudSun className="h-3 w-3 text-primary" /> Memory map · {currentYear}
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => onChangeYear(yearOffset - 1)}
+              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]"
+              aria-label="Previous year"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => onChangeYear(yearOffset === 0 ? 0 : yearOffset + 1)}
+              disabled={yearOffset >= 0}
+              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Next year"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+        <h1 className="mt-5 font-display text-5xl tracking-tight md:text-7xl">
+          <span className="text-gradient-aurora">A year, day by day.</span>
+        </h1>
+        <p className="mt-5 max-w-xl text-muted-foreground md:text-lg">
+          Every story, every chapter, every quiet evening — gently mapped onto your life.
+        </p>
+        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            { l: "Stories", v: CALENDAR_HERO.stories },
+            { l: "Journals", v: CALENDAR_HERO.journals },
+            { l: "Longest streak", v: CALENDAR_HERO.longestStreak, s: "d" },
+            { l: "Favorite month", v: CALENDAR_HERO.favoriteMonth },
+          ].map((s) => (
+            <PremiumGlass
+              key={s.l}
+              variant="subtle"
+              className="relative z-10 overflow-hidden p-4 cursor-pointer press-scale"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                {s.l}
+              </div>
+              <div className="mt-2 font-display text-3xl tracking-tight">
+                {typeof s.v === "number" ? <CountUp to={s.v} suffix={s.s ?? ""} /> : s.v}
+              </div>
+            </PremiumGlass>
+          ))}
+        </div>
+      </PremiumGlass>
+    </motion.section>
+  );
+}
