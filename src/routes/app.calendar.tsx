@@ -148,7 +148,7 @@ function CalendarPage() {
         <MediaHeatmap heatmap={calendarUI?.heatmap} />
       </MemoryZone>
       <MemoryZone title="Memory highlights">
-        <MemoryHighlights highlights={calendarUI?.highlights as any} />
+        <MemoryHighlights highlights={calendarUI?.highlights} />
       </MemoryZone>
       <MemoryZone title="Memory streaks">
         <MemoryStreaks streaks={calendarUI?.streaks} />

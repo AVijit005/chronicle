@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { NotebookPen } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import { CountUp, ZoneHeading, StatCardPremium } from "@/components/analytics/AnalyticsKit";
+import { StatCardPremium } from "@/components/analytics/AnalyticsKit";
 import { JOURNAL_PROMPTS } from "@/lib/analytics-mock";
 import { MemoryBookmarks } from "@/components/memory/MemoryBookmarks";
 import { RecommendationCard } from "@/components/discovery/RecommendationCard";
