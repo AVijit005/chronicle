@@ -645,28 +645,56 @@ function CalendarPage() {
 
       {/* Zone 6 — Highlights */}
       <Zone eyebrow="Zone 06" title="Memory highlights">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {CALENDAR_HIGHLIGHTS.map((h) => (
-            <motion.div
-              key={h.label}
-              whileHover={{ y: -4 }}
-              className="group relative overflow-hidden rounded-3xl"
-            >
-              <img
-                src={h.media.backdrop ?? h.media.poster}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover opacity-40 transition group-hover:opacity-60 group-hover:scale-105 duration-[var(--dur-page)] ease-[var(--ease-out)]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-              <div className="relative p-6 pt-32">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                  {h.label}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {CALENDAR_HIGHLIGHTS.map((h, i) => {
+            // Predictable scatter rotation between -4 and 4 degrees
+            const rotation = (i % 2 === 0 ? 1 : -1) * (2 + (i % 3)); 
+            
+            return (
+              <motion.div
+                key={h.label}
+                initial={{ opacity: 0, scale: 0.8, y: 50, rotateZ: 0 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0, rotateZ: rotation }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: i * 0.15,
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 15
+                }}
+                whileHover={{ 
+                  y: -20, 
+                  rotateZ: 0, 
+                  scale: 1.08, 
+                  zIndex: 40,
+                  boxShadow: "0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2)"
+                }}
+                className="group relative rounded-[16px] bg-white/[0.05] p-3 pb-20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 backdrop-blur-xl cursor-pointer"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[10px] bg-black/40 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
+                  <img
+                    src={h.media.backdrop ?? h.media.poster}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 ease-out group-hover:scale-110 group-hover:opacity-100"
+                  />
+                  {/* Glossy photo finish */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 mix-blend-overlay pointer-events-none" />
                 </div>
-                <div className="mt-2 font-display text-2xl tracking-tight">{h.value}</div>
-                <div className="mt-1 text-xs text-muted-foreground">{h.note}</div>
-              </div>
-            </motion.div>
-          ))}
+                
+                {/* Engraved style text area */}
+                <div className="absolute bottom-5 left-5 right-5 flex flex-col justify-end">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/70 mb-1 transition-colors group-hover:text-primary">
+                    {h.label}
+                  </div>
+                  <div className="font-display text-2xl tracking-tight text-white/90 drop-shadow-sm flex items-baseline justify-between group-hover:text-white transition-colors">
+                    <span>{h.value}</span>
+                    <span className="text-[11px] font-sans font-medium text-white/40 group-hover:text-white/60 tracking-wide">{h.note}</span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </Zone>
 
