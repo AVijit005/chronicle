@@ -255,6 +255,55 @@ export async function getCalendarYear(year: number): Promise<CalendarYearRespons
   return apiGet<CalendarYearResponse>(`/analytics/calendar/rich/${year}`);
 }
 
+// ─── Discovery ────────────────────────────────
+
+export interface DiscoveryResponse {
+  recommendedToday: RecommendationItem | null;
+  continueMood: RecommendationItem[];
+  hiddenGems: RecommendationItem[];
+  continueFranchises: FranchiseItem[];
+  comfortStories: RecommendationItem[];
+  seasonalStories: RecommendationItem[];
+  genreExpansion: { genre: string; recommendation: RecommendationItem | null; yourTopMedia: { id: string; title: string; posterUrl: string | null }[] }[];
+  creatorRecommendations: { creator: string; accent: string; completedCount: number; totalWorks: number; topPick: { id: string; title: string; posterUrl: string | null } | null }[];
+  trendingInLibrary: RecommendationItem[];
+  undiscoveredFavorites: RecommendationItem[];
+  shortWeekendStories: RecommendationItem[];
+  longJourneyStories: RecommendationItem[];
+  rewatchSuggestions: RecommendationItem[];
+  almostFinished: RecommendationItem[];
+}
+
+export interface RecommendationItem {
+  mediaId: string;
+  mediaTitle: string;
+  mediaSlug: string;
+  mediaType: string;
+  posterUrl: string | null;
+  accent: string | null;
+  reason: string;
+  source: string;
+  confidence: number;
+  compatibility: number;
+  discoveryTags: string[];
+  year: number;
+  rating: number | null;
+  genres: string[];
+}
+
+export interface FranchiseItem {
+  creator: string;
+  accent: string;
+  current: { id: string; title: string; posterUrl: string | null; progress: number } | null;
+  next: { id: string; title: string; posterUrl: string | null } | null;
+  totalWorks: number;
+  completedWorks: number;
+}
+
+export async function getDiscovery(): Promise<DiscoveryResponse> {
+  return apiGet<DiscoveryResponse>('/discovery');
+}
+
 export interface ConstellationEntry {
   label: string;
   count: number;
