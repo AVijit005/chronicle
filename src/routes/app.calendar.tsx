@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, AnimatePresence, useMotionValue, useTransform, useMotionTemplate } from "motion/react";
-import { useMemo, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform, useMotionTemplate, useSpring } from "motion/react";
+import { useRef, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   ChevronLeft,
@@ -899,76 +899,141 @@ const BENTO_SPANS = [
 ];
 
 function BentoCard({ h, colSpan, index }: { h: any; colSpan: string; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+
+  // Raw mouse position (0..1 normalized)
+  const rawX = useMotionValue(0.5);
+  const rawY = useMotionValue(0.5);
+
+  // Cursor position in px for the radial glow
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+
+  // Spring-smoothed tilt — feels physical and liquid
+  const springConfig = { stiffness: 260, damping: 28 };
+  const rotateY = useSpring(useTransform(rawX, [0, 1], [-10, 10]), springConfig);
+  const rotateX = useSpring(useTransform(rawY, [0, 1], [8, -8]), springConfig);
+
+  // Radial glow follows cursor exactly
+  const radialGlow = useMotionTemplate`radial-gradient(180px circle at ${cursorX}px ${cursorY}px, rgba(139,92,246,0.18), transparent 70%)`;
+
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    rawX.set(x);
+    rawY.set(y);
+    cursorX.set(e.clientX - rect.left);
+    cursorY.set(e.clientY - rect.top);
+  }
+
+  function onMouseLeave() {
+    rawX.set(0.5);
+    rawY.set(0.5);
+    setHovered(false);
+  }
 
   return (
     <motion.div
-      className={`${colSpan} group relative overflow-hidden rounded-[20px] cursor-pointer min-h-[200px] border border-white/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.4)]`}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      ref={ref}
+      className={`${colSpan} relative overflow-hidden rounded-[22px] cursor-pointer min-h-[210px] border border-white/[0.07] shadow-[0_8px_32px_rgba(0,0,0,0.45)]`}
+      style={{
+        rotateX: hovered ? rotateX : 0,
+        rotateY: hovered ? rotateY : 0,
+        transformPerspective: 900,
+      }}
+      initial={{ opacity: 0, y: 32, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.25, 0.1, 0.25, 1] }}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
     >
-      {/* Background image */}
+      {/* ── Background image ── */}
       <motion.img
         src={h.media.backdrop ?? h.media.poster}
         alt=""
         className="absolute inset-0 h-full w-full object-cover object-center"
         animate={{
-          scale: hovered ? 1.07 : 1,
+          scale: hovered ? 1.08 : 1,
           filter: hovered
-            ? "brightness(0.8) saturate(1.15)"
-            : "brightness(0.5) saturate(0.75)",
+            ? "brightness(0.75) saturate(1.2)"
+            : "brightness(0.45) saturate(0.7)",
         }}
-        transition={{ duration: 0.65, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
       />
 
-      {/* Permanent bottom scrim — guarantees text legibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/30 to-transparent pointer-events-none" />
-      {/* Subtle top scrim — makes label always readable */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent pointer-events-none" />
+      {/* ── Permanent scrims ── */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-transparent pointer-events-none" />
 
-      {/* Glare sweep — slides across on hover */}
+      {/* ── Cursor-tracked radial glow ── */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
-        initial={{ x: "-100%", opacity: 0 }}
-        animate={hovered ? { x: "160%", opacity: 1 } : { x: "-100%", opacity: 0 }}
-        transition={{ duration: 0.75, ease: "easeOut" }}
-        style={{
-          background:
-            "linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)",
-          width: "60%",
-        }}
+        style={{ background: radialGlow, opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
       />
 
-      {/* Top: glowing dot + category label */}
-      <div className="absolute top-4 left-4 flex items-center gap-2">
-        <span
-          className="h-[6px] w-[6px] rounded-full bg-primary flex-shrink-0"
-          style={{ boxShadow: "0 0 8px 2px var(--color-primary, oklch(0.72 0.18 255))" }}
-        />
-        <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/60">
-          {h.label}
-        </span>
-      </div>
-
-      {/* Bottom: date + note */}
-      <div className="absolute bottom-0 left-0 right-0 px-5 py-4 flex flex-col gap-1">
-        <div className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white leading-tight drop-shadow-md">
-          {h.value}
-        </div>
-        <div className="text-[11px] font-medium text-white/60 tracking-wide leading-snug">
-          {h.note}
-        </div>
-      </div>
-
-      {/* Hover border glow */}
+      {/* ── Glare sweep on hover ── */}
       <motion.div
-        className="absolute inset-0 rounded-[20px] border border-primary/30 pointer-events-none"
+        className="absolute top-0 bottom-0 pointer-events-none"
+        style={{ width: "55%", background: "linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%)" }}
+        initial={{ left: "-60%" }}
+        animate={hovered ? { left: "160%" } : { left: "-60%" }}
+        transition={{ duration: 0.85, ease: "easeOut" }}
+      />
+
+      {/* ── Liquid glass tray — slides up on hover ── */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 border-t border-white/10 backdrop-blur-[16px] bg-black/25"
+        initial={{ height: "38%" }}
+        animate={{ height: hovered ? "46%" : "38%" }}
+        transition={{ type: "spring", stiffness: 220, damping: 28 }}
+      >
+        {/* Inner glass bevel */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none rounded-b-[22px]" />
+
+        <div className="relative h-full px-5 py-4 flex flex-col justify-between">
+          {/* Eyebrow dot + label */}
+          <div className="flex items-center gap-2">
+            <motion.span
+              className="h-[5px] w-[5px] rounded-full bg-primary flex-shrink-0"
+              animate={{ boxShadow: hovered ? "0 0 10px 3px oklch(0.72 0.18 255 / 0.7)" : "0 0 4px 1px oklch(0.72 0.18 255 / 0.3)" }}
+              transition={{ duration: 0.4 }}
+            />
+            <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/55">
+              {h.label}
+            </span>
+          </div>
+
+          {/* Date + note */}
+          <div className="flex flex-col gap-1">
+            <motion.div
+              className="font-display font-semibold tracking-tight text-white leading-tight drop-shadow-md"
+              animate={{ fontSize: hovered ? "1.75rem" : "1.5rem" }}
+              transition={{ type: "spring", stiffness: 220, damping: 28 }}
+            >
+              {h.value}
+            </motion.div>
+            <motion.div
+              className="text-[11px] font-medium tracking-wide leading-snug"
+              animate={{ color: hovered ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.45)" }}
+              transition={{ duration: 0.4 }}
+            >
+              {h.note}
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Primary border glow on hover ── */}
+      <motion.div
+        className="absolute inset-0 rounded-[22px] border border-primary/40 pointer-events-none"
         animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.35 }}
       />
     </motion.div>
   );
