@@ -9,6 +9,7 @@ import type {
   UIGenreAnalytics, 
   UIActivity, 
   UICalendar, 
+  UICalendarYear,
   UIInsights 
 } from "./types";
 import type { 
@@ -17,7 +18,8 @@ import type {
   MediaAnalyticsResponse, 
   GenreAnalyticsResponse, 
   ActivityResponse, 
-  CalendarResponse, 
+  CalendarResponse,
+  CalendarYearResponse,
   InsightsResponse 
 } from "@/lib/api/analytics";
 
@@ -80,4 +82,54 @@ export function adaptCalendar(c: CalendarResponse): UICalendar {
 
 export function adaptInsights(i: InsightsResponse): UIInsights {
   return i; // Matches perfectly
+}
+
+// ─── Calendar Year ──────────────────────────────
+export function adaptCalendarYear(y: CalendarYearResponse): UICalendarYear {
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthAccents = [
+    'oklch(0.65 0.2 250)', 'oklch(0.7 0.18 290)', 'oklch(0.78 0.16 130)',
+    'oklch(0.82 0.16 80)', 'oklch(0.7 0.2 35)', 'oklch(0.72 0.18 255)',
+    'oklch(0.78 0.16 80)', 'oklch(0.7 0.2 35)', 'oklch(0.65 0.22 295)',
+    'oklch(0.7 0.18 25)', 'oklch(0.6 0.18 250)',
+  ];
+
+  const months = y.months.map((m) => ({
+    index: m.month,
+    name: monthNames[m.month],
+    short: monthNames[m.month],
+    daysInMonth: new Date(y.year, m.month + 1, 0).getDate(),
+    startDay: new Date(y.year, m.month, 1).getDay(),
+    cells: [] as any,
+    accent: monthAccents[m.month],
+    favorite: '',
+    genre: '',
+    mediaCount: m.storyCount,
+    journalCount: m.journalCount,
+    hours: m.hoursTracked,
+    collage: m.topMedia.map((t) => t.posterUrl ?? ''),
+    dayHits: m.dayHits,
+  }));
+
+  const heatmap = y.heatmap.map((c) => ({
+    w: c.week,
+    d: c.day,
+    v: c.value,
+  }));
+
+  return {
+    year: y.year,
+    stats: {
+      stories: y.stats.totalStories,
+      journals: y.stats.totalJournals,
+      longestStreak: y.stats.longestStreak,
+      favoriteMonth: months.sort((a, b) => b.dayHits - a.dayHits)[0]?.name ?? '—',
+    },
+    months,
+    heatmap,
+    highlights: y.highlights.map((h) => ({ label: h.label, value: h.value, note: h.note, media: { poster: h.posterUrl } })),
+    streaks: y.streaks.map((s) => ({ label: s.label, value: s.value, total: s.total, accent: s.accent })),
+    releases: y.upcoming.map((u) => ({ title: u.title, poster: u.posterUrl ?? '', when: u.when, countdown: u.countdown, accent: u.accent })),
+    insights: y.insights,
+  };
 }

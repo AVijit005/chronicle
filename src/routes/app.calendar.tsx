@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 import { CALENDAR_YEAR } from "@/lib/analytics-mock";
 import { MEDIA } from "@/lib/mock";
-import { useCalendar } from "@/hooks/use-analytics";
+import { useCalendarYear } from "@/hooks/use-analytics";
+import { adaptCalendarYear } from "@/lib/adapters/analytics";
 import { MediaConstellation } from "@/components/analytics/MediaConstellation";
 import { ThisWeekHistory } from "@/components/memory/ThisWeekHistory";
 import {
@@ -53,8 +54,9 @@ function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState<number | null>(14);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const { isLoading: isCalendarLoading, isError: isCalendarError } = useCalendar(displayYear, monthIdx);
-  const month = CALENDAR_YEAR[monthIdx];
+  const { data: calendarYearData, isLoading: isCalendarLoading, isError: isCalendarError } = useCalendarYear(displayYear);
+  const apiMonth = calendarYearData ? adaptCalendarYear(calendarYearData).months[monthIdx] : null;
+  const month = apiMonth ?? CALENDAR_YEAR[monthIdx];
   const season = seasonOf(monthIdx);
 
   if (isCalendarLoading) return <CalendarSkeleton />;

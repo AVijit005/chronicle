@@ -7,6 +7,187 @@ interface UserLibConfig {
   mediaDelegate: string;
   mediaIdField: string;
   type: string;
+  // ─── Rich Calendar Year ───────────────────────────────────────────────────
+
+  async getCalendarYearData(userId: string, year: number): Promise<{ months: CalendarMonthRaw[]; heatmapCells: { week: number; day: number; value: number }[] }> {
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
+    const months: CalendarMonthRaw[] = [];
+    const dayActivity: Record<string, number> = {};
+
+    // Initialize empty month buckets
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    for (let m = 0; m < 12; m++) {
+      months.push({ month: m, name: monthNames[m], journalCount: 0, storyCount: 0, hoursTracked: 0, topMediaIds: [] as string[], dayHits: 0 });
+    }
+
+    // Journal entries for the year
+    const journal = this.prismaAny().journalEntry;
+    if (journal) {
+      const entries = await journal.findMany({
+        where: { userId, createdAt: { gte: startDate, lte: endDate } },
+        select: { createdAt: true },
+      });
+      for (const e of entries) {
+        const m = e.createdAt.getMonth();
+        months[m].journalCount++;
+        months[m].dayHits++;
+        const key = e.createdAt.toISOString().slice(0, 10);
+        dayActivity[key] = (dayActivity[key] ?? 0) + 1;
+      }
+    }
+
+    // Library items updated/completed this year
+    for (const cfg of USER_LIB_TYPES) {
+      const delegate = this.prismaAny()[cfg.delegate];
+      if (!delegate) continue;
+
+      const items = await delegate.findMany({
+        where: {
+          userId,
+          OR: [
+            { updatedAt: { gte: startDate, lte: endDate } },
+            { createdAt: { gte: startDate, lte: endDate } },
+          ],
+          deletedAt: null,
+        },
+        select: {
+          createdAt: true,
+          updatedAt: true,
+          status: true,
+          hoursSpent: true,
+          minutesSpent: true,
+        },
+        include: {
+          [cfg.mediaDelegate]: {
+            select: { id: true, title: true, posterUrl: true },
+          },
+        },
+      });
+
+      for (const item of items) {
+        const date = item.updatedAt ?? item.createdAt;
+        if (date < startDate || date > endDate) continue;
+        const m = date.getMonth();
+        months[m].storyCount++;
+        months[m].dayHits++;
+        months[m].hoursTracked += (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
+
+        const media = item[cfg.mediaDelegate] as { id: string; title: string; posterUrl: string | null } | null;
+        if (media?.id && !months[m].topMediaIds.includes(media.id)) {
+          months[m].topMediaIds.push(media.id);
+        }
+
+        const key = date.toISOString().slice(0, 10);
+        dayActivity[key] = (dayActivity[key] ?? 0) + 1;
+      }
+    }
+
+    // Build heatmap: 52 weeks × 7 days from dayActivity
+    const heatmapCells: { week: number; day: number; value: number }[] = [];
+    const yearStart = new Date(year, 0, 1);
+    const daysInYear = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
+    for (let d = 0; d < daysInYear; d++) {
+      const date = new Date(yearStart);
+      date.setDate(date.getDate() + d);
+      const key = date.toISOString().slice(0, 10);
+      const value = dayActivity[key] ?? 0;
+      const weekOfYear = Math.floor(d / 7);
+      const dayOfWeek = date.getDay();
+      if (value > 0) {
+        heatmapCells.push({ week: weekOfYear, day: dayOfWeek, value: Math.min(1, value / 5) });
+      }
+    }
+
+    return { months, heatmapCells };
+  }
+
+  async getYearHighlights(userId: string, year: number): Promise<any[]> {
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
+    const highlights: any[] = [];
+
+    // Best day: most activity in a single day
+    const activity = await this.getActivityData(userId, 365);
+    let bestDay = { date: '', count: 0 };
+    for (const [date, count] of Object.entries(activity)) {
+      if (count > bestDay.count) { bestDay = { date, count }; }
+    }
+    if (bestDay.date) {
+      highlights.push({
+        label: 'Best Day',
+        value: new Date(bestDay.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+        note: `${bestDay.count} activities`,
+        mediaId: 'interstellar',
+        posterUrl: null,
+        accent: 'oklch(0.72 0.18 255 / 0.3)',
+      });
+    }
+
+    // Longest single-sitting media
+    let longestTitle = '';
+    let longestHours = 0;
+    for (const cfg of USER_LIB_TYPES) {
+      const delegate = this.prismaAny()[cfg.delegate];
+      if (!delegate) continue;
+      const items = await delegate.findMany({
+        where: { userId, deletedAt: null, status: 'COMPLETED' },
+        select: { hoursSpent: true, minutesSpent: true },
+        include: { [cfg.mediaDelegate]: { select: { title: true, posterUrl: true } } },
+        orderBy: { hoursSpent: 'desc' },
+        take: 1,
+      });
+      for (const item of items) {
+        const h = (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
+        if (h > longestHours) {
+          longestHours = h;
+          const media = item[cfg.mediaDelegate] as any;
+          longestTitle = media?.title ?? '';
+        }
+      }
+    }
+    if (longestTitle) {
+      highlights.push({
+        label: 'Longest Session',
+        value: longestTitle,
+        note: `${Math.round(longestHours)}h spent`,
+        mediaId: 'longest',
+        posterUrl: null,
+        accent: 'oklch(0.65 0.22 295 / 0.3)',
+      });
+    }
+
+    return highlights;
+  }
+
+  async getYearStreaks(userId: string): Promise<any[]> {
+    // These are computed from streak service — return placeholder structure
+    return [];
+  }
+
+  async getYearUpcoming(userId: string): Promise<any[]> {
+    // Find media with status PLANNING
+    const upcoming: any[] = [];
+    for (const cfg of USER_LIB_TYPES) {
+      const delegate = this.prismaAny()[cfg.delegate];
+      if (!delegate) continue;
+      const items = await delegate.findMany({
+        where: { userId, status: 'PLANNING', deletedAt: null },
+        include: { [cfg.mediaDelegate]: { select: { id: true, title: true, posterUrl: true, releaseDate: true } } },
+        take: 4,
+      });
+      for (const item of items) {
+        const media = item[cfg.mediaDelegate] as any;
+        upcoming.push({
+          title: media?.title ?? 'Untitled',
+          posterUrl: media?.posterUrl ?? null,
+          mediaType: cfg.type,
+          releaseDate: media?.releaseDate,
+        });
+      }
+    }
+    return upcoming.slice(0, 4);
+  }
 }
 
 const USER_LIB_TYPES: UserLibConfig[] = [

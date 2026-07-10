@@ -8,6 +8,13 @@ import type {
   ActivityDto,
   CalendarDto,
   CalendarEntryDto,
+  CalendarYearDto,
+  CalendarYearStatsDto,
+  CalendarMonthDto,
+  CalendarHeatmapCellDto,
+  CalendarHighlightDto,
+  CalendarStreakDto,
+  CalendarUpcomingDto,
   GenreStatDto,
 } from './dto';
 
@@ -155,6 +162,97 @@ export class AnalyticsAggregationService {
     }));
 
     return { entries };
+  }
+
+  async getCalendarYear(userId: string, year: number): Promise<CalendarYearDto> {
+    const { months: monthRaw, heatmapCells } = await this.repository.getCalendarYearData(userId, year);
+    const highlights = await this.repository.getYearHighlights(userId, year);
+    const streakData = await this.repository.getYearStreaks(userId);
+    const upcomingRaw = await this.repository.getYearUpcoming(userId);
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const months: CalendarMonthDto[] = monthRaw.map((m) => ({
+      month: m.month,
+      name: monthNames[m.month],
+      journalCount: m.journalCount,
+      storyCount: m.storyCount,
+      hoursTracked: Math.round(m.hoursTracked),
+      topMedia: m.topMediaIds.slice(0, 4) as any,
+      dayHits: m.dayHits,
+    }));
+
+    const totalStories = months.reduce((sum, m) => sum + m.storyCount, 0);
+    const totalJournals = months.reduce((sum, m) => sum + m.journalCount, 0);
+    const totalHours = months.reduce((sum, m) => sum + m.hoursTracked, 0);
+
+    const stats: CalendarYearStatsDto = {
+      totalStories,
+      totalJournals,
+      longestStreak: 0,
+      totalHours,
+    };
+
+    const heatmap: CalendarHeatmapCellDto[] = heatmapCells.map((c) => ({
+      week: c.week,
+      day: c.day,
+      value: Math.min(1, c.value),
+    }));
+
+    const mappedHighlights: CalendarHighlightDto[] = highlights.map((h) => ({
+      label: h.label,
+      value: h.value,
+      note: h.note,
+      mediaId: h.mediaId,
+      posterUrl: h.posterUrl,
+      accent: h.accent,
+    }));
+
+    const streaks: CalendarStreakDto[] = streakData.map((s: any) => ({
+      label: s.label,
+      value: s.value,
+      total: s.total,
+      accent: s.accent,
+    }));
+
+    const upcoming: CalendarUpcomingDto[] = upcomingRaw.map((u: any) => ({
+      title: u.title,
+      posterUrl: u.posterUrl,
+      when: u.releaseDate ? new Date(u.releaseDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'TBA',
+      countdown: u.releaseDate && new Date(u.releaseDate) > new Date() ? `${Math.ceil((new Date(u.releaseDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))}d` : 'Soon',
+      accent: 'oklch(0.72 0.18 255)',
+    }));
+
+    const insightLines = this.generateInsights(stats, months);
+
+    return {
+      year,
+      stats,
+      months,
+      heatmap,
+      highlights: mappedHighlights,
+      streaks,
+      upcoming,
+      insights: insightLines,
+    };
+  }
+
+  private generateInsights(stats: CalendarYearStatsDto, months: CalendarMonthDto[]): string[] {
+    const insights: string[] = [];
+    if (stats.totalStories > 0) {
+      insights.push(`You tracked ${stats.totalStories} stories in total — that's ${Math.round(stats.totalStories / 12)} per month on average.`);
+    }
+    if (stats.totalHours > 0) {
+      insights.push(`Across the year you spent ${stats.totalHours} hours with your media — roughly ${Math.round(stats.totalHours / 52)}h per week.`);
+    }
+    const bestMonth = [...months].sort((a, b) => b.dayHits - a.dayHits)[0];
+    if (bestMonth?.dayHits > 0) {
+      insights.push(`${bestMonth.name} was your most active month with ${bestMonth.dayHits} touchpoints.`);
+    }
+    if (stats.totalJournals > 0) {
+      insights.push(`You wrote ${stats.totalJournals} journal entries — an average of ${Math.round(stats.totalJournals / 12)} per month.`);
+    }
+    return insights.length > 0 ? insights : ['Start tracking media to see your year in review.'];
   }
 
   private getFavoriteType(totals: Record<string, number>): string | null {

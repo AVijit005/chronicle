@@ -58,6 +58,14 @@ export function useCalendar(year?: number, month?: number) {
   });
 }
 
+export function useCalendarYear(year: number) {
+  return useQuery({
+    queryKey: [...queryKeys.analytics.all, 'calendar-rich', year] as const,
+    queryFn: () => analyticsApi.getCalendarYear(year),
+    staleTime: 5 * 60_000,
+  });
+}
+
 export function useInsights() {
   return useQuery({
     queryKey: queryKeys.analytics.insights(),

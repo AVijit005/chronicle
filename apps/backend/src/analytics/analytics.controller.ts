@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CurrentUser, JwtAuthGuard } from '../auth';
 import type { AccessTokenPayload } from '../auth/services/jwt-token.service';
@@ -11,6 +11,7 @@ import type {
   GenreAnalyticsDto,
   ActivityDto,
   CalendarDto,
+  CalendarYearDto,
   InsightsDto,
 } from './dto';
 
@@ -55,6 +56,15 @@ export class AnalyticsController {
   @ApiOperation({ summary: 'Activity heatmap and timeline' })
   async getActivity(@CurrentUser() user: AccessTokenPayload): Promise<ActivityDto> {
     return this.analyticsService.getActivity(user.sub);
+  }
+
+  @Get('calendar/rich/:year')
+  @ApiOperation({ summary: 'Rich calendar year overview with stats, heatmap, highlights, streaks' })
+  async getCalendarYear(
+    @CurrentUser() user: AccessTokenPayload,
+    @Param('year') year: string,
+  ): Promise<CalendarYearDto> {
+    return this.analyticsService.getCalendarYear(user.sub, parseInt(year, 10) || new Date().getFullYear());
   }
 
   @Get('calendar')

@@ -261,6 +261,33 @@ export interface UICalendar {
   entries: UICalendarEntry[];
 }
 
+export interface UICalendarYear {
+  year: number;
+  stats: { stories: number; journals: number; longestStreak: number; favoriteMonth: string };
+  months: UICalendarMonth[];
+  heatmap: { w: number; d: number; v: number }[];
+  highlights: { label: string; value: string; note: string; media: { poster: string | null } }[];
+  streaks: { label: string; value: number; total: number; accent: string }[];
+  releases: { title: string; poster: string; when: string; countdown: string; accent: string }[];
+  insights: string[];
+}
+
+export interface UICalendarMonth {
+  index: number;
+  name: string;
+  short: string;
+  daysInMonth: number;
+  startDay: number;
+  cells: { day: number; hasMedia: boolean; hasJournal: boolean; hasAchievement: boolean; intensity: number; mediaCount: number; poster: string }[];
+  accent: string;
+  favorite: string;
+  genre: string;
+  mediaCount: number;
+  journalCount: number;
+  hours: number;
+  collage: string[];
+}
+
 export interface UIInsights {
   mostActiveWeekday: string;
   favoriteGenre: string | null;

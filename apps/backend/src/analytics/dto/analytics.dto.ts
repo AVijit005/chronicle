@@ -119,6 +119,72 @@ export class CalendarDto {
   entries: CalendarEntryDto[];
 }
 
+// ─── Rich Calendar Year ────────────────────────────────
+export class CalendarMonthDto {
+  month: number;
+  name: string;
+  journalCount: number;
+  storyCount: number;
+  hoursTracked: number;
+  topMedia: CalendarMediaRefDto[];
+  dayHits: number;
+}
+
+export class CalendarMediaRefDto {
+  id: string;
+  title: string;
+  posterUrl: string | null;
+  mediaType: string;
+}
+
+export class CalendarYearStatsDto {
+  totalStories: number;
+  totalJournals: number;
+  longestStreak: number;
+  totalHours: number;
+}
+
+export class CalendarHeatmapCellDto {
+  week: number;
+  day: number;
+  value: number;
+}
+
+export class CalendarYearDto {
+  year: number;
+  stats: CalendarYearStatsDto;
+  months: CalendarMonthDto[];
+  heatmap: CalendarHeatmapCellDto[];
+  highlights: CalendarHighlightDto[];
+  streaks: CalendarStreakDto[];
+  upcoming: CalendarUpcomingDto[];
+  insights: string[];
+}
+
+export class CalendarHighlightDto {
+  label: string;
+  value: string;
+  note: string;
+  mediaId: string;
+  posterUrl: string | null;
+  accent: string;
+}
+
+export class CalendarStreakDto {
+  label: string;
+  value: number;
+  total: number;
+  accent: string;
+}
+
+export class CalendarUpcomingDto {
+  title: string;
+  posterUrl: string | null;
+  when: string;
+  countdown: string;
+  accent: string;
+}
+
 export class InsightsDto {
   mostActiveWeekday: string;
   favoriteGenre: string | null;

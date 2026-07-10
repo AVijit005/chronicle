@@ -12,6 +12,7 @@ import type {
   GenreAnalyticsDto,
   ActivityDto,
   CalendarDto,
+  CalendarYearDto,
   InsightsDto,
 } from './dto';
 
@@ -51,6 +52,10 @@ export class AnalyticsService {
 
   async getCalendar(userId: string, year: number, month: number): Promise<CalendarDto> {
     return this.aggregation.getCalendar(userId, year, month);
+  }
+
+  async getCalendarYear(userId: string, year: number): Promise<CalendarYearDto> {
+    return this.aggregation.getCalendarYear(userId, year);
   }
 
   async getInsights(userId: string): Promise<InsightsDto> {
