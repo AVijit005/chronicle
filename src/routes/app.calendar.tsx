@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence, useMotionValue, useTransform, useMotionTemplate, useSpring } from "motion/react";
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useRef, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   ChevronLeft,
@@ -204,9 +204,6 @@ function CalendarPage() {
 
   return (
     <div className="pb-32 pt-2">
-      {/* Zone Navigator */}
-      <ZoneNavigator />
-
       {/* Seasonal tint */}
       <div
         className="pointer-events-none fixed inset-0 -z-10 transition-colors duration-1000"
@@ -217,7 +214,6 @@ function CalendarPage() {
 
       {/* Zone 1 — Memory Hero */}
       <motion.section
-        id="zone-01"
         initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -263,7 +259,7 @@ function CalendarPage() {
       </motion.section>
 
       {/* Zone 2 — Year overview */}
-      <Zone id="zone-02" eyebrow="Zone 02" title="Year overview">
+      <Zone eyebrow="Zone 02" title="Year overview">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {CALENDAR_YEAR.map((m) => {
             const active = m.index === monthIdx;
@@ -307,7 +303,6 @@ function CalendarPage() {
 
       {/* Zone 3+4 — Monthly grid + Daily memory panel */}
       <Zone
-        id="zone-03"
         eyebrow="Zone 03"
         title={`${month.name} 2026`}
         sub={`${month.mediaCount} stories · ${month.journalCount} journals · ${month.hours}h`}
@@ -556,7 +551,7 @@ function CalendarPage() {
       </Zone>
 
       {/* Zone 5 — Media heatmap */}
-      <Zone id="zone-05" eyebrow="Zone 05" title="Media heatmap" sub="52 weeks of attention.">
+      <Zone eyebrow="Zone 05" title="Media heatmap" sub="52 weeks of attention.">
         <PremiumGlass className="p-6 md:p-8 border border-white/[0.08] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
           <div className="overflow-x-auto pb-2">
             <div
@@ -649,12 +644,12 @@ function CalendarPage() {
       </Zone>
 
       {/* Zone 6 — Highlights */}
-      <Zone id="zone-06" eyebrow="Zone 06" title="Memory highlights">
+      <Zone eyebrow="Zone 06" title="Memory highlights">
         <BentoMemoryWall />
       </Zone>
 
       {/* Zone 7 — Streaks */}
-      <Zone id="zone-07" eyebrow="Zone 07" title="Memory streaks">
+      <Zone eyebrow="Zone 07" title="Memory streaks">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {MEMORY_STREAKS.map((s, idx) => (
             <StreakCard key={s.label} s={s} idx={idx} />
@@ -663,7 +658,7 @@ function CalendarPage() {
       </Zone>
 
       {/* Zone 8 — Upcoming releases */}
-      <Zone id="zone-08" eyebrow="Zone 08" title="Upcoming releases">
+      <Zone eyebrow="Zone 08" title="Upcoming releases">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {UPCOMING_RELEASES.map((u) => (
             <HolographicReleaseCard key={u.title} u={u} />
@@ -672,7 +667,7 @@ function CalendarPage() {
       </Zone>
 
       {/* Zone 9 — Insights */}
-      <Zone id="zone-09" eyebrow="Zone 09" title="Calendar insights">
+      <Zone eyebrow="Zone 09" title="Calendar insights">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {CALENDAR_INSIGHTS.map((line, i) => (
             <PremiumGlass
@@ -703,7 +698,6 @@ function CalendarPage() {
 
       {/* Memory · This week, in your life */}
       <Zone
-        id="zone-memory"
         eyebrow="Memory"
         title="This week, in your life"
         sub="The same week of the year, across previous years."
@@ -794,89 +788,13 @@ function CalendarPage() {
   );
 }
 
-const ZONE_NAV = [
-  { id: "zone-01", label: "01", title: "Year at a glance" },
-  { id: "zone-02", label: "02", title: "Monthly calendar" },
-  { id: "zone-03", label: "03", title: "Quick capture" },
-  { id: "zone-04", label: "04", title: "Daily memory" },
-  { id: "zone-05", label: "05", title: "Media heatmap" },
-  { id: "zone-06", label: "06", title: "Highlights" },
-  { id: "zone-07", label: "07", title: "Streaks" },
-  { id: "zone-08", label: "08", title: "Upcoming" },
-  { id: "zone-09", label: "09", title: "Insights" },
-  { id: "zone-memory", label: "M", title: "This week" },
-];
-
-function ZoneNavigator() {
-  const [activeZone, setActiveZone] = useState("zone-01");
-
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    ZONE_NAV.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const observer = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveZone(id); },
-        { threshold: 0.2, rootMargin: "-10% 0px -60% 0px" }
-      );
-      observer.observe(el);
-      observers.push(observer);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
-
-  return (
-    <motion.nav
-      className="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden xl:flex flex-col items-end gap-[10px]"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.8 }}
-    >
-      {ZONE_NAV.map(({ id, title }) => {
-        const isActive = activeZone === id;
-        return (
-          <button
-            key={id}
-            onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-            className="group flex items-center gap-2.5 cursor-pointer"
-            aria-label={`Jump to ${title}`}
-          >
-            {/* Label tooltip — slides in on hover */}
-            <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/40 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-1 group-hover:translate-x-0 whitespace-nowrap">
-              {title}
-            </span>
-
-            {/* Pill / dot indicator */}
-            <motion.span
-              className="block rounded-full flex-shrink-0"
-              animate={{
-                width: isActive ? 20 : 5,
-                height: 5,
-                backgroundColor: isActive
-                  ? "oklch(0.72 0.18 255)"
-                  : "rgba(255,255,255,0.2)",
-                boxShadow: isActive
-                  ? "0 0 10px 2px oklch(0.72 0.18 255 / 0.55)"
-                  : "none",
-              }}
-              transition={{ type: "spring", stiffness: 320, damping: 30 }}
-            />
-          </button>
-        );
-      })}
-    </motion.nav>
-  );
-}
-
 function Zone({
-  id,
   eyebrow,
   title,
   sub,
   action,
   children,
 }: {
-  id?: string;
   eyebrow?: string;
   title: string;
   sub?: string;
@@ -885,7 +803,6 @@ function Zone({
 }) {
   return (
     <motion.section
-      id={id}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
