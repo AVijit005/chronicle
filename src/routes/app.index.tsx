@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, useMotionValue, useTransform, useMotionTemplate } from "motion/react";
 import { Plus, Search as SearchIcon, NotebookPen, Layers, ChevronRight } from "lucide-react";
 import { CinematicHero } from "@/components/media/CinematicHero";
 import { MediaCard } from "@/components/media/MediaCard";
@@ -115,22 +115,7 @@ function Home() {
           { icon: NotebookPen, label: "Journal entry", hint: "Press ⇧J", onClick: () => navigate({ to: '/app/journal' }) },
           { icon: Layers, label: "New collection", hint: "Press ⇧C", onClick: () => navigate({ to: '/app/collections' }) },
         ].map((q, i) => (
-          <motion.button
-            key={i}
-            onClick={q.onClick}
-            whileHover={reduced ? undefined : { scale: 1.02, y: -4, transition: motionT.spring }}
-            whileTap={reduced ? undefined : { scale: 0.97, y: 0, transition: motionT.spring }}
-            className="glass group flex items-center gap-3 rounded-2xl p-4 text-left transition"
-          >
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.06]">
-              <q.icon className="h-4 w-4 text-primary" />
-            </div>
-            <div className="flex-1">
-              <div className="text-sm">{q.label}</div>
-              <div className="text-[11px] text-muted-foreground">{q.hint}</div>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-foreground" />
-          </motion.button>
+          <InteractiveWidget key={i} q={q} reduced={reduced} />
         ))}
       </motion.div>
 
@@ -265,5 +250,70 @@ function Home() {
 
       <SmartFooter className="mt-20" />
     </div>
+  );
+}
+
+function InteractiveWidget({ q, reduced }: { q: any; reduced: boolean }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  
+  function handleMouse(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Tilt calculations
+    tiltX.set(event.clientX - centerX);
+    tiltY.set(event.clientY - centerY);
+    
+    // Glare calculations
+    x.set(event.clientX - rect.left);
+    y.set(event.clientY - rect.top);
+  }
+
+  function handleMouseLeave() {
+    tiltX.set(0);
+    tiltY.set(0);
+  }
+
+  const rotateX = useTransform(tiltY, [-100, 100], [8, -8], { clamp: true });
+  const rotateY = useTransform(tiltX, [-100, 100], [-8, 8], { clamp: true });
+
+  return (
+    <motion.button
+      onClick={q.onClick}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
+      whileHover={reduced ? undefined : { scale: 1.02, y: -4, zIndex: 10 }}
+      whileTap={reduced ? undefined : { scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="relative group flex items-center gap-3 rounded-2xl p-4 text-left border border-white/[0.05] bg-black/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),_0_4px_12px_rgba(0,0,0,0.2)] overflow-hidden hover:border-white/[0.12] transition-colors duration-500"
+    >
+      {/* Dynamic Glare Overlay */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: useMotionTemplate`radial-gradient(120px circle at ${x}px ${y}px, rgba(255,255,255,0.4), transparent 80%)`,
+        }}
+      />
+      
+      {/* Ambient background glow from icon */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none mix-blend-screen bg-primary/20 blur-[20px]" />
+      
+      {/* Icon Container */}
+      <div className="relative grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] shadow-sm transition-all duration-300 group-hover:bg-primary/20 group-hover:border-primary/40 group-hover:shadow-[0_0_12px_rgba(var(--primary),0.3)] z-10">
+        <q.icon className="h-[18px] w-[18px] text-muted-foreground group-hover:text-primary transition-colors duration-300 drop-shadow-sm group-hover:drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]" />
+      </div>
+
+      <div className="flex-1 relative z-10">
+        <div className="text-[13px] font-medium text-foreground/90 tracking-tight group-hover:text-white transition-colors drop-shadow-sm">{q.label}</div>
+        <div className="text-[10px] font-bold text-muted-foreground/60 tracking-widest uppercase mt-0.5 transition-colors group-hover:text-primary/70">{q.hint}</div>
+      </div>
+      
+      <ChevronRight className="h-4 w-4 text-muted-foreground/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary relative z-10" />
+    </motion.button>
   );
 }
