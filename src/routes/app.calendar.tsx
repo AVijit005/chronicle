@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { CountUp, ZoneHeading, ProgressRing } from "@/components/analytics/AnalyticsKit";
 import {
@@ -551,58 +552,68 @@ function CalendarPage() {
 
       {/* Zone 5 — Media heatmap */}
       <Zone eyebrow="Zone 05" title="Media heatmap" sub="52 weeks of attention.">
-        <PremiumGlass className="p-6 md:p-8">
+        <PremiumGlass className="p-6 md:p-8 border border-white/[0.08] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
           <div className="overflow-x-auto pb-2">
             <div
               className="grid grid-rows-7 gap-1"
               style={{ gridTemplateColumns: `repeat(52, minmax(10px, 1fr))` }}
             >
-              {YEAR_HEATMAP.map((c) => {
-                const isActive = c.v >= 0.15;
-                const opacity = isActive ? Math.min(1, 0.15 + c.v * 0.85) : 0;
-                
-                return (
-                  <div
-                    key={`${c.w}-${c.d}`}
-                    className="relative aspect-square rounded-[3px] cursor-crosshair overflow-hidden group transition-all duration-300 hover:scale-110 hover:z-10 hover:shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
-                    title={`week ${c.w + 1} · day ${c.d + 1} · ${(c.v * 100).toFixed(0)}%`}
-                    style={{
-                      gridColumnStart: c.w + 1,
-                      gridRowStart: c.d + 1,
-                      backgroundColor: "rgba(0, 0, 0, 0.25)",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                    }}
-                  >
-                    {/* Glowing under-layer for active days */}
-                    <div 
-                      className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100"
-                      style={{
-                        backgroundColor: `oklch(0.72 0.18 255)`,
-                        opacity: opacity,
-                      }}
-                    />
-                    
-                    {/* Ambient glow effect that spills slightly */}
-                    {isActive && (
-                      <div 
-                        className="absolute inset-0 blur-[2px] transition-opacity duration-500"
-                        style={{
-                          backgroundColor: `oklch(0.72 0.18 255)`,
-                          opacity: opacity * 0.5,
-                        }}
-                      />
-                    )}
-                    
-                    {/* The physical glass bevel/frosted surface always on top */}
-                    <div 
-                      className="absolute inset-0 pointer-events-none border border-white/5 group-hover:border-white/20 transition-colors"
-                      style={{
-                        boxShadow: "inset 0 1px 1px 0 rgba(255,255,255,0.2), inset 0 -1px 1px 0 rgba(0,0,0,0.6)",
-                      }}
-                    />
-                  </div>
-                );
-              })}
+              <TooltipProvider delayDuration={0}>
+                {YEAR_HEATMAP.map((c) => {
+                  const isActive = c.v >= 0.15;
+                  const opacity = isActive ? Math.min(1, 0.15 + c.v * 0.85) : 0;
+                  
+                  return (
+                    <Tooltip key={`${c.w}-${c.d}`}>
+                      <TooltipTrigger asChild>
+                        <div
+                          className="relative aspect-square rounded-[3px] cursor-crosshair overflow-hidden group transition-all duration-300 hover:scale-110 hover:z-10 hover:shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                          style={{
+                            gridColumnStart: c.w + 1,
+                            gridRowStart: c.d + 1,
+                            backgroundColor: "rgba(0, 0, 0, 0.25)",
+                            boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                          }}
+                        >
+                          {/* Glowing under-layer for active days using radial gradient */}
+                          {isActive && (
+                            <div 
+                              className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100"
+                              style={{
+                                background: `radial-gradient(150% 150% at 50% 50%, oklch(0.72 0.18 255 / ${opacity}) 0%, oklch(0.72 0.18 255 / 0) 100%)`,
+                              }}
+                            />
+                          )}
+                          
+                          {/* Ambient glow effect that spills slightly */}
+                          {isActive && (
+                            <div 
+                              className="absolute inset-0 blur-[2px] transition-opacity duration-500"
+                              style={{
+                                backgroundColor: `oklch(0.72 0.18 255)`,
+                                opacity: opacity * 0.4,
+                              }}
+                            />
+                          )}
+                          
+                          {/* The physical glass bevel/frosted surface always on top */}
+                          <div 
+                            className="absolute inset-0 pointer-events-none border border-white/5 group-hover:border-white/20 transition-colors"
+                            style={{
+                              boxShadow: "inset 0 1px 1px 0 rgba(255,255,255,0.2), inset 0 -1px 1px 0 rgba(0,0,0,0.6)",
+                            }}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" sideOffset={8} className="text-[11px] font-medium tracking-wide">
+                        <span className="opacity-70 uppercase text-[9px] tracking-[0.1em]">Week {c.w + 1} · Day {c.d + 1}</span>
+                        <span className="mx-2 text-primary/40">|</span>
+                        <span className="text-white">{(c.v * 100).toFixed(0)}% Activity</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </TooltipProvider>
             </div>
           </div>
           <div className="mt-4 flex items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
