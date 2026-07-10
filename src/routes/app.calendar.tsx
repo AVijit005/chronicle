@@ -910,46 +910,26 @@ function BentoCard({ h, colSpan, index }: { h: any; colSpan: string; index: numb
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
 
-  // Spring-smoothed tilt — subtle and premium
-  const springConfig = { stiffness: 180, damping: 32 };
-  const rotateY = useSpring(useTransform(rawX, [0, 1], [-4, 4]), springConfig);
-  const rotateX = useSpring(useTransform(rawY, [0, 1], [3, -3]), springConfig);
-
   // Radial glow follows cursor exactly
   const radialGlow = useMotionTemplate`radial-gradient(180px circle at ${cursorX}px ${cursorY}px, rgba(139,92,246,0.18), transparent 70%)`;
 
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    rawX.set(x);
-    rawY.set(y);
     cursorX.set(e.clientX - rect.left);
     cursorY.set(e.clientY - rect.top);
-  }
-
-  function onMouseLeave() {
-    rawX.set(0.5);
-    rawY.set(0.5);
-    setHovered(false);
   }
 
   return (
     <motion.div
       ref={ref}
       className={`${colSpan} relative overflow-hidden rounded-[22px] cursor-pointer min-h-[210px] border border-white/[0.07] shadow-[0_8px_32px_rgba(0,0,0,0.45)]`}
-      style={{
-        rotateX: hovered ? rotateX : 0,
-        rotateY: hovered ? rotateY : 0,
-        transformPerspective: 900,
-      }}
       initial={{ opacity: 0, y: 32, scale: 0.97 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={onMouseLeave}
+      onMouseLeave={() => setHovered(false)}
       onMouseMove={onMouseMove}
     >
       {/* ── Background image ── */}
