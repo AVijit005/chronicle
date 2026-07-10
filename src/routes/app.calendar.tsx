@@ -69,7 +69,7 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
   const rotateY = useTransform(x, [-100, 100], [-10, 10], { clamp: true });
   
   const progress = (s.value / s.total) * 100;
-  const r = 36;
+  const r = 42;
   const c = 2 * Math.PI * r;
   const easing = [0.16, 1, 0.3, 1];
 
@@ -86,28 +86,42 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
         
         <div className="flex flex-col items-center justify-between px-4 py-8 h-full relative box-border w-full z-10 min-h-[230px]">
           
-          <div className="relative flex items-center justify-center w-24 h-24 mb-6">
+          <div className="relative flex items-center justify-center w-28 h-28 mb-6">
             
             <div 
-              className="absolute inset-0 rounded-full blur-[20px] opacity-0 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none mix-blend-screen"
+              className="absolute inset-0 rounded-full blur-[24px] opacity-0 group-hover:opacity-50 transition-opacity duration-700 pointer-events-none mix-blend-screen"
               style={{ backgroundColor: s.accent }}
             />
             
-            <svg width="96" height="96" className="-rotate-90 relative z-10" style={{ overflow: "visible" }} viewBox="0 0 96 96">
+            <svg width="112" height="112" className="-rotate-90 relative z-10" style={{ overflow: "visible" }} viewBox="0 0 112 112">
               <defs>
                 <linearGradient id={`grad-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={s.accent} stopOpacity="0.4" />
+                  <stop offset="0%" stopColor={s.accent} stopOpacity="0.5" />
                   <stop offset="50%" stopColor={s.accent} stopOpacity="0.8" />
                   <stop offset="100%" stopColor={s.accent} stopOpacity="1" />
                 </linearGradient>
+                <filter id={`inset-shadow-${idx}`}>
+                  <feOffset dx="0" dy="0"/>
+                  <feGaussianBlur stdDeviation="3" result="offset-blur"/>
+                  <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+                  <feFlood floodColor="black" floodOpacity="0.4" result="color"/>
+                  <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+                  <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+                </filter>
               </defs>
 
-              <circle cx="48" cy="48" r={r} stroke="oklch(1 1 1 / 0.05)" strokeWidth="4" fill="none" />
+              <circle 
+                cx="56" cy="56" r={r} 
+                stroke="oklch(1 1 1 / 0.04)" 
+                strokeWidth="12" 
+                fill="none" 
+                className="transition-colors duration-500 group-hover:stroke-white/10"
+              />
               
               <motion.circle
-                cx="48" cy="48" r={r}
+                cx="56" cy="56" r={r}
                 stroke={`url(#grad-${idx})`}
-                strokeWidth="5"
+                strokeWidth="12"
                 strokeLinecap="round"
                 fill="none"
                 strokeDasharray={c}
@@ -115,7 +129,9 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
                 whileInView={{ strokeDashoffset: c - (c * Math.max(progress, 1)) / 100 }}
                 viewport={{ once: true }}
                 transition={{ duration: 2.2 + idx * 0.1, ease: easing }}
-                style={{ filter: `drop-shadow(0 4px 12px ${s.accent}80)` }}
+                style={{ 
+                  filter: `drop-shadow(0 4px 12px ${s.accent}80)`,
+                }}
               />
             </svg>
             
@@ -127,16 +143,16 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
               transition={{ duration: 2.2 + idx * 0.1, ease: easing }}
             >
               <div 
-                className="w-[5px] h-[5px] bg-white rounded-full"
+                className="w-3 h-3 bg-white rounded-full"
                 style={{ 
-                  marginTop: 12 - 2.5, 
-                  boxShadow: `0 0 12px 3px ${s.accent}, 0 0 4px white` 
+                  marginTop: 56 - r - 6, 
+                  boxShadow: `0 0 16px 4px ${s.accent}, inset 0 -2px 4px rgba(0,0,0,0.4)` 
                 }} 
               />
             </motion.div>
 
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-              <span className="font-display font-medium text-[16px] text-white tracking-tight drop-shadow-md">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 flex-col">
+              <span className="font-display font-medium text-[22px] text-white tracking-tight drop-shadow-md leading-none">
                 <CountUp to={Math.round(progress)} />%
               </span>
             </div>
@@ -152,7 +168,7 @@ function StreakCard({ s, idx }: { s: typeof MEMORY_STREAKS[0], idx: number }) {
               </span>
             </div>
             
-            <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-60 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent }}>
+            <div className="text-[9px] font-bold uppercase tracking-[0.25em] mt-2 opacity-60 group-hover:opacity-100 transition-opacity duration-500" style={{ color: s.accent, textShadow: `0 0 10px ${s.accent}` }}>
               {s.label}
             </div>
           </div>
