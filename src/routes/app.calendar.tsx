@@ -892,11 +892,11 @@ function GlassAccordionHighlights() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="flex h-[400px] md:h-[500px] w-full flex-col md:flex-row gap-4 lg:gap-6">
+    <div className="flex h-[460px] md:h-[520px] w-full flex-row gap-3">
       {CALENDAR_HIGHLIGHTS.map((h, i) => {
         const isHovered = hoveredIndex === i;
         const isAnyHovered = hoveredIndex !== null;
-        
+
         return (
           <motion.div
             key={h.label}
@@ -906,61 +906,75 @@ function GlassAccordionHighlights() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            animate={{ 
-              flex: isHovered ? 5 : isAnyHovered ? 1 : 2
+            animate={{
+              flex: isHovered ? 6 : isAnyHovered ? 0.6 : 1,
             }}
-            transition={{ 
-              flex: { type: "spring", stiffness: 180, damping: 22 },
-              opacity: { duration: 0.5, delay: i * 0.1 },
-              layout: { type: "spring", stiffness: 180, damping: 22 }
+            transition={{
+              flex: { type: "spring", stiffness: 200, damping: 26 },
+              opacity: { duration: 0.5, delay: i * 0.08 },
             }}
-            className="group relative overflow-hidden rounded-[24px] bg-white/[0.03] border border-white/10 cursor-pointer shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_0_60px_rgba(0,0,0,0.6)] h-full min-w-[60px] min-h-[60px]"
+            className="relative overflow-hidden rounded-[20px] border border-white/10 cursor-pointer shadow-[0_8px_40px_rgba(0,0,0,0.4)] h-full min-w-[44px]"
           >
+            {/* Background Image */}
             <motion.img
-              layout="position"
               src={h.media.backdrop ?? h.media.poster}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover object-[center_30%] transition-all duration-700 ease-out"
-              style={{
-                filter: isHovered ? "brightness(1.1) saturate(1.2)" : "brightness(0.4) saturate(0.5)",
-                scale: isHovered ? 1.05 : 1
+              className="absolute inset-0 h-full w-full object-cover object-[center_30%]"
+              animate={{
+                filter: isHovered
+                  ? "brightness(1.05) saturate(1.15)"
+                  : "brightness(0.35) saturate(0.4)",
+                scale: isHovered ? 1.04 : 1,
               }}
-            />
-            
-            {/* Extended deep gradient to guarantee text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/5 pointer-events-none" />
-            
-            {/* Dark glass overlay for unhovered state with heavy blur */}
-            <motion.div 
-              className="absolute inset-0 bg-black/60 backdrop-blur-[12px]"
-              animate={{ opacity: isHovered ? 0 : (isAnyHovered ? 0.7 : 0.3) }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
             />
 
-            {/* Content Container */}
-            <motion.div 
-              layout="position"
-              className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between pointer-events-none"
+            {/* Bottom scrim — always present for text safety */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none" />
+
+            {/* Blur overlay when collapsed */}
+            <motion.div
+              className="absolute inset-0 backdrop-blur-[10px] bg-black/50"
+              animate={{ opacity: isHovered ? 0 : 1 }}
+              transition={{ duration: 0.5 }}
+            />
+
+            {/* ── COLLAPSED STATE: vertical spine label ── */}
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              animate={{ opacity: isHovered ? 0 : 1 }}
+              transition={{ duration: 0.25 }}
             >
-              {/* Top: Pill Tag */}
-              <div className="flex justify-start w-full">
-                <motion.div 
-                  layout="position"
-                  className="rounded-lg md:rounded-full bg-primary/20 border border-primary/30 px-2 py-1 md:px-3 md:py-1.5 text-[9px] font-bold uppercase tracking-wider text-primary shadow-sm backdrop-blur-md whitespace-normal break-words leading-tight"
-                >
+              <span
+                className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 select-none"
+                style={{ writingMode: "vertical-rl", textOrientation: "mixed", transform: "rotate(180deg)" }}
+              >
+                {h.label}
+              </span>
+            </motion.div>
+
+            {/* ── EXPANDED STATE: full content ── */}
+            <motion.div
+              className="absolute inset-0 flex flex-col justify-between p-6 pointer-events-none"
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.35, delay: isHovered ? 0.15 : 0 }}
+            >
+              {/* Top: badge pill */}
+              <div className="flex items-start">
+                <span className="inline-flex rounded-full bg-primary/15 border border-primary/25 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-primary backdrop-blur-md">
                   {h.label}
-                </motion.div>
+                </span>
               </div>
-              
-              {/* Bottom: Main Date & Note */}
-              <motion.div layout="position" className="flex flex-col gap-1 w-full mt-auto">
-                <div className="font-display text-xl md:text-3xl tracking-tight text-white drop-shadow-lg whitespace-normal leading-tight">
+
+              {/* Bottom: date + note */}
+              <div className="flex flex-col gap-2">
+                <div className="font-display text-4xl font-semibold tracking-tight text-white drop-shadow-lg leading-tight">
                   {h.value}
                 </div>
-                <div className="text-[10px] md:text-xs font-medium text-white/90 tracking-wide whitespace-normal leading-snug">
+                <div className="text-sm font-medium text-white/75 tracking-wide leading-snug">
                   {h.note}
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           </motion.div>
         );
