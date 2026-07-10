@@ -23,6 +23,7 @@ import { ObservabilityModule } from './observability';
 import { HardeningModule } from './hardening';
 import { DeploymentModule } from './deployment';
 import { DiscoveryModule } from './discovery';
+import { ChallengesModule } from './challenges';
 import { SharedModule } from './shared';
 import { UsersModule } from './users/users.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
@@ -67,6 +68,7 @@ import { validationPipe } from './common/pipes/validation.pipe';
     HardeningModule,
     DeploymentModule,
     DiscoveryModule,
+    ChallengesModule,
     UsersModule,
   ],
   providers: [
