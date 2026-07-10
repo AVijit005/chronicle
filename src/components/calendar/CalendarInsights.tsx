@@ -12,6 +12,7 @@ export function CalendarInsights() {
         {CALENDAR_INSIGHTS.map((line, i) => (
           <PremiumGlass
             key={i}
+            interactive
             variant="subtle"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}

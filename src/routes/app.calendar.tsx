@@ -52,14 +52,12 @@ function CalendarPage() {
   const [monthIdx, setMonthIdx] = useState(currentMonth);
   const [selectedDay, setSelectedDay] = useState<number | null>(14);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  
+
   const { isLoading: isCalendarLoading, isError: isCalendarError } = useCalendar(displayYear, monthIdx);
   const month = CALENDAR_YEAR[monthIdx];
   const season = seasonOf(monthIdx);
 
-  if (isCalendarLoading) {
-    return <CalendarSkeleton />;
-  }
+  if (isCalendarLoading) return <CalendarSkeleton />;
 
   if (isCalendarError) {
     return (
@@ -75,13 +73,8 @@ function CalendarPage() {
 
   const grid = useMemo(() => {
     const cells: ({
-      day: number;
-      hasMedia: boolean;
-      hasJournal: boolean;
-      hasAchievement: boolean;
-      intensity: number;
-      mediaCount: number;
-      poster: string;
+      day: number; hasMedia: boolean; hasJournal: boolean;
+      hasAchievement: boolean; intensity: number; mediaCount: number; poster: string;
     } | null)[] = [];
     for (let i = 0; i < month.startDay; i++) cells.push(null);
     month.cells.forEach((c) => cells.push(c));
@@ -95,25 +88,17 @@ function CalendarPage() {
     if (!cell || !cell.hasMedia) return [];
     const seed = monthIdx * 100 + selectedDay;
     const mediaTypes: Array<{ icon: typeof Film; label: string }> = [
-      { icon: Film, label: "Movie" },
-      { icon: BookOpen, label: "Book" },
-      { icon: Gamepad2, label: "Game" },
-      { icon: Music, label: "Album" },
-      { icon: NotebookPen, label: "Journal" },
-      { icon: Trophy, label: "Achievement" },
+      { icon: Film, label: "Movie" }, { icon: BookOpen, label: "Book" },
+      { icon: Gamepad2, label: "Game" }, { icon: Music, label: "Album" },
+      { icon: NotebookPen, label: "Journal" }, { icon: Trophy, label: "Achievement" },
     ];
-    const count = Math.min(cell.mediaCount, 6);
-    return Array.from({ length: count }, (_, i) => {
+    return Array.from({ length: Math.min(cell.mediaCount, 6) }, (_, i) => {
       const media = MEDIA[(seed + i * 7) % MEDIA.length];
       const typeInfo = mediaTypes[(seed + i * 13) % mediaTypes.length];
-      const notes = [
-        "32 pages", "1h 22m", "Full listen", "418 words", "Gold tier",
-        "2h 49m", "24m / ep", "5 chapters", "3 episodes", "~2 hours",
-      ];
+      const notes = ["32 pages", "1h 22m", "Full listen", "418 words", "Gold tier", "2h 49m", "24m / ep", "5 chapters", "3 episodes", "~2 hours"];
       return {
-        icon: typeInfo.icon,
-        label: typeInfo.label,
-        title: media.title.length > 20 ? media.title.slice(0, 20) + "…" : media.title,
+        icon: typeInfo.icon, label: typeInfo.label,
+        title: media.title.length > 20 ? media.title.slice(0, 20) + "\u2026" : media.title,
         note: notes[(seed + i * 3) % notes.length],
       };
     });
@@ -121,50 +106,26 @@ function CalendarPage() {
 
   return (
     <div className="pb-32 pt-2">
-      {/* Seasonal tint */}
-      <div
-        className="pointer-events-none fixed inset-0 -z-10 transition-colors duration-1000"
-        style={{
-          background: `radial-gradient(ellipse 80% 50% at 50% 0%, ${SEASON_TINT[season]}, transparent 70%)`,
-        }}
-      />
+      <div className="pointer-events-none fixed inset-0 -z-10 transition-colors duration-1000"
+        style={{ background: `radial-gradient(ellipse 80% 50% at 50% 0%, ${SEASON_TINT[season]}, transparent 70%)` }} />
 
-      {/* Zone 1 */}
       <CalendarHero currentYear={displayYear} yearOffset={yearOffset} onChangeYear={setYearOffset} />
 
-      {/* Zone 2 */}
-      <MemoryZone eyebrow="Zone 02" title="Year overview">
-        <YearOverview
-          monthIdx={monthIdx}
-          onSelectMonth={(idx) => {
-            setMonthIdx(idx);
-            setSelectedDay(null);
-          }}
-        />
+      <MemoryZone title="Year overview">
+        <YearOverview monthIdx={monthIdx} onSelectMonth={(idx) => { setMonthIdx(idx); setSelectedDay(null); }} />
       </MemoryZone>
 
-      {/* Zone 3+4 — Monthly grid + Daily memory panel */}
       <MemoryZone
-        title={`${month.name} ${currentYear}`}
-        sub={`${month.mediaCount} stories · ${month.journalCount} journals · ${month.hours}h`}
+        title={`${month.name} ${displayYear}`}
+        sub={`${month.mediaCount} stories \u00b7 ${month.journalCount} journals \u00b7 ${month.hours}h`}
         action={
           <div className="inline-flex items-center gap-1">
-            <button
-              onClick={() => {
-                setMonthIdx((monthIdx + 11) % 12);
-                setSelectedDay(null);
-              }}
-              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]"
-            >
+            <button onClick={() => { setMonthIdx((monthIdx + 11) % 12); setSelectedDay(null); }}
+              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]">
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button
-              onClick={() => {
-                setMonthIdx((monthIdx + 1) % 12);
-                setSelectedDay(null);
-              }}
-              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]"
-            >
+            <button onClick={() => { setMonthIdx((monthIdx + 1) % 12); setSelectedDay(null); }}
+              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]">
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -172,61 +133,25 @@ function CalendarPage() {
       >
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
           <div className="flex flex-col gap-6">
-            <MonthlyGrid
-              monthIdx={monthIdx}
-              grid={grid}
-              selectedDay={selectedDay}
-              onSelectDay={setSelectedDay}
-            />
+            <MonthlyGrid monthIdx={monthIdx} grid={grid} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
             <MediaConstellation />
           </div>
-          <DailyMemoryPanel
-            monthName={month.name}
-            monthIdx={monthIdx}
-            selectedDay={selectedDay}
-            currentYear={displayYear}
-            monthAccent={month.accent}
-            items={dailyMemoryItems}
-            onAddMemory={() => setIsAddModalOpen(true)}
-          />
+          <DailyMemoryPanel monthName={month.name} monthIdx={monthIdx} selectedDay={selectedDay} currentYear={displayYear}
+            monthAccent={month.accent} items={dailyMemoryItems} onAddMemory={() => setIsAddModalOpen(true)} />
         </div>
       </MemoryZone>
 
-      {/* Zone 5 */}
-      <MemoryZone title="Media heatmap" sub="52 weeks of attention.">
-        <MediaHeatmap />
-      </MemoryZone>
-
-      <MemoryZone title="Memory highlights">
-        <MemoryHighlights />
-      </MemoryZone>
-
-      <MemoryZone title="Memory streaks">
-        <MemoryStreaks />
-      </MemoryZone>
-
-      <MemoryZone title="Upcoming releases">
-        <UpcomingReleases />
-      </MemoryZone>
-
-      <MemoryZone title="Calendar insights">
-        <CalendarInsights />
-      </MemoryZone>
-
-      <MemoryZone
-        title="This week, in your life"
-        sub="The same week of the year, across previous years."
-      >
+      <MemoryZone title="Media heatmap" sub="52 weeks of attention."><MediaHeatmap /></MemoryZone>
+      <MemoryZone title="Memory highlights"><MemoryHighlights /></MemoryZone>
+      <MemoryZone title="Memory streaks"><MemoryStreaks /></MemoryZone>
+      <MemoryZone title="Upcoming releases"><UpcomingReleases /></MemoryZone>
+      <MemoryZone title="Calendar insights"><CalendarInsights /></MemoryZone>
+      <MemoryZone title="This week, in your life" sub="The same week of the year, across previous years.">
         <ThisWeekHistory />
       </MemoryZone>
 
-      <AddMemoryModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        selectedDay={selectedDay}
-        monthName={month.name}
-        currentYear={currentYear}
-      />
+      <AddMemoryModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}
+        selectedDay={selectedDay} monthName={month.name} currentYear={displayYear} />
     </div>
   );
 }

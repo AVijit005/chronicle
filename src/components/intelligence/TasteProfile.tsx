@@ -1,6 +1,7 @@
 import { buildTasteProfile } from "@/lib/intelligence";
 import { TasteChip } from "./TasteChip";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { useInsights } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 import { cascade } from "@/lib/motion";
 
@@ -12,6 +13,7 @@ const cardMotion = (i: number) => ({
 });
 
 export function TasteProfile({ className }: { className?: string }) {
+  const { data: insights } = useInsights();
   const t = buildTasteProfile();
   return (
     <section aria-label="Taste profile" className={cn("space-y-4", className)}>

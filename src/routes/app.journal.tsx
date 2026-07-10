@@ -211,11 +211,11 @@ function JournalPage() {
       ) : (
         <Zone title="Writing statistics">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-            <StatCardPremium label="Entries" value={statsData?.journalCount ?? 0} delta="+8" />
-            <StatCardPremium label="Words" value={entries.reduce((acc, cur) => acc + countWords(cur.content), 0)} delta="+1,420" accent="oklch(0.65 0.22 295 / 0.4)" />
-            <StatCardPremium label="Longest streak" value={statsData?.writingStreak ?? 0} delta="days" accent="oklch(0.82 0.16 80 / 0.4)" />
-            <StatCardPremium label="Average length" value={entries.length ? Math.round(entries.reduce((acc, cur) => acc + countWords(cur.content), 0) / entries.length) : 0} delta="words" accent="oklch(0.72 0.16 160 / 0.4)" />
-            <StatCardPremium label="Top category" value="Movies" accent="oklch(0.78 0.18 50 / 0.4)" />
+            <StatCardPremium label="Entries" value={statsData?.journalCount ?? 0} />
+            <StatCardPremium label="Words" value={entries.reduce((acc, cur) => acc + countWords(cur.content), 0)} accent="oklch(0.65 0.22 295 / 0.4)" />
+            <StatCardPremium label="Longest streak" value={statsData?.writingStreak ?? 0} accent="oklch(0.82 0.16 80 / 0.4)" />
+            <StatCardPremium label="Average length" value={entries.length ? Math.round(entries.reduce((acc, cur) => acc + countWords(cur.content), 0) / entries.length) : 0} accent="oklch(0.72 0.16 160 / 0.4)" />
+            <StatCardPremium label="Top mood" value={favoriteMood ?? "—"} accent="oklch(0.78 0.18 50 / 0.4)" />
           </div>
         </Zone>
       )}
