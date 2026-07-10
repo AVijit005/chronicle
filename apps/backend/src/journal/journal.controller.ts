@@ -244,4 +244,10 @@ export class JournalController {
   async getStats(@CurrentUser() user: AccessTokenPayload): Promise<JournalStatisticsDto> {
     return this.journalService.getStatistics(user.sub);
   }
+
+  @Get('journal/prompts')
+  @ApiOperation({ summary: 'Get all journal prompts' })
+  async getPrompts(@CurrentUser() user: AccessTokenPayload): Promise<string[]> {
+    return this.journalService.getAllPrompts();
+  }
 }

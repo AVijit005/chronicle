@@ -4,6 +4,7 @@ import { JournalRepository } from './journal.repository';
 import { JournalEventService } from './journal-event.service';
 import { TimelineEventFactory } from './timeline-event-factory';
 import { JournalStatisticsService } from './journal-statistics.service';
+import { PromptService } from './prompt.service';
 import type {
   CreateJournalEntryDto,
   UpdateJournalEntryDto,
@@ -29,6 +30,7 @@ export class JournalService {
     private readonly events: JournalEventService,
     private readonly timelineFactory: TimelineEventFactory,
     private readonly statsService: JournalStatisticsService,
+    private readonly promptService: PromptService,
   ) {}
 
   // ─── Journal Entries ──────────────────────────────────────────────────────
@@ -350,6 +352,10 @@ export class JournalService {
 
   async getStatistics(userId: string): Promise<JournalStatisticsDto> {
     return this.statsService.getStats(userId);
+  }
+
+  getAllPrompts(): string[] {
+    return this.promptService.getAllPrompts();
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
