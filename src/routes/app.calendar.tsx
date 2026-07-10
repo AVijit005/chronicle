@@ -557,27 +557,42 @@ function CalendarPage() {
               className="grid grid-rows-7 gap-1"
               style={{ gridTemplateColumns: `repeat(52, minmax(10px, 1fr))` }}
             >
-              {YEAR_HEATMAP.map((c) => (
-                <div
-                  key={`${c.w}-${c.d}`}
-                  className="aspect-square rounded-[3px] transition hover:scale-150"
-                  title={`week ${c.w + 1} · day ${c.d + 1} · ${(c.v * 100).toFixed(0)}%`}
-                  style={{
-                    background:
-                      c.v < 0.15
-                        ? "oklch(1 0 0 / 0.05)"
-                        : c.v < 0.4
-                          ? `oklch(0.72 0.18 255 / ${0.2 + c.v * 0.2})`
-                          : c.v < 0.6
-                            ? `oklch(0.72 0.18 255 / ${0.4 + c.v * 0.3})`
-                            : c.v < 0.8
-                              ? `oklch(0.72 0.18 255 / ${0.6 + c.v * 0.3})`
-                              : `oklch(0.72 0.18 255 / 1)`,
-                    gridColumnStart: c.w + 1,
-                    gridRowStart: c.d + 1,
-                  }}
-                />
-              ))}
+              {YEAR_HEATMAP.map((c) => {
+                const isActive = c.v >= 0.15;
+                const baseColor = isActive 
+                  ? `oklch(0.72 0.18 255 / ${Math.min(1, 0.2 + c.v * 0.8)})`
+                  : "oklch(1 1 1 / 0.04)";
+                  
+                return (
+                  <motion.div
+                    key={`${c.w}-${c.d}`}
+                    initial={{ opacity: 0, scale: 0.1, y: 15 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ 
+                      duration: 0.5, 
+                      delay: (c.w * 0.015) + (c.d * 0.01), 
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25
+                    }}
+                    whileHover={{ 
+                      scale: 2.2, 
+                      zIndex: 50, 
+                      backgroundColor: isActive ? "oklch(0.72 0.18 255 / 1)" : "oklch(1 1 1 / 0.3)",
+                      boxShadow: isActive ? "0 0 24px 8px oklch(0.72 0.18 255 / 0.7)" : "0 0 12px 2px rgba(255,255,255,0.3)",
+                      borderRadius: "4px"
+                    }}
+                    className="relative aspect-square rounded-[2px] transition-colors duration-300 cursor-crosshair"
+                    title={`week ${c.w + 1} · day ${c.d + 1} · ${(c.v * 100).toFixed(0)}%`}
+                    style={{
+                      backgroundColor: baseColor,
+                      gridColumnStart: c.w + 1,
+                      gridRowStart: c.d + 1,
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
           <div className="mt-4 flex items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
