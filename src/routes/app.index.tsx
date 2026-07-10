@@ -119,7 +119,7 @@ function Home() {
       <WeeklyReflection className="mt-6" overview={uiOverview} />
       <TasteProfile className="mt-16" />
       <div className="mt-16 pointer-events-auto">
-        <PremiumGlass interactive className="group/master rounded-[2.5rem]">
+        <PremiumGlass interactive variant="strong" glow="oklch(0.72 0.18 255 / 0.2)" className="group/master rounded-[2.5rem]">
           <div className="flex flex-col text-left p-10 w-full">
             <div>
               <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">This is you</div>

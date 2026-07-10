@@ -22,12 +22,17 @@ export function TasteProfile({ className }: { className?: string }) {
         <h2 className="font-display text-2xl tracking-tight">This is how you watch</h2>
       </header>
       <div className="grid gap-3 md:grid-cols-2">
-        <PremiumGlass variant="subtle" {...cardMotion(0)}>
-          <div className="p-4">
+        <PremiumGlass
+          interactive
+          variant="default"
+          glow="oklch(0.65 0.22 295 / 0.35)"
+          {...cardMotion(0)}
+        >
+          <div className="p-5">
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Favorite genres
             </div>
-            <ul className="mt-2 flex flex-wrap gap-1.5">
+            <ul className="mt-3 flex flex-wrap gap-1.5">
               {t.favoriteGenres.map((g) => (
                 <li key={g.name}>
                   <TasteChip label={g.name} count={g.count} />
@@ -36,12 +41,17 @@ export function TasteProfile({ className }: { className?: string }) {
             </ul>
           </div>
         </PremiumGlass>
-        <PremiumGlass variant="subtle" {...cardMotion(1)}>
-          <div className="p-4">
+        <PremiumGlass
+          interactive
+          variant="default"
+          glow="oklch(0.72 0.18 255 / 0.35)"
+          {...cardMotion(1)}
+        >
+          <div className="p-5">
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Favorite creators
             </div>
-            <ul className="mt-2 flex flex-wrap gap-1.5">
+            <ul className="mt-3 flex flex-wrap gap-1.5">
               {t.favoriteCreators.map((c) => (
                 <li key={c.name}>
                   <TasteChip label={c.name} count={c.count} />
@@ -50,8 +60,13 @@ export function TasteProfile({ className }: { className?: string }) {
             </ul>
           </div>
         </PremiumGlass>
-        <PremiumGlass variant="subtle" {...cardMotion(2)}>
-          <div className="grid gap-3 p-4 md:grid-cols-2">
+        <PremiumGlass
+          interactive
+          variant="default"
+          glow="oklch(0.72 0.16 160 / 0.35)"
+          {...cardMotion(2)}
+        >
+          <div className="grid gap-3 p-5 md:grid-cols-2">
             <Fact label="Era" value={t.favoriteEras.map((e) => e.name).join(", ")} />
             <Fact label="Runtime" value={t.favoriteRuntime} />
             <Fact label="Time of day" value={t.favoriteTimeOfDay} />
@@ -60,12 +75,19 @@ export function TasteProfile({ className }: { className?: string }) {
             <Fact label="Companion" value={t.favoriteCompanion} />
           </div>
         </PremiumGlass>
-        <PremiumGlass variant="subtle" {...cardMotion(3)}>
-          <div className="p-4">
+        <PremiumGlass
+          interactive
+          variant="default"
+          glow="oklch(0.78 0.16 80 / 0.35)"
+          {...cardMotion(3)}
+        >
+          <div className="p-5">
             <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Completion pattern
             </div>
-            <p className="mt-2 text-sm">{t.favoriteCompletionPattern}</p>
+            <p className="mt-3 text-sm leading-relaxed text-foreground/80">
+              {t.favoriteCompletionPattern}
+            </p>
           </div>
         </PremiumGlass>
       </div>
@@ -75,11 +97,13 @@ export function TasteProfile({ className }: { className?: string }) {
 
 function Fact({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div>
-      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/80">
+    <div className="group/fact cursor-pointer rounded-xl px-3 py-2.5 -mx-2 transition-all duration-300 ease-out hover:bg-white/[0.08] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_16px_-4px_rgba(255,255,255,0.06)] active:scale-[0.98]">
+      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70 group-hover/fact:text-muted-foreground transition-colors duration-300">
         {label}
       </div>
-      <div className="text-sm">{value}</div>
+      <div className="text-sm font-medium text-foreground/65 group-hover/fact:text-foreground/90 transition-colors duration-300">
+        {value}
+      </div>
     </div>
   );
 }

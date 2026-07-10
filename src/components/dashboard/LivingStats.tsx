@@ -28,30 +28,10 @@ export function LivingStats({ className }: { className?: string }) {
   }
 
   const STATS_LIST = [
-    {
-      label: "Hours",
-      to: Math.round(overview?.hoursSpent ?? 0),
-      suffix: "h",
-      accent: "oklch(0.72 0.18 255)", // Neon cyan/blue
-    },
-    {
-      label: "Streak",
-      to: streaks?.currentStreak ?? 0,
-      suffix: "",
-      accent: "oklch(0.65 0.22 295)", // Luminous violet
-    },
-    {
-      label: "Total",
-      to: overview?.totalItems ?? 0,
-      suffix: "",
-      accent: "oklch(0.72 0.16 160)", // Emerald green
-    },
-    {
-      label: "Journals",
-      to: overview?.journalEntries ?? 0,
-      suffix: "",
-      accent: "oklch(0.82 0.16 80)", // Amber/bronze
-    },
+    { label: "Hours", to: Math.round(overview?.hoursSpent ?? 0), suffix: "h", accent: "oklch(0.72 0.18 255)", glow: "oklch(0.72 0.18 255 / 0.35)" },
+    { label: "Streak", to: streaks?.currentStreak ?? 0, suffix: "", accent: "oklch(0.65 0.22 295)", glow: "oklch(0.65 0.22 295 / 0.35)" },
+    { label: "Total", to: overview?.totalItems ?? 0, suffix: "", accent: "oklch(0.72 0.16 160)", glow: "oklch(0.72 0.16 160 / 0.35)" },
+    { label: "Journals", to: overview?.journalEntries ?? 0, suffix: "", accent: "oklch(0.82 0.16 80)", glow: "oklch(0.82 0.16 80 / 0.35)" },
   ];
 
   return (
@@ -67,16 +47,14 @@ export function LivingStats({ className }: { className?: string }) {
         >
           <PremiumGlass
             interactive
-            className="rounded-2xl px-6 py-4 h-full flex flex-col justify-center min-w-[120px]"
-            style={{
-              boxShadow: `inset 0 0 0 1px color-mix(in oklch, ${s.accent} 25%, transparent)`,
-              ["--stat-accent" as string]: s.accent,
-            }}
+            variant="default"
+            glow={s.glow}
+            className="rounded-2xl px-6 py-4 h-full flex flex-col justify-center min-w-[140px]"
           >
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground cursor-pointer whitespace-nowrap">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
               {s.label}
             </div>
-            <div className="mt-1 font-display text-2xl md:text-3xl cursor-pointer">
+            <div className="mt-1 font-display text-2xl md:text-3xl" style={{ color: s.accent }}>
               <CountUp to={s.to} suffix={s.suffix} />
             </div>
           </PremiumGlass>
