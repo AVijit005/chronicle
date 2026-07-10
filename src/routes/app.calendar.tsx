@@ -51,7 +51,7 @@ function CalendarPage() {
   const [yearOffset, setYearOffset] = useState(0);
   const displayYear = currentYear + yearOffset;
   const [monthIdx, setMonthIdx] = useState(currentMonth);
-  const [selectedDay, setSelectedDay] = useState<number | null>(14);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const { data: calendarYearData, isLoading: isCalendarLoading, isError: isCalendarError } = useCalendarYear(displayYear);
