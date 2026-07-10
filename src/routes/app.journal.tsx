@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { NotebookPen, Sparkles, Heart, Bookmark, Clock } from "lucide-react";
+import { NotebookPen, Sparkles, Heart, Bookmark, Clock, X, Send } from "lucide-react";
+import { createPortal } from "react-dom";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { PremiumSquircle } from "@/components/ui/PremiumSquircle";
@@ -23,12 +24,22 @@ import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { useJournalEntries, useJournalStats, useTimelineEvents } from "@/hooks/use-journal";
 import { adaptJournalEntry, adaptTimelineEvent } from "@/lib/adapters/journal";
 import { MEDIA } from "@/lib/mock";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/app/journal")({ component: JournalPage });
 
 function JournalPage() {
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);
+  const [isWriting, setIsWriting] = useState(false);
+  const [journalText, setJournalText] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (isWriting && textareaRef.current) {
+      setTimeout(() => textareaRef.current?.focus(), 400);
+    }
+  }, [isWriting]);
+
   const { data: journalData, isLoading: isLoadingJournal } = useJournalEntries();
   const { data: statsData } = useJournalStats();
   const { data: timelineData } = useTimelineEvents();
@@ -170,6 +181,7 @@ function JournalPage() {
               className="group cursor-pointer rounded-2xl bg-white/[0.08] px-8 py-4 transition-colors hover:bg-white/[0.12]"
               whileHover={{ y: -3, scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
+              onClick={() => setIsWriting(true)}
             >
               <div className="flex h-full w-full items-center justify-center gap-3">
                 <NotebookPen className="h-5 w-5 text-primary drop-shadow-[0_0_12px_currentColor] transition-transform duration-500 ease-out group-hover:rotate-12 group-hover:scale-110" />
@@ -576,6 +588,79 @@ function JournalPage() {
             ))}
         </ul>
       </Zone>
+
+      {/* Immersive Focus Mode Overlay */}
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {isWriting && (
+            <motion.div
+              initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+              animate={{ opacity: 1, backdropFilter: "blur(24px)" }}
+              exit={{ opacity: 0, backdropFilter: "blur(0px)", transition: { duration: 0.4 } }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60"
+            >
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-primary/10 via-transparent to-primary/5" />
+              
+              <motion.button
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.2 }}
+                onClick={() => setIsWriting(false)}
+                className="absolute top-8 right-8 md:top-12 md:right-12 p-4 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white"
+              >
+                <X className="h-6 w-6" />
+              </motion.button>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.6, delay: 0.1, type: "spring", damping: 25 }}
+                className="w-full max-w-3xl flex flex-col items-center px-6"
+              >
+                <div className="text-primary/70 text-[11px] tracking-[0.25em] uppercase font-bold mb-8">
+                  {timeContext} · Focus Mode
+                </div>
+                <h2 className="text-3xl md:text-5xl font-display text-white text-center mb-16 drop-shadow-lg leading-tight">
+                  "{JOURNAL_PROMPTS[0]}"
+                </h2>
+                
+                <textarea
+                  ref={textareaRef}
+                  value={journalText}
+                  onChange={(e) => setJournalText(e.target.value)}
+                  placeholder="Start typing..."
+                  className="w-full min-h-[250px] bg-transparent border-none outline-none resize-none text-2xl md:text-3xl font-serif text-white/95 placeholder:text-white/20 text-center leading-relaxed"
+                  style={{
+                    boxShadow: "none",
+                  }}
+                />
+
+                <AnimatePresence>
+                  {journalText.length > 5 && (
+                    <motion.button
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      onClick={() => {
+                        setIsWriting(false);
+                        setJournalText("");
+                      }}
+                      className="mt-8 flex items-center gap-3 px-8 py-4 rounded-full bg-primary text-primary-foreground font-medium hover:scale-105 transition-all shadow-[0_0_40px_oklch(0.72_0.18_255/0.6)]"
+                    >
+                      <Send className="h-5 w-5" />
+                      Seal entry
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }
