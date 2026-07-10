@@ -557,27 +557,52 @@ function CalendarPage() {
               className="grid grid-rows-7 gap-1"
               style={{ gridTemplateColumns: `repeat(52, minmax(10px, 1fr))` }}
             >
-              {YEAR_HEATMAP.map((c) => (
-                <div
-                  key={`${c.w}-${c.d}`}
-                  className="aspect-square rounded-[3px] transition hover:scale-150"
-                  title={`week ${c.w + 1} · day ${c.d + 1} · ${(c.v * 100).toFixed(0)}%`}
-                  style={{
-                    background:
-                      c.v < 0.15
-                        ? "oklch(1 0 0 / 0.05)"
-                        : c.v < 0.4
-                          ? `oklch(0.72 0.18 255 / ${0.2 + c.v * 0.2})`
-                          : c.v < 0.6
-                            ? `oklch(0.72 0.18 255 / ${0.4 + c.v * 0.3})`
-                            : c.v < 0.8
-                              ? `oklch(0.72 0.18 255 / ${0.6 + c.v * 0.3})`
-                              : `oklch(0.72 0.18 255 / 1)`,
-                    gridColumnStart: c.w + 1,
-                    gridRowStart: c.d + 1,
-                  }}
-                />
-              ))}
+              {YEAR_HEATMAP.map((c) => {
+                const isActive = c.v >= 0.15;
+                const opacity = isActive ? Math.min(1, 0.15 + c.v * 0.85) : 0;
+                
+                return (
+                  <div
+                    key={`${c.w}-${c.d}`}
+                    className="relative aspect-square rounded-[3px] cursor-crosshair overflow-hidden group transition-all duration-300 hover:scale-110 hover:z-10 hover:shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                    title={`week ${c.w + 1} · day ${c.d + 1} · ${(c.v * 100).toFixed(0)}%`}
+                    style={{
+                      gridColumnStart: c.w + 1,
+                      gridRowStart: c.d + 1,
+                      backgroundColor: "rgba(0, 0, 0, 0.25)",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    {/* Glowing under-layer for active days */}
+                    <div 
+                      className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100"
+                      style={{
+                        backgroundColor: `oklch(0.72 0.18 255)`,
+                        opacity: opacity,
+                      }}
+                    />
+                    
+                    {/* Ambient glow effect that spills slightly */}
+                    {isActive && (
+                      <div 
+                        className="absolute inset-0 blur-[2px] transition-opacity duration-500"
+                        style={{
+                          backgroundColor: `oklch(0.72 0.18 255)`,
+                          opacity: opacity * 0.5,
+                        }}
+                      />
+                    )}
+                    
+                    {/* The physical glass bevel/frosted surface always on top */}
+                    <div 
+                      className="absolute inset-0 pointer-events-none border border-white/5 group-hover:border-white/20 transition-colors"
+                      style={{
+                        boxShadow: "inset 0 1px 1px 0 rgba(255,255,255,0.2), inset 0 -1px 1px 0 rgba(0,0,0,0.6)",
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="mt-4 flex items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
