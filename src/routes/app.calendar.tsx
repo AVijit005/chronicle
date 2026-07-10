@@ -950,7 +950,7 @@ function GlassAccordionHighlights() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0, transition: { duration: 0.2 } }}
                       transition={{ duration: 0.5, delay: isHovered ? 0.2 : 0 }}
-                      className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/80 drop-shadow-md whitespace-nowrap"
+                      className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/80 drop-shadow-md whitespace-normal"
                     >
                       {h.label}
                     </motion.div>
@@ -966,10 +966,10 @@ function GlassAccordionHighlights() {
                       transition={{ duration: 0.5, delay: isHovered ? 0.25 : 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="font-display text-3xl md:text-4xl tracking-tight text-white drop-shadow-lg whitespace-nowrap">
+                      <div className="font-display text-2xl md:text-4xl tracking-tight text-white drop-shadow-lg whitespace-normal leading-tight line-clamp-3">
                         {h.value}
                       </div>
-                      <div className="mt-2 text-xs font-medium text-white/70 tracking-wide line-clamp-2 md:whitespace-nowrap">
+                      <div className="mt-2 text-xs font-medium text-white/80 tracking-wide whitespace-normal line-clamp-3">
                         {h.note}
                       </div>
                     </motion.div>
