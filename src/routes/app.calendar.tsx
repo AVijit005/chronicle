@@ -940,23 +940,27 @@ function GlassAccordionHighlights() {
             {/* Content Container */}
             <motion.div 
               layout="position"
-              className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col justify-end h-full pointer-events-none"
+              className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between pointer-events-none"
             >
-              <div className="flex flex-col gap-2">
+              {/* Top: Pill Tag */}
+              <div className="flex justify-start">
                 <AnimatePresence mode="popLayout">
                   {(!isAnyHovered || isHovered) && (
                     <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, transition: { duration: 0.2 } }}
                       transition={{ duration: 0.5, delay: isHovered ? 0.2 : 0 }}
-                      className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/80 drop-shadow-md whitespace-normal"
+                      className="inline-flex rounded-full bg-primary/10 border border-primary/20 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-primary shadow-sm backdrop-blur-md"
                     >
                       {h.label}
                     </motion.div>
                   )}
                 </AnimatePresence>
-                
+              </div>
+              
+              {/* Bottom: Main Date & Note */}
+              <div className="flex flex-col gap-2">
                 <AnimatePresence mode="popLayout">
                   {(!isAnyHovered || isHovered) && (
                     <motion.div
@@ -964,9 +968,9 @@ function GlassAccordionHighlights() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
                       transition={{ duration: 0.5, delay: isHovered ? 0.25 : 0 }}
-                      className="overflow-hidden"
+                      className="overflow-hidden w-full"
                     >
-                      <div className="font-display text-2xl md:text-4xl tracking-tight text-white drop-shadow-lg whitespace-normal leading-tight line-clamp-3">
+                      <div className="font-display text-2xl md:text-3xl tracking-tight text-white drop-shadow-lg whitespace-nowrap">
                         {h.value}
                       </div>
                       <div className="mt-2 text-xs font-medium text-white/80 tracking-wide whitespace-normal line-clamp-3">
