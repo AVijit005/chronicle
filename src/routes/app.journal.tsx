@@ -22,6 +22,7 @@ import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 import { countWords } from "@/lib/utils/words";
 import { JournalHero, JournalPrompt, MoodChart, JournalEntryCard, WriteOverlay } from "@/components/journal";
+import { MemoryZone } from "@/components/calendar";
 
 export const Route = createFileRoute("/app/journal")({ component: JournalPage });
 
@@ -124,23 +125,23 @@ function JournalPage() {
     <div className="pb-32 pt-2">
       <JournalHero isLoading={isLoadingJournal} stats={statsData ? { journalCount: statsData.journalCount, writingStreak: statsData.writingStreak } : null} entries={entries} favoriteMood={favoriteMood} />
 
-      <Zone title={`A prompt for ${timeContext.toLowerCase()}`} sub="One question. No pressure.">
+      <MemoryZone title={`A prompt for ${timeContext.toLowerCase()}`} sub="One question. No pressure.">
         <JournalPrompt promptIndex={promptIndex} timeContext={timeContext} onStartWriting={() => setIsWriting(true)} onNextPrompt={() => setPromptIndex((prev) => (prev + 1) % (JOURNAL_PROMPTS?.length ?? 1))} />
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Your writing, today" sub="Pulled straight from your library — no demo data.">
+      <MemoryZone title="Your writing, today" sub="Pulled straight from your library — no demo data.">
         <LiveStatsStrip />
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="What you watched & played" sub="The stories that shaped your thoughts this month.">
+      <MemoryZone title="What you watched & played" sub="The stories that shaped your thoughts this month.">
         <MemoryBookmarks />
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Recurring themes" sub="The algorithm noticed these patterns in your writing.">
+      <MemoryZone title="Recurring themes" sub="The algorithm noticed these patterns in your writing.">
         <MemoryDNA mediaId={entries[0]?.title?.slice(0, 20) || "interstellar"} />
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Follow the thread">
+      <MemoryZone title="Follow the thread">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {(() => {
             const rec = getContinueMood()[0] || getHiddenGems()[0];
@@ -148,13 +149,13 @@ function JournalPage() {
           })()}
           <ChallengeCard challenge={getActiveChallenge()} />
         </div>
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Past reflections" sub="Your own words, resurfaced when relevant.">
+      <MemoryZone title="Past reflections" sub="Your own words, resurfaced when relevant.">
         <YourReflectionsRail />
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Lately">
+      <MemoryZone title="Lately">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {entries.length === 0 && !isLoadingJournal && (
             <div className="text-muted-foreground">No recent journal entries found.</div>
@@ -168,9 +169,9 @@ function JournalPage() {
             </PremiumButton>
           </div>
         )}
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Moods across the month">
+      <MemoryZone title="Moods across the month">
         {isLoadingJournal ? (
           <div className="mt-16 md:mt-24">
             <ShimmerSkeleton className="mb-6 h-6 w-48 rounded-full" variant="line" />
@@ -199,7 +200,7 @@ function JournalPage() {
             </div>
           </PremiumGlass>
         )}
-      </Zone>
+      </MemoryZone>
 
       {isLoadingJournal ? (
         <div className="mt-16 md:mt-24">
@@ -209,7 +210,7 @@ function JournalPage() {
           </div>
         </div>
       ) : (
-        <Zone title="Writing statistics">
+        <MemoryZone title="Writing statistics">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
             <StatCardPremium label="Entries" value={statsData?.journalCount ?? 0} />
             <StatCardPremium label="Words" value={entries.reduce((acc, cur) => acc + countWords(cur.content), 0)} accent="oklch(0.65 0.22 295 / 0.4)" />
@@ -217,19 +218,19 @@ function JournalPage() {
             <StatCardPremium label="Average length" value={entries.length ? Math.round(entries.reduce((acc, cur) => acc + countWords(cur.content), 0) / entries.length) : 0} accent="oklch(0.72 0.16 160 / 0.4)" />
             <StatCardPremium label="Top mood" value={favoriteMood ?? "—"} accent="oklch(0.78 0.18 50 / 0.4)" />
           </div>
-        </Zone>
+        </MemoryZone>
       )}
 
-      <Zone title="Recent highlights">
+      <MemoryZone title="Recent highlights">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {favoriteEntries.map((j) => <JournalEntryCard key={j.id} entry={j} index={-1} />)}
           {favoriteEntries.length === 0 && <div className="text-muted-foreground text-sm">No entries yet. Start writing.</div>}
         </div>
-      </Zone>
+      </MemoryZone>
 
-      <Zone title="Bookmarked memories" sub="Saved to return to, separate from favorites.">
+      <MemoryZone title="Bookmarked memories" sub="Saved to return to, separate from favorites.">
         <MemoryBookmarks />
-      </Zone>
+      </MemoryZone>
 
       <WriteOverlay
         isOpen={isWriting}
@@ -243,20 +244,5 @@ function JournalPage() {
         onSeal={handleSeal}
       />
     </div>
-  );
-}
-
-function Zone({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-16 md:mt-24"
-    >
-      <ZoneHeading title={title} sub={sub} />
-      {children}
-    </motion.section>
   );
 }
