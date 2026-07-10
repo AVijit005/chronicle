@@ -28,10 +28,10 @@ export function ThisWeekHistory({ className }: Props) {
           <div className="relative mb-8 grid h-14 w-14 place-items-center z-10 mt-2">
             {/* Radar Pulse Rings */}
             <motion.div
-              className="absolute inset-0 rounded-[20px] bg-primary/20 pointer-events-none"
+              className="absolute inset-0 rounded-full bg-primary/20 pointer-events-none"
               animate={{
-                scale: [1, 1.6, 2.2],
-                opacity: [0.5, 0, 0],
+                scale: [1, 1.8, 2.5],
+                opacity: [0.4, 0, 0],
               }}
               transition={{
                 duration: 3,
@@ -40,10 +40,10 @@ export function ThisWeekHistory({ className }: Props) {
               }}
             />
             <motion.div
-              className="absolute inset-0 rounded-[20px] bg-primary/20 pointer-events-none"
+              className="absolute inset-0 rounded-full bg-primary/20 pointer-events-none"
               animate={{
-                scale: [1, 1.6, 2.2],
-                opacity: [0.5, 0, 0],
+                scale: [1, 1.8, 2.5],
+                opacity: [0.4, 0, 0],
               }}
               transition={{
                 duration: 3,
@@ -53,13 +53,13 @@ export function ThisWeekHistory({ className }: Props) {
               }}
             />
             
-            {/* The interactive squircle */}
+            {/* The interactive circular orb */}
             <motion.div 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative grid h-full w-full cursor-pointer place-items-center rounded-[20px] bg-white/[0.05] ring-1 ring-white/10 shadow-[0_8px_16px_rgba(0,0,0,0.4)] backdrop-blur-xl transition-all z-10"
+              className="relative grid h-full w-full cursor-pointer place-items-center rounded-full bg-white/[0.05] ring-1 ring-white/10 shadow-[0_8px_16px_rgba(0,0,0,0.4)] backdrop-blur-xl transition-all z-10 hover:ring-white/30 hover:bg-white/[0.08]"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/0 to-white/0 rounded-[20px] pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/0 to-white/0 rounded-full pointer-events-none" />
               <Sparkles className="h-6 w-6 text-primary drop-shadow-[0_0_12px_oklch(0.72_0.18_255/1)]" />
             </motion.div>
           </div>
