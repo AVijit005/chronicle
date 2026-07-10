@@ -940,46 +940,27 @@ function GlassAccordionHighlights() {
             {/* Content Container */}
             <motion.div 
               layout="position"
-              className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between pointer-events-none"
+              className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between pointer-events-none"
             >
               {/* Top: Pill Tag */}
-              <div className="flex justify-start">
-                <AnimatePresence mode="popLayout">
-                  {(!isAnyHovered || isHovered) && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                      transition={{ duration: 0.5, delay: isHovered ? 0.2 : 0 }}
-                      className="inline-flex rounded-full bg-primary/10 border border-primary/20 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-primary shadow-sm backdrop-blur-md"
-                    >
-                      {h.label}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              <div className="flex justify-start w-full">
+                <motion.div 
+                  layout="position"
+                  className="rounded-lg md:rounded-full bg-primary/20 border border-primary/30 px-2 py-1 md:px-3 md:py-1.5 text-[9px] font-bold uppercase tracking-wider text-primary shadow-sm backdrop-blur-md whitespace-normal break-words leading-tight"
+                >
+                  {h.label}
+                </motion.div>
               </div>
               
               {/* Bottom: Main Date & Note */}
-              <div className="flex flex-col gap-2">
-                <AnimatePresence mode="popLayout">
-                  {(!isAnyHovered || isHovered) && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
-                      transition={{ duration: 0.5, delay: isHovered ? 0.25 : 0 }}
-                      className="overflow-hidden w-full"
-                    >
-                      <div className="font-display text-2xl md:text-3xl tracking-tight text-white drop-shadow-lg whitespace-nowrap">
-                        {h.value}
-                      </div>
-                      <div className="mt-2 text-xs font-medium text-white/80 tracking-wide whitespace-normal line-clamp-3">
-                        {h.note}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              <motion.div layout="position" className="flex flex-col gap-1 w-full mt-auto">
+                <div className="font-display text-xl md:text-3xl tracking-tight text-white drop-shadow-lg whitespace-normal leading-tight">
+                  {h.value}
+                </div>
+                <div className="text-[10px] md:text-xs font-medium text-white/90 tracking-wide whitespace-normal leading-snug">
+                  {h.note}
+                </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         );
