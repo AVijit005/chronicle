@@ -645,7 +645,11 @@ function CalendarPage() {
 
       {/* Zone 6 — Highlights */}
       <Zone eyebrow="Zone 06" title="Memory highlights">
-        <GlassAccordionHighlights />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {CALENDAR_HIGHLIGHTS.map((h) => (
+            <MagazineHighlightCard key={h.label} h={h} />
+          ))}
+        </div>
       </Zone>
 
       {/* Zone 7 — Streaks */}
@@ -888,102 +892,38 @@ function HolographicReleaseCard({ u }: { u: any }) {
   );
 }
 
-function GlassAccordionHighlights() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+function MagazineHighlightCard({ h }: { h: any }) {
   return (
-    <div className="flex h-[400px] md:h-[500px] w-full flex-col md:flex-row gap-4 lg:gap-6">
-      {CALENDAR_HIGHLIGHTS.map((h, i) => {
-        const isHovered = hoveredIndex === i;
-        const isAnyHovered = hoveredIndex !== null;
-        
-        return (
-          <motion.div
-            key={h.label}
-            layout
-            onHoverStart={() => setHoveredIndex(i)}
-            onHoverEnd={() => setHoveredIndex(null)}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            animate={{ 
-              flex: isHovered ? 5 : isAnyHovered ? 1 : 2
-            }}
-            transition={{ 
-              flex: { type: "spring", stiffness: 180, damping: 22 },
-              opacity: { duration: 0.5, delay: i * 0.1 },
-              layout: { type: "spring", stiffness: 180, damping: 22 }
-            }}
-            className="group relative overflow-hidden rounded-[24px] bg-white/[0.03] border border-white/10 cursor-pointer shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_0_60px_rgba(0,0,0,0.6)] h-full min-w-[60px] min-h-[60px]"
-          >
-            <motion.img
-              layout="position"
-              src={h.media.backdrop ?? h.media.poster}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover object-[center_30%] transition-all duration-700 ease-out"
-              style={{
-                filter: isHovered ? "brightness(1.1) saturate(1.2)" : "brightness(0.4) saturate(0.5)",
-                scale: isHovered ? 1.05 : 1
-              }}
-            />
-            
-            {/* Extended deep gradient to guarantee text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/5 pointer-events-none" />
-            
-            {/* Dark glass overlay for unhovered state with heavy blur */}
-            <motion.div 
-              className="absolute inset-0 bg-black/60 backdrop-blur-[12px]"
-              animate={{ opacity: isHovered ? 0 : (isAnyHovered ? 0.7 : 0.3) }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
+    <div className="group relative flex w-full flex-col justify-between overflow-hidden rounded-[20px] border border-white/5 bg-black/50 min-h-[220px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+      
+      {/* Full-Bleed Background Image & Gradients */}
+      <img
+        src={h.media.backdrop ?? h.media.poster}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+      {/* Top gradient to protect the date text */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/40 to-transparent pointer-events-none" />
+      
+      {/* Bottom gradient to protect the badge area */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none" />
 
-            {/* Content Container */}
-            <motion.div 
-              layout="position"
-              className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between pointer-events-none"
-            >
-              {/* Top: Pill Tag */}
-              <div className="flex justify-start">
-                <AnimatePresence mode="popLayout">
-                  {(!isAnyHovered || isHovered) && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                      transition={{ duration: 0.5, delay: isHovered ? 0.2 : 0 }}
-                      className="inline-flex rounded-full bg-primary/10 border border-primary/20 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-primary shadow-sm backdrop-blur-md"
-                    >
-                      {h.label}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-              
-              {/* Bottom: Main Date & Note */}
-              <div className="flex flex-col gap-2">
-                <AnimatePresence mode="popLayout">
-                  {(!isAnyHovered || isHovered) && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
-                      transition={{ duration: 0.5, delay: isHovered ? 0.25 : 0 }}
-                      className="overflow-hidden w-full"
-                    >
-                      <div className="font-display text-2xl md:text-3xl tracking-tight text-white drop-shadow-lg whitespace-nowrap">
-                        {h.value}
-                      </div>
-                      <div className="mt-2 text-xs font-medium text-white/80 tracking-wide whitespace-normal line-clamp-3">
-                        {h.note}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-          </motion.div>
-        );
-      })}
+      {/* Top Section (The Text Block) */}
+      <div className="relative z-10 w-full p-6 pb-0 flex flex-col justify-start">
+        <h3 className="font-display text-3xl md:text-4xl font-semibold tracking-tight text-white drop-shadow-md">
+          {h.value}
+        </h3>
+        <p className="mt-1.5 text-[13px] font-medium text-white/80 drop-shadow-sm leading-relaxed">
+          {h.note}
+        </p>
+      </div>
+
+      {/* Bottom Section (The Badge Anchor with Visual Separator) */}
+      <div className="relative z-10 mt-auto flex w-full items-center border-t border-white/10 p-4 px-6 backdrop-blur-[4px] bg-black/20">
+        <span className="inline-flex rounded-full border border-primary/30 bg-primary/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+          {h.label}
+        </span>
+      </div>
     </div>
   );
 }
