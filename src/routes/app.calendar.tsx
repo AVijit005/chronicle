@@ -920,20 +920,20 @@ function GlassAccordionHighlights() {
               layout="position"
               src={h.media.backdrop ?? h.media.poster}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out"
+              className="absolute inset-0 h-full w-full object-cover object-[center_30%] transition-all duration-700 ease-out"
               style={{
-                filter: isHovered ? "brightness(1.1) saturate(1.2)" : "brightness(0.5) saturate(0.5)",
+                filter: isHovered ? "brightness(1.1) saturate(1.2)" : "brightness(0.4) saturate(0.5)",
                 scale: isHovered ? 1.05 : 1
               }}
             />
             
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
             
-            {/* Dark glass overlay for unhovered state */}
+            {/* Dark glass overlay for unhovered state with heavy blur */}
             <motion.div 
-              className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
-              animate={{ opacity: isHovered ? 0 : (isAnyHovered ? 0.5 : 0.2) }}
-              transition={{ duration: 0.4 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-[12px]"
+              animate={{ opacity: isHovered ? 0 : (isAnyHovered ? 0.7 : 0.3) }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
             />
 
             {/* Content Container */}
@@ -947,7 +947,8 @@ function GlassAccordionHighlights() {
                     <motion.div 
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
+                      exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                      transition={{ duration: 0.5, delay: isHovered ? 0.2 : 0 }}
                       className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/80 drop-shadow-md whitespace-nowrap"
                     >
                       {h.label}
@@ -958,10 +959,10 @@ function GlassAccordionHighlights() {
                 <AnimatePresence mode="popLayout">
                   {(!isAnyHovered || isHovered) && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.3 }}
+                      exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
+                      transition={{ duration: 0.5, delay: isHovered ? 0.25 : 0 }}
                       className="overflow-hidden"
                     >
                       <div className="font-display text-3xl md:text-4xl tracking-tight text-white drop-shadow-lg whitespace-nowrap">
