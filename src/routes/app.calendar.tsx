@@ -892,7 +892,7 @@ function GlassAccordionHighlights() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="flex h-[400px] md:h-[500px] w-full flex-col md:flex-row gap-3 md:gap-4">
+    <div className="flex h-[400px] md:h-[500px] w-full flex-col md:flex-row gap-4 lg:gap-6">
       {CALENDAR_HIGHLIGHTS.map((h, i) => {
         const isHovered = hoveredIndex === i;
         const isAnyHovered = hoveredIndex !== null;
@@ -914,7 +914,7 @@ function GlassAccordionHighlights() {
               opacity: { duration: 0.5, delay: i * 0.1 },
               layout: { type: "spring", stiffness: 180, damping: 22 }
             }}
-            className="group relative overflow-hidden rounded-[24px] bg-white/[0.03] border border-white/10 cursor-pointer shadow-[0_8px_32px_rgba(0,0,0,0.2)] h-full min-w-[60px] min-h-[60px]"
+            className="group relative overflow-hidden rounded-[24px] bg-white/[0.03] border border-white/10 cursor-pointer shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_0_60px_rgba(0,0,0,0.6)] h-full min-w-[60px] min-h-[60px]"
           >
             <motion.img
               layout="position"
@@ -927,7 +927,8 @@ function GlassAccordionHighlights() {
               }}
             />
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+            {/* Extended deep gradient to guarantee text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/5 pointer-events-none" />
             
             {/* Dark glass overlay for unhovered state with heavy blur */}
             <motion.div 
@@ -939,7 +940,7 @@ function GlassAccordionHighlights() {
             {/* Content Container */}
             <motion.div 
               layout="position"
-              className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end h-full pointer-events-none"
+              className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col justify-end h-full pointer-events-none"
             >
               <div className="flex flex-col gap-2">
                 <AnimatePresence mode="popLayout">
