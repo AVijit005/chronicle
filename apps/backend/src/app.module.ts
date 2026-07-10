@@ -24,6 +24,7 @@ import { HardeningModule } from './hardening';
 import { DeploymentModule } from './deployment';
 import { DiscoveryModule } from './discovery';
 import { ChallengesModule } from './challenges';
+import { IntelligenceModule } from './intelligence';
 import { SharedModule } from './shared';
 import { UsersModule } from './users/users.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';

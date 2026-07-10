@@ -304,6 +304,32 @@ export async function getDiscovery(): Promise<DiscoveryResponse> {
   return apiGet<DiscoveryResponse>('/discovery');
 }
 
+// ─── Intelligence ─────────────────────────────
+
+export interface IntelligenceResponse {
+  tasteProfile: {
+    favoriteGenres: { name: string; count: number }[];
+    favoriteCreators: { name: string; count: number }[];
+    favoriteEras: { name: string; count: number }[];
+    favoriteLanguages: string[];
+    favoriteRuntime: string;
+    favoritePlatforms: string[];
+    favoriteSeasons: string[];
+    favoriteTimeOfDay: string;
+    favoriteMood: string;
+    favoriteCompanion: string;
+    favoriteCompletionPattern: string;
+  };
+  personalStatements: { statement: string; confidence: number; evidence: string }[];
+  mediaEvolution: { year: string; focus: string; mediaCount: number; hoursSpent: number; topGenre: string; journalCount: number }[];
+  editorialInsight: string;
+  impactSummary: { label: string; value: number; evidence?: string }[];
+}
+
+export async function getIntelligence(): Promise<IntelligenceResponse> {
+  return apiGet<IntelligenceResponse>('/intelligence');
+}
+
 export interface ConstellationEntry {
   label: string;
   count: number;
