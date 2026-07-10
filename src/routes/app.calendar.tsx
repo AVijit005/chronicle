@@ -645,7 +645,7 @@ function CalendarPage() {
 
       {/* Zone 6 — Highlights */}
       <Zone eyebrow="Zone 06" title="Memory highlights">
-        <GlassAccordionHighlights />
+        <BentoMemoryWall />
       </Zone>
 
       {/* Zone 7 — Streaks */}
@@ -888,83 +888,103 @@ function HolographicReleaseCard({ u }: { u: any }) {
   );
 }
 
-function GlassAccordionHighlights() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+// Bento span config: alternating wide-narrow per row
+const BENTO_SPANS = [
+  "md:col-span-2", // Best Day — wide
+  "md:col-span-1", // Most Emotional Day — narrow
+  "md:col-span-1", // Longest Session — narrow
+  "md:col-span-2", // Favorite Weekend — wide
+  "md:col-span-2", // Biggest Marathon — wide
+  "md:col-span-1", // Reading Day — narrow
+];
+
+function BentoCard({ h, colSpan, index }: { h: any; colSpan: string; index: number }) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="flex h-[400px] md:h-[500px] w-full flex-col md:flex-row gap-4 lg:gap-6">
-      {CALENDAR_HIGHLIGHTS.map((h, i) => {
-        const isHovered = hoveredIndex === i;
-        const isAnyHovered = hoveredIndex !== null;
-        
-        return (
-          <motion.div
-            key={h.label}
-            layout
-            onHoverStart={() => setHoveredIndex(i)}
-            onHoverEnd={() => setHoveredIndex(null)}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            animate={{ 
-              flex: isHovered ? 5 : isAnyHovered ? 1 : 2
-            }}
-            transition={{ 
-              flex: { type: "spring", stiffness: 180, damping: 22 },
-              opacity: { duration: 0.5, delay: i * 0.1 },
-              layout: { type: "spring", stiffness: 180, damping: 22 }
-            }}
-            className="group relative overflow-hidden rounded-[24px] bg-white/[0.03] border border-white/10 cursor-pointer shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_0_60px_rgba(0,0,0,0.6)] h-full min-w-[60px] min-h-[60px]"
-          >
-            <motion.img
-              layout="position"
-              src={h.media.backdrop ?? h.media.poster}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover object-[center_30%] transition-all duration-700 ease-out"
-              style={{
-                filter: isHovered ? "brightness(1.1) saturate(1.2)" : "brightness(0.4) saturate(0.5)",
-                scale: isHovered ? 1.05 : 1
-              }}
-            />
-            
-            {/* Extended deep gradient to guarantee text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/5 pointer-events-none" />
-            
-            {/* Dark glass overlay for unhovered state with heavy blur */}
-            <motion.div 
-              className="absolute inset-0 bg-black/60 backdrop-blur-[12px]"
-              animate={{ opacity: isHovered ? 0 : (isAnyHovered ? 0.7 : 0.3) }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
+    <motion.div
+      className={`${colSpan} group relative overflow-hidden rounded-[20px] cursor-pointer min-h-[200px] border border-white/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.4)]`}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.25, 0.1, 0.25, 1] }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+    >
+      {/* Background image */}
+      <motion.img
+        src={h.media.backdrop ?? h.media.poster}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        animate={{
+          scale: hovered ? 1.07 : 1,
+          filter: hovered
+            ? "brightness(0.8) saturate(1.15)"
+            : "brightness(0.5) saturate(0.75)",
+        }}
+        transition={{ duration: 0.65, ease: "easeOut" }}
+      />
 
-            {/* Content Container */}
-            <motion.div 
-              layout="position"
-              className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between pointer-events-none"
-            >
-              {/* Top: Pill Tag */}
-              <div className="flex justify-start w-full">
-                <motion.div 
-                  layout="position"
-                  className="rounded-lg md:rounded-full bg-primary/20 border border-primary/30 px-2 py-1 md:px-3 md:py-1.5 text-[9px] font-bold uppercase tracking-wider text-primary shadow-sm backdrop-blur-md whitespace-normal break-words leading-tight"
-                >
-                  {h.label}
-                </motion.div>
-              </div>
-              
-              {/* Bottom: Main Date & Note */}
-              <motion.div layout="position" className="flex flex-col gap-1 w-full mt-auto">
-                <div className="font-display text-xl md:text-3xl tracking-tight text-white drop-shadow-lg whitespace-normal leading-tight">
-                  {h.value}
-                </div>
-                <div className="text-[10px] md:text-xs font-medium text-white/90 tracking-wide whitespace-normal leading-snug">
-                  {h.note}
-                </div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        );
-      })}
+      {/* Permanent bottom scrim — guarantees text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/30 to-transparent pointer-events-none" />
+      {/* Subtle top scrim — makes label always readable */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent pointer-events-none" />
+
+      {/* Glare sweep — slides across on hover */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ x: "-100%", opacity: 0 }}
+        animate={hovered ? { x: "160%", opacity: 1 } : { x: "-100%", opacity: 0 }}
+        transition={{ duration: 0.75, ease: "easeOut" }}
+        style={{
+          background:
+            "linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%)",
+          width: "60%",
+        }}
+      />
+
+      {/* Top: glowing dot + category label */}
+      <div className="absolute top-4 left-4 flex items-center gap-2">
+        <span
+          className="h-[6px] w-[6px] rounded-full bg-primary flex-shrink-0"
+          style={{ boxShadow: "0 0 8px 2px var(--color-primary, oklch(0.72 0.18 255))" }}
+        />
+        <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/60">
+          {h.label}
+        </span>
+      </div>
+
+      {/* Bottom: date + note */}
+      <div className="absolute bottom-0 left-0 right-0 px-5 py-4 flex flex-col gap-1">
+        <div className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white leading-tight drop-shadow-md">
+          {h.value}
+        </div>
+        <div className="text-[11px] font-medium text-white/60 tracking-wide leading-snug">
+          {h.note}
+        </div>
+      </div>
+
+      {/* Hover border glow */}
+      <motion.div
+        className="absolute inset-0 rounded-[20px] border border-primary/30 pointer-events-none"
+        animate={{ opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.div>
+  );
+}
+
+function BentoMemoryWall() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {CALENDAR_HIGHLIGHTS.map((h, i) => (
+        <BentoCard
+          key={h.label}
+          h={h}
+          colSpan={BENTO_SPANS[i]}
+          index={i}
+        />
+      ))}
     </div>
   );
 }
