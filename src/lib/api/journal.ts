@@ -265,3 +265,8 @@ export async function deleteHighlight(libraryId: string, highlightId: string): P
 export async function getJournalStats(): Promise<JournalStatsResponse> {
   return apiGet<JournalStatsResponse>('/journal/stats');
 }
+
+// Journal Prompts
+export async function getJournalPrompts(): Promise<string[]> {
+  return apiGet<string[]>('/journal/prompts');
+}

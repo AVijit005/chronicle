@@ -1,9 +1,22 @@
-import { buildTasteProfile } from "@/lib/intelligence";
 import { TasteChip } from "./TasteChip";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { useInsights } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 import { cascade } from "@/lib/motion";
+
+interface Props {
+  className?: string;
+  tasteProfile?: {
+    favoriteGenres: { name: string; count: number }[];
+    favoriteCreators: { name: string; count: number }[];
+    favoriteEras: { name: string; count: number }[];
+    favoriteRuntime: string;
+    favoriteSeasons: string[];
+    favoriteTimeOfDay: string;
+    favoriteMood: string;
+    favoriteCompanion: string;
+    favoriteCompletionPattern: string;
+  } | null;
+}
 
 const cardMotion = (i: number) => ({
   initial: { opacity: 0, y: 14 },
@@ -12,9 +25,9 @@ const cardMotion = (i: number) => ({
   transition: cascade(i),
 });
 
-export function TasteProfile({ className }: { className?: string }) {
-  const { data: insights } = useInsights();
-  const t = buildTasteProfile();
+export function TasteProfile({ className, tasteProfile: tp }: Props) {
+  if (!tp) return null;
+  const t = tp;
   return (
     <section aria-label="Taste profile" className={cn("space-y-4", className)}>
       <header>

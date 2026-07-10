@@ -73,3 +73,27 @@ export function useInsights() {
     staleTime: 5 * 60_000,
   });
 }
+
+export function useDiscovery() {
+  return useQuery({
+    queryKey: [...queryKeys.analytics.all, 'discovery'] as const,
+    queryFn: () => analyticsApi.getDiscovery(),
+    staleTime: 2 * 60_000,
+  });
+}
+
+export function useChallenges() {
+  return useQuery({
+    queryKey: [...queryKeys.analytics.all, 'challenges'] as const,
+    queryFn: () => analyticsApi.getChallenges(),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useIntelligence() {
+  return useQuery({
+    queryKey: [...queryKeys.analytics.all, 'intelligence'] as const,
+    queryFn: () => analyticsApi.getIntelligence(),
+    staleTime: 5 * 60_000,
+  });
+}

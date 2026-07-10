@@ -26,7 +26,7 @@ import { InteractiveWidgets } from "@/components/dashboard/QuickActions";
 import { PullQuote } from "@/components/editorial/PullQuote";
 import { Collage } from "@/components/editorial/Collage";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { useDashboard, useInsights, useOverview } from "@/hooks/use-analytics";
+import { useDashboard, useInsights, useOverview, useDiscovery, useChallenges, useIntelligence } from "@/hooks/use-analytics";
 import { useCollections } from "@/hooks/use-collections";
 import { adaptContinueItem, activityToContinueItem } from "@/lib/adapters/media";
 import { adaptCollectionResponse } from "@/lib/adapters/collection";
@@ -40,6 +40,9 @@ function Home() {
   const { data: dashboard, isLoading, isError, error } = useDashboard();
   const { data: insights } = useInsights();
   const { data: overview } = useOverview();
+  const { data: discovery } = useDiscovery();
+  const { data: challengesData } = useChallenges();
+  const { data: intelligence } = useIntelligence();
   const { data: collections } = useCollections();
 
   if (isLoading) {
@@ -107,17 +110,17 @@ function Home() {
       </div>
       <OnThisDay variant="compact" className="mt-12" />
       <PullQuote attribution={dailyQuote.attr}>{dailyQuote.quote}</PullQuote>
-      <DiscoveryHero className="mt-4" />
+      <DiscoveryHero className="mt-4" recommendedToday={discovery?.recommendedToday ?? null} />
       <QuietRecommendations className="mt-16" insights={uiInsights} />
       <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1.3fr]">
-        <ChallengeCard challenge={getActiveChallenge()} />
+        <ChallengeCard challenge={(challengesData?.challenges?.[0] ?? getActiveChallenge()) as any} />
         <GoalHero />
       </div>
       <DashboardContext className="mt-10" />
-      <ContinueUniverse className="mt-16" />
+      <ContinueUniverse className="mt-16" franchises={discovery?.continueFranchises ?? []} />
       <DashboardMood className="mt-16" />
       <WeeklyReflection className="mt-6" overview={uiOverview} />
-      <TasteProfile className="mt-16" />
+      <TasteProfile className="mt-16" tasteProfile={intelligence?.tasteProfile ?? null} />
       <div className="mt-16 pointer-events-auto">
         <PremiumGlass interactive variant="strong" glow="oklch(0.72 0.18 255 / 0.2)" className="group/master rounded-[2.5rem]">
           <div className="flex flex-col text-left p-10 w-full">

@@ -99,3 +99,11 @@ export function useCreateTimelineEvent() {
     },
   });
 }
+
+export function useJournalPrompts() {
+  return useQuery({
+    queryKey: [...queryKeys.journal.all, 'prompts'] as const,
+    queryFn: () => journalApi.getJournalPrompts(),
+    staleTime: 60 * 60_000,
+  });
+}

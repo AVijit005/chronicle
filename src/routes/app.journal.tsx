@@ -3,16 +3,14 @@ import { NotebookPen } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { StatCardPremium } from "@/components/analytics/AnalyticsKit";
-import { JOURNAL_PROMPTS } from "@/lib/analytics-mock";
 import { MemoryBookmarks } from "@/components/memory/MemoryBookmarks";
-import { RecommendationCard } from "@/components/discovery/RecommendationCard";
-import { getContinueMood, getHiddenGems } from "@/lib/discovery";
-import { ChallengeCard } from "@/components/challenges/ChallengeCard";
 import { getActiveChallenge } from "@/lib/challenges";
+import { ChallengeCard } from "@/components/challenges/ChallengeCard";
 import { MemoryDNA } from "@/components/intelligence/MemoryDNA";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
 import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
-import { useJournalEntries, useJournalStats, useCreateJournalEntry } from "@/hooks/use-journal";
+import { useJournalEntries, useJournalStats, useCreateJournalEntry, useJournalPrompts } from "@/hooks/use-journal";
+import { useDiscovery } from "@/hooks/use-analytics";
 import { toast } from "sonner";
 import { adaptJournalEntry } from "@/lib/adapters/journal";
 import { useMemo, useState, useEffect, useRef } from "react";
@@ -52,6 +50,8 @@ function JournalPage() {
 
   const { data: journalData, isLoading: isLoadingJournal, isError: isJournalError, refetch: refetchJournal, hasNextPage, fetchNextPage, isFetchingNextPage } = useJournalEntries();
   const { data: statsData } = useJournalStats();
+  const { data: discovery } = useDiscovery();
+  const { data: prompts } = useJournalPrompts();
 
   const hour = new Date().getHours();
   const timeContext =
@@ -125,7 +125,7 @@ function JournalPage() {
       <JournalHero isLoading={isLoadingJournal} stats={statsData ? { journalCount: statsData.journalCount, writingStreak: statsData.writingStreak } : null} entries={entries} favoriteMood={favoriteMood} />
 
       <MemoryZone title={`A prompt for ${timeContext.toLowerCase()}`} sub="One question. No pressure.">
-        <JournalPrompt promptIndex={promptIndex} timeContext={timeContext} onStartWriting={() => setIsWriting(true)} onNextPrompt={() => setPromptIndex((prev) => (prev + 1) % (JOURNAL_PROMPTS?.length ?? 1))} />
+        <JournalPrompt promptIndex={promptIndex} timeContext={timeContext} onStartWriting={() => setIsWriting(true)} onNextPrompt={() => setPromptIndex((prev) => (prev + 1) % ((prompts?.length ?? 1) || 1))} />
       </MemoryZone>
 
       <MemoryZone title="Your writing, today" sub="Pulled straight from your library — no demo data.">
@@ -142,10 +142,6 @@ function JournalPage() {
 
       <MemoryZone title="Follow the thread">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {(() => {
-            const rec = getContinueMood()[0] || getHiddenGems()[0];
-            return rec ? <RecommendationCard rec={rec} /> : null;
-          })()}
           <ChallengeCard challenge={getActiveChallenge()} />
         </div>
       </MemoryZone>

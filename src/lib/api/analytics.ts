@@ -330,6 +330,15 @@ export async function getIntelligence(): Promise<IntelligenceResponse> {
   return apiGet<IntelligenceResponse>('/intelligence');
 }
 
+export interface ChallengesResponse {
+  challenges: { id: string; kind: string; title: string; description: string; target: number; current: number; reward: string; expiresIn?: string; suggestions: { id: string; title: string; posterUrl: string | null; mediaType: string }[]; accent: string }[];
+  goals: { id: string; title: string; description: string; current: number; target: number; deadline?: string; priority: string; reward: string; reason: string; status: string; startedAt: string; completedAt?: string; accent: string; coverIds: string[]; milestones: { label: string; reached: boolean; when?: string }[]; kind: string }[];
+}
+
+export async function getChallenges(): Promise<ChallengesResponse> {
+  return apiGet<ChallengesResponse>('/challenges');
+}
+
 export interface ConstellationEntry {
   label: string;
   count: number;
