@@ -102,16 +102,22 @@ function RootComponent() {
 
   useEffect(() => {
     const restoreSession = async () => {
-      try {
-        const user = await authApi.getCurrentUser();
-        queryClient.setQueryData(queryKeys.auth.me(), user);
-      } catch {
-        setAccessToken(null);
-        queryClient.removeQueries({ queryKey: queryKeys.auth.all });
-      }
+      try { const user = await authApi.getCurrentUser(); queryClient.setQueryData(queryKeys.auth.me(), user); }
+      catch { setAccessToken(null); queryClient.removeQueries({ queryKey: queryKeys.auth.all }); }
     };
-    const existingUser = queryClient.getQueryData(queryKeys.auth.me());
-    if (!existingUser) restoreSession();
+    if (!queryClient.getQueryData(queryKeys.auth.me())) restoreSession();
+  }, [queryClient]);
+
+  // Apply theme on boot
+  useEffect(() => {
+    const saved = queryClient.getQueryData<{ themePreference?: string }>(queryKeys.auth.me());
+    const pref = saved?.themePreference || 'system';
+    if (pref === 'light') document.documentElement.classList.add('light');
+    else if (pref === 'dark') document.documentElement.classList.remove('light');
+    else {
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      document.documentElement.classList.toggle('light', prefersLight);
+    }
   }, [queryClient]);
 
   return (

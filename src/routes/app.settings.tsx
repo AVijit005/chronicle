@@ -24,7 +24,31 @@ function Page() {
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
     updateProfile.mutate({ themePreference: newTheme });
+    if (newTheme === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else if (newTheme === 'dark') {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    } else {
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      document.documentElement.classList.toggle('light', prefersLight);
+      document.documentElement.classList.toggle('dark', !prefersLight);
+    }
   };
+
+  // Apply theme on mount
+  useEffect(() => {
+    const stored = profile?.themePreference || 'system';
+    if (stored === 'light') {
+      document.documentElement.classList.add('light');
+    } else if (stored === 'dark') {
+      document.documentElement.classList.remove('light');
+    } else {
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      document.documentElement.classList.toggle('light', prefersLight);
+    }
+  }, [profile?.themePreference]);
 
   const handlePrivacyChange = (newPrivacy: "public" | "followers" | "private") => {
     setPrivacy(newPrivacy);
