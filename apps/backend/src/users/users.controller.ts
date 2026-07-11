@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AccessTokenPayload } from '../auth/services/jwt-token.service';
 import { CookieService } from '../auth/services/cookie.service';
 import { UpdatePreferencesDto, UpdatePrivacyDto, UpdateProfileDto } from './dto';
+import type { DataExportResponseDto, DeleteAccountResponseDto } from './dto';
 import { RequestMetadata, UsersService } from './users.service';
 
 @Controller('users')
@@ -93,6 +94,16 @@ export class UsersController {
   @Delete('me/sessions/:id')
   revokeSession(@CurrentUser() user: AccessTokenPayload, @Param('id') sessionId: string) {
     return this.users.revokeSession(user.sub, sessionId);
+  }
+
+  @Get('me/export')
+  async exportData(@CurrentUser() user: AccessTokenPayload): Promise<DataExportResponseDto> {
+    return this.users.exportData(user.sub);
+  }
+
+  @Post('me/delete')
+  async deleteAccount(@CurrentUser() user: AccessTokenPayload): Promise<DeleteAccountResponseDto> {
+    return this.users.deleteAccount(user.sub);
   }
 
   private metadata(req: Request): RequestMetadata {
