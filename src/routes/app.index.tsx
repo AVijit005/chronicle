@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { CinematicHero } from "@/components/media/CinematicHero";
 import { MediaCard } from "@/components/media/MediaCard";
 import { Section } from "@/components/common/Section";
+import { Plus, NotebookPen, Calendar } from "lucide-react";
 import { OnThisDay } from "@/components/memory/OnThisDay";
 import { DiscoveryHero } from "@/components/discovery/DiscoveryHero";
 import { ContinueUniverse } from "@/components/discovery/ContinueUniverse";
@@ -26,6 +27,7 @@ import { InteractiveWidgets } from "@/components/dashboard/QuickActions";
 import { PullQuote } from "@/components/editorial/PullQuote";
 import { Collage } from "@/components/editorial/Collage";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { PremiumButton } from "@/components/ui/PremiumButton";
 import { useDashboard, useInsights, useOverview, useDiscovery, useChallenges, useIntelligence } from "@/hooks/use-analytics";
 import { useCollections } from "@/hooks/use-collections";
 import { adaptContinueItem, activityToContinueItem } from "@/lib/adapters/media";
@@ -87,6 +89,8 @@ function Home() {
   const uiInsights = insights ? adaptInsights(insights) : null;
   const uiOverview = overview ? adaptOverview(overview) : null;
 
+  const isNewUser = !isLoading && !isError && uiOverview?.totalItems === 0;
+
   const featuredItem = continueItems[0]
     ? adaptContinueItem(continueItems[0])
     : recentlyCompletedItems[0]
@@ -109,6 +113,10 @@ function Home() {
         </div>
       )}
 
+      {isNewUser ? (
+        <OnboardingGuide />
+      ) : (
+      <>
       <InteractiveWidgets />
       <DashboardGreeting className="mt-10" />
       <NotificationStrip className="mt-4" />
@@ -164,6 +172,45 @@ function Home() {
         </Section>
       )}
       <SmartFooter className="mt-20" />
+      </>
+      )}
+    </div>
+  );
+}
+
+function OnboardingGuide() {
+  const navigate = useNavigate();
+  const STEPS = [
+    { number: "01", title: "Add your first story", description: "Search for any movie, book, game, or show and add it to your library. That's how Chronicle starts knowing you.", icon: Plus, action: "Open library", to: "/app/library" },
+    { number: "02", title: "Write a journal entry", description: "Capture a thought about what you watched. Even one sentence starts a memory.", icon: NotebookPen, action: "Open journal", to: "/app/journal" },
+    { number: "03", title: "Explore your calendar", description: "See your year mapped out — every story, every quiet evening arranged into a timeline.", icon: Calendar, action: "Open calendar", to: "/app/calendar" },
+  ];
+
+  return (
+    <div className="mt-10 space-y-10">
+      <div className="text-center">
+        <h2 className="font-display text-4xl tracking-tight md:text-5xl">Welcome to Chronicle</h2>
+        <p className="mt-4 text-muted-foreground text-lg max-w-xl mx-auto">
+          A quiet place to remember every story you've lived. Start with these three steps.
+        </p>
+      </div>
+      <div className="grid gap-6 md:grid-cols-3">
+        {STEPS.map((step) => (
+          <PremiumGlass key={step.number} interactive variant="default" className="p-6 md:p-8 cursor-pointer" glow="oklch(0.72 0.18 255 / 0.15)">
+            <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">{step.number}</div>
+            <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 mb-4">
+              <step.icon className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="font-display text-xl tracking-tight">{step.title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+            <div className="mt-6">
+              <PremiumButton variant="secondary" size="sm" onClick={() => navigate({ to: step.to })}>
+                {step.action}
+              </PremiumButton>
+            </div>
+          </PremiumGlass>
+        ))}
+      </div>
     </div>
   );
 }
