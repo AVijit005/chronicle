@@ -33,7 +33,17 @@ import {
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 
-export const Route = createFileRoute("/app/calendar")({ component: CalendarPage });
+export const Route = createFileRoute("/app/calendar")({
+  component: CalendarPage,
+  head: () => ({
+    meta: [
+      { title: "Calendar — Chronicle" },
+      { name: "description", content: "A memory map of your year — every story, chapter, and quiet evening mapped onto your life." },
+      { property: "og:title", content: "Chronicle Calendar" },
+      { property: "og:description", content: "A year, day by day — your personal memory map." },
+    ],
+  }),
+});
 
 const SEASON_TINT: Record<string, string> = {
   spring: "oklch(0.78 0.16 130 / 0.18)",

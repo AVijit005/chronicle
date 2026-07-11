@@ -21,7 +21,17 @@ import { countWords } from "@/lib/utils/words";
 import { JournalHero, JournalPrompt, MoodChart, JournalEntryCard, WriteOverlay } from "@/components/journal";
 import { MemoryZone } from "@/components/calendar";
 
-export const Route = createFileRoute("/app/journal")({ component: JournalPage });
+export const Route = createFileRoute("/app/journal")({
+  component: JournalPage,
+  head: () => ({
+    meta: [
+      { title: "Journal — Chronicle" },
+      { name: "description", content: "Write about the stories that stayed with you. Capture moods, memories, and moments." },
+      { property: "og:title", content: "Chronicle Journal" },
+      { property: "og:description", content: "Words for the stories that stayed." },
+    ],
+  }),
+});
 
 function JournalPage() {
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);

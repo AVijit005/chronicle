@@ -34,7 +34,17 @@ import { adaptInsights, adaptOverview } from "@/lib/adapters/analytics";
 import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 
-export const Route = createFileRoute("/app/")({ component: Home });
+export const Route = createFileRoute("/app/")({
+  component: Home,
+  head: () => ({
+    meta: [
+      { title: "Dashboard — Chronicle" },
+      { name: "description", content: "Your personal media headquarters. Continue stories, track progress, and discover what to watch next." },
+      { property: "og:title", content: "Chronicle Dashboard" },
+      { property: "og:description", content: "Your personal media headquarters." },
+    ],
+  }),
+});
 
 function Home() {
   const { data: dashboard, isLoading, isError, error } = useDashboard();
