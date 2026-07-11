@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Send } from "lucide-react";
+import { X, Send, AlertCircle } from "lucide-react";
 import { JOURNAL_PROMPTS } from "@/lib/analytics-mock";
 
 interface Props {
@@ -9,13 +9,14 @@ interface Props {
   timeContext: string;
   journalText: string;
   isSealing: boolean;
+  isDraftSaved: boolean;
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   onTextChange: (text: string) => void;
   onClose: () => void;
   onSeal: () => void;
 }
 
-export function WriteOverlay({ isOpen, promptIndex, timeContext, journalText, isSealing, textareaRef, onTextChange, onClose, onSeal }: Props) {
+export function WriteOverlay({ isOpen, promptIndex, timeContext, journalText, isSealing, isDraftSaved, textareaRef, onTextChange, onClose, onSeal }: Props) {
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -52,6 +53,11 @@ export function WriteOverlay({ isOpen, promptIndex, timeContext, journalText, is
             <div className="text-primary/70 text-[11px] tracking-[0.25em] uppercase font-bold mb-8">
               {timeContext} · Focus Mode
             </div>
+            {isDraftSaved && (
+              <div className="mb-6 flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs text-amber-200">
+                <AlertCircle className="h-3 w-3" /> Draft restored from your last session
+              </div>
+            )}
             <h2 className="text-3xl md:text-5xl font-display text-white text-center mb-16 drop-shadow-lg leading-tight">
               "{JOURNAL_PROMPTS[promptIndex]}"
             </h2>

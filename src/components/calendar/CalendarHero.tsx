@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { CloudSun, ChevronLeft, ChevronRight } from "lucide-react";
+import { CloudSun, ChevronLeft, ChevronRight, ChevronsUp } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
 import { CALENDAR_HERO } from "@/lib/analytics-mock";
@@ -9,9 +9,11 @@ interface Props {
   currentYear: number;
   yearOffset: number;
   onChangeYear: (offset: number) => void;
+  onToday?: () => void;
+  isAtToday?: boolean;
 }
 
-export function CalendarHero({ currentYear, yearOffset, onChangeYear }: Props) {
+export function CalendarHero({ currentYear, yearOffset, onChangeYear, onToday, isAtToday }: Props) {
   const { data: calendarData } = useCalendar(currentYear);
   const entries = calendarData?.entries ?? [];
   const totalStories = entries.reduce((sum, e) => sum + e.completedCount, 0);
@@ -37,6 +39,10 @@ export function CalendarHero({ currentYear, yearOffset, onChangeYear }: Props) {
             <CloudSun className="h-3 w-3 text-primary" /> Memory map · {currentYear}
           </div>
           <div className="flex items-center gap-1">
+            <button onClick={onToday} disabled={isAtToday}
+              className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08] disabled:opacity-20 disabled:cursor-default" aria-label="Today">
+              <ChevronsUp className="h-4 w-4" />
+            </button>
             <button onClick={() => onChangeYear(yearOffset - 1)} className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]" aria-label="Previous year">
               <ChevronLeft className="h-4 w-4" />
             </button>

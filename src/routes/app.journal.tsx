@@ -35,9 +35,33 @@ export const Route = createFileRoute("/app/journal")({
 
 function JournalPage() {
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [isWriting, setIsWriting] = useState(false);
   const [journalText, setJournalText] = useState("");
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [moodRange, setMoodRange] = useState<7 | 30 | 90>(30);
+  const [isDraftSaved, setIsDraftSaved] = useState(false);
+
+  // Auto-save draft to localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('chronicle-journal-draft');
+    if (saved) {
+      setJournalText(saved);
+      setIsDraftSaved(true);
+      setTimeout(() => setIsDraftSaved(false), 3000);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (journalText.length > 0) {
+      localStorage.setItem('chronicle-journal-draft', journalText);
+    }
+  }, [journalText]);
+
+  const clearDraft = () => {
+    localStorage.removeItem('chronicle-journal-draft');
+    setJournalText('');
+    setIsDraftSaved(false);
+  };
+  const [isWriting, setIsWriting] = useState(false);
   const [promptIndex, setPromptIndex] = useState(0);
   const [isSealing, setIsSealing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -88,18 +112,19 @@ function JournalPage() {
       "Emotional": "oklch(0.65 0.22 295)", "Excited": "oklch(0.7 0.18 25)",
       "Relaxed": "oklch(0.72 0.18 255)", "Thoughtful": "oklch(0.55 0.18 280)",
     };
-    const last30 = Array.from({ length: 30 }, (_, i) => {
+    const range = moodRange;
+    const lastN = Array.from({ length: moodRange }, (_, i) => {
       const date = new Date();
-      date.setDate(date.getDate() - (29 - i));
+      date.setDate(date.getDate() - (range - 1 - i));
       const dateStr = date.toISOString().slice(0, 10);
       const entry = entries.find((e) => e.createdAt.slice(0, 10) === dateStr);
       const moodStr = entry?.mood ?? null;
       const color = moodStr ? (MOOD_COLORS[moodStr] || "oklch(0.5 0 0)") : "oklch(0.5 0 0 / 0.15)";
       const words = entry ? countWords(entry.content) : 0;
-      return { day: 30 - i, mood: moodStr, color, intensity: moodStr ? Math.min(1, Math.max(0.08, words / 1500)) : 0.04 };
+      return { day: range - i, mood: moodStr, color, intensity: moodStr ? Math.min(1, Math.max(0.08, words / 1500)) : 0.04 };
     }).reverse();
-    return last30;
-  }, [entries]);
+    return lastN;
+  }, [entries, moodRange]);
 
   const favoriteEntries = useMemo(() => {
     return [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 2);
@@ -111,7 +136,7 @@ function JournalPage() {
       await createJournalEntry.mutateAsync({ content: journalText, mood: "Reflective" });
       toast.success("Entry sealed and saved.");
       setIsWriting(false);
-      setJournalText("");
+      clearDraft();
     } catch {
       toast.error("Failed to save entry. Please try again.");
     } finally {
@@ -178,41 +203,15 @@ function JournalPage() {
       </MemoryZone>
 
       <MemoryZone title="Moods across the month">
+        <div className="flex items-center justify-end gap-2 mb-4">
+          {[7, 30, 90].map((r) => (
+            <button key={r} onClick={() => setMoodRange(r as 7 | 30 | 90)}
+              className={`glass-subtle rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer ${moodRange === r ? 'border-white/20 text-foreground shadow-[0_0_12px_rgba(255,255,255,0.06)]' : 'text-muted-foreground border border-transparent hover:border-white/5'}`}>
+              {r === 7 ? 'Week' : r === 30 ? 'Month' : 'Quarter'}
+            </button>
+          ))}
+        </div>
         {isLoadingJournal ? (
-          <div className="mt-16 md:mt-24">
-            <ShimmerSkeleton className="mb-6 h-6 w-48 rounded-full" variant="line" />
-            <ShimmerSkeleton className="h-[260px] rounded-2xl" variant="glass" />
-          </div>
-        ) : entries.length === 0 ? (
-          <EmptyState
-            icon={<NotebookPen className="h-6 w-6" />}
-            title="No entries yet"
-            description="Start journaling to see your mood patterns emerge over time."
-            action={<PremiumButton variant="primary" onClick={() => setIsWriting(true)}>Write your first entry</PremiumButton>}
-          />
-        ) : (
-          <PremiumGlass interactive variant="strong" glow="oklch(0.7 0.18 35 / 0.15)" className="p-6 md:p-8">
-            <MoodChart moodTimeline={moodTimeline} hoveredDay={hoveredDay} onHoverDay={setHoveredDay} />
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => {
-                const colors = ["oklch(0.78 0.16 80)", "oklch(0.7 0.2 145)", "oklch(0.65 0.22 295)", "oklch(0.7 0.18 25)", "oklch(0.72 0.18 255)", "oklch(0.55 0.18 280)"];
-                const isActive = selectedMood === m;
-                return (
-                  <button key={m}
-                    onClick={() => setSelectedMood(isActive ? null : m)}
-                    className={`glass-subtle group flex items-center gap-2.5 rounded-full px-4 py-2 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 active:scale-95 ${isActive ? 'border-white/20 shadow-[0_0_16px_-4px_' + colors[i].replace('oklch', '') + '40]' : 'border border-transparent hover:border-white/5'}`}
-                  >
-                    <span className="h-2 w-2 rounded-full transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: colors[i], boxShadow: `0 0 12px ${colors[i]}80` }} />
-                    <span className={`text-[10px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ${isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>{m}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </PremiumGlass>
-        )}
-      </MemoryZone>
-
-      {isLoadingJournal ? (
         <div className="mt-16 md:mt-24">
           <ShimmerSkeleton className="mb-6 h-6 w-48 rounded-full" variant="line" />
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
@@ -230,6 +229,7 @@ function JournalPage() {
           </div>
         </MemoryZone>
       )}
+      </MemoryZone>
 
       <MemoryZone title="Recent highlights">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -248,6 +248,7 @@ function JournalPage() {
         timeContext={timeContext}
         journalText={journalText}
         isSealing={isSealing}
+        isDraftSaved={isDraftSaved}
         textareaRef={textareaRef}
         onTextChange={setJournalText}
         onClose={() => setIsWriting(false)}

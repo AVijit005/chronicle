@@ -136,7 +136,9 @@ function CalendarPage() {
       <div className="pointer-events-none fixed inset-0 -z-10 transition-colors duration-1000"
         style={{ background: `radial-gradient(ellipse 80% 50% at 50% 0%, ${SEASON_TINT[season]}, transparent 70%)` }} />
 
-      <CalendarHero currentYear={displayYear} yearOffset={yearOffset} onChangeYear={setYearOffset} />
+      <CalendarHero currentYear={displayYear} yearOffset={yearOffset} onChangeYear={setYearOffset}
+        onToday={() => { setYearOffset(0); setMonthIdx(currentMonth); }}
+        isAtToday={yearOffset === 0 && monthIdx === currentMonth} />
 
       <MemoryZone title="Year overview">
         <YearOverview monthIdx={monthIdx} onSelectMonth={(idx) => { setMonthIdx(idx); setSelectedDay(null); }} />
