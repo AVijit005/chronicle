@@ -132,7 +132,7 @@ function Home() {
       <QuietRecommendations className="mt-16" insights={uiInsights} />
       <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1.3fr]">
         <ChallengeCard challenge={(challengesData?.challenges?.[0] ?? getActiveChallenge()) as any} />
-        <GoalHero />
+        <GoalHero goal={challengesData?.goals?.[0] ? { id: challengesData.goals[0].id, title: challengesData.goals[0].title, description: challengesData.goals[0].description, current: challengesData.goals[0].current, target: challengesData.goals[0].target, reward: challengesData.goals[0].reward, accent: challengesData.goals[0].accent, startedAt: challengesData.goals[0].startedAt, priority: challengesData.goals[0].priority } : null} />
       </div>
       <DashboardContext className="mt-10" />
       <ContinueUniverse className="mt-16" franchises={discovery?.continueFranchises ?? []} />

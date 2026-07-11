@@ -35,6 +35,7 @@ export const Route = createFileRoute("/app/journal")({
 
 function JournalPage() {
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [isWriting, setIsWriting] = useState(false);
   const [journalText, setJournalText] = useState("");
   const [promptIndex, setPromptIndex] = useState(0);
@@ -195,10 +196,14 @@ function JournalPage() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               {["Happy", "Inspired", "Emotional", "Excited", "Relaxed", "Thoughtful"].map((m, i) => {
                 const colors = ["oklch(0.78 0.16 80)", "oklch(0.7 0.2 145)", "oklch(0.65 0.22 295)", "oklch(0.7 0.18 25)", "oklch(0.72 0.18 255)", "oklch(0.55 0.18 280)"];
+                const isActive = selectedMood === m;
                 return (
-                  <button key={m} className="group flex items-center gap-2.5 rounded-full px-4 py-2 cursor-pointer transition-all duration-300 hover:bg-white/[0.04] border border-transparent hover:border-white/5 active:scale-95">
+                  <button key={m}
+                    onClick={() => setSelectedMood(isActive ? null : m)}
+                    className={`glass-subtle group flex items-center gap-2.5 rounded-full px-4 py-2 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 active:scale-95 ${isActive ? 'border-white/20 shadow-[0_0_16px_-4px_' + colors[i].replace('oklch', '') + '40]' : 'border border-transparent hover:border-white/5'}`}
+                  >
                     <span className="h-2 w-2 rounded-full transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: colors[i], boxShadow: `0 0 12px ${colors[i]}80` }} />
-                    <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">{m}</span>
+                    <span className={`text-[10px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ${isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>{m}</span>
                   </button>
                 );
               })}
