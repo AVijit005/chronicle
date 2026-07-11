@@ -12,6 +12,7 @@ import type {
   ActivityDto,
   CalendarDto,
   CalendarYearDto,
+  CalendarDayDto,
   InsightsDto,
 } from './dto';
 
@@ -85,5 +86,14 @@ export class AnalyticsController {
   @ApiOperation({ summary: 'User insights' })
   async getInsights(@CurrentUser() user: AccessTokenPayload): Promise<InsightsDto> {
     return this.analyticsService.getInsights(user.sub);
+  }
+
+  @Get('calendar/day/:date')
+  @ApiOperation({ summary: 'Daily calendar memory panel with media items and journal entries' })
+  async getCalendarDay(
+    @CurrentUser() user: AccessTokenPayload,
+    @Param('date') date: string,
+  ): Promise<CalendarDayDto> {
+    return this.analyticsService.getCalendarDay(user.sub, date);
   }
 }

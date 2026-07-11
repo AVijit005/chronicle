@@ -161,6 +161,20 @@ export class CalendarYearDto {
   insights: string[];
 }
 
+export class CalendarDayMediaItemDto {
+  id: string;
+  title: string;
+  posterUrl: string | null;
+  mediaType: string;
+  note: string;
+}
+
+export class CalendarDayDto {
+  date: string;
+  mediaItems: CalendarDayMediaItemDto[];
+  journalEntry: { id: string; content: string; mood: string | null } | null;
+}
+
 export class CalendarHighlightDto {
   label: string;
   value: string;

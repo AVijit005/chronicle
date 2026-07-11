@@ -22,6 +22,9 @@ See [frontend/taste.md](frontend/taste.md)
 - Replace dangerouslySetInnerHTML style blocks with CSS custom properties set via inline style prop. Confidence: 0.70
 - Replace unsafe `as any` type casts with proper adapter functions that bridge incompatible types (e.g., RecentActivityItem → ContinueItem → UIMediaItem). Confidence: 0.70
 
+# quality
+- Apply "billion dollar SaaS" polish standard: every UI interaction needs proper hover/active/focus states, glass morphism with OkLCH glows, smooth transitions, and production-grade error/empty/loading handling. Confidence: 0.70
+
 # workflow
 - Run 'npx tsc --noEmit' after each phase of refactoring to verify TypeScript compilation. Confidence: 0.85
 - When the user asks you to fix pre-existing TypeScript errors before continuing, solve all of them immediately — don't dismiss them as "pre-existing" and move on. Confidence: 0.75

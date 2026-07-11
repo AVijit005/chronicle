@@ -14,6 +14,8 @@ import { CALENDAR_YEAR } from "@/lib/analytics-mock";
 import { MEDIA } from "@/lib/mock";
 import { useCalendarYear } from "@/hooks/use-analytics";
 import { adaptCalendarYear } from "@/lib/adapters/analytics";
+import { useQuery } from "@tanstack/react-query";
+import { analyticsApi } from "@/lib/api";
 import { MediaConstellation } from "@/components/analytics/MediaConstellation";
 import { ThisWeekHistory } from "@/components/memory/ThisWeekHistory";
 import {
@@ -68,6 +70,14 @@ function CalendarPage() {
   const calendarUI = calendarYearData ? adaptCalendarYear(calendarYearData) : null;
   const apiMonth = calendarUI?.months[monthIdx] ?? null;
   const month = apiMonth ?? CALENDAR_YEAR[monthIdx];
+
+  const dateParam = selectedDay ? `${displayYear}-${String(monthIdx + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}` : null;
+  const { data: dayData } = useQuery({
+    queryKey: ['calendar-day', dateParam] as const,
+    queryFn: () => analyticsApi.getCalendarDay(dateParam!),
+    enabled: !!dateParam,
+    staleTime: 2 * 60_000,
+  });
   const season = seasonOf(monthIdx);
 
   if (isCalendarLoading) return <CalendarSkeleton />;
@@ -96,26 +106,30 @@ function CalendarPage() {
   }, [month]);
 
   const dailyMemoryItems = useMemo(() => {
-    if (selectedDay === null) return [];
+    if (!selectedDay) return [];
+    if (dayData?.mediaItems?.length) {
+      const typeIcons: Record<string, typeof Film> = {
+        movie: Film, series: Film, anime: Film, book: BookOpen,
+        game: Gamepad2, music: Music, podcast: Music, course: NotebookPen,
+      };
+      return dayData.mediaItems.map((item) => ({
+        icon: typeIcons[item.mediaType] ?? Film,
+        label: item.mediaType.charAt(0).toUpperCase() + item.mediaType.slice(1),
+        title: item.title.length > 20 ? item.title.slice(0, 20) + "\u2026" : item.title,
+        note: item.note,
+      }));
+    }
     const cell = month.cells.find((c) => c.day === selectedDay);
     if (!cell || !cell.hasMedia) return [];
-    const seed = monthIdx * 100 + selectedDay;
-    const mediaTypes: Array<{ icon: typeof Film; label: string }> = [
-      { icon: Film, label: "Movie" }, { icon: BookOpen, label: "Book" },
-      { icon: Gamepad2, label: "Game" }, { icon: Music, label: "Album" },
-      { icon: NotebookPen, label: "Journal" }, { icon: Trophy, label: "Achievement" },
-    ];
     return Array.from({ length: Math.min(cell.mediaCount, 6) }, (_, i) => {
-      const media = MEDIA[(seed + i * 7) % MEDIA.length];
-      const typeInfo = mediaTypes[(seed + i * 13) % mediaTypes.length];
-      const notes = ["32 pages", "1h 22m", "Full listen", "418 words", "Gold tier", "2h 49m", "24m / ep", "5 chapters", "3 episodes", "~2 hours"];
+      const media = MEDIA[(monthIdx * 100 + selectedDay + i * 7) % MEDIA.length];
       return {
-        icon: typeInfo.icon, label: typeInfo.label,
+        icon: Film, label: "Story",
         title: media.title.length > 20 ? media.title.slice(0, 20) + "\u2026" : media.title,
-        note: notes[(seed + i * 3) % notes.length],
+        note: "From your library",
       };
     });
-  }, [monthIdx, selectedDay, month.cells]);
+  }, [selectedDay, dayData, monthIdx, month.cells]);
 
   return (
     <div className="pb-32 pt-2">

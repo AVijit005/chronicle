@@ -648,6 +648,70 @@ export class AnalyticsRepository {
       take: limit,
     });
   }
+
+  async getCalendarDay(userId: string, dateStr: string): Promise<{ mediaItems: { id: string; title: string; posterUrl: string | null; mediaType: string; note: string }[]; journalEntry: { id: string; content: string; mood: string | null } | null }> {
+    const targetDate = new Date(dateStr);
+    targetDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(dateStr);
+    endDate.setHours(23, 59, 59, 999);
+
+    const mediaItems: any[] = [];
+
+    for (const cfg of USER_LIB_TYPES) {
+      const delegate = this.prismaAny()[cfg.delegate];
+      if (!delegate) continue;
+
+      const items = await delegate.findMany({
+        where: {
+          userId,
+          deletedAt: null,
+          OR: [
+            { createdAt: { gte: targetDate, lte: endDate } },
+            { updatedAt: { gte: targetDate, lte: endDate } },
+          ],
+        },
+        include: {
+          [cfg.mediaDelegate]: { select: { id: true, title: true, posterUrl: true } },
+        },
+        orderBy: { updatedAt: 'desc' },
+        take: 6,
+      });
+
+      for (const item of items) {
+        const media = item[cfg.mediaDelegate] as { id: string; title: string; posterUrl: string | null } | null;
+        if (!media) continue;
+
+        const statusLabel =
+          item.status === 'COMPLETED' ? 'Completed'
+          : item.status === 'IN_PROGRESS' ? `${item.progressPercentage ?? 0}%`
+          : 'Started';
+
+        const hours = (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
+        const note = hours > 0 ? `${Math.round(hours * 60)}m` : statusLabel;
+
+        mediaItems.push({
+          id: media.id,
+          title: media.title,
+          posterUrl: media.posterUrl,
+          mediaType: cfg.type,
+          note,
+        });
+      }
+    }
+
+    const journalDelegate = this.prismaAny().journalEntry;
+    let journalEntry = null;
+    if (journalDelegate) {
+      const entry = await journalDelegate.findFirst({
+        where: { userId, createdAt: { gte: targetDate, lte: endDate } },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, content: true, mood: true },
+      });
+      if (entry) journalEntry = entry;
+    }
+
+    return { mediaItems, journalEntry };
+  }
 }
 
 interface CalendarRawData {
@@ -655,6 +719,16 @@ interface CalendarRawData {
   memoryCounts: Record<string, number>;
   completedCounts: Record<string, number>;
   hoursTracked: Record<string, number>;
+}
+
+interface CalendarMonthRaw {
+  month: number;
+  name: string;
+  journalCount: number;
+  storyCount: number;
+  hoursTracked: number;
+  topMediaIds: string[];
+  dayHits: number;
 }
 
 interface GenreRawData {

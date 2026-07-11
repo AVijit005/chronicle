@@ -251,6 +251,16 @@ export interface CalendarYearUpcomingResponse {
   accent: string;
 }
 
+export interface CalendarDayResponse {
+  date: string;
+  mediaItems: { id: string; title: string; posterUrl: string | null; mediaType: string; note: string }[];
+  journalEntry: { id: string; content: string; mood: string | null } | null;
+}
+
+export async function getCalendarDay(date: string): Promise<CalendarDayResponse> {
+  return apiGet<CalendarDayResponse>(`/analytics/calendar/day/${date}`);
+}
+
 export async function getCalendarYear(year: number): Promise<CalendarYearResponse> {
   return apiGet<CalendarYearResponse>(`/analytics/calendar/rich/${year}`);
 }
