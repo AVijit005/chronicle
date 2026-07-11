@@ -1,5 +1,5 @@
 import { Outlet, useRouterState } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Plus } from "lucide-react";
 import { AtmosphereBackground } from "@/components/atmosphere/AtmosphereBackground";
@@ -14,12 +14,17 @@ import { pagePresence, pagePresenceReduced } from "@/lib/motion";
 import { MediaActionsProvider, useMediaActions } from "@/lib/store/MediaActionsContext";
 import { Toaster } from "@/components/ui/sonner";
 import { useOnline } from "@/hooks/use-online";
+import { trackPageView } from "@/lib/analytics-tracker";
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const [search, setSearch] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const reduced = useReducedMotion();
   const online = useOnline();
+
+  useEffect(() => {
+    trackPageView(pathname);
+  }, [pathname]);
 
   return (
     <MediaActionsProvider>
