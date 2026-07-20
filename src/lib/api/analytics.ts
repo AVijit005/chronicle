@@ -120,37 +120,15 @@ export interface InsightsResponse {
 }
 
 export async function getDashboard(): Promise<DashboardResponse> {
-  try {
-    return await apiGet<DashboardResponse>('/analytics/dashboard');
-  } catch (e) {
-    console.warn("Fallback to mock dashboard");
-    return {
-      continueWatching: [{ libraryId: "l1", mediaId: "interstellar", title: "Interstellar", slug: "interstellar", posterUrl: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", mediaType: "movie", progress: 68, progressPercentage: 68 }],
-      continueReading: [], continuePlaying: [], continueListening: [], continueLearning: [],
-      recentlyAdded: [], recentlyCompleted: [], recentMemories: [], recentJournalEntries: [], pinnedCollections: []
-    };
-  }
+  return apiGet<DashboardResponse>('/analytics/dashboard');
 }
 
 export async function getOverview(): Promise<OverviewResponse> {
-  try {
-    return await apiGet<OverviewResponse>('/analytics/overview');
-  } catch (e) {
-    return {
-      moviesCompleted: 12, showsFinished: 4, episodesWatched: 40, booksRead: 2, gamesFinished: 1, coursesCompleted: 0,
-      hoursWatched: 120, hoursRead: 20, hoursPlayed: 50, hoursLearned: 0,
-      averageRating: 4.5, favoriteGenre: "Sci-Fi", favoriteMediaType: "Movie",
-      totalLibraryItems: 42, totalJournalEntries: 10, totalMemories: 5, totalReviews: 8
-    };
-  }
+  return apiGet<OverviewResponse>('/analytics/overview');
 }
 
 export async function getStreaks(): Promise<StreaksResponse> {
-  try {
-    return await apiGet<StreaksResponse>('/analytics/streaks');
-  } catch (e) {
-    return { currentStreak: 5, longestStreak: 12, weeklyActivity: [], monthlyActivity: [], yearlyActivity: [], completionStreak: 2, journalStreak: 3 };
-  }
+  return apiGet<StreaksResponse>('/analytics/streaks');
 }
 
 export async function getMediaAnalytics(): Promise<MediaAnalyticsResponse> {
@@ -174,16 +152,7 @@ export async function getCalendar(year?: number, month?: number): Promise<Calend
 }
 
 export async function getInsights(): Promise<InsightsResponse> {
-  try {
-    return await apiGet<InsightsResponse>('/analytics/insights');
-  } catch (e) {
-    return {
-      mostActiveWeekday: "Sunday", favoriteGenre: "Sci-Fi", favoriteDecade: "2010s",
-      longestBinge: "Succession", mostRewatchedMedia: "Interstellar", mostRereadBook: "Harry Potter",
-      mostReplayedGame: "Elden Ring", averageCompletionTime: 4.2, mostProductiveMonth: "March",
-      totalUniqueMedia: 42, totalHoursSpent: 120
-    };
-  }
+  return apiGet<InsightsResponse>('/analytics/insights');
 }
 
 export interface ConstellationEntry {
@@ -362,29 +331,5 @@ export async function getConstellation(categories?: string[]): Promise<Constella
     params.set('categories', categories.join(','));
   }
   const qs = params.toString();
-  try {
-    return await apiGet<ConstellationEntry[]>(`/analytics/constellation${qs ? `?${qs}` : ''}`);
-  } catch (e) {
-    const baseMock = [
-      { label: "Movies", count: 12, value: 0, color: "oklch(0.65 0.2 250)" },
-      { label: "Anime", count: 15, value: 0, color: "oklch(0.65 0.22 15)" },
-      { label: "Series", count: 8, value: 0, color: "oklch(0.60 0.18 280)" },
-      { label: "Books", count: 4, value: 0, color: "oklch(0.65 0.18 30)" },
-      { label: "Manga", count: 24, value: 0, color: "oklch(0.70 0.15 60)" },
-      { label: "Games", count: 2, value: 0, color: "oklch(0.65 0.15 150)" },
-      { label: "Music", count: 120, value: 0, color: "oklch(0.75 0.15 150)" },
-      { label: "Podcasts", count: 18, value: 0, color: "oklch(0.72 0.18 200)" },
-      { label: "Courses", count: 1, value: 0, color: "oklch(0.68 0.12 220)" },
-      { label: "YouTube", count: 350, value: 0, color: "oklch(0.60 0.25 20)" }
-    ];
-    let filtered = baseMock;
-    if (categories && categories.length > 0) {
-      filtered = baseMock.filter(m => categories.includes(m.label));
-    }
-    const total = filtered.reduce((sum, item) => sum + item.count, 0);
-    return filtered.map(item => ({
-      ...item,
-      value: total === 0 ? 0 : Math.round((item.count / total) * 100)
-    }));
-  }
+  return apiGet<ConstellationEntry[]>(`/analytics/constellation${qs ? `?${qs}` : ''}`);
 }

@@ -26,20 +26,20 @@ export const KIND_LABEL: Record<MediaKind, string> = {
 export interface MediaItem {
   id: string;
   title: string;
-  kind: MediaKind;
+  kind: MediaKind | string;
   year: number;
-  poster: string;
-  backdrop?: string;
-  rating: number; // 0-5
-  progress?: number; // 0-100
-  status: "watching" | "completed" | "planned" | "paused";
+  poster?: string | null;
+  backdrop?: string | null;
+  rating?: number | null; // 0-5
+  progress?: number | null; // 0-100
+  status: string;
   genres: string[];
-  runtime?: string;
-  creator?: string;
-  accent?: string; // oklch
+  runtime?: string | null;
+  creator?: string | null;
+  accent?: string | null; // oklch
   synopsis: string;
-  _libraryId?: string; // from api adapters
-  _mediaId?: string; // from api adapters
+  _libraryId?: string | null; // from api adapters
+  _mediaId?: string | null; // from api adapters
 }
 
 export interface Collection {
@@ -83,3 +83,26 @@ export interface MediaDetail {
   continueLabel: string;
   continueDetail: string;
 }
+
+export const MEDIA: MediaItem[] = [];
+export const COLLECTIONS: Collection[] = [];
+export const JOURNAL: any[] = [];
+export const THIS_WEEK: any[] = [];
+export const ACTIVITY_30D: any[] = [];
+export const STATS: any = {};
+export const CALENDAR_HERO: any = {};
+export const CALENDAR_INSIGHTS: any = {};
+export const YEAR_HEATMAP: any = {};
+export const CALENDAR_HIGHLIGHTS: any[] = [];
+export const MEMORY_STREAKS: any = {};
+export const UPCOMING_RELEASES: any[] = [];
+export const CALENDAR_YEAR: any = {};
+export const JOURNAL_PROMPTS: any[] = [];
+
+export const MEMORY_CLUSTERS: any[] = [];
+
+export const QUOTES: any[] = [];
+export const PINNED_MEDIA: any[] = [];
+export const RECENT_JOURNALS: any[] = [];
+export const SEARCHABLE_SETTINGS: any[] = [];
+export const ACHIEVEMENTS: any[] = [];

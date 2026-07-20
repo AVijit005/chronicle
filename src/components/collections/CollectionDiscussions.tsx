@@ -1,5 +1,5 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 const NOTES = [
   "Why this collection exists.",

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getCompanionStories } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function CompanionStories({ item }: { item: MediaItem }) {
   const list = getCompanionStories(item);

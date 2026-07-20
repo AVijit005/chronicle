@@ -1,5 +1,5 @@
 // Quote engine — deterministic across media, journal, characters.
-import { MEDIA, JOURNAL, QUOTES } from "@/lib/mock";
+import { MEDIA, JOURNAL, QUOTES } from "@/lib/types";
 import { CHARACTERS } from "@/lib/characters";
 import { mulberry } from "@/lib/seed";
 

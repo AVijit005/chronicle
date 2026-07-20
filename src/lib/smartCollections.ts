@@ -1,5 +1,5 @@
 // Smart Collections — deterministic editorial groupings.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, type Season, type MediaMemory } from "@/lib/memory";
 
 export type CollectionMode = "manual" | "smart" | "hybrid";

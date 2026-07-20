@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import type { LifeChapter } from "@/lib/memoryInsights";
 import { MemoryChip } from "./MemoryChip";
 import { cn } from "@/lib/utils";

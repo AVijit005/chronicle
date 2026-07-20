@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, Star } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 import { metaOf } from "@/lib/library";
 
 export function FavoritesGallery({ items }: { items: MediaItem[] }) {

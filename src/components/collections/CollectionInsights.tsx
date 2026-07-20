@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getCollectionInsights } from "@/lib/collectionInsights";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 export function CollectionInsights({ collection }: { collection: Collection }) {
   const insights = getCollectionInsights(collection);

@@ -1,5 +1,5 @@
 // Relationship engine — unified selector across the entire data graph.
-import { MEDIA, COLLECTIONS, JOURNAL, type MediaItem, type Collection } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, JOURNAL, type MediaItem, type Collection } from "@/lib/types";
 import { GOALS_FULL, type Goal } from "@/lib/goals";
 import { CHARACTERS, type Character } from "@/lib/characters";
 import { allCreators, type Creator } from "@/lib/creatorEngine";

@@ -47,16 +47,7 @@ export async function listNotifications(params?: { cursor?: string; limit?: numb
   if (params?.cursor) qs.set('cursor', params.cursor);
   if (params?.limit) qs.set('limit', String(params.limit));
   const qsStr = qs.toString();
-  try {
-    return await apiGet<NotificationListResponse>(`/notifications${qsStr ? `?${qsStr}` : ''}`);
-  } catch (e) {
-    return {
-      items: [
-        { id: "1", title: "Achievement Unlocked", body: "You finished 10 movies!", type: "achievement", isRead: false, actionUrl: null, image: null, createdAt: new Date().toISOString(), readAt: null }
-      ],
-      total: 1, unreadCount: 1, hasMore: false, cursor: null
-    };
-  }
+  return apiGet<NotificationListResponse>(`/notifications${qsStr ? `?${qsStr}` : ''}`);
 }
 
 export async function markNotificationRead(id: string): Promise<void> {

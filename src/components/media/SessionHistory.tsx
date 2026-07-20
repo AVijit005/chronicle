@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getSessions } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function SessionHistory({ item }: { item: MediaItem }) {
   const sessions = getSessions(item);

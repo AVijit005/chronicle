@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { MediaCard } from "@/components/media/MediaCard";
-import { MEDIA, KIND_LABEL, type MediaKind } from "@/lib/mock";
+import { MEDIA, KIND_LABEL, type MediaKind } from "@/lib/types";
 import { EmptyState } from "@/components/common/Section";
 import { cascade } from "@/lib/motion";
 

@@ -1,7 +1,7 @@
 // Reactive library store — Zustand + localStorage. Frontend-only source of truth.
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { MEDIA, type MediaItem, type MediaKind } from "@/lib/mock";
+import { MEDIA, type MediaItem, type MediaKind } from "@/lib/types";
 import type { LibraryMeta, MediaStatus } from "@/lib/library";
 
 export interface ProgressEntry {

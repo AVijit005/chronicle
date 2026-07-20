@@ -1,5 +1,5 @@
 // Collection Relationships — adjacency builder.
-import { COLLECTIONS, type Collection } from "@/lib/mock";
+import { COLLECTIONS, type Collection } from "@/lib/types";
 
 export interface Relation {
   kind: string;

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getCompanionCollections } from "@/lib/collectionRelationships";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 export function SmartCollectionSuggestions({ collection }: { collection: Collection }) {
   const comps = getCompanionCollections(collection.id).slice(0, 4);

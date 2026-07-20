@@ -1,5 +1,5 @@
 import { getCollectionRelations } from "@/lib/collectionRelationships";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 export function CollectionConnections({ collection: c }: { collection: Collection }) {
   const rels = getCollectionRelations(c);

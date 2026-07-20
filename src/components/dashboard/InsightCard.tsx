@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 import { Lightbulb } from "lucide-react";
-import { INSIGHTS } from "@/lib/mock";
+import { INSIGHTS } from "@/lib/types";
 
 export function InsightCard() {
   const [i, setI] = useState(0);

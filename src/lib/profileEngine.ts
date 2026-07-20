@@ -1,5 +1,5 @@
 // Universal Profile Engine — deterministic identity selectors.
-import { MEDIA, STATS, JOURNAL } from "@/lib/mock";
+import { MEDIA, STATS, JOURNAL } from "@/lib/types";
 import { TODAY } from "@/lib/memory";
 
 export interface ProfileIdentity {

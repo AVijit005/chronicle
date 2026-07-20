@@ -1,5 +1,5 @@
 // Collection Workspace — pinned widgets (deterministic mock).
-import { type Collection } from "@/lib/mock";
+import { type Collection } from "@/lib/types";
 import { getCollectionItems } from "@/lib/collectionEngine";
 
 export interface PinnedNote {

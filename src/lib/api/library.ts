@@ -1,35 +1,7 @@
 import { apiGet, apiPost, apiPatch, apiDelete } from './fetch';
-import { MEDIA, type MediaItem } from '@/lib/mock';
+import { MEDIA, type MediaItem } from '@/lib/types';
 
-function mockLibraryItems(): LibraryItemResponse[] {
-  return MEDIA.map((m: MediaItem) => ({
-    id: m.id,
-    status: m.status ?? 'planned',
-    rating: m.rating ?? null,
-    rewatchCount: m.rewatchCount ?? null,
-    favorite: m.favorite ?? false,
-    hidden: false,
-    private: false,
-    notes: m.synopsis ?? null,
-    startedAt: null,
-    finishedAt: null,
-    lastInteractionAt: null,
-    progress: m.progress ?? null,
-    progressPercentage: m.progress ?? null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    mediaType: m.kind,
-    media: {
-      id: m.id,
-      slug: m.id,
-      title: m.title,
-      posterUrl: m.poster,
-      backdropUrl: m.backdrop ?? null,
-      releaseYear: m.year,
-      genres: m.genres,
-    }
-  }));
-}export interface LibraryItemMedia {
+export interface LibraryItemMedia {
   id: string;
   slug: string;
   title: string;
@@ -121,27 +93,15 @@ export async function addToLibrary(input: AddToLibraryInput): Promise<LibraryIte
 }
 
 export async function listLibrary(params?: LibraryFilterParams): Promise<LibraryListResponse> {
-  try {
-    return await apiGet<LibraryListResponse>(`/library${buildQueryString(params ?? {})}`);
-  } catch (e) {
-    return { data: mockLibraryItems(), hasMore: false };
-  }
+  return apiGet<LibraryListResponse>(`/library${buildQueryString(params ?? {})}`);
 }
 
 export async function listLibraryByStatus(status: string, params?: LibraryFilterParams): Promise<LibraryListResponse> {
-  try {
-    return await apiGet<LibraryListResponse>(`/library/status/${status}${buildQueryString(params ?? {})}`);
-  } catch (e) {
-    return { data: mockLibraryItems().filter(m => m.status === status), hasMore: false };
-  }
+  return apiGet<LibraryListResponse>(`/library/status/${status}${buildQueryString(params ?? {})}`);
 }
 
 export async function listLibraryByType(type: string, params?: LibraryFilterParams): Promise<LibraryListResponse> {
-  try {
-    return await apiGet<LibraryListResponse>(`/library/type/${type}${buildQueryString(params ?? {})}`);
-  } catch (e) {
-    return { data: mockLibraryItems().filter(m => m.mediaType === type), hasMore: false };
-  }
+  return apiGet<LibraryListResponse>(`/library/type/${type}${buildQueryString(params ?? {})}`);
 }
 
 export async function getLibraryStats(): Promise<LibraryStatsResponse> {

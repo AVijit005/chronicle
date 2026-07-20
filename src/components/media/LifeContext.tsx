@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getLifeContext } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function LifeContext({ item }: { item: MediaItem }) {
   const c = getLifeContext(item);

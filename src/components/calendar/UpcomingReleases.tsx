@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, useMotionTemplate } from "motion/react";
-import { UPCOMING_RELEASES } from "@/lib/analytics-mock";
+import { UPCOMING_RELEASES } from "@/lib/types";
 
 interface ReleaseItem {
   title: string;

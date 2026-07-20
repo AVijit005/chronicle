@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { CloudSun, ChevronLeft, ChevronRight, ChevronsUp } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
-import { CALENDAR_HERO } from "@/lib/analytics-mock";
+import { CALENDAR_HERO } from "@/lib/types";
 import { useCalendar } from "@/hooks/use-analytics";
 
 interface Props {

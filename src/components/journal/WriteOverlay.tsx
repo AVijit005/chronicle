@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Send, AlertCircle } from "lucide-react";
-import { JOURNAL_PROMPTS } from "@/lib/analytics-mock";
+import { JOURNAL_PROMPTS } from "@/lib/types";
 
 interface Props {
   isOpen: boolean;

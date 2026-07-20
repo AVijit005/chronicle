@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { HIGHLIGHTS } from "@/lib/memoryInsights";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface Props {

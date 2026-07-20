@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PosterCard } from "@/components/ui/PosterCard";
 import { getCollectionItems } from "@/lib/collectionEngine";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type GroupBy = "Genre" | "Creator" | "Year" | "Rating" | "Status";

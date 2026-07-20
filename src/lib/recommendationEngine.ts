@@ -1,7 +1,7 @@
 // Recommendation Engine — pure deterministic scoring.
 // No AI, no randomness beyond seeded mulberry. SSR-safe.
 import { mulberry } from "@/lib/seed";
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, type MediaMemory, type Season } from "@/lib/memory";
 
 export type RecommendationSource =

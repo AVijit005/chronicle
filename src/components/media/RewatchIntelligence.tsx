@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getRewatchReasons } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function RewatchIntelligence({ item }: { item: MediaItem }) {
   const reasons = getRewatchReasons(item);

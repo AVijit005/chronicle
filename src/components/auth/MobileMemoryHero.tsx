@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Star } from "lucide-react";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { ease } from "@/lib/motion";
 import { MemoryQuote } from "./MemoryQuote";
 

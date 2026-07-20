@@ -12,10 +12,7 @@ import type {
   GenreAnalyticsDto,
   ActivityDto,
   CalendarDto,
-  CalendarYearDto,
-  CalendarDayDto,
   InsightsDto,
-} from './dto';
 } from './dto';
 
 @Injectable()
@@ -54,14 +51,6 @@ export class AnalyticsService {
 
   async getCalendar(userId: string, year: number, month: number): Promise<CalendarDto> {
     return this.aggregation.getCalendar(userId, year, month);
-  }
-
-  async getCalendarYear(userId: string, year: number): Promise<CalendarYearDto> {
-    return this.aggregation.getCalendarYear(userId, year);
-  }
-
-  async getCalendarDay(userId: string, dateStr: string): Promise<CalendarDayDto> {
-    return this.repository.getCalendarDay(userId, dateStr);
   }
 
   async getInsights(userId: string): Promise<InsightsDto> {

@@ -1,5 +1,5 @@
 // Activity Feed — deterministic mock of recent user activity.
-import { MEDIA, JOURNAL, ACHIEVEMENTS } from "@/lib/mock";
+import { MEDIA, JOURNAL, ACHIEVEMENTS } from "@/lib/types";
 
 export interface Activity {
   id: string;

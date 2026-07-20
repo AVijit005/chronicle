@@ -1,5 +1,5 @@
 import { getJourneyEvents } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function StoryJourney({ item }: { item: MediaItem }) {
   const events = getJourneyEvents(item);

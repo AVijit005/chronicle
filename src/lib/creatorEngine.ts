@@ -1,5 +1,5 @@
 // Creator engine — derives per-creator works, collections, journal mentions, stats.
-import { MEDIA, COLLECTIONS, JOURNAL, type MediaItem, type Collection } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, JOURNAL, type MediaItem, type Collection } from "@/lib/types";
 
 export interface Creator {
   id: string;

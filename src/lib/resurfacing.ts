@@ -1,7 +1,7 @@
 // Resurfacing — Memory OS Part 03.
 // Deterministic SSR-safe selectors used by the resurfacing engine.
 import { mulberry } from "@/lib/seed";
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, TODAY, type MediaMemory, type Season } from "@/lib/memory";
 
 interface Pair {

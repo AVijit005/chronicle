@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getDiscussionNotes } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function DiscussionNotes({ item }: { item: MediaItem }) {
   const notes = getDiscussionNotes(item);

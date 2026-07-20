@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getSimilarMemories } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function SimilarMemories({ item }: { item: MediaItem }) {
   const list = getSimilarMemories(item);

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CurrentUser, JwtAuthGuard } from '../auth';
 import type { AccessTokenPayload } from '../auth/services/jwt-token.service';
@@ -11,8 +11,6 @@ import type {
   GenreAnalyticsDto,
   ActivityDto,
   CalendarDto,
-  CalendarYearDto,
-  CalendarDayDto,
   InsightsDto,
 } from './dto';
 
@@ -59,15 +57,6 @@ export class AnalyticsController {
     return this.analyticsService.getActivity(user.sub);
   }
 
-  @Get('calendar/rich/:year')
-  @ApiOperation({ summary: 'Rich calendar year overview with stats, heatmap, highlights, streaks' })
-  async getCalendarYear(
-    @CurrentUser() user: AccessTokenPayload,
-    @Param('year') year: string,
-  ): Promise<CalendarYearDto> {
-    return this.analyticsService.getCalendarYear(user.sub, parseInt(year, 10) || new Date().getFullYear());
-  }
-
   @Get('calendar')
   @ApiOperation({ summary: 'Calendar data for a specific month' })
   async getCalendar(
@@ -86,14 +75,5 @@ export class AnalyticsController {
   @ApiOperation({ summary: 'User insights' })
   async getInsights(@CurrentUser() user: AccessTokenPayload): Promise<InsightsDto> {
     return this.analyticsService.getInsights(user.sub);
-  }
-
-  @Get('calendar/day/:date')
-  @ApiOperation({ summary: 'Daily calendar memory panel with media items and journal entries' })
-  async getCalendarDay(
-    @CurrentUser() user: AccessTokenPayload,
-    @Param('date') date: string,
-  ): Promise<CalendarDayDto> {
-    return this.analyticsService.getCalendarDay(user.sub, date);
   }
 }

@@ -1,5 +1,5 @@
 // Character entity index — deterministic, derived from existing MEDIA.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 
 export interface Character {
   id: string;

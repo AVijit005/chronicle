@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, useMotionValue, useMotionTemplate } from "motion/react";
-import { CALENDAR_HIGHLIGHTS } from "@/lib/analytics-mock";
+import { CALENDAR_HIGHLIGHTS } from "@/lib/types";
 
 interface Props {
   highlights?: { label: string; value: string; note: string; media: { poster: string | null } }[];

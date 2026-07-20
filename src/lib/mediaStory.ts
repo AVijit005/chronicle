@@ -1,5 +1,5 @@
 // Media Story helpers — deterministic, SSR-safe building blocks for Media Detail 3.0.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, type MediaMemory } from "@/lib/memory";
 import { mulberry } from "@/lib/seed";
 

@@ -1,7 +1,7 @@
 // Memory Journal Layer — Part 02.
 // Deterministic SSR-safe data + selectors for journals, moments, arcs, scores.
 import { mulberry } from "@/lib/seed";
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, TODAY, type Mood, type MediaMemory } from "@/lib/memory";
 
 /* ============================================================

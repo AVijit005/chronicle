@@ -1,6 +1,6 @@
 // Reactive selectors over libraryStore — real numbers, not mock seeds.
 import { useMemo } from "react";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 import type { StoredMeta } from "@/lib/store/libraryStore";
 

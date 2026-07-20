@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { COLLECTIONS } from "@/lib/mock";
-import type { MediaItem } from "@/lib/mock";
+import { COLLECTIONS } from "@/lib/types";
+import type { MediaItem } from "@/lib/types";
 
 export function CollectionsIntegration({ item }: { item: MediaItem }) {
   const cols = COLLECTIONS.filter((c) => c.mediaIds?.includes(item.id));

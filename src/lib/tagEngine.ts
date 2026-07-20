@@ -1,5 +1,5 @@
 // Universal tag index — deterministic, derived from existing data.
-import { MEDIA, COLLECTIONS, JOURNAL } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, JOURNAL } from "@/lib/types";
 
 export type TaggableKind = "media" | "collection" | "journal";
 export interface TaggedRef {

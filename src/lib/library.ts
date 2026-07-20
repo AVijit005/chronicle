@@ -1,5 +1,5 @@
 // Library status taxonomy + selectors derived from MEDIA mock + live store.
-import { MEDIA, type MediaItem, type MediaKind } from "@/lib/mock";
+import { MEDIA, type MediaItem, type MediaKind } from "@/lib/types";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 
 export type MediaStatus =

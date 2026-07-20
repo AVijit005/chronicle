@@ -1,5 +1,5 @@
 // Memory Insights — Part 03.
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import {
   MEMORIES_BY_MEDIA,
   TODAY,

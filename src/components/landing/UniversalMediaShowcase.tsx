@@ -11,7 +11,7 @@ import {
   Sparkles,
   Tv,
 } from "lucide-react";
-import type { MediaKind } from "@/lib/mock";
+import type { MediaKind } from "@/lib/types";
 
 const TYPES: {
   kind: MediaKind;

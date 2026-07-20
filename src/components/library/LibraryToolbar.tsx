@@ -1,7 +1,7 @@
 import { Search, Filter, Grid3x3, Rows3, Heart, NotebookPen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { STATUS_LABEL, STATUS_TINT, type MediaStatus } from "@/lib/library";
-import { KIND_LABEL, type MediaKind } from "@/lib/mock";
+import { KIND_LABEL, type MediaKind } from "@/lib/types";
 
 const STATUSES: MediaStatus[] = [
   "in_progress",

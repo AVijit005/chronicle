@@ -1,4 +1,4 @@
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 const CHAPTERS = [
   "The Beginning",

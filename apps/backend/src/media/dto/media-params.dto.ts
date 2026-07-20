@@ -48,15 +48,47 @@ export class MediaFilterDto extends CursorPaginationDto {
   status?: string;
 }
 
-export class MediaSearchDto extends CursorPaginationDto {
-  @IsString()
-  search!: string;
-}
-
 export class MediaSortDto extends SortDto {
   @IsOptional()
   @IsIn(['title', 'releaseYear', 'releaseDate', 'createdAt', 'updatedAt', 'runtime', 'duration'])
   sortBy: 'title' | 'releaseYear' | 'releaseDate' | 'createdAt' | 'updatedAt' | 'runtime' | 'duration' = 'createdAt';
+}
+
+export class MediaSearchDto extends CursorPaginationDto {
+  @IsString()
+  search!: string;
+  
+  @IsOptional()
+  @IsIn(MEDIA_TYPE_VALUES)
+  mediaType?: string;
+
+  @IsOptional()
+  @IsString()
+  genre?: string;
+
+  @IsOptional()
+  @IsString()
+  language?: string;
+
+  @IsOptional()
+  @IsString()
+  country?: string;
+
+  @IsOptional()
+  @IsString()
+  releaseYear?: string;
+
+  @IsOptional()
+  @IsIn(CONTENT_STATUS_VALUES)
+  status?: string;
+  
+  @IsOptional()
+  @IsIn(['title', 'releaseYear', 'releaseDate', 'createdAt', 'updatedAt', 'runtime', 'duration'])
+  sortBy?: 'title' | 'releaseYear' | 'releaseDate' | 'createdAt' | 'updatedAt' | 'runtime' | 'duration';
+  
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  sortOrder?: 'asc' | 'desc';
 }
 
 export class IdParamDto {

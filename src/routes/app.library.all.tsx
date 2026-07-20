@@ -6,7 +6,7 @@ import { LibraryToolbar, type SortKey } from "@/components/library/LibraryToolba
 import { StatusBadge } from "@/components/library/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ALL_LIBRARY, metaOf, statusOf, type MediaStatus } from "@/lib/library";
-import type { MediaKind } from "@/lib/mock";
+import type { MediaKind } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { cascade } from "@/lib/motion";
 

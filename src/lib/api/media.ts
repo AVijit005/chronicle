@@ -1,5 +1,5 @@
 import { apiGet } from './fetch';
-import { MEDIA } from '../mock';
+
 
 export interface MediaResponse {
   id: string;
@@ -85,65 +85,16 @@ export async function listMediaByType(type: string, params?: MediaFilterParams):
   return apiGet<MediaListResponse>(`/media/type/${type}${buildQueryString(params ?? {})}`);
 }
 
-function toMediaResponse(mock: any): MediaResponse {
-  return {
-    id: mock.id,
-    slug: mock.slug || mock.id,
-    title: mock.title,
-    originalTitle: mock.title,
-    description: mock.synopsis,
-    overview: mock.synopsis,
-    posterUrl: mock.poster,
-    backdropUrl: mock.backdrop || null,
-    bannerUrl: mock.backdrop || null,
-    coverImage: mock.poster,
-    thumbnail: mock.poster,
-    releaseDate: `${mock.year}-01-01`,
-    releaseYear: mock.year,
-    runtime: mock.runtime ? parseInt(mock.runtime) * 60 : null,
-    duration: null,
-    language: "en",
-    country: "US",
-    genres: mock.genres || [],
-    tags: [],
-    externalIds: null,
-    metadata: null,
-    status: "Released",
-    mediaType: mock.kind || "movie",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-}
+
 
 export async function getMedia(id: string): Promise<MediaResponse> {
-  try {
-    return await apiGet<MediaResponse>(`/media/${id}`);
-  } catch (error) {
-    const mock = MEDIA.find((m) => m.id === id);
-    if (!mock) throw error;
-    return toMediaResponse(mock);
-  }
+  return apiGet<MediaResponse>(`/media/${id}`);
 }
 
 export async function getRelatedMedia(id: string): Promise<MediaResponse[]> {
-  try {
-    return await apiGet<MediaResponse[]>(`/media/${id}/related`);
-  } catch (error) {
-    const mock = MEDIA.find((m) => m.id === id);
-    if (mock && mock.mediaIds) {
-      return mock.mediaIds.map((mid: string) => {
-        const m = MEDIA.find((x) => x.id === mid);
-        return m ? toMediaResponse(m) : null;
-      }).filter(Boolean) as MediaResponse[];
-    }
-    return MEDIA.slice(0, 4).filter(m => m.id !== id).map(toMediaResponse);
-  }
+  return apiGet<MediaResponse[]>(`/media/${id}/related`);
 }
 
 export async function getMediaMetadata(id: string): Promise<Record<string, unknown>> {
-  try {
-    return await apiGet<Record<string, unknown>>(`/media/${id}/metadata`);
-  } catch (error) {
-    return {};
-  }
+  return apiGet<Record<string, unknown>>(`/media/${id}/metadata`);
 }

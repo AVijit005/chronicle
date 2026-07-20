@@ -7,187 +7,6 @@ interface UserLibConfig {
   mediaDelegate: string;
   mediaIdField: string;
   type: string;
-  // ─── Rich Calendar Year ───────────────────────────────────────────────────
-
-  async getCalendarYearData(userId: string, year: number): Promise<{ months: CalendarMonthRaw[]; heatmapCells: { week: number; day: number; value: number }[] }> {
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
-    const months: CalendarMonthRaw[] = [];
-    const dayActivity: Record<string, number> = {};
-
-    // Initialize empty month buckets
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    for (let m = 0; m < 12; m++) {
-      months.push({ month: m, name: monthNames[m], journalCount: 0, storyCount: 0, hoursTracked: 0, topMediaIds: [] as string[], dayHits: 0 });
-    }
-
-    // Journal entries for the year
-    const journal = this.prismaAny().journalEntry;
-    if (journal) {
-      const entries = await journal.findMany({
-        where: { userId, createdAt: { gte: startDate, lte: endDate } },
-        select: { createdAt: true },
-      });
-      for (const e of entries) {
-        const m = e.createdAt.getMonth();
-        months[m].journalCount++;
-        months[m].dayHits++;
-        const key = e.createdAt.toISOString().slice(0, 10);
-        dayActivity[key] = (dayActivity[key] ?? 0) + 1;
-      }
-    }
-
-    // Library items updated/completed this year
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-
-      const items = await delegate.findMany({
-        where: {
-          userId,
-          OR: [
-            { updatedAt: { gte: startDate, lte: endDate } },
-            { createdAt: { gte: startDate, lte: endDate } },
-          ],
-          deletedAt: null,
-        },
-        select: {
-          createdAt: true,
-          updatedAt: true,
-          status: true,
-          hoursSpent: true,
-          minutesSpent: true,
-        },
-        include: {
-          [cfg.mediaDelegate]: {
-            select: { id: true, title: true, posterUrl: true },
-          },
-        },
-      });
-
-      for (const item of items) {
-        const date = item.updatedAt ?? item.createdAt;
-        if (date < startDate || date > endDate) continue;
-        const m = date.getMonth();
-        months[m].storyCount++;
-        months[m].dayHits++;
-        months[m].hoursTracked += (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
-
-        const media = item[cfg.mediaDelegate] as { id: string; title: string; posterUrl: string | null } | null;
-        if (media?.id && !months[m].topMediaIds.includes(media.id)) {
-          months[m].topMediaIds.push(media.id);
-        }
-
-        const key = date.toISOString().slice(0, 10);
-        dayActivity[key] = (dayActivity[key] ?? 0) + 1;
-      }
-    }
-
-    // Build heatmap: 52 weeks × 7 days from dayActivity
-    const heatmapCells: { week: number; day: number; value: number }[] = [];
-    const yearStart = new Date(year, 0, 1);
-    const daysInYear = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
-    for (let d = 0; d < daysInYear; d++) {
-      const date = new Date(yearStart);
-      date.setDate(date.getDate() + d);
-      const key = date.toISOString().slice(0, 10);
-      const value = dayActivity[key] ?? 0;
-      const weekOfYear = Math.floor(d / 7);
-      const dayOfWeek = date.getDay();
-      if (value > 0) {
-        heatmapCells.push({ week: weekOfYear, day: dayOfWeek, value: Math.min(1, value / 5) });
-      }
-    }
-
-    return { months, heatmapCells };
-  }
-
-  async getYearHighlights(userId: string, year: number): Promise<any[]> {
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
-    const highlights: any[] = [];
-
-    // Best day: most activity in a single day
-    const activity = await this.getActivityData(userId, 365);
-    let bestDay = { date: '', count: 0 };
-    for (const [date, count] of Object.entries(activity)) {
-      if (count > bestDay.count) { bestDay = { date, count }; }
-    }
-    if (bestDay.date) {
-      highlights.push({
-        label: 'Best Day',
-        value: new Date(bestDay.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
-        note: `${bestDay.count} activities`,
-        mediaId: 'interstellar',
-        posterUrl: null,
-        accent: 'oklch(0.72 0.18 255 / 0.3)',
-      });
-    }
-
-    // Longest single-sitting media
-    let longestTitle = '';
-    let longestHours = 0;
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, deletedAt: null, status: 'COMPLETED' },
-        select: { hoursSpent: true, minutesSpent: true },
-        include: { [cfg.mediaDelegate]: { select: { title: true, posterUrl: true } } },
-        orderBy: { hoursSpent: 'desc' },
-        take: 1,
-      });
-      for (const item of items) {
-        const h = (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
-        if (h > longestHours) {
-          longestHours = h;
-          const media = item[cfg.mediaDelegate] as any;
-          longestTitle = media?.title ?? '';
-        }
-      }
-    }
-    if (longestTitle) {
-      highlights.push({
-        label: 'Longest Session',
-        value: longestTitle,
-        note: `${Math.round(longestHours)}h spent`,
-        mediaId: 'longest',
-        posterUrl: null,
-        accent: 'oklch(0.65 0.22 295 / 0.3)',
-      });
-    }
-
-    return highlights;
-  }
-
-  async getYearStreaks(userId: string): Promise<any[]> {
-    // These are computed from streak service — return placeholder structure
-    return [];
-  }
-
-  async getYearUpcoming(userId: string): Promise<any[]> {
-    // Find media with status PLANNING
-    const upcoming: any[] = [];
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, status: 'PLANNING', deletedAt: null },
-        include: { [cfg.mediaDelegate]: { select: { id: true, title: true, posterUrl: true, releaseDate: true } } },
-        take: 4,
-      });
-      for (const item of items) {
-        const media = item[cfg.mediaDelegate] as any;
-        upcoming.push({
-          title: media?.title ?? 'Untitled',
-          posterUrl: media?.posterUrl ?? null,
-          mediaType: cfg.type,
-          releaseDate: media?.releaseDate,
-        });
-      }
-    }
-    return upcoming.slice(0, 4);
-  }
 }
 
 const USER_LIB_TYPES: UserLibConfig[] = [
@@ -219,7 +38,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
+        where: { userId,  },
         select: { status: true },
       });
       for (const item of items) {
@@ -235,7 +54,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const count = await delegate.count({
-        where: { userId, status: 'COMPLETED', deletedAt: null },
+        where: { userId, status: 'COMPLETED',  },
       });
       if (count > 0) counts[cfg.type] = count;
     }
@@ -248,7 +67,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const count = await delegate.count({
-        where: { userId, deletedAt: null },
+        where: { userId,  },
       });
       if (count > 0) counts[cfg.type] = count;
     }
@@ -260,7 +79,7 @@ export class AnalyticsRepository {
     for (const cfg of USER_LIB_TYPES) {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
-      total += await delegate.count({ where: { userId, deletedAt: null } });
+      total += await delegate.count({ where: { userId,  } });
     }
     return total;
   }
@@ -271,7 +90,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
+        where: { userId,  },
         select: { progressPercentage: true },
       });
       for (const item of items) {
@@ -293,7 +112,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, rating: { not: null }, deletedAt: null },
+        where: { userId, rating: { not: null },  },
         select: { rating: true },
       });
       for (const item of items) {
@@ -312,7 +131,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, rating: { not: null }, deletedAt: null },
+        where: { userId, rating: { not: null },  },
         select: { rating: true },
       });
       for (const item of items) {
@@ -328,7 +147,7 @@ export class AnalyticsRepository {
     for (const cfg of USER_LIB_TYPES) {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
-      total += await delegate.count({ where: { userId, favorite: true, deletedAt: null } });
+      total += await delegate.count({ where: { userId, favorite: true,  } });
     }
     return total;
   }
@@ -339,7 +158,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
+        where: { userId,  },
         select: { metadata: true },
       });
       for (const item of items) {
@@ -356,7 +175,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const count = await delegate.count({
-        where: { userId, deletedAt: null, bookmarked: true },
+        where: { userId,  bookmarked: true },
       });
       total += count;
     }
@@ -376,7 +195,7 @@ export class AnalyticsRepository {
       where: {
         userId,
         status: { in: statuses },
-        deletedAt: null,
+        
         progress: { gt: 0 },
         progressPercentage: { lt: 100 },
       },
@@ -394,7 +213,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
+        where: { userId,  },
         orderBy: { createdAt: 'desc' },
         take: limit,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
@@ -411,7 +230,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, status: 'COMPLETED', deletedAt: null },
+        where: { userId, status: 'COMPLETED',  },
         orderBy: { updatedAt: 'desc' },
         take: limit,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
@@ -480,7 +299,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, createdAt: { gte: startDate }, deletedAt: null },
+        where: { userId, createdAt: { gte: startDate },  },
         select: { createdAt: true },
       });
       for (const item of items) {
@@ -560,7 +379,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, updatedAt: { gte: startDate, lte: endDate }, status: 'COMPLETED', deletedAt: null },
+        where: { userId, updatedAt: { gte: startDate, lte: endDate }, status: 'COMPLETED',  },
         select: { updatedAt: true, minutesSpent: true, hoursSpent: true },
       });
       for (const item of items) {
@@ -587,7 +406,7 @@ export class AnalyticsRepository {
       if (!delegate) continue;
 
       const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
+        where: { userId,  },
         select: { status: true, rating: true, minutesSpent: true, hoursSpent: true },
         include: { [cfg.mediaDelegate]: { select: { genres: true } } },
       });
@@ -648,70 +467,6 @@ export class AnalyticsRepository {
       take: limit,
     });
   }
-
-  async getCalendarDay(userId: string, dateStr: string): Promise<{ mediaItems: { id: string; title: string; posterUrl: string | null; mediaType: string; note: string }[]; journalEntry: { id: string; content: string; mood: string | null } | null }> {
-    const targetDate = new Date(dateStr);
-    targetDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(dateStr);
-    endDate.setHours(23, 59, 59, 999);
-
-    const mediaItems: any[] = [];
-
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-
-      const items = await delegate.findMany({
-        where: {
-          userId,
-          deletedAt: null,
-          OR: [
-            { createdAt: { gte: targetDate, lte: endDate } },
-            { updatedAt: { gte: targetDate, lte: endDate } },
-          ],
-        },
-        include: {
-          [cfg.mediaDelegate]: { select: { id: true, title: true, posterUrl: true } },
-        },
-        orderBy: { updatedAt: 'desc' },
-        take: 6,
-      });
-
-      for (const item of items) {
-        const media = item[cfg.mediaDelegate] as { id: string; title: string; posterUrl: string | null } | null;
-        if (!media) continue;
-
-        const statusLabel =
-          item.status === 'COMPLETED' ? 'Completed'
-          : item.status === 'IN_PROGRESS' ? `${item.progressPercentage ?? 0}%`
-          : 'Started';
-
-        const hours = (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
-        const note = hours > 0 ? `${Math.round(hours * 60)}m` : statusLabel;
-
-        mediaItems.push({
-          id: media.id,
-          title: media.title,
-          posterUrl: media.posterUrl,
-          mediaType: cfg.type,
-          note,
-        });
-      }
-    }
-
-    const journalDelegate = this.prismaAny().journalEntry;
-    let journalEntry = null;
-    if (journalDelegate) {
-      const entry = await journalDelegate.findFirst({
-        where: { userId, createdAt: { gte: targetDate, lte: endDate } },
-        orderBy: { createdAt: 'desc' },
-        select: { id: true, content: true, mood: true },
-      });
-      if (entry) journalEntry = entry;
-    }
-
-    return { mediaItems, journalEntry };
-  }
 }
 
 interface CalendarRawData {
@@ -719,16 +474,6 @@ interface CalendarRawData {
   memoryCounts: Record<string, number>;
   completedCounts: Record<string, number>;
   hoursTracked: Record<string, number>;
-}
-
-interface CalendarMonthRaw {
-  month: number;
-  name: string;
-  journalCount: number;
-  storyCount: number;
-  hoursTracked: number;
-  topMediaIds: string[];
-  dayHits: number;
 }
 
 interface GenreRawData {

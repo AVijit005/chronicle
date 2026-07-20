@@ -36,10 +36,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   async validate(
     accessToken: string,
     refreshToken: string | undefined,
-    profile: GoogleProfile,
+    profile: any,
   ): Promise<{ sub: string; email: string }> {
     const emails = profile.emails ?? [];
-    const primaryEmail = emails.find((e) => e.verified) ?? emails[0];
+    const primaryEmail = emails.find((e: any) => e.verified) ?? emails[0];
     const name = (profile.name ?? {}) as GoogleProfileName;
     const photos = (profile.photos ?? []) as GoogleProfilePhotos[];
 

@@ -1,5 +1,5 @@
 // Chronicle Intelligence Layer — deterministic editorial insight.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, type MediaMemory } from "@/lib/memory";
 import { MEMORY_EXTENSIONS } from "@/lib/memoryJournal";
 import { mulberry } from "@/lib/seed";

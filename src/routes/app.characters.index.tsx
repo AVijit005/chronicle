@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CHARACTERS } from "@/lib/characters";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { MagazineBlock } from "@/components/editorial/MagazineBlock";
 
 export const Route = createFileRoute("/app/characters/")({ component: CharactersIndex });

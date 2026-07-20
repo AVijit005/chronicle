@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getFavoriteSceneStrip } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function FavoriteMoments({ item }: { item: MediaItem }) {
   const moments = getFavoriteSceneStrip(item);

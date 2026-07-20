@@ -1,5 +1,5 @@
 // Goals — deterministic lifelong-journey models.
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 
 export type GoalStatus = "Planning" | "Active" | "Paused" | "Completed" | "Archived";
 

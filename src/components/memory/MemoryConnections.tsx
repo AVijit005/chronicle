@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { MEMORIES_BY_MEDIA } from "@/lib/memory";
 import { cn } from "@/lib/utils";
 

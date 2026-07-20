@@ -1,5 +1,5 @@
 // Collection Insights — editorial highlights.
-import { type Collection } from "@/lib/mock";
+import { type Collection } from "@/lib/types";
 import { MEMORIES_BY_MEDIA } from "@/lib/memory";
 import { getCollectionItems } from "@/lib/collectionEngine";
 

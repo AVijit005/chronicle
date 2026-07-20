@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import { CALENDAR_INSIGHTS } from "@/lib/analytics-mock";
+import { CALENDAR_INSIGHTS } from "@/lib/types";
 import { toast } from "sonner";
 
 interface Props {

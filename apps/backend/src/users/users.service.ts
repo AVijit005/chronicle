@@ -5,7 +5,6 @@ import { EVENT_PUBLISHER, RequestContextService } from '../core';
 import type { EventPublisher } from '../core/events/event-publisher.abstraction';
 import { UpdatePreferencesDto, UpdatePrivacyDto, UpdateProfileDto } from './dto';
 import { SessionResponseDto } from './dto/session-response.dto';
-import type { DataExportResponseDto, DeleteAccountResponseDto } from './dto/data-export.dto';
 import { AvatarService, AvatarFile } from './services/avatar.service';
 import { PreferencesService } from './services/preferences.service';
 import { PrivacyService } from './services/privacy.service';
@@ -19,8 +18,6 @@ import {
   UserProfileUpdatedEvent,
 } from './users.types';
 import { UsersRepository } from './users.repository';
-import { PrismaService } from '../prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
 
 export interface RequestMetadata {
   ipAddress?: string;
@@ -39,7 +36,6 @@ export class UsersService {
     @Inject(EVENT_PUBLISHER) private readonly events: EventPublisher,
     private readonly requestContext: RequestContextService,
     private readonly agentParser: UserAgentParser,
-    private readonly prisma: PrismaService,
   ) {}
 
   async getMe(userId: string) {
@@ -204,98 +200,5 @@ export class UsersService {
       }
     }
     return changes;
-  }
-
-  async exportData(userId: string): Promise<DataExportResponseDto> {
-    const profile = await this.users.findById(userId);
-    const LIB_TYPES: { lib: string; media: string; type: string }[] = [
-      { lib: 'userMovie', media: 'movie', type: 'movie' },
-      { lib: 'userTvShow', media: 'tvShow', type: 'series' },
-      { lib: 'userAnime', media: 'anime', type: 'anime' },
-      { lib: 'userBook', media: 'book', type: 'book' },
-      { lib: 'userGame', media: 'game', type: 'game' },
-      { lib: 'userMusicAlbum', media: 'musicAlbum', type: 'music' },
-      { lib: 'userPodcast', media: 'podcast', type: 'podcast' },
-      { lib: 'userCourse', media: 'course', type: 'course' },
-    ];
-
-    const prismaAny = this.prisma as unknown as Record<string, any>;
-    const libraryItems: any[] = [];
-    let completedItems = 0;
-
-    for (const cfg of LIB_TYPES) {
-      const delegate = prismaAny[cfg.lib];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
-        include: { [cfg.media]: { select: { id: true, title: true, genres: true, year: true, creator: true } } },
-      });
-      for (const item of items) {
-        if (item.status === 'COMPLETED') completedItems++;
-        libraryItems.push({
-          id: item.id,
-          title: item[cfg.media]?.title ?? 'Untitled',
-          type: cfg.type,
-          status: item.status,
-          rating: item.rating,
-          progress: item.progressPercentage ?? 0,
-          addedAt: item.createdAt?.toISOString() ?? '',
-          completedAt: item.status === 'COMPLETED' ? (item.updatedAt?.toISOString() ?? null) : null,
-          genres: item[cfg.media]?.genres ?? [],
-          creator: item[cfg.media]?.creator ?? null,
-          year: item[cfg.media]?.year ?? null,
-        });
-      }
-    }
-
-    const journalDelegate = prismaAny.journalEntry;
-    const journalEntries = journalDelegate
-      ? await journalDelegate.findMany({ where: { userId }, select: { id: true, title: true, content: true, mood: true, createdAt: true }, orderBy: { createdAt: 'asc' } })
-      : [];
-
-    const memoryDelegate = prismaAny.memory;
-    const memories = memoryDelegate
-      ? await memoryDelegate.findMany({ where: { userId }, select: { id: true, title: true, emotion: true, memoryDate: true, createdAt: true }, orderBy: { createdAt: 'asc' } })
-      : [];
-
-    const hourSum = libraryItems.reduce((s: number, i: any) => s + (itemStates?.get(i.id)?.hours ?? 0), 0);
-    const genreTally: Record<string, number> = {};
-    const creatorTally: Record<string, number> = {};
-    for (const item of libraryItems) {
-      for (const g of item.genres) genreTally[g] = (genreTally[g] ?? 0) + 1;
-      if (item.creator) creatorTally[item.creator] = (creatorTally[item.creator] ?? 0) + 1;
-    }
-
-    return {
-      profile: profile
-        ? { id: profile.id, email: profile.email, displayName: profile.displayName, username: profile.username, bio: profile.bio, createdAt: profile.createdAt.toISOString() }
-        : { id: userId, email: '', displayName: null, username: null, bio: null, createdAt: '' },
-      library: { totalItems: libraryItems.length, completedItems, items: libraryItems },
-      journal: { totalEntries: journalEntries.length, entries: journalEntries.map((e: any) => ({ id: e.id, title: e.title, content: e.content, mood: e.mood, createdAt: e.createdAt?.toISOString() ?? '' })) },
-      memories: { total: memories.length, items: memories.map((m: any) => ({ id: m.id, title: m.title, emotion: m.emotion, memoryDate: m.memoryDate?.toISOString() ?? null, createdAt: m.createdAt?.toISOString() ?? '' })) },
-      stats: {
-        totalHours: Math.round(hourSum),
-        favoriteGenre: Object.entries(genreTally).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null,
-        favoriteCreator: Object.entries(creatorTally).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null,
-        mostActiveDay: 'Sunday',
-        bestStreak: 0,
-        totalJournals: journalEntries.length,
-        totalCompleted: completedItems,
-      },
-      generatedAt: new Date().toISOString(),
-    };
-  }
-
-  async deleteAccount(userId: string): Promise<DeleteAccountResponseDto> {
-    const deletionDate = new Date();
-    deletionDate.setDate(deletionDate.getDate() + 30);
-
-    await this.users.updateProfile(userId, { deletedAt: deletionDate } as any);
-    await this.writeAudit(userId, 'user', userId, { deletedAt: null }, { deletedAt: deletionDate }, undefined, { action: 'account_deletion_scheduled' });
-
-    return {
-      message: 'Your account has been scheduled for deletion. It will be permanently removed in 30 days. You can cancel by contacting support before then.',
-      scheduledDeletionAt: deletionDate.toISOString(),
-    };
   }
 }

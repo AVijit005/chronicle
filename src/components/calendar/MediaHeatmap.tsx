@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { YEAR_HEATMAP } from "@/lib/analytics-mock";
+import { YEAR_HEATMAP } from "@/lib/types";
 
 interface Props {
   heatmap?: { w: number; d: number; v: number }[];

@@ -1,5 +1,5 @@
 // Product audit — deterministic checks against the mock graph.
-import { MEDIA, COLLECTIONS, JOURNAL } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, JOURNAL } from "@/lib/types";
 import { MEMORIES_BY_MEDIA } from "@/lib/memory";
 
 export interface AuditFinding {

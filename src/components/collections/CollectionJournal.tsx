@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { JOURNAL } from "@/lib/mock";
-import type { Collection } from "@/lib/mock";
+import { JOURNAL } from "@/lib/types";
+import type { Collection } from "@/lib/types";
 
 export function CollectionJournal({ collection: _c }: { collection: Collection }) {
   return (

@@ -1,5 +1,5 @@
 // Personal Museum — curated editorial selections from MEDIA.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 
 export interface MuseumGallery {
   id: string;

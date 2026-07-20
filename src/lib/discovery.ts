@@ -1,5 +1,5 @@
 // Discovery — deterministic SSR-safe selectors.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, TODAY, type Season } from "@/lib/memory";
 import {
   buildReason,

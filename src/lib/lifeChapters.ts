@@ -1,5 +1,5 @@
 // Life chapter grouper — editorial life eras across the timeline.
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 
 export interface LifeChapter {
   id: string;

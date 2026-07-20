@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Quote, ArrowUpRight } from "lucide-react";
-import { JOURNAL } from "@/lib/mock";
+import { JOURNAL } from "@/lib/types";
 
 export function JournalPreview() {
   return (

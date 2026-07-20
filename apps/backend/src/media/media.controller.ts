@@ -25,20 +25,16 @@ export class MediaController {
   }
 
   @Get('search')
-  async search(
-    @Query() searchDto: MediaSearchDto,
-    @Query() filter: MediaFilterDto,
-    @Query() sort: MediaSortDto,
-  ): Promise<SearchResult> {
+  async search(@Query() searchDto: MediaSearchDto): Promise<SearchResult> {
     return this.mediaService.search(searchDto.search, {
-      mediaType: filter.mediaType,
-      genre: filter.genre,
-      language: filter.language,
-      country: filter.country,
-      releaseYear: filter.releaseYear,
-      status: filter.status,
-      sortBy: sort.sortBy,
-      sortOrder: sort.sortOrder,
+      mediaType: searchDto.mediaType,
+      genre: searchDto.genre,
+      language: searchDto.language,
+      country: searchDto.country,
+      releaseYear: searchDto.releaseYear,
+      status: searchDto.status,
+      sortBy: searchDto.sortBy as any,
+      sortOrder: searchDto.sortOrder as any,
       cursor: searchDto.cursor,
       limit: searchDto.limit,
     });

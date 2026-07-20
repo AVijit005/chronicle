@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { FIRSTS } from "@/lib/memoryInsights";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
 

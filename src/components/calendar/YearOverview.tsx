@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { CALENDAR_YEAR } from "@/lib/analytics-mock";
+import { CALENDAR_YEAR } from "@/lib/types";
 
 interface Props {
   monthIdx: number;

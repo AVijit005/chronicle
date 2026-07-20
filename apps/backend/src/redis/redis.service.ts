@@ -13,6 +13,8 @@ export class RedisService implements OnModuleDestroy {
       password: this.config.get<string>('redis.password') || undefined,
       db: this.config.get<number>('redis.db'),
       lazyConnect: true,
+      maxRetriesPerRequest: null,
+      retryStrategy: (times) => Math.min(times * 500, 2000),
     });
   }
 

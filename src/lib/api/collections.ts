@@ -99,11 +99,7 @@ export async function createCollection(input: CreateCollectionInput): Promise<Co
 }
 
 export async function listCollections(): Promise<CollectionResponse[]> {
-  try {
-    return await apiGet<CollectionResponse[]>('/collections');
-  } catch (e) {
-    return [];
-  }
+  return apiGet<CollectionResponse[]>('/collections');
 }
 
 export async function getCollection(id: string): Promise<CollectionResponse> {

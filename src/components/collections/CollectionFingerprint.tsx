@@ -1,5 +1,5 @@
 import { mulberry } from "@/lib/seed";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 function hash(id: string) {
   let h = 0xfeedbeef >>> 0;

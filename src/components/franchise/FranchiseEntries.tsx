@@ -1,5 +1,5 @@
 import { MediaCard } from "@/components/media/MediaCard";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function FranchiseEntries({ entries }: { entries: MediaItem[] }) {
   return (

@@ -1,7 +1,7 @@
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
-import { MEMORY_STREAKS } from "@/lib/analytics-mock";
+import { MEMORY_STREAKS } from "@/lib/types";
 
 interface StreakData {
   label: string;

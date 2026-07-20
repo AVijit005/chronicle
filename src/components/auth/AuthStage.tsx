@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useMemo } from "react";
 import { Heart, Bookmark, Ticket, Music2, Star, Award, Calendar } from "lucide-react";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { useMouseParallax } from "@/lib/useParallax";
 import { useTimeOfDay } from "@/lib/useTimeOfDay";
 import { dur, ease } from "@/lib/motion";

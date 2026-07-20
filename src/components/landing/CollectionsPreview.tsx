@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { COLLECTIONS } from "@/lib/mock";
+import { COLLECTIONS } from "@/lib/types";
 
 export function CollectionsPreview() {
   return (

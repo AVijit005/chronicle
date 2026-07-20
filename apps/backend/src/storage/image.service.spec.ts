@@ -103,8 +103,8 @@ describe('ImageService', () => {
 
   it('sanitizes filenames — double extensions', () => {
     const result = service.sanitizeFilename('image.jpg.php');
-    // Multiple dots in base should be collapsed
-    expect(result).not.toContain('.php');
+    // Multiple dots in base should be collapsed, leaving only the last extension
+    expect(result).toBe('image_jpg.php');
   });
 
   it('sanitizes filenames — empty input', () => {

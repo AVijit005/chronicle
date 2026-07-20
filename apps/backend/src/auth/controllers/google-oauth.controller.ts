@@ -28,7 +28,7 @@ export class GoogleOAuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponseDto> {
-    const user = request.user as OAuthUserPayload;
+    const user = (request as any).user as OAuthUserPayload;
     return this.authService.finishOAuthLogin(
       user,
       request.ip,

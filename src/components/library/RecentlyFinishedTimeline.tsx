@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Star, NotebookPen } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { bucketOfDate, metaOf, recentlyFinished } from "@/lib/library";
 

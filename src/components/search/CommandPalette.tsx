@@ -26,7 +26,7 @@ import {
   SEARCHABLE_SETTINGS,
   type MediaItem,
   type MediaKind,
-} from "@/lib/mock";
+} from "@/lib/types";
 import { useNavigate } from "@tanstack/react-router";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useSearch, useRecentSearches } from "@/hooks/use-search";

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import type { Character } from "@/lib/characters";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 
 export function CharacterProfile({ character }: { character: Character }) {
   const media = MEDIA.find((m) => m.id === character.mediaId);

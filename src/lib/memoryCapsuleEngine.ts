@@ -1,5 +1,5 @@
 // Memory capsule grouper — editorial capsules generated deterministically.
-import { MEDIA, type MediaItem } from "@/lib/mock";
+import { MEDIA, type MediaItem } from "@/lib/types";
 
 export interface Capsule {
   id: string;

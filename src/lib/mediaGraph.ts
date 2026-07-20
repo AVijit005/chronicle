@@ -1,5 +1,5 @@
 // Media Graph — pure relationship builders.
-import { MEDIA, COLLECTIONS, type MediaItem } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, type MediaMemory } from "@/lib/memory";
 import { MEMORY_EXTENSIONS } from "@/lib/memoryJournal";
 import { GOALS_FULL } from "@/lib/goals";

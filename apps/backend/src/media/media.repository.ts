@@ -54,7 +54,6 @@ function buildWhere(params: FindManyParams): Record<string, unknown> {
   if (params.search) {
     where.OR = [
       { title: { contains: params.search, mode: 'insensitive' } },
-      { originalTitle: { contains: params.search, mode: 'insensitive' } },
       { slug: { contains: params.search.toLowerCase(), mode: 'insensitive' } },
     ];
   }
@@ -63,7 +62,6 @@ function buildWhere(params: FindManyParams): Record<string, unknown> {
   if (params.country) where.country = params.country;
   if (params.releaseYear) where.releaseYear = parseInt(params.releaseYear, 10);
   if (params.genre) where.genres = { has: params.genre };
-  if (params.mediaType) where.mediaType = params.mediaType;
 
   return where;
 }

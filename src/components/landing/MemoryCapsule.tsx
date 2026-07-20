@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 
 const MEMORIES = [
   {

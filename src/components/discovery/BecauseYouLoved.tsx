@@ -1,5 +1,5 @@
 import { getBecauseYouLoved } from "@/lib/discovery";
-import { MEDIA } from "@/lib/mock";
+import { MEDIA } from "@/lib/types";
 import { RecommendationCard } from "./RecommendationCard";
 import { cn } from "@/lib/utils";
 

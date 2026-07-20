@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion, useMotionValue, useTransform, useSpring, useReducedMotion } from "motion/react";
 import { Heart, Star, ImageOff } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 import { useState, type MouseEvent } from "react";
 import { imageReveal } from "@/lib/motion";
 

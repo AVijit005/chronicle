@@ -6,8 +6,8 @@ import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp, SegmentedFilter, ZoneHeading } from "@/components/analytics/AnalyticsKit";
 import {
   MEMORY_CLUSTERS,
-} from "@/lib/analytics-mock";
-import { MEDIA } from "@/lib/mock";
+} from "@/lib/types";
+import { MEDIA } from "@/lib/types";
 import { LIFE_CHAPTERS } from "@/lib/memoryInsights";
 import { LifeChapterCard } from "@/components/memory/LifeChapterCard";
 import { SeasonalRecommendations } from "@/components/discovery/SeasonalRecommendations";

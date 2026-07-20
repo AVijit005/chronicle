@@ -1,5 +1,5 @@
 // Personal stats — pure, deterministic.
-import { MEDIA, JOURNAL, ACTIVITY_30D } from "@/lib/mock";
+import { MEDIA, JOURNAL, ACTIVITY_30D } from "@/lib/types";
 import { mulberry } from "@/lib/seed";
 
 export interface PersonalStats {

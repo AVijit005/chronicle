@@ -1,5 +1,5 @@
 import { getMediaRelationships } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function MediaRelationships({ item }: { item: MediaItem }) {
   const rels = getMediaRelationships(item);

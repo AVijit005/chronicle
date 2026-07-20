@@ -1,5 +1,5 @@
 // Universal Search Index — deterministic, SSR-safe aggregator.
-import { MEDIA, COLLECTIONS, JOURNAL, ACHIEVEMENTS, SEARCHABLE_SETTINGS } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, JOURNAL, ACHIEVEMENTS, SEARCHABLE_SETTINGS } from "@/lib/types";
 import { GOALS_FULL } from "@/lib/goals";
 import { allCreators } from "@/lib/creatorEngine";
 import { FRANCHISES } from "@/lib/franchiseEngine";

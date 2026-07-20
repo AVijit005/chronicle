@@ -1,5 +1,5 @@
 // Collection Engine — deterministic intelligence over existing COLLECTIONS.
-import { MEDIA, COLLECTIONS, type Collection, type MediaItem } from "@/lib/mock";
+import { MEDIA, COLLECTIONS, type Collection, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA } from "@/lib/memory";
 import { mulberry } from "@/lib/seed";
 

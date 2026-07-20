@@ -16,6 +16,8 @@ const QUEUES = ['notification', 'email', 'wrapped', 'analytics', 'cleanup'] as c
           password: config.get<string>('redis.password') || undefined,
           db: config.get<number>('redis.db'),
           lazyConnect: true,
+          retryStrategy: (times) => Math.min(times * 500, 2000),
+          maxRetriesPerRequest: null,
         },
         prefix: config.get<string>('bullmq.prefix'),
         defaultJobOptions: {

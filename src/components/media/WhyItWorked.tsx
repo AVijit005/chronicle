@@ -1,5 +1,5 @@
 import { getWhyItWorked } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function WhyItWorked({ item }: { item: MediaItem }) {
   const tags = getWhyItWorked(item);

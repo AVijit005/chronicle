@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { Play, NotebookPen, Clock, BarChart3, Share2, Pin, Archive } from "lucide-react";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 export function CollectionQuickActions({ collection: _c }: { collection: Collection }) {
   return (

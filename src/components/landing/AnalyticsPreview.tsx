@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Bar, BarChart } from "recharts";
-import { ACTIVITY_30D, STATS } from "@/lib/mock";
+import { ACTIVITY_30D, STATS } from "@/lib/types";
 import { CountUp } from "./CountUp";
 
 const GENRE = [

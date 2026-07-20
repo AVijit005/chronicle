@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getMemory } from "@/lib/memory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function MemoryLayer({ item }: { item: MediaItem }) {
   const m = getMemory(item.id);

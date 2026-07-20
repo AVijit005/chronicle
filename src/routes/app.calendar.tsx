@@ -10,8 +10,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { CALENDAR_YEAR } from "@/lib/analytics-mock";
-import { MEDIA } from "@/lib/mock";
+import { CALENDAR_YEAR } from "@/lib/types";
+import { MEDIA } from "@/lib/types";
 import { useCalendarYear } from "@/hooks/use-analytics";
 import { adaptCalendarYear } from "@/lib/adapters/analytics";
 import { useQuery } from "@tanstack/react-query";

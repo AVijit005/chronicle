@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PosterCard } from "@/components/ui/PosterCard";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 /**
  * Visual-regression harness route — DO NOT link from the app.

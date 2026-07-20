@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getCollectionIntelligence, getCollectionItems } from "@/lib/collectionEngine";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 export function CollectionAnalyticsPreview({ collection }: { collection: Collection }) {
   const intel = getCollectionIntelligence(collection);

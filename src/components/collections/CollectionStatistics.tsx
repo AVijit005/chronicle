@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { CountUp } from "@/components/landing/CountUp";
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip } from "recharts";
-import type { Collection } from "@/lib/mock";
+import type { Collection } from "@/lib/types";
 
 const COLORS = [
   "oklch(0.72 0.18 255)",

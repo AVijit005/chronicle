@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Play, BookmarkPlus } from "lucide-react";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function CinematicHero({ item }: { item: MediaItem }) {
   return (

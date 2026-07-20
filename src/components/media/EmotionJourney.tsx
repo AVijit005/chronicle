@@ -1,5 +1,5 @@
 import { getEmotionPath } from "@/lib/mediaStory";
-import type { MediaItem } from "@/lib/mock";
+import type { MediaItem } from "@/lib/types";
 
 export function EmotionJourney({ item }: { item: MediaItem }) {
   const path = getEmotionPath(item);
