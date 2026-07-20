@@ -4,12 +4,9 @@ import { MediaCard } from "@/components/media/MediaCard";
 import { Section } from "@/components/common/Section";
 import { Plus, NotebookPen, Calendar } from "lucide-react";
 import { OnThisDay } from "@/components/memory/OnThisDay";
-import { DiscoveryHero } from "@/components/discovery/DiscoveryHero";
-import { ContinueUniverse } from "@/components/discovery/ContinueUniverse";
 import { GoalHero } from "@/components/goals/GoalHero";
 import { ChallengeCard } from "@/components/challenges/ChallengeCard";
 import { getActiveChallenge } from "@/lib/challenges";
-import { TasteProfile } from "@/components/intelligence/TasteProfile";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { DashboardContext } from "@/components/dashboard/DashboardContext";
 import { ContinueJourneyHero } from "@/components/dashboard/ContinueJourneyHero";
@@ -128,18 +125,14 @@ function Home() {
       </div>
       <OnThisDay variant="compact" className="mt-12" />
       <PullQuote attribution={dailyQuote.attr}>{dailyQuote.quote}</PullQuote>
-      <DiscoveryHero className="mt-4" recommendedToday={discovery?.recommendedToday ?? null} />
-      <QuietRecommendations className="mt-16" insights={uiInsights} />
-      <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1.3fr]">
+                  <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1.3fr]">
         <ChallengeCard challenge={(challengesData?.challenges?.[0] ?? getActiveChallenge()) as any} />
         <GoalHero goal={challengesData?.goals?.[0] ? { id: challengesData.goals[0].id, title: challengesData.goals[0].title, description: challengesData.goals[0].description, current: challengesData.goals[0].current, target: challengesData.goals[0].target, reward: challengesData.goals[0].reward, accent: challengesData.goals[0].accent, startedAt: challengesData.goals[0].startedAt, priority: challengesData.goals[0].priority } : null} />
       </div>
       <DashboardContext className="mt-10" />
-      <ContinueUniverse className="mt-16" franchises={discovery?.continueFranchises ?? []} />
-      <DashboardMood className="mt-16" />
+            <DashboardMood className="mt-16" />
       <WeeklyReflection className="mt-6" overview={uiOverview} />
-      <TasteProfile className="mt-16" tasteProfile={intelligence?.tasteProfile ?? null} />
-      <div className="mt-16 pointer-events-auto">
+            <div className="mt-16 pointer-events-auto">
         <PremiumGlass interactive variant="strong" glow="oklch(0.72 0.18 255 / 0.2)" className="group/master rounded-[2.5rem]">
           <div className="flex flex-col text-left p-10 w-full">
             <div>

@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { QuoteGallery } from "@/components/profile/QuoteGallery";
-import { allQuotes } from "@/lib/quoteEngine";
 import { PullQuote } from "@/components/editorial/PullQuote";
 import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
 
 export const Route = createFileRoute("/app/quotes")({ component: QuotesPage });
 
 function QuotesPage() {
-  const quotes = allQuotes();
+  const quotes = []();
   const hero = quotes[0];
   const rest = quotes.slice(1, 37);
 

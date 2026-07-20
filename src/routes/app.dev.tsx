@@ -5,14 +5,13 @@ import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 import { QuickActionsMenu } from "@/components/common/QuickActionsMenu";
-import { runProductAudit } from "@/lib/productAudit";
 
 export const Route = createFileRoute("/app/dev")({
   component: DevPlayground,
 });
 
 function DevPlayground() {
-  const findings = runProductAudit();
+  const findings = {}
   return (
     <div className="space-y-10 pb-24 pt-4">
       <header>

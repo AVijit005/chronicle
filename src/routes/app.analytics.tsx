@@ -500,33 +500,6 @@ function AnalyticsPage() {
         </div>
       </Zone>
 
-      {/* ============ Zone 7 — Time investment ============ */}
-      <Zone eyebrow="Zone 07" title="Time investment" sub="Stacked across the year.">
-        <PremiumGlass className="p-6 md:p-8">
-          <div className="flex items-center justify-center h-80 text-muted-foreground">
-            Chart data unavailable (API limitation)
-          </div>
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 8 — Recent trends ============ */}
-      <Zone eyebrow="Zone 08" title="Recent trends">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <PremiumGlass className="flex items-center justify-center p-8 text-muted-foreground">
-            Data currently unavailable (API limitation)
-          </PremiumGlass>
-        </div>
-      </Zone>
-
-      {/* ============ Zone 9 — Achievements preview ============ */}
-      <Zone eyebrow="Zone 09" title="Recent milestones" action={<Link to="/app/achievements" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5">View all <ChevronRight className="h-3.5 w-3.5" /></Link>}>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <PremiumGlass className="p-8 text-muted-foreground">
-            Achievements unavailable (API limitation)
-          </PremiumGlass>
-        </div>
-      </Zone>
-
       {/* ============ Zone 10 — Smart insights ============ */}
       <Zone eyebrow="Zone 10" title="Smart insights" sub="Patterns Chronicle noticed.">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -551,50 +524,6 @@ function AnalyticsPage() {
             </motion.div>
           ))}
         </div>
-      </Zone>
-
-      {/* ============ Zone 11 — Year in review preview ============ */}
-      <Zone eyebrow="Zone 11" title="Year in review" sub="Twelve months of memory." action={<Link to="/app/wrapped"><PremiumButton variant="secondary" size="sm">Open Wrapped</PremiumButton></Link>}>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          <PremiumGlass className="p-8 text-center text-muted-foreground col-span-full">
-            Monthly summary unavailable (API limitation)
-          </PremiumGlass>
-        </div>
-      </Zone>
-
-      {/* ============ Zone 12 — Media Journey ============ */}
-      <Zone eyebrow="Zone 12" title="Media journey" sub="How your taste evolved.">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Media journey data unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 13 — Day & time patterns ============ */}
-      <Zone eyebrow="Zone 13" title="Day & time patterns" sub="When you press play.">
-        <PremiumGlass className="p-6 md:p-8 text-center text-muted-foreground">
-          Time patterns unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 14 — Viewing habits ============ */}
-      <Zone eyebrow="Zone 14" title="Viewing habits">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Viewing habits unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 15 — Media relationships ============ */}
-      <Zone eyebrow="Zone 15" title="Media relationships" sub="One thing leads to another.">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Media relationships unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 16 — Memory impact ============ */}
-      <Zone eyebrow="Zone 16" title="Memory impact" sub="The stories that left a mark.">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Memory impact unavailable (API limitation)
-        </PremiumGlass>
       </Zone>
 
       {/* ============ Zone 17 — Personal records ============ */}
@@ -622,27 +551,6 @@ function AnalyticsPage() {
             </PremiumGlass>
           ))}
         </div>
-      </Zone>
-
-      {/* ============ Zone 18 — Media balance ============ */}
-      <Zone eyebrow="Zone 18" title="Media balance" sub="Are you in rhythm?">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Media balance unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 19 — Smart comparisons ============ */}
-      <Zone eyebrow="Zone 19" title="Smart comparisons">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Smart comparisons unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-
-      {/* ============ Zone 20 — Insight feed ============ */}
-      <Zone eyebrow="Zone 20" title="Personal insight feed">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Personal insight feed unavailable (API limitation)
-        </PremiumGlass>
       </Zone>
 
       {/* Memory · What Chronicle noticed */}

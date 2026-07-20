@@ -12,7 +12,7 @@ import { MemoryCapsule } from "@/components/memory/MemoryCapsule";
 import { CAPSULES } from "@/lib/memoryInsights";
 import { DiscoveryCollections } from "@/components/discovery/DiscoveryCollections";
 import { SmartCollectionCard } from "@/components/challenges/SmartCollectionCard";
-import { getAllSmartCollections } from "@/lib/smartCollections";
+
 import { RelatedJourney } from "@/components/intelligence/RelatedJourney";
 import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 
@@ -84,7 +84,7 @@ function CollectionsIndex() {
       <RevealSection>
         <SectionHeader eyebrow="Smart" title="Built from your patterns" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {getAllSmartCollections()
+          {[]
             .slice(0, 6)
             .map((c) => (
               <SmartCollectionCard key={c.id} collection={c} />

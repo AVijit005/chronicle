@@ -1,20 +1,15 @@
+import { CountUp } from "@/components/analytics/AnalyticsKit";
+import { MemoryMilestones } from "@/components/memory/MemoryMilestones";
+import { FirstMoments } from "@/components/memory/FirstMoments";
+import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
+import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
+import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Share2, Download, Sparkles } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import { CountUp } from "@/components/analytics/AnalyticsKit";
-import { MemoryMilestones } from "@/components/memory/MemoryMilestones";
-import { FirstMoments } from "@/components/memory/FirstMoments";
-import { RecommendationCard } from "@/components/discovery/RecommendationCard";
-import { getHiddenGems } from "@/lib/discovery";
-import { AchievementHero } from "@/components/achievements/AchievementHero";
-import { StoryImpact } from "@/components/intelligence/StoryImpact";
-import { buildEditorialInsight } from "@/lib/intelligence";
-import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
-import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
-import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
 import { useOverview, useInsights } from "@/hooks/use-analytics";
 import { adaptOverview, adaptInsights } from "@/lib/adapters/analytics";
 import type { UIOverview, UIInsights, UIWrappedSlide } from "@/lib/adapters/types";
@@ -109,25 +104,7 @@ function WrappedPage() {
       {/* Memory · Milestones & firsts */}
       <div className="mx-4 mt-12 space-y-16 pb-24 md:mx-8">
         <LiveStatsStrip eyebrow="Your real year" />
-        <AchievementHero />
-        <p className="glass-subtle rounded-3xl p-6 text-center font-display text-xl tracking-tight text-foreground/85">
-          {buildEditorialInsight()}
-        </p>
-        <StoryImpact />
-        <MemoryMilestones />
-        <FirstMoments />
-        <section className="space-y-4">
-          <h2 className="font-display text-2xl tracking-tight">Hidden gems from your year</h2>
-          <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {getHiddenGems()
-              .slice(0, 4)
-              .map((r) => (
-                <li key={r.media.id}>
-                  <RecommendationCard rec={r} compact />
-                </li>
-              ))}
-          </ul>
-        </section>
+
         <YourReflectionsRail title="Reflections that defined your year" eyebrow="Your words" />
         <YourQuotesRail title="Lines you kept" eyebrow="Your quotes" />
       </div>
