@@ -127,7 +127,6 @@ jobs:
         working-directory: apps/backend
       - run: npm audit --audit-level=high
         working-directory: apps/backend
-        continue-on-error: true
       - name: TruffleHog Secret Scan
         uses: trufflesecurity/trufflehog@main
         with:
@@ -141,10 +140,30 @@ jobs:
             echo "FAILED: app.analytics.tsx is importing localStorage store or mock arrays"
             exit 1
           fi
+      - name: Verify frontend product killers
+        run: |
+          if grep -E "const goals = \[" src/routes/app.goals.tsx; then exit 1; fi
+          if grep -E "const items = \[" src/routes/app.achievements.tsx; then exit 1; fi
+          if ! grep -q "onClick" src/routes/app.wrapped.tsx; then exit 1; fi
+          if grep -q "mood: \"Reflective\"" src/routes/app.journal.tsx; then exit 1; fi
+          if grep -q "onClick={onOpenSearch}" src/components/layout/MobileNav.tsx; then exit 1; fi
 
   launch-gate:
     name: Launch Gate (Production Proof)
     runs-on: ubuntu-latest
     needs: [test, security]
     steps:
-      - run: echo "All critical production invariants (Cascade FKs, Secrets, Swagger, Email, RBAC, Analytics) have been machine-verified."
+      - uses: actions/checkout@v4
+      - name: Verify CORS config
+        run: |
+          if grep -q "CORS_ORIGIN === 'true'" apps/backend/src/app.bootstrap.ts; then
+            echo "FAILED: Open CORS reflection detected"
+            exit 1
+          fi
+      - name: Verify CSP scriptSrc
+        run: |
+          if grep "scriptSrc" apps/backend/src/app.bootstrap.ts | grep -q -E "unsafe-eval|unsafe-inline"; then
+            echo "FAILED: Unsafe CSP directives detected in scriptSrc"
+            exit 1
+          fi
+      - run: echo "All critical production invariants (Cascade FKs, Secrets, Swagger, Email, RBAC, Analytics, CORS, CSP) have been machine-verified."

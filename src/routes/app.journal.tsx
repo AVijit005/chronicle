@@ -133,7 +133,7 @@ function JournalPage() {
   const handleSeal = async () => {
     setIsSealing(true);
     try {
-      await createJournalEntry.mutateAsync({ content: journalText, mood: "Reflective" });
+      await createJournalEntry.mutateAsync({ content: journalText, mood: selectedMood || "Reflective" });
       toast.success("Entry sealed and saved.");
       setIsWriting(false);
       clearDraft();

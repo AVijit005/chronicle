@@ -1,7 +1,7 @@
 export * from './hardening.module';
 export * from './cache.service';
 export * from './cache-invalidation.service';
-export * from './security-audit.service';
+
 export * from './performance-audit.service';
 export * from './rate-limit-audit.service';
 export * from './database-optimization.service';

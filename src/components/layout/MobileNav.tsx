@@ -18,14 +18,14 @@ export function MobileNav({ onOpenSearch }: { onOpenSearch: () => void }) {
         const active = it.to === "/app" ? pathname === "/app" : pathname.startsWith(it.to);
         if (it.fab) {
           return (
-            <button
+            <Link
               key={it.to}
-              onClick={onOpenSearch}
-              aria-label="Open search"
+              to={it.to}
+              aria-label={it.label}
               className="-mt-8 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-[0_10px_30px_-10px_oklch(0.72_0.18_255/0.6)] press-scale"
             >
               <it.icon className="h-5 w-5" />
-            </button>
+            </Link>
           );
         }
         return (

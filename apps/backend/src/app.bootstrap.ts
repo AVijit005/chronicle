@@ -29,7 +29,7 @@ export async function createApp(): Promise<INestApplication> {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        scriptSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: ["'self'", "https:"],
@@ -45,9 +45,9 @@ export async function createApp(): Promise<INestApplication> {
     next();
   });
   app.enableCors({
-    origin: process.env.CORS_ORIGIN === 'true' 
-      ? true // Allow reflection if explicitly 'true'
-      : process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN 
+      ? process.env.CORS_ORIGIN.split(',').map((s) => s.trim())
+      : 'http://localhost:5173',
     credentials: true,
   });
 

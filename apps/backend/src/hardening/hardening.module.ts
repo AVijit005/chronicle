@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { RedisModule } from '../redis/redis.module';
 import { RedisCacheService } from './cache.service';
 import { CacheInvalidationService } from './cache-invalidation.service';
-import { SecurityAuditService } from './security-audit.service';
 import { PerformanceAuditService } from './performance-audit.service';
 import { RateLimitAuditService } from './rate-limit-audit.service';
 import { DatabaseOptimizationService } from './database-optimization.service';
@@ -14,7 +13,6 @@ import { LoadTestSupportService } from './load-test-support.service';
   providers: [
     RedisCacheService,
     CacheInvalidationService,
-    SecurityAuditService,
     PerformanceAuditService,
     RateLimitAuditService,
     DatabaseOptimizationService,
@@ -24,7 +22,6 @@ import { LoadTestSupportService } from './load-test-support.service';
   exports: [
     RedisCacheService,
     CacheInvalidationService,
-    SecurityAuditService,
     PerformanceAuditService,
     RateLimitAuditService,
     DatabaseOptimizationService,
