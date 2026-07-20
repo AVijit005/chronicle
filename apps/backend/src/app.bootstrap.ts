@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
-import compression from 'compression';
+// import compression from 'compression'; // NOTE: Compression disabled in app layer due to Bun test failures (require("debug") is not a function). Move compression to reverse proxy (Nginx/Cloudflare/Vercel) instead.
 import cookieParser from 'cookie-parser';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { randomUUID } from 'crypto';
@@ -36,7 +36,7 @@ export async function createApp(): Promise<INestApplication> {
       },
     },
   }));
-  app.use(compression());
+  // app.use(compression()); // Handled at CDN/Reverse Proxy level
   app.use(cookieParser());
   app.use((req: Request, res: Response, next: NextFunction) => {
     const requestId = (req.get('x-request-id') ?? randomUUID()) as string;

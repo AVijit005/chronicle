@@ -128,7 +128,7 @@ export class AuthService {
     return {
       user: this.toUserResponse(user),
       accessToken,
-      expiresIn: this.cookieService.getAccessTokenExpiresInSeconds(),
+      expiresIn,
     };
   }
 
