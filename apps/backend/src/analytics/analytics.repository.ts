@@ -34,15 +34,20 @@ export class AnalyticsRepository {
 
   async countByStatus(userId: string): Promise<Record<string, number>> {
     const counts: Record<string, number> = {};
-    for (const cfg of USER_LIB_TYPES) {
+    const promises = USER_LIB_TYPES.map(async (cfg) => {
       const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId,  },
-        select: { status: true },
+      if (!delegate) return [];
+      return delegate.groupBy({
+        by: ['status'],
+        where: { userId },
+        _count: { status: true },
       });
-      for (const item of items) {
-        counts[item.status] = (counts[item.status] ?? 0) + 1;
+    });
+
+    const results = await Promise.all(promises);
+    for (const groupResults of results) {
+      for (const group of groupResults) {
+        counts[group.status] = (counts[group.status] ?? 0) + group._count.status;
       }
     }
     return counts;
@@ -86,21 +91,29 @@ export class AnalyticsRepository {
 
   async getProgressDistribution(userId: string): Promise<Record<string, number>> {
     const dist: Record<string, number> = {};
-    for (const cfg of USER_LIB_TYPES) {
+    const promises = USER_LIB_TYPES.map(async (cfg) => {
       const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId,  },
-        select: { progressPercentage: true },
+      if (!delegate) return [];
+      return delegate.groupBy({
+        by: ['progressPercentage'],
+        where: { userId },
+        _count: { progressPercentage: true },
       });
-      for (const item of items) {
-        const pct = item.progressPercentage ?? 0;
-        if (pct === 0) dist['0'] = (dist['0'] ?? 0) + 1;
-        else if (pct <= 25) dist['1-25'] = (dist['1-25'] ?? 0) + 1;
-        else if (pct <= 50) dist['26-50'] = (dist['26-50'] ?? 0) + 1;
-        else if (pct <= 75) dist['51-75'] = (dist['51-75'] ?? 0) + 1;
-        else if (pct < 100) dist['76-99'] = (dist['76-99'] ?? 0) + 1;
-        else dist['100'] = (dist['100'] ?? 0) + 1;
+    });
+
+    const results = await Promise.all(promises);
+    for (const groupResults of results) {
+      for (const group of groupResults) {
+        if (group.progressPercentage === null) continue;
+        const pct = group.progressPercentage;
+        const count = group._count.progressPercentage;
+        
+        if (pct === 0) dist['0'] = (dist['0'] ?? 0) + count;
+        else if (pct <= 25) dist['1-25'] = (dist['1-25'] ?? 0) + count;
+        else if (pct <= 50) dist['26-50'] = (dist['26-50'] ?? 0) + count;
+        else if (pct <= 75) dist['51-75'] = (dist['51-75'] ?? 0) + count;
+        else if (pct < 100) dist['76-99'] = (dist['76-99'] ?? 0) + count;
+        else dist['100'] = (dist['100'] ?? 0) + count;
       }
     }
     return dist;
@@ -108,38 +121,51 @@ export class AnalyticsRepository {
 
   async getRatingsDistribution(userId: string): Promise<Record<string, number>> {
     const dist: Record<string, number> = {};
-    for (const cfg of USER_LIB_TYPES) {
+    const promises = USER_LIB_TYPES.map(async (cfg) => {
       const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, rating: { not: null },  },
-        select: { rating: true },
+      if (!delegate) return [];
+      return delegate.groupBy({
+        by: ['rating'],
+        where: { userId, rating: { not: null } },
+        _count: { rating: true },
       });
-      for (const item of items) {
-        const r = item.rating ?? 0;
-        const key = `${r}`;
-        dist[key] = (dist[key] ?? 0) + 1;
+    });
+
+    const results = await Promise.all(promises);
+    for (const groupResults of results) {
+      for (const group of groupResults) {
+        if (group.rating !== null) {
+          const key = `${group.rating}`;
+          dist[key] = (dist[key] ?? 0) + group._count.rating;
+        }
       }
     }
     return dist;
   }
 
   async getAverageRating(userId: string): Promise<number | null> {
-    let total = 0;
-    let count = 0;
-    for (const cfg of USER_LIB_TYPES) {
+    let totalSum = 0;
+    let totalCount = 0;
+
+    const promises = USER_LIB_TYPES.map(async (cfg) => {
       const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, rating: { not: null },  },
-        select: { rating: true },
+      if (!delegate) return null;
+      return delegate.aggregate({
+        where: { userId, rating: { not: null } },
+        _sum: { rating: true },
+        _count: { rating: true },
       });
-      for (const item of items) {
-        total += item.rating ?? 0;
-        count++;
+    });
+
+    const results = await Promise.all(promises);
+    for (const agg of results) {
+      if (agg && agg._count.rating > 0) {
+        totalSum += agg._sum.rating ?? 0;
+        totalCount += agg._count.rating;
       }
     }
-    return count > 0 ? total / count / 2 : null; // Convert to 0.5-5.0 scale
+
+    return totalCount > 0 ? totalSum / totalCount / 2 : null; // Convert to 0.5-5.0 scale
   }
 
   async getFavoriteCount(userId: string): Promise<number> {

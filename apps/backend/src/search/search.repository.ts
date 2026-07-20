@@ -103,7 +103,17 @@ export class SearchRepository {
       if (!delegate) continue;
 
       const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
+        where: {
+          userId,
+          deletedAt: null,
+          [cfg.delegate]: {
+            OR: [
+              { title: { contains: q, mode: 'insensitive' } },
+              { slug: { contains: q, mode: 'insensitive' } },
+              { [cfg.descriptionField]: { contains: q, mode: 'insensitive' } },
+            ],
+          },
+        },
         take: limit,
         include: {
           [cfg.delegate]: {

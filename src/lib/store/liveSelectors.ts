@@ -21,7 +21,9 @@ export interface ReflectionRow {
 export function useUserReflections(): ReflectionRow[] {
   const meta = useLibraryStore((s) => s.meta);
   const custom = useLibraryStore((s) => s.customItems);
+  const hydrated = useLibraryStore((s) => s.hydrated);
   return useMemo(() => {
+    if (!hydrated) return [];
     const items = allItemsFrom(custom);
     const out: ReflectionRow[] = [];
     for (const m of items) {
@@ -43,7 +45,9 @@ export function useUserReflections(): ReflectionRow[] {
 }
 
 export function useUserQuotes() {
-  return useLibraryStore((s) => s.userQuotes);
+  const quotes = useLibraryStore((s) => s.userQuotes);
+  const hydrated = useLibraryStore((s) => s.hydrated);
+  return hydrated ? quotes : [];
 }
 
 export interface LiveStats {
@@ -66,10 +70,10 @@ export function useLiveStats(): LiveStats {
   const meta = useLibraryStore((s) => s.meta);
   const custom = useLibraryStore((s) => s.customItems);
   const userQuotes = useLibraryStore((s) => s.userQuotes);
+  const hydrated = useLibraryStore((s) => s.hydrated);
   return useMemo(() => {
-    const items = allItemsFrom(custom);
     const stats: LiveStats = {
-      total: items.length,
+      total: 0,
       completed: 0,
       inProgress: 0,
       planning: 0,
@@ -83,6 +87,9 @@ export function useLiveStats(): LiveStats {
       topMood: undefined,
       byKind: {},
     };
+    if (!hydrated) return stats;
+    const items = allItemsFrom(custom);
+    stats.total = items.length;
     const moods: Record<string, number> = {};
     let ratingSum = 0;
     for (const m of items) {

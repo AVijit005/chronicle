@@ -339,7 +339,7 @@ model TvSeason {
   updatedAt     DateTime       @updatedAt @map("updated_at")
   deletedAt     DateTime?      @map("deleted_at")
   episodes      TvEpisode[]
-  tvShow        TvShow         @relation(fields: [tvShowId], references: [id], onDelete: Cascade)
+  tvShow        TvShow         @relation(fields: [tvShowId], references: [id], onDelete: Restrict)
   userTvSeasons UserTvSeason[]
 
   @@unique([tvShowId, seasonNumber])
@@ -481,7 +481,7 @@ model AnimeEpisode {
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
   deletedAt         DateTime?          @map("deleted_at")
-  anime             Anime              @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  anime             Anime              @relation(fields: [animeId], references: [id], onDelete: Restrict)
   userAnimeEpisodes UserAnimeEpisode[]
 
   @@unique([animeId, episodeNumber])
@@ -717,7 +717,7 @@ model MusicTrack {
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
   deletedAt       DateTime?        @map("deleted_at")
-  musicAlbum      MusicAlbum       @relation(fields: [musicAlbumId], references: [id], onDelete: Cascade)
+  musicAlbum      MusicAlbum       @relation(fields: [musicAlbumId], references: [id], onDelete: Restrict)
   userMusicTracks UserMusicTrack[]
 
   @@unique([musicAlbumId, trackNumber])
@@ -811,7 +811,7 @@ model PodcastEpisode {
   createdAt           DateTime             @default(now()) @map("created_at")
   updatedAt           DateTime             @updatedAt @map("updated_at")
   deletedAt           DateTime?            @map("deleted_at")
-  podcast             Podcast              @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  podcast             Podcast              @relation(fields: [podcastId], references: [id], onDelete: Restrict)
   userPodcastEpisodes UserPodcastEpisode[]
 
   @@unique([podcastId, episodeNumber])
@@ -908,7 +908,7 @@ model CourseModule {
   updatedAt         DateTime           @updatedAt @map("updated_at")
   deletedAt         DateTime?          @map("deleted_at")
   lessons           CourseLesson[]
-  course            Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course            Course             @relation(fields: [courseId], references: [id], onDelete: Restrict)
   userCourseModules UserCourseModule[]
 
   @@unique([courseId, moduleNumber])
@@ -951,7 +951,7 @@ model CourseLesson {
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
   deletedAt         DateTime?          @map("deleted_at")
-  courseModule      CourseModule       @relation(fields: [courseModuleId], references: [id], onDelete: Cascade)
+  courseModule      CourseModule       @relation(fields: [courseModuleId], references: [id], onDelete: Restrict)
   userCourseLessons UserCourseLesson[]
 
   @@unique([courseModuleId, lessonNumber])
@@ -996,7 +996,7 @@ model UserMovie {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  movie              Movie           @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movie              Movie           @relation(fields: [movieId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
@@ -1039,7 +1039,7 @@ model UserTvShow {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  tvShow             TvShow          @relation(fields: [tvShowId], references: [id], onDelete: Cascade)
+  tvShow             TvShow          @relation(fields: [tvShowId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, tvShowId])
@@ -1168,7 +1168,7 @@ model UserAnime {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  anime              Anime           @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  anime              Anime           @relation(fields: [animeId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, animeId])
@@ -1254,7 +1254,7 @@ model UserBook {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  book               Book            @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  book               Book            @relation(fields: [bookId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, bookId])
@@ -1297,7 +1297,7 @@ model UserGame {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  game               Game            @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  game               Game            @relation(fields: [gameId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, gameId])
@@ -1340,7 +1340,7 @@ model UserMusicAlbum {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  musicAlbum         MusicAlbum      @relation(fields: [musicAlbumId], references: [id], onDelete: Cascade)
+  musicAlbum         MusicAlbum      @relation(fields: [musicAlbumId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, musicAlbumId])
@@ -1383,7 +1383,7 @@ model UserMusicTrack {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  musicTrack         MusicTrack      @relation(fields: [musicTrackId], references: [id], onDelete: Cascade)
+  musicTrack         MusicTrack      @relation(fields: [musicTrackId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, musicTrackId])
@@ -1426,7 +1426,7 @@ model UserPodcast {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  podcast            Podcast         @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  podcast            Podcast         @relation(fields: [podcastId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, podcastId])
@@ -1469,7 +1469,7 @@ model UserPodcastEpisode {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  podcastEpisode     PodcastEpisode  @relation(fields: [podcastEpisodeId], references: [id], onDelete: Cascade)
+  podcastEpisode     PodcastEpisode  @relation(fields: [podcastEpisodeId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, podcastEpisodeId])
@@ -1512,7 +1512,7 @@ model UserCourse {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  course             Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course             Course          @relation(fields: [courseId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
@@ -1555,7 +1555,7 @@ model UserCourseModule {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  courseModule       CourseModule    @relation(fields: [courseModuleId], references: [id], onDelete: Cascade)
+  courseModule       CourseModule    @relation(fields: [courseModuleId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseModuleId])
@@ -1598,7 +1598,7 @@ model UserCourseLesson {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  courseLesson       CourseLesson    @relation(fields: [courseLessonId], references: [id], onDelete: Cascade)
+  courseLesson       CourseLesson    @relation(fields: [courseLessonId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseLessonId])

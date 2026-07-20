@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import { ParticleField } from "./ParticleField";
 import { useTimeOfDay, timeOfDayTint } from "@/lib/useTimeOfDay";
 
@@ -30,64 +30,91 @@ export function AtmosphereBackground({
             "radial-gradient(125% 80% at 50% -10%, oklch(0.22 0.04 270) 0%, oklch(0.14 0.012 270) 55%, oklch(0.09 0.01 270) 100%)",
         }}
       />
+      
+      <style>{`
+        @keyframes mood-wash {
+          0%, 100% { opacity: 0.18; }
+          50% { opacity: 0.28; }
+        }
+        @keyframes aurora-1 {
+          0%, 100% { translate: 0px 0px; scale: 1; }
+          33% { translate: 60px -30px; scale: 1.08; }
+          66% { translate: -40px 40px; scale: 0.95; }
+        }
+        @keyframes aurora-2 {
+          0%, 100% { translate: 0px 0px; scale: 1; }
+          33% { translate: -50px 40px; scale: 0.92; }
+          66% { translate: 30px -20px; scale: 1.07; }
+        }
+        @keyframes aurora-3 {
+          0%, 100% { translate: 0px 0px; }
+          33% { translate: 40px -20px; }
+          66% { translate: -30px 30px; }
+        }
+        @keyframes beam-1 {
+          0%, 100% { translate: 0px 0px; opacity: 0.4; }
+          33% { translate: 40px 0px; opacity: 0.7; }
+          66% { translate: -20px 0px; opacity: 0.4; }
+        }
+        @keyframes beam-2 {
+          0%, 100% { translate: 0px 0px; opacity: 0.3; }
+          33% { translate: -30px 0px; opacity: 0.6; }
+          66% { translate: 20px 0px; opacity: 0.3; }
+        }
+      `}</style>
 
       {/* time-of-day mood wash */}
-      <motion.div
+      <div
         className="absolute inset-0"
-        animate={reduced ? undefined : { opacity: [0.18, 0.28, 0.18] }}
-        transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
         style={{
           background: `radial-gradient(80% 60% at 50% 0%, ${tint} 0%, transparent 60%)`,
           opacity: 0.22,
+          animation: reduced ? "none" : "mood-wash 30s ease-in-out infinite",
         }}
       />
 
       {/* aurora blobs */}
-      <motion.div
+      <div
         className="absolute -top-1/4 -left-1/4 h-[80vh] w-[80vh] rounded-full blur-3xl"
-        style={{ background: tint, opacity: opacity * 0.55 }}
-        animate={
-          reduced
-            ? undefined
-            : { x: [0, 60, -40, 0], y: [0, -30, 40, 0], scale: [1, 1.08, 0.95, 1] }
-        }
-        transition={{ duration: 38, repeat: Infinity, ease: "easeInOut" }}
+        style={{ 
+          background: tint, 
+          opacity: opacity * 0.55,
+          animation: reduced ? "none" : "aurora-1 38s ease-in-out infinite"
+        }}
       />
-      <motion.div
+      <div
         className="absolute top-1/3 -right-1/4 h-[70vh] w-[70vh] rounded-full blur-3xl"
-        style={{ background: "var(--aurora-2)", opacity: opacity * 0.5 }}
-        animate={
-          reduced
-            ? undefined
-            : { x: [0, -50, 30, 0], y: [0, 40, -20, 0], scale: [1, 0.92, 1.07, 1] }
-        }
-        transition={{ duration: 44, repeat: Infinity, ease: "easeInOut" }}
+        style={{ 
+          background: "var(--aurora-2)", 
+          opacity: opacity * 0.5,
+          animation: reduced ? "none" : "aurora-2 44s ease-in-out infinite"
+        }}
       />
-      <motion.div
+      <div
         className="absolute -bottom-1/4 left-1/3 h-[60vh] w-[60vh] rounded-full blur-3xl"
-        style={{ background: "var(--aurora-3)", opacity: opacity * 0.4 }}
-        animate={reduced ? undefined : { x: [0, 40, -30, 0], y: [0, -20, 30, 0] }}
-        transition={{ duration: 50, repeat: Infinity, ease: "easeInOut" }}
+        style={{ 
+          background: "var(--aurora-3)", 
+          opacity: opacity * 0.4,
+          animation: reduced ? "none" : "aurora-3 50s ease-in-out infinite"
+        }}
       />
 
       {/* cinematic light beams */}
       {showBeams && (
         <>
-          <motion.div
+          <div
             className="absolute -top-40 left-1/4 h-[120vh] w-[40vh] rotate-12 rounded-full blur-3xl"
             style={{
               background: "linear-gradient(180deg, oklch(0.85 0.12 250 / 0.18), transparent 70%)",
+              animation: reduced ? "none" : "beam-1 26s ease-in-out infinite"
             }}
-            animate={reduced ? undefined : { x: [0, 40, -20, 0], opacity: [0.4, 0.7, 0.4] }}
-            transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
           />
-          <motion.div
+          <div
             className="absolute -bottom-40 right-1/4 h-[100vh] w-[35vh] -rotate-12 rounded-full blur-3xl"
             style={{
               background: "linear-gradient(0deg, oklch(0.7 0.18 310 / 0.14), transparent 70%)",
+              animation: reduced ? "none" : "beam-2 32s ease-in-out infinite"
             }}
-            animate={reduced ? undefined : { x: [0, -30, 20, 0], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}

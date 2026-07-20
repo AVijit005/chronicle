@@ -5,6 +5,6 @@ export const validationPipe = new NestValidationPipe({
   forbidNonWhitelisted: true,
   transform: true,
   transformOptions: {
-    enableImplicitConversion: true,
+    enableImplicitConversion: false,
   },
 });

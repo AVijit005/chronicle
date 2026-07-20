@@ -45,7 +45,12 @@ export class StorageService {
     return this.uploadService.download(path);
   }
 
-  async downloadWithMeta(path: string): Promise<{ buffer: Buffer; mimeType: string } | null> {
+  async downloadWithMeta(path: string, userId: string): Promise<{ buffer: Buffer; mimeType: string } | null> {
+    const parts = path.split('/');
+    if (parts.length >= 3 && parts[1] !== userId) {
+      throw new ForbiddenException('You do not have permission to access this file');
+    }
+
     const exists = await this.uploadService.exists(path);
     if (!exists) return null;
 

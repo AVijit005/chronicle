@@ -110,7 +110,7 @@ export class MediaRepository {
   async findById(type: string, id: string): Promise<MediaRow | null> {
     const delegate = this.getDelegate(type);
     if (!delegate) return null;
-    return delegate.findUnique({ where: { id, deletedAt: null } }) ?? delegate.findUnique({ where: { id } });
+    return delegate.findFirst({ where: { id, deletedAt: null } });
   }
 
   private async findUniqueOrNull(delegate: any, where: Record<string, unknown>): Promise<MediaRow | null> {

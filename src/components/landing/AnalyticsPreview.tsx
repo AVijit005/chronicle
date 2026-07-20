@@ -1,5 +1,13 @@
 import { motion } from "motion/react";
-import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Bar, BarChart } from "recharts";
+import { lazy, Suspense } from "react";
+const Area = lazy(() => import("recharts").then(m => ({ default: m.Area })));
+const AreaChart = lazy(() => import("recharts").then(m => ({ default: m.AreaChart })));
+const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell })));
+const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie })));
+const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart })));
+const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })));
+const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar })));
+const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart })));
 import { ACTIVITY_30D, STATS } from "@/lib/types";
 import { CountUp } from "./CountUp";
 
@@ -29,7 +37,8 @@ const reveal = {
 
 export function AnalyticsPreview() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <Suspense fallback={<div className="grid grid-cols-1 gap-4 md:grid-cols-3 min-h-[400px] animate-pulse bg-white/5 rounded-3xl" />}>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <motion.div
         variants={reveal}
         initial="hidden"
@@ -168,5 +177,6 @@ export function AnalyticsPreview() {
         </div>
       </motion.div>
     </div>
+    </Suspense>
   );
 }

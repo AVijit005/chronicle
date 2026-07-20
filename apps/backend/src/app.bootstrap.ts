@@ -22,7 +22,20 @@ export async function createApp(): Promise<INestApplication> {
 
   app.setGlobalPrefix(config.get<string>('apiPrefix') ?? 'api');
 
-  app.use(helmet());
+  // Trust proxy for rate limiting behind load balancers
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https:"],
+      },
+    },
+  }));
   // app.use(compression()); // Temporarily disabled due to Bun compatibility issue
   app.use(cookieParser());
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +45,9 @@ export async function createApp(): Promise<INestApplication> {
     next();
   });
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN === 'true' 
+      ? true // Allow reflection if explicitly 'true'
+      : process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : 'http://localhost:5173',
     credentials: true,
   });
 

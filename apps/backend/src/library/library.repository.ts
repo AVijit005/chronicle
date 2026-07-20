@@ -314,27 +314,22 @@ export class LibraryRepository {
 
   async countByStatus(userId: string): Promise<Record<string, number>> {
     const counts: Record<string, number> = {};
-    const statuses = [
-      'PLANNING',
-      'WATCHING',
-      'READING',
-      'PLAYING',
-      'LISTENING',
-      'LEARNING',
-      'PAUSED',
-      'COMPLETED',
-      'DROPPED',
-      'ARCHIVED',
-    ];
+    
+    const promises = this.getTypes().map(async (t) => {
+      const delegate = this.getDelegate(t);
+      if (!delegate) return [];
+      return delegate.groupBy({
+        by: ['status'],
+        where: { userId, deletedAt: null } as any,
+        _count: { status: true },
+      });
+    });
 
-    for (const status of statuses) {
-      let total = 0;
-      for (const t of this.getTypes()) {
-        const delegate = this.getDelegate(t);
-        if (!delegate) continue;
-        total += await delegate.count({ where: { userId, status, deletedAt: null } as any });
+    const results = await Promise.all(promises);
+    for (const groupResults of results) {
+      for (const group of groupResults) {
+        counts[group.status] = (counts[group.status] ?? 0) + group._count.status;
       }
-      counts[status] = total;
     }
 
     return counts;

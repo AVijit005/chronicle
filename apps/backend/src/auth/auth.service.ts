@@ -81,7 +81,6 @@ export class AuthService {
       user: this.toUserResponse(user),
       accessToken,
       expiresIn,
-      refreshToken,
     };
   }
 
@@ -127,8 +126,7 @@ export class AuthService {
     return {
       user: this.toUserResponse(user),
       accessToken,
-      expiresIn,
-      refreshToken: newRefreshToken,
+      expiresIn: this.cookieService.getAccessTokenExpiresInSeconds(),
     };
   }
 
@@ -179,7 +177,6 @@ export class AuthService {
       user: this.toUserResponse(dbUser),
       accessToken,
       expiresIn,
-      refreshToken,
     };
   }
 

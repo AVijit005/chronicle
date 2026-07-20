@@ -76,7 +76,7 @@ export class StorageController {
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<void> {
-    const file = await this.storageService.downloadWithMeta(id);
+    const file = await this.storageService.downloadWithMeta(id, user.sub);
     if (!file) {
       res.status(404).json({ statusCode: 404, message: 'File not found' });
       return;

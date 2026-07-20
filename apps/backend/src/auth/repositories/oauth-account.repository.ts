@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { OAuthAccount, OAuthProvider, Prisma } from '@prisma/client';
 import { BaseRepository } from '../../core';
 import { PrismaService } from '../../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
 
 export interface CreateOAuthAccountData {
   userId: string;
@@ -17,12 +19,47 @@ export interface CreateOAuthAccountData {
 
 @Injectable()
 export class OAuthAccountRepository extends BaseRepository<OAuthAccount> {
-  constructor(private readonly prisma: PrismaService) {
+  private readonly encryptionKey: Buffer;
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
+  ) {
     super();
+    const secret = this.config.get<string>('jwt.secret') ?? 'default_secret_key_32_bytes_long!';
+    this.encryptionKey = Buffer.from(secret.padEnd(32, '0').slice(0, 32));
+  }
+
+  private encrypt(text: string): string {
+    const iv = randomBytes(12);
+    const cipher = createCipheriv('aes-256-gcm', this.encryptionKey, iv);
+    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+    const authTag = cipher.getAuthTag();
+    return `${iv.toString('hex')}:${encrypted.toString('hex')}:${authTag.toString('hex')}`;
+  }
+
+  private decrypt(text: string): string {
+    try {
+      const parts = text.split(':');
+      if (parts.length !== 3) return text;
+      const iv = Buffer.from(parts[0], 'hex');
+      const encryptedText = Buffer.from(parts[1], 'hex');
+      const authTag = Buffer.from(parts[2], 'hex');
+      const decipher = createDecipheriv('aes-256-gcm', this.encryptionKey, iv);
+      decipher.setAuthTag(authTag);
+      return decipher.update(encryptedText) + decipher.final('utf8');
+    } catch {
+      return text;
+    }
   }
 
   async findById(id: string): Promise<OAuthAccount | null> {
-    return this.prisma.oAuthAccount.findUnique({ where: { id } });
+    const account = await this.prisma.oAuthAccount.findUnique({ where: { id } });
+    if (account) {
+      account.accessToken = account.accessToken ? this.decrypt(account.accessToken) : null;
+      account.refreshToken = account.refreshToken ? this.decrypt(account.refreshToken) : null;
+    }
+    return account;
   }
 
   async exists(id: string): Promise<boolean> {
@@ -46,7 +83,7 @@ export class OAuthAccountRepository extends BaseRepository<OAuthAccount> {
   }
 
   async findByProviderAndAccountId(provider: OAuthProvider, providerAccountId: string): Promise<OAuthAccount | null> {
-    return this.prisma.oAuthAccount.findUnique({
+    const account = await this.prisma.oAuthAccount.findUnique({
       where: {
         provider_providerAccountId: {
           provider,
@@ -54,6 +91,11 @@ export class OAuthAccountRepository extends BaseRepository<OAuthAccount> {
         },
       },
     });
+    if (account) {
+      account.accessToken = account.accessToken ? this.decrypt(account.accessToken) : null;
+      account.refreshToken = account.refreshToken ? this.decrypt(account.refreshToken) : null;
+    }
+    return account;
   }
 
   async create(data: CreateOAuthAccountData): Promise<OAuthAccount> {
@@ -62,8 +104,8 @@ export class OAuthAccountRepository extends BaseRepository<OAuthAccount> {
         userId: data.userId,
         provider: data.provider,
         providerAccountId: data.providerAccountId,
-        accessToken: data.accessToken ?? null,
-        refreshToken: data.refreshToken ?? null,
+        accessToken: data.accessToken ? this.encrypt(data.accessToken) : null,
+        refreshToken: data.refreshToken ? this.encrypt(data.refreshToken) : null,
         tokenType: data.tokenType ?? null,
         scope: data.scope ?? null,
         idToken: data.idToken ?? null,
