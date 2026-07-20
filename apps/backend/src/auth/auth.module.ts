@@ -23,6 +23,7 @@ import {
   VerificationTokenService,
   GoogleOAuthService,
   AuthAuditService,
+  ResendEmailTransportService,
   EMAIL_TRANSPORT,
 } from './services';
 
@@ -53,7 +54,14 @@ import {
     AuthAuditService,
     ConsoleEmailTransportService,
     JwtAuthGuard,
-    { provide: EMAIL_TRANSPORT, useClass: ConsoleEmailTransportService },
+    ResendEmailTransportService,
+    {
+      provide: EMAIL_TRANSPORT,
+      inject: [ConfigService, ResendEmailTransportService, ConsoleEmailTransportService],
+      useFactory: (config: ConfigService, resend: ResendEmailTransportService, console: ConsoleEmailTransportService) => {
+        return config.get('nodeEnv') === 'development' ? console : resend;
+      }
+    },
   ],
   exports: [JwtTokenService, AuthService, JwtAuthGuard, CookieService, EmailVerificationService, GoogleOAuthService],
 })

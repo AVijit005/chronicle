@@ -10,3 +10,4 @@ export * from './console-email-transport.service';
 export * from './verification-token.service';
 export * from './email-verification.service';
 export * from './google-oauth.service';
+export * from './resend-email-transport.service';

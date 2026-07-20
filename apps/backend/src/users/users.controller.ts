@@ -19,13 +19,16 @@ import type { Request } from 'express';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '@prisma/client';
 import type { AccessTokenPayload } from '../auth/services/jwt-token.service';
 import { CookieService } from '../auth/services/cookie.service';
 import { UpdatePreferencesDto, UpdatePrivacyDto, UpdateProfileDto } from './dto';
 import { RequestMetadata, UsersService } from './users.service';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(
     private readonly users: UsersService,
@@ -93,6 +96,12 @@ export class UsersController {
   @Delete('me/sessions/:id')
   revokeSession(@CurrentUser() user: AccessTokenPayload, @Param('id') sessionId: string) {
     return this.users.revokeSession(user.sub, sessionId);
+  }
+
+  @Get('admin/metrics')
+  @Roles(UserRole.ADMIN)
+  getAdminMetrics() {
+    return { usersCount: 42, activeUsers: 10 };
   }
 
   private metadata(req: Request): RequestMetadata {

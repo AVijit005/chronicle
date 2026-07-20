@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
-// import compression from 'compression';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { randomUUID } from 'crypto';
@@ -36,7 +36,7 @@ export async function createApp(): Promise<INestApplication> {
       },
     },
   }));
-  // app.use(compression()); // Temporarily disabled due to Bun compatibility issue
+  app.use(compression());
   app.use(cookieParser());
   app.use((req: Request, res: Response, next: NextFunction) => {
     const requestId = (req.get('x-request-id') ?? randomUUID()) as string;
@@ -53,7 +53,7 @@ export async function createApp(): Promise<INestApplication> {
 
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
-  const swaggerEnabled = config.get<boolean | undefined>('swagger.enabled') !== false;
+  const swaggerEnabled = config.get<boolean | undefined>('swagger.enabled') === true && config.get<string>('nodeEnv') !== 'production';
   const swaggerPath = config.get<string>('swagger.path') ?? 'docs';
 
   if (swaggerEnabled) {

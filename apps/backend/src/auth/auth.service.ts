@@ -70,6 +70,7 @@ export class AuthService {
     const { accessToken, expiresIn } = this.jwtTokenService.signAccessToken({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
 
     if (response) {
@@ -116,6 +117,7 @@ export class AuthService {
     const { accessToken, expiresIn } = this.jwtTokenService.signAccessToken({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
 
     if (response) {
@@ -166,6 +168,7 @@ export class AuthService {
     const { accessToken, expiresIn } = this.jwtTokenService.signAccessToken({
       sub: dbUser.id,
       email: dbUser.email,
+      role: dbUser.role,
     });
 
     if (response) {

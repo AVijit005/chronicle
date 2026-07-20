@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 export interface AccessTokenPayload {
   sub: string;
   email: string;
+  role?: string;
 }
 
 export interface TokenPair {
