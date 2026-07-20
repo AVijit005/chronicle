@@ -1,5 +1,6 @@
 import { API_BASE_URL, API_TIMEOUT_MS, API_RETRY_COUNT, API_RETRY_DELAY_MS, REFRESH_ENDPOINT, LOGOUT_ENDPOINT } from './constants';
 import { ApiError, NetworkError, TimeoutError } from './errors';
+import { analytics } from '../analytics';
 
 interface ApiResponse<T> {
   data: T;
@@ -148,6 +149,7 @@ export async function apiFetch<T>(
 
       if (!response.ok) {
         const errorBody = responseBody as ApiErrorResponse;
+        analytics.track('API Error', { status: response.status, path: errorBody.path || path });
         throw new ApiError(
           Array.isArray(errorBody.message) ? errorBody.message.join(', ') : errorBody.message ?? 'Request failed',
           response.status,

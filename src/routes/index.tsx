@@ -15,6 +15,7 @@ import { MemoryCapsule } from "@/components/landing/MemoryCapsule";
 import { WrappedPreview } from "@/components/landing/WrappedPreview";
 import { CrossPlatform } from "@/components/landing/CrossPlatform";
 import { MagneticButton } from "@/components/landing/MagneticButton";
+import { TestimonialSection } from "@/components/landing/TestimonialSection";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -166,6 +167,8 @@ function Landing() {
       >
         <CrossPlatform />
       </SceneSection>
+
+      <TestimonialSection />
 
       {/* Final CTA */}
       <section className="relative px-6 py-36 md:px-10">

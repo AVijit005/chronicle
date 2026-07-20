@@ -561,21 +561,6 @@ function AnalyticsPage() {
       >
         <MemoryInsights max={6} />
       </Zone>
-      <Zone eyebrow="Discovery" title="What Chronicle notices">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Discovery patterns unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-      <Zone eyebrow="Portrait" title="What Chronicle has learned about you">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Personal portrait unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
-      <Zone eyebrow="Goals" title="How your journeys behave">
-        <PremiumGlass className="p-8 text-center text-muted-foreground">
-          Journey goals unavailable (API limitation)
-        </PremiumGlass>
-      </Zone>
     </main>
     </Suspense>
   );

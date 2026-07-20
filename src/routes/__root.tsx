@@ -11,6 +11,7 @@ import { useEffect, type ReactNode, Suspense } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { analytics } from "../lib/analytics";
 import { queryKeys } from "../lib/api/query-keys";
 import { authApi } from "../lib/api";
 import { setAccessToken } from "../lib/api/fetch";
@@ -79,6 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
     scripts: [
       {
@@ -163,6 +165,11 @@ function RootComponent() {
       localStorage.setItem('theme', 'dark');
     }
   }, [queryClient]);
+
+  const router = useRouter();
+  useEffect(() => {
+    analytics.page(router.state.location.pathname);
+  }, [router.state.location.pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>

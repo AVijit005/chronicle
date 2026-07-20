@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisualRouteImport } from './routes/visual'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,6 +22,7 @@ import { Route as AppSearchRouteImport } from './routes/app.search'
 import { Route as AppSaveForLaterRouteImport } from './routes/app.save-for-later'
 import { Route as AppQuotesRouteImport } from './routes/app.quotes'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppMuseumRouteImport } from './routes/app.museum'
 import { Route as AppLibraryRouteImport } from './routes/app.library'
@@ -60,6 +62,11 @@ import { Route as AppCharactersIdRouteImport } from './routes/app.characters.$id
 const VisualRoute = VisualRouteImport.update({
   id: '/visual',
   path: '/visual',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -115,6 +122,11 @@ const AppQuotesRoute = AppQuotesRouteImport.update({
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOnboardingRoute = AppOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
@@ -298,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
   '/visual': typeof VisualRoute
   '/app/achievements': typeof AppAchievementsRoute
   '/app/analytics': typeof AppAnalyticsRoute
@@ -311,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/app/library': typeof AppLibraryRouteWithChildren
   '/app/museum': typeof AppMuseumRoute
   '/app/notifications': typeof AppNotificationsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/profile': typeof AppProfileRoute
   '/app/quotes': typeof AppQuotesRoute
   '/app/save-for-later': typeof AppSaveForLaterRoute
@@ -346,6 +360,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
   '/visual': typeof VisualRoute
   '/app/achievements': typeof AppAchievementsRoute
   '/app/analytics': typeof AppAnalyticsRoute
@@ -357,6 +372,7 @@ export interface FileRoutesByTo {
   '/app/journal': typeof AppJournalRoute
   '/app/museum': typeof AppMuseumRoute
   '/app/notifications': typeof AppNotificationsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/profile': typeof AppProfileRoute
   '/app/quotes': typeof AppQuotesRoute
   '/app/save-for-later': typeof AppSaveForLaterRoute
@@ -394,6 +410,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
   '/visual': typeof VisualRoute
   '/app/achievements': typeof AppAchievementsRoute
   '/app/analytics': typeof AppAnalyticsRoute
@@ -407,6 +424,7 @@ export interface FileRoutesById {
   '/app/library': typeof AppLibraryRouteWithChildren
   '/app/museum': typeof AppMuseumRoute
   '/app/notifications': typeof AppNotificationsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/profile': typeof AppProfileRoute
   '/app/quotes': typeof AppQuotesRoute
   '/app/save-for-later': typeof AppSaveForLaterRoute
@@ -445,6 +463,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/pricing'
     | '/visual'
     | '/app/achievements'
     | '/app/analytics'
@@ -458,6 +477,7 @@ export interface FileRouteTypes {
     | '/app/library'
     | '/app/museum'
     | '/app/notifications'
+    | '/app/onboarding'
     | '/app/profile'
     | '/app/quotes'
     | '/app/save-for-later'
@@ -493,6 +513,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/pricing'
     | '/visual'
     | '/app/achievements'
     | '/app/analytics'
@@ -504,6 +525,7 @@ export interface FileRouteTypes {
     | '/app/journal'
     | '/app/museum'
     | '/app/notifications'
+    | '/app/onboarding'
     | '/app/profile'
     | '/app/quotes'
     | '/app/save-for-later'
@@ -540,6 +562,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/pricing'
     | '/visual'
     | '/app/achievements'
     | '/app/analytics'
@@ -553,6 +576,7 @@ export interface FileRouteTypes {
     | '/app/library'
     | '/app/museum'
     | '/app/notifications'
+    | '/app/onboarding'
     | '/app/profile'
     | '/app/quotes'
     | '/app/save-for-later'
@@ -590,6 +614,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
+  PricingRoute: typeof PricingRoute
   VisualRoute: typeof VisualRoute
 }
 
@@ -600,6 +625,13 @@ declare module '@tanstack/react-router' {
       path: '/visual'
       fullPath: '/visual'
       preLoaderRoute: typeof VisualRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -677,6 +709,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/app/profile'
       preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/onboarding': {
+      id: '/app/onboarding'
+      path: '/onboarding'
+      fullPath: '/app/onboarding'
+      preLoaderRoute: typeof AppOnboardingRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/notifications': {
@@ -990,6 +1029,7 @@ interface AppRouteChildren {
   AppLibraryRoute: typeof AppLibraryRouteWithChildren
   AppMuseumRoute: typeof AppMuseumRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
+  AppOnboardingRoute: typeof AppOnboardingRoute
   AppProfileRoute: typeof AppProfileRoute
   AppQuotesRoute: typeof AppQuotesRoute
   AppSaveForLaterRoute: typeof AppSaveForLaterRoute
@@ -1021,6 +1061,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLibraryRoute: AppLibraryRouteWithChildren,
   AppMuseumRoute: AppMuseumRoute,
   AppNotificationsRoute: AppNotificationsRoute,
+  AppOnboardingRoute: AppOnboardingRoute,
   AppProfileRoute: AppProfileRoute,
   AppQuotesRoute: AppQuotesRoute,
   AppSaveForLaterRoute: AppSaveForLaterRoute,
@@ -1045,6 +1086,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
+  PricingRoute: PricingRoute,
   VisualRoute: VisualRoute,
 }
 export const routeTree = rootRouteImport
