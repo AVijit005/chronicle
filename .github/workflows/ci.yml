@@ -74,10 +74,32 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm ci
         working-directory: apps/backend
-      - run: npx prisma generate && npx prisma db push
+      - run: npx prisma generate && npx prisma migrate deploy
         working-directory: apps/backend
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
+      - name: Verify no CASCADE on media FKs
+        working-directory: apps/backend
+        run: |
+          npx prisma db execute --stdin --schema prisma/schema.prisma <<'SQL' > result.txt
+            SELECT COUNT(*) FROM (
+              SELECT tc.constraint_name, rc.delete_rule
+              FROM information_schema.table_constraints tc
+              JOIN information_schema.referential_constraints rc ON tc.constraint_name = rc.constraint_name
+              JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+              WHERE tc.constraint_type = 'FOREIGN KEY'
+                AND kcu.column_name IN ('movie_id','tv_show_id','anime_id','book_id','game_id',
+                  'music_album_id','podcast_id','course_id','tv_season_id','tv_episode_id',
+                  'anime_episode_id','course_module_id','course_lesson_id','podcast_episode_id','music_track_id')
+                AND rc.delete_rule = 'CASCADE'
+            ) t;
+          SQL
+          COUNT=$(cat result.txt | grep -o '[0-9]\+')
+          echo "Cascade count: $COUNT"
+          if [ "$COUNT" -gt 0 ]; then
+            echo "FAILED: Media foreign keys still have CASCADE rules"
+            exit 1
+          fi
       - run: npm test
         working-directory: apps/backend
         env:
