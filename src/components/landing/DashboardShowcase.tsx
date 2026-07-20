@@ -156,15 +156,9 @@ export function DashboardShowcase() {
             </div>
           </div>
 
-          {/* Reflection sweep */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-40"
-            style={{
-              background:
-                "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%)",
-              mixBlendMode: "overlay",
-            }}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 to-transparent mix-blend-overlay opacity-0 transition duration-[800ms] group-hover:opacity-100"
           />
         </div>
       </motion.div>

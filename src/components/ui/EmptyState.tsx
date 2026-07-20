@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useState, useEffect } from "react";
 import { dur, ease } from "@/lib/motion";
 
 interface Props {
@@ -21,6 +21,14 @@ export function EmptyState({
   className = "",
 }: Props) {
   const reduced = useReducedMotion();
+  const [isLight, setIsLight] = useState(false);
+  useEffect(() => {
+    const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
+    ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    setIsLight(document.documentElement.classList.contains('light'));
+    return () => ob.disconnect();
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: reduced ? 0 : 12, filter: reduced ? "none" : "blur(6px)" }}
@@ -40,7 +48,12 @@ export function EmptyState({
         <motion.div
           animate={reduced ? {} : { y: [0, -6, 0] }}
           transition={{ duration: reduced ? 0 : 6, repeat: Infinity, ease: "easeInOut" }}
-          className="relative grid h-16 w-16 place-items-center rounded-2xl bg-white/[0.04] text-primary ring-1 ring-white/10 shadow-[inset_0_1px_0_oklch(1_0_0/0.08)]"
+          className="relative grid h-16 w-16 place-items-center rounded-2xl text-primary ring-1"
+          style={{
+            backgroundColor: isLight ? "oklch(0 0 0 / 0.04)" : "oklch(1 0 0 / 0.04)",
+            boxShadow: `inset 0 1px 0 ${isLight ? "oklch(0 0 0 / 0.08)" : "oklch(1 0 0 / 0.08)"}`,
+            borderColor: isLight ? "oklch(0 0 0 / 0.1)" : "oklch(1 0 0 / 0.1)"
+          }}
         >
           {icon}
         </motion.div>

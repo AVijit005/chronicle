@@ -2,7 +2,6 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 /* ============================================================
  * CHRONICLE — Design System
@@ -181,7 +180,12 @@
   --ring: oklch(0.55 0.2 255 / 0.5);
   --sidebar: oklch(1 0 0 / 0.7);
   --sidebar-foreground: oklch(0.16 0.02 270);
+  --sidebar-primary: oklch(0.55 0.2 255);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.16 0.02 270 / 0.06);
+  --sidebar-accent-foreground: oklch(0.16 0.02 270);
   --sidebar-border: oklch(0.16 0.02 270 / 0.08);
+  --sidebar-ring: oklch(0.55 0.2 255 / 0.5);
 }
 
 /* ============================================================
@@ -521,58 +525,3 @@
   }
 }
 
-/* ============================================================
- * Login Input Styling (Replicates Time Capsule Bloom)
- * ============================================================ */
-:root {
-  --accent-glow-rgb: 99, 102, 241; /* Matches oklch(0.72 0.18 255) electric blue bloom */
-}
-
-.login-input-field {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.4s ease;
-  color: #ffffff;
-}
-
-.login-input-field:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.25);
-  
-  /* Combined outer ambient glow and internal crisp lighting */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1),
-              0 0 30px rgba(var(--accent-glow-rgb), 0.25),
-              inset 0 1px 2px rgba(255, 255, 255, 0.05);
-}
-
-.login-input-field:hover:not(:focus) {
-  border-color: rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-/* ============================================================
- * Library Hero Interactive Styling
- * ============================================================ */
-.library-hero-card {
-  position: relative;
-  z-index: 5;
-}
-
-/* ============================================================
- * Journal Stat Cards
- * ============================================================ */
-.journal-stat-card {
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--journal-accent) 25%, transparent), 0 0 0 0 transparent !important;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease !important;
-}
-.journal-stat-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--journal-accent) 80%, transparent), 0 16px 40px -12px color-mix(in oklch, var(--journal-accent) 50%, transparent) !important;
-}
-.journal-stat-card:active {
-  transform: translateY(-1px) scale(0.98);
-}

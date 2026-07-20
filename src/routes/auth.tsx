@@ -65,13 +65,7 @@ const cardLine = {
   },
 };
 
-/* ── Social proof avatars ── */
-const AVATAR_COLORS = [
-  "oklch(0.72 0.18 290)",
-  "oklch(0.75 0.16 35)",
-  "oklch(0.70 0.20 220)",
-  "oklch(0.78 0.14 160)",
-];
+
 
 function Auth() {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import { motion, type HTMLMotionProps } from "motion/react";
-import { forwardRef, useCallback, useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { forwardRef, useCallback, useRef, type PointerEvent as ReactPointerEvent, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "subtle" | "default" | "strong";
@@ -41,6 +41,13 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
     ref,
   ) => {
     const innerRef = useRef<HTMLDivElement | null>(null);
+    const [isLight, setIsLight] = useState(false);
+    useEffect(() => {
+      const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
+      ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      setIsLight(document.documentElement.classList.contains('light'));
+      return () => ob.disconnect();
+    }, []);
 
     const setRefs = useCallback(
       (node: HTMLDivElement | null) => {
@@ -92,12 +99,13 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         className={cn(
           "group/glass relative rounded-3xl",
           interactive && 
-            "cursor-pointer transition-all duration-[300ms] ease-out hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-[0.98]",
+            "cursor-pointer transition-all duration-[300ms] ease-out hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-[0.98]",
           className
         )}
         style={
           {
             ...style,
+            borderColor: interactive ? (isLight ? "oklch(0 0 0 / 0.2)" : "oklch(1 0 0 / 0.2)") : undefined,
             ["--glass-px" as string]: "50%",
             ["--glass-py" as string]: "0%",
             ["--glass-rev" as string]: "0",
@@ -113,7 +121,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
             aria-hidden
             className="pointer-events-none absolute inset-x-0 top-0 h-px transition-opacity duration-300"
             style={{
-              background: "linear-gradient(90deg, transparent, oklch(1 0 0 / 0.35), transparent)",
+              background: `linear-gradient(90deg, transparent, ${isLight ? "oklch(0 0 0 / 0.35)" : "oklch(1 0 0 / 0.35)"}, transparent)`,
               opacity: interactive ? "calc(0.5 + var(--glass-rev)*0.5)" : "1"
             }}
           />
@@ -125,7 +133,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
             style={{
               borderRadius: "inherit",
               boxShadow:
-                "inset 0 -1px 0 oklch(0 0 0 / 0.25), inset 0 0 0 1px oklch(1 0 0 / calc(0.04 + var(--glass-rev)*0.06))",
+                `inset 0 -1px 0 ${isLight ? "oklch(1 0 0 / 0.25)" : "oklch(0 0 0 / 0.25)"}, inset 0 0 0 1px ${isLight ? "oklch(0 0 0 / calc(0.04 + var(--glass-rev)*0.06))" : "oklch(1 0 0 / calc(0.04 + var(--glass-rev)*0.06))"}`,
             }}
           />
           
@@ -158,7 +166,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
                   borderRadius: "inherit",
                   opacity: "calc(var(--glass-rev)*0.5)",
                   background:
-                    "linear-gradient(125deg, transparent calc(var(--glass-px) - 22%), oklch(1 0 0 / 0.08) var(--glass-px), transparent calc(var(--glass-px) + 22%))"
+                    `linear-gradient(125deg, transparent calc(var(--glass-px) - 22%), ${isLight ? "oklch(0 0 0 / 0.08)" : "oklch(1 0 0 / 0.08)"} var(--glass-px), transparent calc(var(--glass-px) + 22%))`
                 }}
               />
             </>

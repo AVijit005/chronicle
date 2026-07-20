@@ -1,6 +1,7 @@
 import { useReducedMotion } from "motion/react";
 import { ParticleField } from "./ParticleField";
 import { useTimeOfDay, timeOfDayTint } from "@/lib/useTimeOfDay";
+import { useState, useEffect } from "react";
 
 interface Props {
   accent?: string;
@@ -15,7 +16,16 @@ export function AtmosphereBackground({
   showParticles = true,
   showBeams = true,
 }: Props) {
-  const opacity = intensity === "soft" ? 0.35 : intensity === "vivid" ? 0.7 : 0.5;
+  const [isLight, setIsLight] = useState(false);
+  useEffect(() => {
+    const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
+    ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    setIsLight(document.documentElement.classList.contains('light'));
+    return () => ob.disconnect();
+  }, []);
+
+  const opacity = isLight ? (intensity === "soft" ? 0.2 : intensity === "vivid" ? 0.4 : 0.3) 
+                          : (intensity === "soft" ? 0.35 : intensity === "vivid" ? 0.7 : 0.5);
   const tod = useTimeOfDay();
   const tint = accent ?? timeOfDayTint[tod];
   const reduced = useReducedMotion();
@@ -26,8 +36,9 @@ export function AtmosphereBackground({
       <div
         className="absolute inset-0"
         style={{
-          background:
-            "radial-gradient(125% 80% at 50% -10%, oklch(0.22 0.04 270) 0%, oklch(0.14 0.012 270) 55%, oklch(0.09 0.01 270) 100%)",
+          background: isLight
+            ? "radial-gradient(125% 80% at 50% -10%, oklch(0.96 0.02 270) 0%, oklch(0.98 0.01 270) 55%, oklch(1 0 270) 100%)"
+            : "radial-gradient(125% 80% at 50% -10%, oklch(0.22 0.04 270) 0%, oklch(0.14 0.012 270) 55%, oklch(0.09 0.01 270) 100%)",
         }}
       />
       
@@ -139,7 +150,9 @@ export function AtmosphereBackground({
       <div
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(120% 80% at 50% 110%, oklch(0 0 0 / 0.6), transparent 55%)",
+          background: isLight 
+            ? "radial-gradient(120% 80% at 50% 110%, oklch(0 0 0 / 0.1), transparent 55%)"
+            : "radial-gradient(120% 80% at 50% 110%, oklch(0 0 0 / 0.6), transparent 55%)",
         }}
       />
     </div>

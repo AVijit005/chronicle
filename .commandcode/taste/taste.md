@@ -25,6 +25,13 @@ See [frontend/taste.md](frontend/taste.md)
 # quality
 - Apply "billion dollar SaaS" polish standard: every UI interaction needs proper hover/active/focus states, glass morphism with OkLCH glows, smooth transitions, and production-grade error/empty/loading handling. Confidence: 0.70
 
+# analysis
+- When analyzing code quality or planning work, do line-by-line source verification against the actual files — read every file mentioned, grep for key patterns, and independently verify claims rather than trusting summaries or planning documents. Confidence: 0.85
+
+# prompts
+- When writing prompts for autonomous executors (Antigravity or similar), be long, detailed, and verbose with specific file paths, exact line references, and concrete commands — the user explicitly prefers comprehensive output over concise. Confidence: 0.80
+- Autonomous executor prompts must always include: (1) verification steps with specific grep/read commands to confirm results, (2) tests to write and run, (3) build/type-checks to pass, (4) exact git commit message and push command, (5) non-negotiable guardrails (no fake data, no force-push, no rewrite history). Confidence: 0.75
+
 # workflow
 - Run 'npx tsc --noEmit' after each phase of refactoring to verify TypeScript compilation. Confidence: 0.85
 - When the user asks you to fix pre-existing TypeScript errors before continuing, solve all of them immediately — don't dismiss them as "pre-existing" and move on. Confidence: 0.75

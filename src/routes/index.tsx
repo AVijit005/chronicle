@@ -226,6 +226,9 @@ function Landing() {
             <span>Chronicle © {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-5">
+            <a href="mailto:press@chronicle.app" className="hover:text-foreground">
+              Press
+            </a>
             <Link to="/privacy" className="hover:text-foreground">
               Privacy
             </Link>

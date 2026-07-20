@@ -1,10 +1,17 @@
-import { motion } from "motion/react";
-import { COLLECTIONS } from "@/lib/types";
+import { motion, useReducedMotion } from "motion/react";
+
+const DEMO_COLLECTIONS = [
+  { id: "1", name: "Cyberpunk Vibe", count: 12, cover: "https://images.unsplash.com/photo-1518770660439-4636190af475", accent: "oklch(0.7 0.2 295)", description: "Neon-drenched stories." },
+  { id: "2", name: "Ghibli Magic", count: 8, cover: "https://images.unsplash.com/photo-1542204165-65bf26472b9b", accent: "oklch(0.78 0.18 50)", description: "Whimsical adventures." },
+  { id: "3", name: "Space Operas", count: 24, cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa", accent: "oklch(0.72 0.18 255)", description: "Across the universe." },
+  { id: "4", name: "Comfort Games", count: 5, cover: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f", accent: "oklch(0.72 0.16 80)", description: "Cozy weekends." }
+];
 
 export function CollectionsPreview() {
+  const reduced = useReducedMotion();
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {COLLECTIONS.map((c, i) => (
+      {DEMO_COLLECTIONS.map((c, i) => (
         <motion.div
           key={c.id}
           initial={{ opacity: 0, y: 28 }}
@@ -18,8 +25,8 @@ export function CollectionsPreview() {
             src={c.cover}
             alt=""
             className="h-full w-full object-cover"
-            animate={{ scale: [1, 1.04, 1] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduced ? undefined : { scale: [1, 1.04, 1] }}
+            transition={reduced ? undefined : { duration: 18, repeat: Infinity, ease: "easeInOut" }}
           />
           <div
             className="absolute inset-0"
@@ -29,11 +36,7 @@ export function CollectionsPreview() {
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100"
-            style={{
-              background: "linear-gradient(125deg, rgba(255,255,255,0.18), transparent 55%)",
-              mixBlendMode: "overlay",
-            }}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 mix-blend-overlay transition group-hover:opacity-100"
           />
           <div className="absolute inset-x-0 bottom-0 p-5">
             <div className="glass-subtle inline-block rounded-full px-2 py-0.5 text-[9px] uppercase tracking-[0.22em] text-white/80">

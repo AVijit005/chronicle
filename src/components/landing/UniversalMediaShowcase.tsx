@@ -164,11 +164,7 @@ export function UniversalMediaShowcase() {
             </div>
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100"
-              style={{
-                background: "linear-gradient(120deg, rgba(255,255,255,0.18), transparent 50%)",
-                mixBlendMode: "overlay",
-              }}
+              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 to-transparent mix-blend-overlay opacity-0 transition group-hover:opacity-100"
             />
           </motion.div>
         );

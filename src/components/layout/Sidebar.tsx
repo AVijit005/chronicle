@@ -72,6 +72,7 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
                     <li key={item.to}>
                       <Link
                         to={item.to}
+                        aria-current={active ? "page" : undefined}
                         className={cn(
                           "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition press-scale",
                           active

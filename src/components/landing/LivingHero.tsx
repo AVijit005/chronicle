@@ -214,12 +214,7 @@ function HeroCard({
         )}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-50"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(255,255,255,0.25), transparent 40%, rgba(255,255,255,0.08) 70%, transparent)",
-            mixBlendMode: "overlay",
-          }}
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 to-transparent mix-blend-overlay opacity-50"
         />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
           <div className="text-[10px] uppercase tracking-[0.18em] text-white/70">{c.item.kind}</div>

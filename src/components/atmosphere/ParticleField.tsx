@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 interface Props {
@@ -10,6 +10,13 @@ interface Props {
 export function ParticleField({ count = 36, className, color = "rgba(255,255,255,0.55)" }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
   const reduced = useReducedMotion();
+  const [isLight, setIsLight] = useState(false);
+  useEffect(() => {
+    const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
+    ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    setIsLight(document.documentElement.classList.contains('light'));
+    return () => ob.disconnect();
+  }, []);
 
   useEffect(() => {
     if (reduced) return;
@@ -60,7 +67,8 @@ export function ParticleField({ count = 36, className, color = "rgba(255,255,255
         if (p.x < -5) p.x = w + 5;
         if (p.x > w + 5) p.x = -5;
         ctx.beginPath();
-        ctx.fillStyle = color.replace(/[\d.]+\)$/g, `${p.o})`);
+        const baseColor = isLight ? "rgba(0,0,0,0.4)" : color;
+        ctx.fillStyle = baseColor.replace(/[\d.]+\)$/g, `${p.o})`);
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
@@ -79,7 +87,7 @@ export function ParticleField({ count = 36, className, color = "rgba(255,255,255
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
     };
-  }, [count, color, reduced]);
+  }, [count, color, reduced, isLight]);
 
   return (
     <canvas

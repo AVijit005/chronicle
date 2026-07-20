@@ -21,7 +21,6 @@ import {
   MEDIA,
   COLLECTIONS,
   PINNED_MEDIA,
-  POPULAR_MEDIA,
   RECENT_JOURNALS,
   SEARCHABLE_SETTINGS,
   type MediaItem,
@@ -36,9 +35,6 @@ type Row =
   | { kind: "media"; group: string; item: MediaItem; onSelect: () => void }
   | { kind: "collection"; group: string; col: (typeof COLLECTIONS)[number]; onSelect: () => void }
   | { kind: "journal"; group: string; j: (typeof RECENT_JOURNALS)[number]; onSelect: () => void }
-  | {
-      kind: "setting";
-      group: string;
   | { kind: "setting"; group: string; s: (typeof SEARCHABLE_SETTINGS)[number]; onSelect: () => void; }
   | { kind: "action"; group: string; label: string; onSelect: () => void }
   | { kind: "recent"; group: string; term: string; onSelect: () => void }
@@ -348,6 +344,8 @@ export function CommandPalette({
           onClick={close}
         >
           <motion.div
+            role="dialog"
+            aria-label="Command Palette"
             initial={{ y: -10, opacity: 0, scale: 0.96 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -10, opacity: 0, scale: 0.96 }}
@@ -372,6 +370,7 @@ export function CommandPalette({
               <input
                 ref={inputRef}
                 value={q}
+                aria-label="Search"
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search your Chronicle…"
                 className="flex-1 bg-transparent text-base placeholder:text-muted-foreground/70 focus:outline-none"
@@ -381,7 +380,7 @@ export function CommandPalette({
               </kbd>
             </div>
 
-            <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-3">
+            <div ref={listRef} role="listbox" className="max-h-[60vh] overflow-y-auto p-3">
               {rows.length === 0 ? (
                 <EmptyState
                   icon={<Search className="h-6 w-6" />}
@@ -455,6 +454,8 @@ function RowView({
 }) {
   return (
     <button
+      role="option"
+      aria-selected={focused}
       data-row={index}
       onClick={onClick}
       onMouseEnter={onMouseEnter}

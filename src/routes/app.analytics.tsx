@@ -3,18 +3,19 @@ import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { lazy, Suspense } from "react";
-const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })));
-const AreaChart = lazy(() => import("recharts").then(m => ({ default: m.AreaChart })));
-const Area = lazy(() => import("recharts").then(m => ({ default: m.Area })));
-const XAxis = lazy(() => import("recharts").then(m => ({ default: m.XAxis })));
-const YAxis = lazy(() => import("recharts").then(m => ({ default: m.YAxis })));
-const Tooltip = lazy(() => import("recharts").then(m => ({ default: m.Tooltip })));
-const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart })));
-const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie })));
-const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell })));
-const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart })));
-const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar })));
-const Legend = lazy(() => import("recharts").then(m => ({ default: m.Legend })));
+import type { ComponentType } from "react";
+const ResponsiveContainer = lazy(() => import("recharts").then((m) => ({ default: m.ResponsiveContainer as unknown as ComponentType<any> })));
+const AreaChart = lazy(() => import("recharts").then((m) => ({ default: m.AreaChart as unknown as ComponentType<any> })));
+const Area = lazy(() => import("recharts").then((m) => ({ default: m.Area as unknown as ComponentType<any> })));
+const XAxis = lazy(() => import("recharts").then((m) => ({ default: m.XAxis as unknown as ComponentType<any> })));
+const YAxis = lazy(() => import("recharts").then((m) => ({ default: m.YAxis as unknown as ComponentType<any> })));
+const Tooltip = lazy(() => import("recharts").then((m) => ({ default: m.Tooltip as unknown as ComponentType<any> })));
+const PieChart = lazy(() => import("recharts").then((m) => ({ default: m.PieChart as unknown as ComponentType<any> })));
+const Pie = lazy(() => import("recharts").then((m) => ({ default: m.Pie as unknown as ComponentType<any> })));
+const Cell = lazy(() => import("recharts").then((m) => ({ default: m.Cell as unknown as ComponentType<any> })));
+const BarChart = lazy(() => import("recharts").then((m) => ({ default: m.BarChart as unknown as ComponentType<any> })));
+const Bar = lazy(() => import("recharts").then((m) => ({ default: m.Bar as unknown as ComponentType<any> })));
+const Legend = lazy(() => import("recharts").then((m) => ({ default: m.Legend as unknown as ComponentType<any> })));
 import {
   Flame,
   Film,
@@ -90,6 +91,7 @@ const KIND_ICON: Record<string, typeof Film> = {
 };
 
 function AnalyticsPage() {
+  const reduced = useReducedMotion();
   const [range, setRange] = useState<"lifetime" | "year" | "month" | "week">("year");
   const [scope, setScope] = useState<"all" | "movies" | "anime" | "books" | "games">("all");
 
@@ -373,6 +375,7 @@ function AnalyticsPage() {
                     stroke="oklch(0.78 0.18 255)"
                     strokeWidth={2}
                     fill="url(#aGrad)"
+                    isAnimationActive={!reduced}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -398,6 +401,7 @@ function AnalyticsPage() {
                     outerRadius={110}
                     paddingAngle={2}
                     stroke="none"
+                    isAnimationActive={!reduced}
                   >
                     {mediaDistribution.map((d, i) => (
                       <Cell key={i} fill={d.color} />

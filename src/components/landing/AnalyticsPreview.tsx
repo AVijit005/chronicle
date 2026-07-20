@@ -1,15 +1,23 @@
 import { motion } from "motion/react";
 import { lazy, Suspense } from "react";
-const Area = lazy(() => import("recharts").then(m => ({ default: m.Area })));
-const AreaChart = lazy(() => import("recharts").then(m => ({ default: m.AreaChart })));
-const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell })));
-const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie })));
-const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart })));
-const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })));
-const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar })));
-const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart })));
-import { ACTIVITY_30D, STATS } from "@/lib/types";
+import type { ComponentType } from "react";
+
+const Area = lazy(() => import("recharts").then(m => ({ default: m.Area as unknown as ComponentType<any> })));
+const AreaChart = lazy(() => import("recharts").then(m => ({ default: m.AreaChart as unknown as ComponentType<any> })));
+const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell as unknown as ComponentType<any> })));
+const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie as unknown as ComponentType<any> })));
+const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart as unknown as ComponentType<any> })));
+const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer as unknown as ComponentType<any> })));
+const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar as unknown as ComponentType<any> })));
+const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart as unknown as ComponentType<any> })));
+import { useReducedMotion } from "motion/react";
 import { CountUp } from "./CountUp";
+
+const DEMO_STATS = { totalHours: 124, streak: 12, completed: 34 };
+const DEMO_ACTIVITY = Array.from({ length: 30 }, (_, i) => ({
+  date: new Date(Date.now() - (29 - i) * 86400000).toISOString(),
+  hours: Math.max(0, 1 + Math.sin(i / 2) * 2 + Math.random() * 2),
+}));
 
 const GENRE = [
   { name: "Sci-Fi", value: 32 },
@@ -36,6 +44,7 @@ const reveal = {
 };
 
 export function AnalyticsPreview() {
+  const reduced = useReducedMotion();
   return (
     <Suspense fallback={<div className="grid grid-cols-1 gap-4 md:grid-cols-3 min-h-[400px] animate-pulse bg-white/5 rounded-3xl" />}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -52,14 +61,14 @@ export function AnalyticsPreview() {
         </div>
         <div className="mt-1 flex items-baseline gap-3">
           <div className="font-display text-4xl">
-            <CountUp to={STATS.totalHours} />
+            <CountUp to={DEMO_STATS.totalHours} />
             <span className="ml-1 text-base text-muted-foreground">hrs</span>
           </div>
           <div className="text-xs text-success">+ 14% vs last month</div>
         </div>
         <div className="mt-4 h-40 w-full">
           <ResponsiveContainer>
-            <AreaChart data={ACTIVITY_30D}>
+            <AreaChart data={DEMO_ACTIVITY}>
               <defs>
                 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.7} />
@@ -72,7 +81,7 @@ export function AnalyticsPreview() {
                 stroke="oklch(0.85 0.12 250)"
                 strokeWidth={2}
                 fill="url(#g1)"
-                isAnimationActive
+                isAnimationActive={!reduced}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -89,7 +98,7 @@ export function AnalyticsPreview() {
       >
         <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Streak</div>
         <div className="mt-1 font-display text-4xl">
-          <CountUp to={STATS.streak} />
+          <CountUp to={DEMO_STATS.streak} />
           <span className="ml-1 text-base text-muted-foreground">days</span>
         </div>
         <div className="mt-4 grid grid-cols-7 gap-1">
@@ -129,7 +138,7 @@ export function AnalyticsPreview() {
                 innerRadius={36}
                 outerRadius={56}
                 stroke="none"
-                isAnimationActive
+                isAnimationActive={!reduced}
               >
                 {GENRE.map((_, i) => (
                   <Cell key={i} fill={COLORS[i]} />
@@ -166,12 +175,12 @@ export function AnalyticsPreview() {
           Monthly completions
         </div>
         <div className="mt-1 font-display text-2xl">
-          <CountUp to={STATS.completed} /> finished
+          <CountUp to={DEMO_STATS.completed} /> finished
         </div>
         <div className="mt-4 h-28 w-full">
           <ResponsiveContainer>
             <BarChart data={MONTHS}>
-              <Bar dataKey="v" radius={[6, 6, 0, 0]} fill="oklch(0.7 0.2 295)" isAnimationActive />
+              <Bar dataKey="v" radius={[6, 6, 0, 0]} fill="oklch(0.7 0.2 295)" isAnimationActive={!reduced} />
             </BarChart>
           </ResponsiveContainer>
         </div>

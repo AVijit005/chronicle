@@ -21,34 +21,13 @@ function Page() {
     if (profile?.privacy?.profileVisibility) setPrivacy(profile.privacy.profileVisibility as string);
   }, [profile]);
 
-  const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme);
-    updateProfile.mutate({ themePreference: newTheme });
-    if (newTheme === 'light') {
-      document.documentElement.classList.add('light');
-      document.documentElement.classList.remove('dark');
-    } else if (newTheme === 'dark') {
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.add('dark');
-    } else {
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      document.documentElement.classList.toggle('light', prefersLight);
-      document.documentElement.classList.toggle('dark', !prefersLight);
-    }
+  const applyTheme = (t: 'light'|'dark'|'system') => {
+    setTheme(t);
+    const isLight = t === 'light' || (t === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches);
+    document.documentElement.classList.toggle('light', isLight);
+    document.documentElement.classList.toggle('dark', !isLight);
+    updateProfile.mutate({ themePreference: t });
   };
-
-  // Apply theme on mount
-  useEffect(() => {
-    const stored = profile?.themePreference || 'system';
-    if (stored === 'light') {
-      document.documentElement.classList.add('light');
-    } else if (stored === 'dark') {
-      document.documentElement.classList.remove('light');
-    } else {
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      document.documentElement.classList.toggle('light', prefersLight);
-    }
-  }, [profile?.themePreference]);
 
   const handlePrivacyChange = (newPrivacy: "public" | "followers" | "private") => {
     setPrivacy(newPrivacy);
@@ -82,21 +61,21 @@ function Page() {
           </h2>
           <div className="grid grid-cols-3 gap-3">
             <button
-              onClick={() => handleThemeChange("system")}
+              onClick={() => applyTheme("system")}
               className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition ${theme === "system" ? "border-primary bg-primary/10" : "border-white/10 hover:border-white/30"}`}
             >
               <Monitor className="h-5 w-5" />
               <span className="text-sm">System</span>
             </button>
             <button
-              onClick={() => handleThemeChange("light")}
+              onClick={() => applyTheme("light")}
               className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition ${theme === "light" ? "border-primary bg-primary/10" : "border-white/10 hover:border-white/30"}`}
             >
               <Sun className="h-5 w-5" />
               <span className="text-sm">Light</span>
             </button>
             <button
-              onClick={() => handleThemeChange("dark")}
+              onClick={() => applyTheme("dark")}
               className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition ${theme === "dark" ? "border-primary bg-primary/10" : "border-white/10 hover:border-white/30"}`}
             >
               <Moon className="h-5 w-5" />

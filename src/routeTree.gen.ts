@@ -44,6 +44,7 @@ import { Route as AppCreatorsIndexRouteImport } from './routes/app.creators.inde
 import { Route as AppCollectionsIndexRouteImport } from './routes/app.collections.index'
 import { Route as AppCharactersIndexRouteImport } from './routes/app.characters.index'
 import { Route as AppTagsTagRouteImport } from './routes/app.tags.$tag'
+import { Route as AppSettingsEmailCaptureRouteImport } from './routes/app.settings.email-capture'
 import { Route as AppMediaIdRouteImport } from './routes/app.media.$id'
 import { Route as AppLibraryRewatchingRouteImport } from './routes/app.library.rewatching'
 import { Route as AppLibraryRecentlyFinishedRouteImport } from './routes/app.library.recently-finished'
@@ -237,6 +238,11 @@ const AppTagsTagRoute = AppTagsTagRouteImport.update({
   path: '/tags/$tag',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsEmailCaptureRoute = AppSettingsEmailCaptureRouteImport.update({
+  id: '/email-capture',
+  path: '/email-capture',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
 const AppMediaIdRoute = AppMediaIdRouteImport.update({
   id: '/media/$id',
   path: '/media/$id',
@@ -349,7 +355,7 @@ export interface FileRoutesByFullPath {
   '/app/quotes': typeof AppQuotesRoute
   '/app/save-for-later': typeof AppSaveForLaterRoute
   '/app/search': typeof AppSearchRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
   '/app/wrapped': typeof AppWrappedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -371,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/app/library/recently-finished': typeof AppLibraryRecentlyFinishedRoute
   '/app/library/rewatching': typeof AppLibraryRewatchingRoute
   '/app/media/$id': typeof AppMediaIdRoute
+  '/app/settings/email-capture': typeof AppSettingsEmailCaptureRoute
   '/app/tags/$tag': typeof AppTagsTagRoute
   '/app/characters/': typeof AppCharactersIndexRoute
   '/app/collections/': typeof AppCollectionsIndexRoute
@@ -400,7 +407,7 @@ export interface FileRoutesByTo {
   '/app/quotes': typeof AppQuotesRoute
   '/app/save-for-later': typeof AppSaveForLaterRoute
   '/app/search': typeof AppSearchRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
   '/app/wrapped': typeof AppWrappedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -422,6 +429,7 @@ export interface FileRoutesByTo {
   '/app/library/recently-finished': typeof AppLibraryRecentlyFinishedRoute
   '/app/library/rewatching': typeof AppLibraryRewatchingRoute
   '/app/media/$id': typeof AppMediaIdRoute
+  '/app/settings/email-capture': typeof AppSettingsEmailCaptureRoute
   '/app/tags/$tag': typeof AppTagsTagRoute
   '/app/characters': typeof AppCharactersIndexRoute
   '/app/collections': typeof AppCollectionsIndexRoute
@@ -455,7 +463,7 @@ export interface FileRoutesById {
   '/app/quotes': typeof AppQuotesRoute
   '/app/save-for-later': typeof AppSaveForLaterRoute
   '/app/search': typeof AppSearchRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
   '/app/wrapped': typeof AppWrappedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -477,6 +485,7 @@ export interface FileRoutesById {
   '/app/library/recently-finished': typeof AppLibraryRecentlyFinishedRoute
   '/app/library/rewatching': typeof AppLibraryRewatchingRoute
   '/app/media/$id': typeof AppMediaIdRoute
+  '/app/settings/email-capture': typeof AppSettingsEmailCaptureRoute
   '/app/tags/$tag': typeof AppTagsTagRoute
   '/app/characters/': typeof AppCharactersIndexRoute
   '/app/collections/': typeof AppCollectionsIndexRoute
@@ -533,6 +542,7 @@ export interface FileRouteTypes {
     | '/app/library/recently-finished'
     | '/app/library/rewatching'
     | '/app/media/$id'
+    | '/app/settings/email-capture'
     | '/app/tags/$tag'
     | '/app/characters/'
     | '/app/collections/'
@@ -584,6 +594,7 @@ export interface FileRouteTypes {
     | '/app/library/recently-finished'
     | '/app/library/rewatching'
     | '/app/media/$id'
+    | '/app/settings/email-capture'
     | '/app/tags/$tag'
     | '/app/characters'
     | '/app/collections'
@@ -638,6 +649,7 @@ export interface FileRouteTypes {
     | '/app/library/recently-finished'
     | '/app/library/rewatching'
     | '/app/media/$id'
+    | '/app/settings/email-capture'
     | '/app/tags/$tag'
     | '/app/characters/'
     | '/app/collections/'
@@ -903,6 +915,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTagsTagRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/settings/email-capture': {
+      id: '/app/settings/email-capture'
+      path: '/email-capture'
+      fullPath: '/app/settings/email-capture'
+      preLoaderRoute: typeof AppSettingsEmailCaptureRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
     '/app/media/$id': {
       id: '/app/media/$id'
       path: '/media/$id'
@@ -1075,6 +1094,18 @@ const AppLibraryRouteWithChildren = AppLibraryRoute._addFileChildren(
   AppLibraryRouteChildren,
 )
 
+interface AppSettingsRouteChildren {
+  AppSettingsEmailCaptureRoute: typeof AppSettingsEmailCaptureRoute
+}
+
+const AppSettingsRouteChildren: AppSettingsRouteChildren = {
+  AppSettingsEmailCaptureRoute: AppSettingsEmailCaptureRoute,
+}
+
+const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
+  AppSettingsRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAchievementsRoute: typeof AppAchievementsRoute
   AppAnalyticsRoute: typeof AppAnalyticsRoute
@@ -1093,7 +1124,7 @@ interface AppRouteChildren {
   AppQuotesRoute: typeof AppQuotesRoute
   AppSaveForLaterRoute: typeof AppSaveForLaterRoute
   AppSearchRoute: typeof AppSearchRoute
-  AppSettingsRoute: typeof AppSettingsRoute
+  AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppTimelineRoute: typeof AppTimelineRoute
   AppWrappedRoute: typeof AppWrappedRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -1125,7 +1156,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppQuotesRoute: AppQuotesRoute,
   AppSaveForLaterRoute: AppSaveForLaterRoute,
   AppSearchRoute: AppSearchRoute,
-  AppSettingsRoute: AppSettingsRoute,
+  AppSettingsRoute: AppSettingsRouteWithChildren,
   AppTimelineRoute: AppTimelineRoute,
   AppWrappedRoute: AppWrappedRoute,
   AppIndexRoute: AppIndexRoute,
