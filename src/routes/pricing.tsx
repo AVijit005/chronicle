@@ -1,11 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { Check, Sparkles } from "lucide-react";
+import { analytics } from "@/lib/analytics";
 
 export const Route = createFileRoute("/pricing")({ component: PricingPage });
 
 function PricingPage() {
+  const navigate = useNavigate();
   return (
     <main className="min-h-screen bg-background pb-32 pt-24 md:pt-32">
       <div className="mx-auto max-w-4xl px-6 md:px-10">
@@ -37,7 +39,7 @@ function PricingPage() {
                 </li>
               ))}
             </ul>
-            <PremiumButton className="mt-8 w-full" variant="secondary">
+            <PremiumButton onClick={() => navigate({ to: "/app" })} className="mt-8 w-full" variant="secondary">
               Current Plan
             </PremiumButton>
           </PremiumGlass>
@@ -66,7 +68,13 @@ function PricingPage() {
                 </li>
               ))}
             </ul>
-            <PremiumButton className="mt-8 w-full">
+            <PremiumButton
+              onClick={() => {
+                analytics.track("upgrade_click");
+                navigate({ to: "/app/settings/email-capture" as any });
+              }}
+              className="mt-8 w-full"
+            >
               Upgrade to Plus
             </PremiumButton>
           </PremiumGlass>

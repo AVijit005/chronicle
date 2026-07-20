@@ -3,6 +3,8 @@ import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
+  onRetry?: () => void;
 }
 
 interface State {
@@ -18,6 +20,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.error) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
       return (
         <div className="py-20">
           <PremiumErrorState
@@ -27,7 +32,11 @@ export class ErrorBoundary extends Component<Props, State> {
               <button
                 onClick={() => {
                   this.setState({ error: null });
-                  window.location.reload();
+                  if (this.props.onRetry) {
+                    this.props.onRetry();
+                  } else {
+                    window.location.reload();
+                  }
                 }}
                 className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
               >

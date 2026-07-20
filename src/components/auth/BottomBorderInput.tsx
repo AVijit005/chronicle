@@ -5,7 +5,7 @@ import {
   type ReactNode,
 } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Check } from "lucide-react";
+import { Check, Eye, EyeOff } from "lucide-react";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -21,7 +21,11 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
   ) {
     const [focused, setFocused] = useState(false);
     const [hovered, setHovered] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const inputId = id ?? `bb-${label.replace(/\s+/g, "-").toLowerCase()}`;
+
+    const isPassword = rest.type === "password";
+    const currentType = isPassword && showPassword ? "text" : rest.type;
 
     const isError = Boolean(error);
 
@@ -76,6 +80,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
             ref={ref}
             id={inputId}
             {...(rest as object)}
+            type={currentType}
             onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
               setFocused(true);
               onFocus?.(e);
@@ -94,7 +99,7 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
 
           {/* Success */}
           <AnimatePresence>
-            {success && (
+            {success && !isPassword && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -106,6 +111,19 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
               </motion.span>
             )}
           </AnimatePresence>
+
+          {/* Password Toggle */}
+          {isPassword && (
+            <button
+              type="button"
+              tabIndex={-1}
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-5 z-10 flex h-6 w-6 items-center justify-center rounded-md text-white/40 hover:text-white/80 transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          )}
         </motion.div>
 
         {/* Error message */}

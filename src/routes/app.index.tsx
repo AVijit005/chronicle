@@ -32,6 +32,7 @@ import { adaptCollectionResponse } from "@/lib/adapters/collection";
 import { adaptInsights, adaptOverview } from "@/lib/adapters/analytics";
 import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { PremiumErrorState } from "@/components/common/PremiumErrorState";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 
 export const Route = createFileRoute("/app/")({
   component: Home,
@@ -113,7 +114,7 @@ function Home() {
       {isNewUser ? (
         <OnboardingGuide />
       ) : (
-      <>
+      <ErrorBoundary fallback={<div className="p-8 text-center text-muted-foreground">Dashboard sections could not load.</div>}>
       <InteractiveWidgets />
       <DashboardGreeting className="mt-10" />
       <NotificationStrip className="mt-4" />
@@ -165,7 +166,7 @@ function Home() {
         </Section>
       )}
       <SmartFooter className="mt-20" />
-      </>
+      </ErrorBoundary>
       )}
     </div>
   );

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { Film, Tv, BookOpen, Gamepad2, Headphones, Check, ArrowRight } from "lucide-react";
+import { analytics } from "@/lib/analytics";
 
 export const Route = createFileRoute("/app/onboarding")({ component: OnboardingPage });
 
@@ -29,6 +30,9 @@ function OnboardingPage() {
     if (step === 1 && selected.length > 0) {
       setStep(2);
     } else if (step === 2) {
+      localStorage.setItem("chronicle_onboarding_complete", "true");
+      localStorage.setItem("chronicle_media_types", JSON.stringify(selected));
+      analytics.track("onboarding_complete", { types: selected });
       navigate({ to: "/app" });
     }
   };

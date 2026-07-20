@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
@@ -32,6 +33,7 @@ import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
 export const Route = createFileRoute("/app/library/")({
   component: LibraryIndex,
+  pendingComponent: PageSkeleton,
 });
 
 function LibraryIndex() {

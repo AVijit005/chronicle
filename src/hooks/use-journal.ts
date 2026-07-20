@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tansta
 import { journalApi } from '@/lib/api';
 import { queryKeys } from '@/lib/api/query-keys';
 import type { CreateJournalEntryInput, UpdateJournalEntryInput, CreateMemoryInput } from '@/lib/api/journal';
+import { analytics } from '@/lib/analytics';
 
 export function useJournalEntries(params?: { cursor?: string; limit?: number }) {
   return useInfiniteQuery({
@@ -35,6 +36,11 @@ export function useCreateJournalEntry() {
       queryClient.invalidateQueries({ queryKey: queryKeys.journal.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline.all });
+      
+      if (!localStorage.getItem('chronicle_first_entry_tracked')) {
+        analytics.track('first_entry');
+        localStorage.setItem('chronicle_first_entry_tracked', 'true');
+      }
     },
   });
 }

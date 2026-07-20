@@ -13,6 +13,7 @@ import { LiquidGlassCard } from "@/components/auth/LiquidGlassCard";
 import { ParticleBurst } from "@/components/auth/ParticleBurst";
 import { useMouseParallax } from "@/lib/useParallax";
 import { useLogin, useRegister } from "@/hooks/use-auth";
+import { analytics } from "@/lib/analytics";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -99,10 +100,13 @@ function Auth() {
     try {
       if (mode === "signin") {
         const values = signIn.getValues();
-        await loginMutation.mutateAsync({
+        const user = await loginMutation.mutateAsync({
           email: values.email,
           password: values.password,
         });
+        analytics.identify(user.id);
+        setStatus("success");
+        setTimeout(() => navigate({ to: "/app" }), 700);
       } else {
         const values = signUp.getValues();
         await registerMutation.mutateAsync({
@@ -110,14 +114,16 @@ function Auth() {
           password: values.password,
           name: values.fullName,
         });
+        analytics.track("signup");
         // After registration, auto-login
-        await loginMutation.mutateAsync({
+        const user = await loginMutation.mutateAsync({
           email: values.email,
           password: values.password,
         });
+        analytics.identify(user.id);
+        setStatus("success");
+        setTimeout(() => navigate({ to: "/app/onboarding" }), 700);
       }
-      setStatus("success");
-      setTimeout(() => navigate({ to: "/app" }), 700);
     } catch (err: unknown) {
       setStatus("error");
       const message =
@@ -327,17 +333,19 @@ function Auth() {
               className="mt-4 flex items-center gap-2.5"
             >
               <div className="flex -space-x-1.5">
-                {AVATAR_COLORS.map((bg, i) => (
+                {["L", "S", "K", "A"].map((initial, i) => (
                   <div
                     key={i}
-                    className="h-5 w-5 rounded-full ring-1 ring-black/30"
-                    style={{ background: bg, zIndex: 4 - i }}
-                  />
+                    className="flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-medium ring-1 ring-black/30"
+                    style={{ background: ["oklch(0.72 0.18 290)", "oklch(0.75 0.16 35)", "oklch(0.70 0.20 220)", "oklch(0.78 0.14 160)"][i], zIndex: 4 - i, color: "white" }}
+                  >
+                    {initial}
+                  </div>
                 ))}
               </div>
               <span className="text-[10px] tracking-wide" style={{ color: "rgba(255,255,255,0.35)" }}>
-                Joined by{" "}
-                <span style={{ color: "rgba(255,255,255,0.58)", fontWeight: 500 }}>12,400</span>{" "}
+                Trusted by{" "}
+                <span style={{ color: "rgba(255,255,255,0.58)", fontWeight: 500 }}>thousands of</span>{" "}
                 chroniclers
               </span>
             </motion.div>
@@ -460,14 +468,12 @@ function Auth() {
                         </span>
                         Remember me
                       </motion.label>
-                      <motion.a
-                        href="#"
-                        className="text-white/45"
-                        whileHover={{ scale: 1.04, color: "rgba(255,255,255,0.85)" }}
-                        transition={{ duration: 0.18, ease: "easeOut" }}
+                      <Link
+                        to="/auth/forgot-password"
+                        className="text-white/45 hover:text-white/85 transition-colors duration-150"
                       >
                         Forgot password?
-                      </motion.a>
+                      </Link>
                     </div>
 
                     <PremiumButton status={status} label="Continue" error={errorMessage} />
@@ -522,13 +528,13 @@ function Auth() {
               className="mt-6 text-center text-[10.5px] tracking-wide text-white/30"
             >
               By continuing you agree to our{" "}
-              <a className="text-white/50 underline-offset-4 hover:underline" href="#">
+              <Link className="text-white/50 underline-offset-4 hover:underline" to="/terms">
                 Terms
-              </a>{" "}
+              </Link>{" "}
               &{" "}
-              <a className="text-white/50 underline-offset-4 hover:underline" href="#">
+              <Link className="text-white/50 underline-offset-4 hover:underline" to="/privacy">
                 Privacy
-              </a>
+              </Link>
               .
             </motion.p>
           </motion.div>

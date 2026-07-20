@@ -29,7 +29,8 @@ import {
 } from "@/lib/types";
 import { useNavigate } from "@tanstack/react-router";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { useSearch, useRecentSearches } from "@/hooks/use-search";
+import { useSearch, useRecentSearches, useTrending } from "@/hooks/use-search";
+import { analytics } from "@/lib/analytics";
 
 type Row =
   | { kind: "media"; group: string; item: MediaItem; onSelect: () => void }
@@ -38,11 +39,10 @@ type Row =
   | {
       kind: "setting";
       group: string;
-      s: (typeof SEARCHABLE_SETTINGS)[number];
-      onSelect: () => void;
-    }
+  | { kind: "setting"; group: string; s: (typeof SEARCHABLE_SETTINGS)[number]; onSelect: () => void; }
   | { kind: "action"; group: string; label: string; onSelect: () => void }
-  | { kind: "recent"; group: string; term: string; onSelect: () => void };
+  | { kind: "recent"; group: string; term: string; onSelect: () => void }
+  | { kind: "trending"; group: string; title: string; subtitle?: string; onSelect: () => void };
 
 const MEDIA_ICONS: Record<MediaKind, typeof Film> = {
   movie: Film,
@@ -72,6 +72,7 @@ export function CommandPalette({
   
   const { data: searchData } = useSearch({ q });
   const { data: recentData } = useRecentSearches();
+  const { data: trendingData } = useTrending();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -84,6 +85,15 @@ export function CommandPalette({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [open, onOpenChange]);
+
+  useEffect(() => {
+    if (q.trim().length > 2) {
+      const t = setTimeout(() => {
+        analytics.track("search", { query: q.trim() });
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+  }, [q]);
 
   useEffect(() => {
     if (open) {
@@ -113,6 +123,19 @@ export function CommandPalette({
                 group: "Recent searches",
                 term: t,
                 onSelect: () => setQ(t),
+              }) as Row,
+          ),
+        },
+        {
+          title: "Trending",
+          rows: (trendingData || []).slice(0, 3).map(
+            (t) =>
+              ({
+                kind: "trending",
+                group: "Trending",
+                title: t.title,
+                subtitle: t.subtitle,
+                onSelect: go({ to: "/app/media/$id", params: { id: t.id } }),
               }) as Row,
           ),
         },
@@ -278,7 +301,7 @@ export function CommandPalette({
       });
       
     return out;
-  }, [q, recentData, searchData]);
+  }, [q, recentData, trendingData, searchData]);
 
   const flat = rows.flatMap((g) => g.rows);
   useEffect(() => {
@@ -528,6 +551,20 @@ function RowContent({ row }: { row: Row }) {
           <Clock className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="flex-1 text-sm">{row.term}</div>
+      </>
+    );
+  }
+  if (row.kind === "trending") {
+    return (
+      <>
+        <div className="grid h-8 w-8 place-items-center rounded-lg bg-white/[0.04]">
+          <Sparkles className="h-4 w-4 text-primary" />
+        </div>
+        <div className="flex-1 text-sm">
+          <div>{row.title}</div>
+          {row.subtitle && <div className="text-xs text-muted-foreground">{row.subtitle}</div>}
+        </div>
+        <ArrowRight className="h-4 w-4 text-muted-foreground" />
       </>
     );
   }

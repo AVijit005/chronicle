@@ -2,8 +2,9 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { MediaCard } from "@/components/media/MediaCard";
 import { MEDIA, KIND_LABEL, type MediaKind } from "@/lib/types";
-import { EmptyState } from "@/components/common/Section";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { cascade } from "@/lib/motion";
+import { Search } from "lucide-react";
 
 const KINDS = new Set<MediaKind>([
   "movie",
@@ -46,6 +47,12 @@ function LibraryKind() {
         <EmptyState
           title={`No ${KIND_LABEL[kind].toLowerCase()} yet`}
           description="When you add something here, it'll appear with all the cinematic care it deserves."
+          icon={<Search className="h-6 w-6 text-muted-foreground" />}
+          action={
+            <button className="press-scale rounded-full bg-gradient-to-r from-primary to-secondary px-4 py-2 text-sm font-medium text-primary-foreground">
+              Search to add
+            </button>
+          }
         />
       ) : (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

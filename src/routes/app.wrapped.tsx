@@ -5,6 +5,7 @@ import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
 import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
 import { createFileRoute } from "@tanstack/react-router";
+import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Share2, Download, Sparkles } from "lucide-react";
@@ -14,7 +15,10 @@ import { useOverview, useInsights } from "@/hooks/use-analytics";
 import { adaptOverview, adaptInsights } from "@/lib/adapters/analytics";
 import type { UIOverview, UIInsights, UIWrappedSlide } from "@/lib/adapters/types";
 
-export const Route = createFileRoute("/app/wrapped")({ component: WrappedPage });
+export const Route = createFileRoute("/app/wrapped")({ 
+  component: WrappedPage,
+  pendingComponent: PageSkeleton,
+});
 
 function WrappedPage() {
   const { data: overview, isLoading: oLoad, isError: oErr, refetch: oRef } = useOverview();

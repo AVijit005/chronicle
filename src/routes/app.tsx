@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout/AppShell";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { authApi } from "@/lib/api";
 
 export const Route = createFileRoute("/app")({
@@ -22,7 +23,9 @@ export const Route = createFileRoute("/app")({
   },
   component: () => (
     <AppShell>
-      <Outlet />
+      <ErrorBoundary fallback={<div className="p-8 text-center text-muted-foreground">App content could not load.</div>}>
+        <Outlet />
+      </ErrorBoundary>
     </AppShell>
   ),
 });

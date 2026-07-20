@@ -226,15 +226,12 @@ function Landing() {
             <span>Chronicle © {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-5">
-            <a href="#" className="hover:text-foreground">
+            <Link to="/privacy" className="hover:text-foreground">
               Privacy
-            </a>
-            <a href="#" className="hover:text-foreground">
+            </Link>
+            <Link to="/terms" className="hover:text-foreground">
               Terms
-            </a>
-            <a href="#" className="hover:text-foreground">
-              Press
-            </a>
+            </Link>
           </div>
         </div>
       </footer>

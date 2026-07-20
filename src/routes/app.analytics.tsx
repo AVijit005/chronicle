@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { lazy, Suspense } from "react";
@@ -67,8 +68,12 @@ import {
 import { MemoryInsights } from "@/components/memory/MemoryInsights";
 import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 
-export const Route = createFileRoute("/app/analytics")({ component: AnalyticsPage });
+export const Route = createFileRoute("/app/analytics")({ 
+  component: AnalyticsPage,
+  pendingComponent: PageSkeleton,
+});
 
 const KIND_ICON: Record<string, typeof Film> = {
   Movies: Film,
@@ -334,8 +339,9 @@ function AnalyticsPage() {
               ))}
             </div>
             <div className="mt-8 h-72">
+              <ErrorBoundary fallback={<div className="flex h-full items-center justify-center text-muted-foreground">Chart could not be loaded</div>}>
               <ResponsiveContainer>
-                <AreaChart data={s.monthlyActivity || []}>
+                <AreaChart data={s.monthlyActivity || []} role="img" aria-label="Monthly activity area chart">
                   <defs>
                     <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.7} />
@@ -370,6 +376,7 @@ function AnalyticsPage() {
                   />
                 </AreaChart>
               </ResponsiveContainer>
+              </ErrorBoundary>
             </div>
           </PremiumGlass>
         </ChartStory>
@@ -380,8 +387,9 @@ function AnalyticsPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <PremiumGlass className="p-6 md:p-8">
             <div className="h-72">
+              <ErrorBoundary fallback={<div className="flex h-full items-center justify-center text-muted-foreground">Chart could not be loaded</div>}>
               <ResponsiveContainer>
-                <PieChart>
+                <PieChart role="img" aria-label="Media distribution pie chart">
                   <Pie
                     data={mediaDistribution}
                     dataKey="value"
@@ -398,6 +406,7 @@ function AnalyticsPage() {
                   <Tooltip content={<GlassTooltip />} />
                 </PieChart>
               </ResponsiveContainer>
+              </ErrorBoundary>
             </div>
           </PremiumGlass>
           <PremiumGlass className="p-6 md:p-8">

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { NotebookPen } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/app/journal")({
       { property: "og:description", content: "Words for the stories that stayed." },
     ],
   }),
+  pendingComponent: PageSkeleton,
 });
 
 function JournalPage() {
@@ -189,7 +191,13 @@ function JournalPage() {
       <MemoryZone title="Lately">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {entries.length === 0 && !isLoadingJournal && (
-            <div className="text-muted-foreground">No recent journal entries found.</div>
+            <div className="col-span-full">
+              <EmptyState 
+                title="Your journal is empty" 
+                description="Write your first entry and capture your current mood."
+                action={{ label: "Write entry", onClick: () => setIsWriting(true) }}
+              />
+            </div>
           )}
           {entries.slice(0, 4).map((j, i) => <JournalEntryCard key={j.id} entry={j} index={i} />)}
         </div>

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { useState } from "react";
 import { useCollections } from "@/hooks/use-collections";
 import { adaptCollectionResponse } from "@/lib/adapters/collection";
@@ -18,6 +19,7 @@ import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
 
 export const Route = createFileRoute("/app/collections/")({
   component: CollectionsIndex,
+  pendingComponent: PageSkeleton,
 });
 
 function CollectionsIndex() {

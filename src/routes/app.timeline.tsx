@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState, useMemo } from "react";
 import { Star, NotebookPen, Trophy, Layers } from "lucide-react";
@@ -17,8 +18,10 @@ import { LiveStatsStrip } from "@/components/memory/LiveStatsStrip";
 import { YourReflectionsRail } from "@/components/memory/YourReflectionsRail";
 import { useTimelineEvents, useJournalStats } from "@/hooks/use-journal";
 import { adaptTimelineEvent } from "@/lib/adapters/journal";
-
-export const Route = createFileRoute("/app/timeline")({ component: TimelinePage });
+export const Route = createFileRoute("/app/timeline")({ 
+  component: TimelinePage,
+  pendingComponent: PageSkeleton,
+});
 
 function TimelinePage() {
   const [year, setYear] = useState<string>(new Date().getFullYear().toString());
