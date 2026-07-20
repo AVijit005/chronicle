@@ -16,7 +16,7 @@
     "test": "bun test ./src ./test",
     "test:watch": "bun test --watch",
     "test:cov": "bun test --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "bun test --inspect"
   },
   "dependencies": {
     "@nestjs/bullmq": "^11.0.0",

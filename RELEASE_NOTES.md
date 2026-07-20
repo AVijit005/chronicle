@@ -21,14 +21,14 @@ Chronicle is a universal media tracking platform designed to map your cultural j
 
 ### Frontend Architecture
 
-*   **Framework:** React 18, orchestrated with `@tanstack/react-router` and `@tanstack/react-query` for high-performance server-side state synchronization.
+*   **Framework:** React 19, orchestrated with `@tanstack/react-router` and `@tanstack/react-query` for high-performance server-side state synchronization.
 *   **Styling:** Utility-first CSS via TailwindCSS, featuring extensive custom design tokens for the proprietary "PremiumGlass" UI, smooth gradients, and glassmorphism.
 *   **Animation:** Micro-interactions and fluid motion powered by `motion/react` (Framer Motion).
 *   **State Management:** Intelligent caching using TanStack Query, supplemented by `zustand` for persistent client-side store operations (e.g., library preferences).
 
 ### Backend Architecture
 
-*   **Runtime:** Node.js server powered by Express.
+*   **Runtime:** Node.js server powered by NestJS 11.
 *   **API:** RESTful, domain-driven API design strictly enforcing CORS, rate-limiting, and comprehensive logging.
 *   **Database:** PostgreSQL, accessed via Prisma ORM for type-safe and robust data migrations.
 *   **Authentication:** Stateless JWT-based authentication enforcing HS256 algorithm and rigorous token validation, with robust password hashing (bcrypt).

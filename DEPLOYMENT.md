@@ -61,7 +61,7 @@ Before deploying the backend application code, ensure the production database sc
 
 *   **CORS:** The backend is configured to restrict cross-origin requests. Ensure `CLIENT_URL` strictly matches your frontend domain. Do not use wildcard `*` origins in production.
 *   **JWT Integrity:** Do not expose the `JWT_SECRET`. Rotate the secret if a compromise is suspected.
-*   **Rate Limiting:** The backend utilizes `express-rate-limit`. If deploying behind a reverse proxy or load balancer (like AWS ALB or Cloudflare), ensure `app.set('trust proxy', 1)` is correctly configured so rate limiting uses the true client IP instead of the proxy IP.
+*   **Rate Limiting:** The backend utilizes `NestJS 11-rate-limit`. If deploying behind a reverse proxy or load balancer (like AWS ALB or Cloudflare), ensure `app.set('trust proxy', 1)` is correctly configured so rate limiting uses the true client IP instead of the proxy IP.
 
 ## Monitoring and Maintenance
 

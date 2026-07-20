@@ -1,5 +1,5 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "chronicle",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -10,8 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "vitest run",
-    "test:update": "vitest run -u",
+    "test": "vitest run --dir src",
+    "test:update": "vitest run --dir src -u",
     "test:visual": "python3 tests/visual/run.py",
     "test:visual:update": "python3 tests/visual/run.py --update"
   },

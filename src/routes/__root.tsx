@@ -6,7 +6,6 @@ import {
   useRouter,
   HeadContent,
   Scripts,
-  ScrollRestoration,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode, Suspense } from "react";
 
@@ -137,7 +136,6 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ScrollRestoration />
       <ErrorBoundary>
         <Suspense fallback={<PageSkeleton />}>
           <Outlet />

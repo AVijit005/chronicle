@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
-import compression from 'compression';
+// import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { randomUUID } from 'crypto';
@@ -23,7 +23,7 @@ export async function createApp(): Promise<INestApplication> {
   app.setGlobalPrefix(config.get<string>('apiPrefix') ?? 'api');
 
   app.use(helmet());
-  app.use(compression());
+  // app.use(compression()); // Temporarily disabled due to Bun compatibility issue
   app.use(cookieParser());
   app.use((req: Request, res: Response, next: NextFunction) => {
     const requestId = (req.get('x-request-id') ?? randomUUID()) as string;

@@ -126,7 +126,7 @@ export async function apiFetch<T>(
           await refreshAccessToken();
           continue;
         } catch {
-          if (typeof window !== 'undefined') {
+          if (typeof window !== 'undefined' && window.location.pathname !== '/auth' && window.location.pathname !== '/') {
             window.location.href = '/auth';
           }
           throw new ApiError('Session expired', 401, 'SESSION_EXPIRED');

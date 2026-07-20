@@ -29,7 +29,7 @@ export const Route = createFileRoute("/auth")({
 
 const signInSchema = z.object({
   email: z.string().email("Enter a valid email"),
-  password: z.string().min(12, "At least 12 characters"),
+  password: z.string().min(6, "At least 6 characters"),
   remember: z.boolean().optional(),
 });
 
@@ -37,8 +37,8 @@ const signUpSchema = z
   .object({
     fullName: z.string().min(2, "Enter your full name"),
     email: z.string().email("Enter a valid email"),
-    password: z.string().min(12, "At least 12 characters"),
-    confirmPassword: z.string().min(12, "At least 12 characters"),
+    password: z.string().min(6, "At least 6 characters"),
+    confirmPassword: z.string().min(6, "At least 6 characters"),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords don't match",

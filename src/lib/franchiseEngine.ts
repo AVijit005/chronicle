@@ -17,7 +17,7 @@ export const FRANCHISES: Franchise[] = [
     description: "Every Christopher Nolan film.",
     accent: "oklch(0.65 0.2 230)",
     mediaIds: ["interstellar"],
-    cover: MEDIA.find((m) => m.id === "interstellar")!.poster,
+    cover: MEDIA.find((m) => m.id === "interstellar")?.poster ?? "",
   },
   {
     id: "one-piece",
@@ -25,7 +25,7 @@ export const FRANCHISES: Franchise[] = [
     description: "The Grand Line saga.",
     accent: "oklch(0.78 0.18 50)",
     mediaIds: ["one-piece"],
-    cover: MEDIA.find((m) => m.id === "one-piece")!.poster,
+    cover: MEDIA.find((m) => m.id === "one-piece")?.poster ?? "",
   },
   {
     id: "dune",
@@ -33,7 +33,7 @@ export const FRANCHISES: Franchise[] = [
     description: "Arrakis and the Atreides line.",
     accent: "oklch(0.75 0.15 65)",
     mediaIds: ["dune"],
-    cover: MEDIA.find((m) => m.id === "dune")!.poster,
+    cover: MEDIA.find((m) => m.id === "dune")?.poster ?? "",
   },
   {
     id: "harry-potter",
@@ -41,7 +41,7 @@ export const FRANCHISES: Franchise[] = [
     description: "Hogwarts and beyond.",
     accent: "oklch(0.62 0.2 295)",
     mediaIds: ["harry-potter"],
-    cover: MEDIA.find((m) => m.id === "harry-potter")!.poster,
+    cover: MEDIA.find((m) => m.id === "harry-potter")?.poster ?? "",
   },
   {
     id: "souls",
@@ -49,7 +49,7 @@ export const FRANCHISES: Franchise[] = [
     description: "From Demon's Souls to Elden Ring.",
     accent: "oklch(0.72 0.16 80)",
     mediaIds: ["elden-ring"],
-    cover: MEDIA.find((m) => m.id === "elden-ring")!.poster,
+    cover: MEDIA.find((m) => m.id === "elden-ring")?.poster ?? "",
   },
   {
     id: "cyberpunk",
@@ -57,7 +57,7 @@ export const FRANCHISES: Franchise[] = [
     description: "Night City stories.",
     accent: "oklch(0.78 0.2 320)",
     mediaIds: ["cyberpunk"],
-    cover: MEDIA.find((m) => m.id === "cyberpunk")!.poster,
+    cover: MEDIA.find((m) => m.id === "cyberpunk")?.poster ?? "",
   },
 ];
 

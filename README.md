@@ -17,7 +17,7 @@ Chronicle is a premium, beautifully crafted personal media tracking platform. It
 Chronicle is a modern web application designed for both aesthetics and performance.
 
 ### Frontend
-- **React 18** (Vite + TypeScript)
+- **React 19** (Vite + TypeScript)
 - **Routing:** `@tanstack/react-router`
 - **State Management:** `@tanstack/react-query` (server state) and `zustand` (client state)
 - **Styling:** TailwindCSS + Custom CSS Variables
@@ -25,7 +25,7 @@ Chronicle is a modern web application designed for both aesthetics and performan
 - **Data Visualization:** `recharts` and `d3`
 
 ### Backend
-- **Runtime:** Node.js + Express
+- **Runtime:** NestJS 11
 - **Database:** PostgreSQL
 - **ORM:** Prisma
 - **Authentication:** Custom JWT stateless authentication (`jsonwebtoken`, `bcrypt`)
