@@ -104,8 +104,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <head><HeadContent /></head>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const storedTheme = localStorage.getItem('theme');
+                const isLight = storedTheme === 'light' || (!storedTheme && window.matchMedia('(prefers-color-scheme: light)').matches);
+                if (isLight) {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
+                } else {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+        <HeadContent />
+      </head>
       <body>{children}<Scripts /></body>
     </html>
   );
@@ -125,12 +144,23 @@ function RootComponent() {
   // Apply theme on boot
   useEffect(() => {
     const saved = queryClient.getQueryData<{ themePreference?: string }>(queryKeys.auth.me());
-    const pref = saved?.themePreference || 'system';
-    if (pref === 'light') document.documentElement.classList.add('light');
-    else if (pref === 'dark') document.documentElement.classList.remove('light');
+    const pref = saved?.themePreference || localStorage.getItem('theme') || 'system';
+    let isLight = false;
+    
+    if (pref === 'light') isLight = true;
+    else if (pref === 'dark') isLight = false;
     else {
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      document.documentElement.classList.toggle('light', prefersLight);
+      isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    }
+    
+    if (isLight) {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
     }
   }, [queryClient]);
 

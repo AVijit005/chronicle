@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { ShimmerSkeleton } from "@/components/ui/ShimmerSkeleton";
@@ -7,11 +7,16 @@ import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 import { QuickActionsMenu } from "@/components/common/QuickActionsMenu";
 
 export const Route = createFileRoute("/app/dev")({
+  beforeLoad: () => {
+    if (import.meta.env.PROD) {
+      throw notFound();
+    }
+  },
   component: DevPlayground,
 });
 
 function DevPlayground() {
-  const findings = {}
+  const findings: any[] = [];
   return (
     <div className="space-y-10 pb-24 pt-4">
       <header>

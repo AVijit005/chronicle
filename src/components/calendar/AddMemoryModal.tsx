@@ -38,6 +38,7 @@ const mediaTypes = [
 export function AddMemoryModal({ isOpen, onClose, selectedDay, monthName, currentYear }: Props) {
   const [savingType, setSavingType] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const createEntry = useCreateJournalEntry();
 
   useEffect(() => {
@@ -45,6 +46,24 @@ export function AddMemoryModal({ isOpen, onClose, selectedDay, monthName, curren
       setTimeout(() => closeRef.current?.focus(), 100);
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") onClose();
+        
+        // Focus trap
+        if (e.key === 'Tab') {
+          const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          if (!focusable || focusable.length === 0) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          
+          if (e.shiftKey && document.activeElement === first) {
+            last.focus();
+            e.preventDefault();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            first.focus();
+            e.preventDefault();
+          }
+        }
       };
       document.addEventListener("keydown", handleKeyDown);
       return () => document.removeEventListener("keydown", handleKeyDown);
@@ -82,11 +101,15 @@ export function AddMemoryModal({ isOpen, onClose, selectedDay, monthName, curren
             onClick={onClose}
           />
           <motion.div
+            ref={modalRef}
             initial={{ opacity: 0, scale: 0.9, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 40 }}
             transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
             className="relative w-full max-w-3xl z-10"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
           >
             <PremiumGlass className="overflow-hidden p-0 rounded-[2.5rem]" glow="oklch(0.7 0.1 250)">
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
@@ -100,7 +123,7 @@ export function AddMemoryModal({ isOpen, onClose, selectedDay, monthName, curren
                   <X className="h-5 w-5" />
                 </button>
                 <div className="mb-10 text-center">
-                  <h2 className="font-display text-4xl tracking-tight text-foreground/90">Log a memory</h2>
+                  <h2 id="modal-title" className="font-display text-4xl tracking-tight text-foreground/90">Log a memory</h2>
                   <p className="mt-2 text-sm text-muted-foreground/80">
                     {selectedDay ? `${monthName} ${selectedDay}, ${currentYear}` : "Select a medium to chronicle"}
                   </p>

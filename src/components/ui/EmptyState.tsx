@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { dur, ease } from "@/lib/motion";
 
@@ -20,11 +20,12 @@ export function EmptyState({
   hint,
   className = "",
 }: Props) {
+  const reduced = useReducedMotion();
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: dur.large, ease: ease.out }}
+      initial={{ opacity: 0, y: reduced ? 0 : 12, filter: reduced ? "none" : "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: reduced ? "none" : "blur(0px)" }}
+      transition={{ duration: reduced ? 0 : dur.large, ease: ease.out }}
       className={`glass relative grid place-items-center overflow-hidden rounded-[32px] px-8 py-14 text-center md:px-12 ${className}`}
     >
       {/* ambient glow */}
@@ -37,8 +38,8 @@ export function EmptyState({
       />
       {icon && (
         <motion.div
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          animate={reduced ? {} : { y: [0, -6, 0] }}
+          transition={{ duration: reduced ? 0 : 6, repeat: Infinity, ease: "easeInOut" }}
           className="relative grid h-16 w-16 place-items-center rounded-2xl bg-white/[0.04] text-primary ring-1 ring-white/10 shadow-[inset_0_1px_0_oklch(1_0_0/0.08)]"
         >
           {icon}

@@ -97,7 +97,8 @@ function Landing() {
         </div>
       </motion.header>
 
-      <LivingHero />
+      <main>
+        <LivingHero />
 
       <SceneSection
         id="experience"
@@ -211,6 +212,7 @@ function Landing() {
           </div>
         </div>
       </section>
+      </main>
 
       <footer className="relative border-t border-border/40 px-6 py-12 text-xs text-muted-foreground md:px-10">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">

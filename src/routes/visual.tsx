@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PosterCard } from "@/components/ui/PosterCard";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import type { MediaItem } from "@/lib/types";
@@ -16,6 +16,11 @@ import type { MediaItem } from "@/lib/types";
  * `data-vr-ready` attribute the test waits on before screenshotting.
  */
 export const Route = createFileRoute("/visual")({
+  beforeLoad: () => {
+    if (import.meta.env.PROD) {
+      throw notFound();
+    }
+  },
   component: VisualHarness,
 });
 

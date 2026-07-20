@@ -1,10 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoon } from "@/components/common/ComingSoon";
-import { Flame, Film, BookOpen, Layers } from "lucide-react";
-
 export const Route = createFileRoute("/app/achievements")({ component: Page });
-
-const ICONS = { Flame, Film, BookOpen, Layers };
 
 function Page() {
   return (

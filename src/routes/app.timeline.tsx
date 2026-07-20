@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState, useMemo } from "react";
 import { Star, NotebookPen, Trophy, Layers } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
@@ -25,6 +25,7 @@ function TimelinePage() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const reduced = useReducedMotion();
 
   const { data: timelineData, isLoading } = useTimelineEvents();
   const { data: statsData } = useJournalStats();
@@ -46,9 +47,9 @@ function TimelinePage() {
     <div className="pb-32 pt-2">
       {/* Hero */}
       <motion.section
-        initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, y: reduced ? 0 : 24, filter: reduced ? "none" : "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: reduced ? "none" : "blur(0)" }}
+        transition={{ duration: reduced ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <PremiumGlass
           variant="strong"
@@ -153,10 +154,10 @@ function TimelinePage() {
                return (
                 <motion.div
                   key={e.id}
-                  initial={{ opacity: 0, x: -16 }}
+                  initial={{ opacity: 0, x: reduced ? 0 : -16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: i * 0.04 }}
+                  transition={{ duration: reduced ? 0 : 0.6, delay: reduced ? 0 : i * 0.04 }}
                   className="relative pl-14 md:pl-20"
                 >
                   <motion.span
@@ -166,9 +167,9 @@ function TimelinePage() {
                       border: `2px solid ${media.accent ?? undefined}`,
                       boxShadow: `0 0 18px ${media.accent ?? undefined}`,
                     }}
-                    whileInView={{ scale: [0.6, 1.1, 1] }}
+                    whileInView={{ scale: reduced ? 1 : [0.6, 1.1, 1] }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: reduced ? 0 : 0.6 }}
                   >
                     <span
                       className="h-2 w-2 rounded-full"
@@ -231,10 +232,10 @@ function TimelinePage() {
 
       {/* Memory clusters */}
       <motion.section
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: reduced ? 0 : 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: reduced ? 0 : 0.7 }}
         className="mt-24"
       >
         <ZoneHeading
@@ -246,7 +247,7 @@ function TimelinePage() {
           {MEMORY_CLUSTERS.map((c) => (
             <motion.div
               key={c.id}
-              whileHover={{ y: -4 }}
+              whileHover={{ y: reduced ? 0 : -4 }}
               className="glass group relative overflow-hidden rounded-3xl p-5"
             >
               <div
@@ -271,10 +272,10 @@ function TimelinePage() {
 
       {/* Editorial highlights */}
       <motion.section
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: reduced ? 0 : 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: reduced ? 0 : 0.7 }}
         className="mt-24"
       >
         <ZoneHeading eyebrow="Highlights" title="Editorial highlights" />
@@ -282,7 +283,7 @@ function TimelinePage() {
           {[MEDIA[0], MEDIA[7], MEDIA[1]].map((m) => (
             <Link key={m.id} to="/app/media/$id" params={{ id: m.id }} className="block">
               <motion.div
-                whileHover={{ y: -4 }}
+                whileHover={{ y: reduced ? 0 : -4 }}
                 className="group relative overflow-hidden rounded-3xl h-72"
               >
                 <img
@@ -306,10 +307,10 @@ function TimelinePage() {
 
       {/* Journey statistics */}
       <motion.section
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: reduced ? 0 : 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: reduced ? 0 : 0.7 }}
         className="mt-24"
       >
         <ZoneHeading eyebrow="Journey" title="The numbers behind it" />
@@ -334,10 +335,10 @@ function TimelinePage() {
 
       {/* Memory · Life Chapters */}
       <motion.section
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: reduced ? 0 : 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: reduced ? 0 : 0.7 }}
         className="mt-24"
       >
         <ZoneHeading

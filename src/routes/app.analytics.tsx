@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import {
   ResponsiveContainer,
@@ -172,7 +172,7 @@ function AnalyticsPage() {
   });
 
   return (
-    <div className="pb-32 pt-2">
+    <main className="pb-32 pt-2">
       {/* ============ Zone 1 — Hero ============ */}
       <motion.section
         initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
@@ -576,7 +576,7 @@ function AnalyticsPage() {
           Journey goals unavailable (API limitation)
         </PremiumGlass>
       </Zone>
-    </div>
+    </main>
   );
 }
 
@@ -593,12 +593,13 @@ function Zone({
   action?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const reduced = useReducedMotion();
   return (
     <motion.section
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: reduced ? 0 : 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: reduced ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
       className="mt-16 md:mt-24"
     >
       <ZoneHeading eyebrow={eyebrow} title={title} sub={sub} action={action} />
