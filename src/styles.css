@@ -438,17 +438,6 @@
 }
 
 /* ============================================================
- * Section rhythm — consistent vertical spacing.
- * ============================================================ */
-
-@utility section-y {
-  margin-block: 2.5rem;
-}
-@utility major-section-y {
-  margin-block: 5rem;
-}
-
-/* ============================================================
  * Base
  * ============================================================ */
 
@@ -571,28 +560,6 @@
 .library-hero-card {
   position: relative;
   z-index: 5;
-}
-
-.metric-button-card {
-  cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
-              background-color 0.2s ease, 
-              box-shadow 0.2s ease, 
-              border-color 0.2s ease;
-}
-
-/* Elegant hover state matching the Memory OS theme */
-.metric-button-card:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 
-              0 0 20px rgba(var(--accent-glow-rgb, 99, 102, 241), 0.1);
-}
-
-/* Active / Click press state feedback */
-.metric-button-card:active {
-  transform: translateY(-1px);
 }
 
 /* ============================================================

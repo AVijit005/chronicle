@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/common/ComingSoon";
 import { Bell, Check, CheckCircle2 } from "lucide-react";
 import { useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from "@/hooks/use-notifications";
 import { formatDistanceToNow } from "date-fns";

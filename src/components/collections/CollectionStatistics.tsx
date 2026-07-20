@@ -1,6 +1,14 @@
 import { motion } from "motion/react";
 import { CountUp } from "@/components/landing/CountUp";
-import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip } from "recharts";
+import { lazy, Suspense } from "react";
+const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })));
+const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart })));
+const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie })));
+const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell })));
+const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart })));
+const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar })));
+const XAxis = lazy(() => import("recharts").then(m => ({ default: m.XAxis })));
+const Tooltip = lazy(() => import("recharts").then(m => ({ default: m.Tooltip })));
 import type { Collection } from "@/lib/types";
 
 const COLORS = [
@@ -24,7 +32,8 @@ export function CollectionStatistics({ collection: c }: { collection: Collection
     v: 1 + Math.round(Math.abs(Math.sin(i * 1.1)) * 5),
   }));
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <Suspense fallback={<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 min-h-[140px] animate-pulse bg-white/5 rounded-3xl" />}>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card label="Completion">
         <div className="font-display text-4xl tracking-tight tabular-nums">
           <CountUp to={c.completion ?? 70} />%
@@ -88,7 +97,8 @@ export function CollectionStatistics({ collection: c }: { collection: Collection
           </ResponsiveContainer>
         </div>
       </Card>
-    </div>
+      </div>
+    </Suspense>
   );
 }
 

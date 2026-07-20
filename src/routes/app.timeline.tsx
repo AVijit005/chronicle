@@ -61,7 +61,7 @@ function TimelinePage() {
             {MEDIA.concat(MEDIA)
               .slice(0, 18)
               .map((m, i) => (
-                <img key={i} src={m.poster} alt="" className="h-full w-full object-cover" />
+                <img key={i} src={m.poster} alt="" loading="lazy" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none'; }} className="h-full w-full object-cover" />
               ))}
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background" />
@@ -181,6 +181,9 @@ function TimelinePage() {
                     <img
                       src={media.poster}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
                       className="h-28 w-20 shrink-0 rounded-xl object-cover"
                     />
                     <div className="min-w-0 flex-1">
@@ -257,7 +260,7 @@ function TimelinePage() {
               <div className="relative">
                 <div className="flex gap-1">
                   {c.covers.map((src: string, i: number) => (
-                    <img key={i} src={src} alt="" className="h-20 w-14 rounded-md object-cover" />
+                    <img key={i} src={src} alt="" loading="lazy" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none'; }} className="h-20 w-14 rounded-md object-cover" />
                   ))}
                 </div>
                 <div className="mt-4 font-display text-2xl tracking-tight">{c.name}</div>
@@ -289,6 +292,9 @@ function TimelinePage() {
                 <img
                   src={m.backdrop ?? m.poster}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   className="absolute inset-0 h-full w-full object-cover transition duration-[var(--dur-page)] ease-[var(--ease-out)] group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />

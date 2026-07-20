@@ -71,6 +71,7 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
                 src={item.poster}
                 alt={item.title}
                 loading="lazy"
+                decoding="async"
                 onLoad={() => setLoaded(true)}
                 onError={() => setErrored(true)}
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"

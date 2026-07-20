@@ -61,6 +61,7 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
               src={item.poster}
               alt=""
               loading="lazy"
+              decoding="async"
               onLoad={() => setLoaded(true)}
               onError={() => setErrored(true)}
               className="h-full w-full object-cover transition-[transform,filter] duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:scale-[1.03] group-hover:brightness-[1.02] motion-reduce:group-hover:scale-100"

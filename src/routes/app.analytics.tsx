@@ -1,20 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  Legend,
-} from "recharts";
+import { lazy, Suspense } from "react";
+const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })));
+const AreaChart = lazy(() => import("recharts").then(m => ({ default: m.AreaChart })));
+const Area = lazy(() => import("recharts").then(m => ({ default: m.Area })));
+const XAxis = lazy(() => import("recharts").then(m => ({ default: m.XAxis })));
+const YAxis = lazy(() => import("recharts").then(m => ({ default: m.YAxis })));
+const Tooltip = lazy(() => import("recharts").then(m => ({ default: m.Tooltip })));
+const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart })));
+const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie })));
+const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell })));
+const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart })));
+const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar })));
+const Legend = lazy(() => import("recharts").then(m => ({ default: m.Legend })));
 import {
   Flame,
   Film,
@@ -172,6 +171,7 @@ function AnalyticsPage() {
   });
 
   return (
+    <Suspense fallback={<div className="min-h-screen animate-pulse bg-white/5" />}>
     <main className="pb-32 pt-2">
       {/* ============ Zone 1 — Hero ============ */}
       <motion.section
@@ -577,6 +577,7 @@ function AnalyticsPage() {
         </PremiumGlass>
       </Zone>
     </main>
+    </Suspense>
   );
 }
 

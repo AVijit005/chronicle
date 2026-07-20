@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { useRef, useState } from "react";
+import { ArrowRight, Sparkles, ImageOff } from "lucide-react";
 import { MEDIA } from "@/lib/types";
 import { useMouseParallax } from "@/lib/useParallax";
 import { MagneticButton } from "./MagneticButton";
@@ -162,6 +162,7 @@ function HeroCard({
   converge: ReturnType<typeof useTransform<number, number>>;
   reduced: boolean;
 }) {
+  const [errored, setErrored] = useState(false);
   const px = useTransform(mx, (v) => v * c.depth);
   const py = useTransform(my, (v) => v * c.depth * 0.6);
   const scale = useTransform(converge, [0, 1], [1, 0.78]);
@@ -195,9 +196,22 @@ function HeroCard({
     >
       <motion.div
         style={{ x: px, y: py, scale }}
-        className="relative aspect-[2/3] w-32 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 md:w-44"
+        className="relative aspect-[2/3] w-32 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 md:w-44 bg-gradient-to-br from-white/[0.06] to-white/[0.02]"
       >
-        <img src={c.item.poster} alt={c.item.title} className="h-full w-full object-cover" />
+        {!errored ? (
+          <img 
+            src={c.item.poster} 
+            alt={c.item.title} 
+            loading="lazy"
+            decoding="async"
+            onError={() => setErrored(true)}
+            className="h-full w-full object-cover" 
+          />
+        ) : (
+          <div className="grid h-full w-full place-items-center">
+            <ImageOff className="h-6 w-6 text-white/30" />
+          </div>
+        )}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-50"
