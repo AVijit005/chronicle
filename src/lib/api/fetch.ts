@@ -237,6 +237,7 @@ function anySignal(signals: AbortSignal[]): AbortSignal {
 }
 
 export function logout(): void {
-  setAccessToken(null);
-  apiFetch(LOGOUT_ENDPOINT, { method: 'POST', skipAuth: false }).catch(() => {});
+  apiFetch(LOGOUT_ENDPOINT, { method: 'POST', skipAuth: false })
+    .catch(() => {})
+    .finally(() => setAccessToken(null));
 }

@@ -1,7 +1,7 @@
 import { useReducedMotion } from "motion/react";
 import { ParticleField } from "./ParticleField";
 import { useTimeOfDay, timeOfDayTint } from "@/lib/useTimeOfDay";
-import { useState, useEffect } from "react";
+import { useTheme } from "@/hooks/use-theme";
 
 interface Props {
   accent?: string;
@@ -16,13 +16,7 @@ export function AtmosphereBackground({
   showParticles = true,
   showBeams = true,
 }: Props) {
-  const [isLight, setIsLight] = useState(false);
-  useEffect(() => {
-    const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
-    ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    setIsLight(document.documentElement.classList.contains('light'));
-    return () => ob.disconnect();
-  }, []);
+  const { isLight } = useTheme();
 
   const opacity = isLight ? (intensity === "soft" ? 0.2 : intensity === "vivid" ? 0.4 : 0.3) 
                           : (intensity === "soft" ? 0.35 : intensity === "vivid" ? 0.7 : 0.5);

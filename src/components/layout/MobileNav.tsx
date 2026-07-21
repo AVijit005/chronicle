@@ -13,7 +13,7 @@ const items = [
 export function MobileNav({ onOpenSearch }: { onOpenSearch: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <nav className="glass-strong fixed inset-x-3 bottom-3 z-40 flex items-center justify-around rounded-2xl px-2 py-2 lg:hidden">
+    <nav aria-label="Mobile navigation" className="glass-strong fixed inset-x-3 bottom-3 z-40 flex items-center justify-around rounded-2xl px-2 py-2 lg:hidden">
       {items.map((it) => {
         const active = it.to === "/app" ? pathname === "/app" : pathname.startsWith(it.to);
         if (it.fab) {

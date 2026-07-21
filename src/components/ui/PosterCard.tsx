@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, useSpring, useReducedMotion } fro
 import { Heart, Star, ImageOff } from "lucide-react";
 import type { MediaItem } from "@/lib/types";
 import { useState, type MouseEvent } from "react";
+import { useLibraryStore } from "@/lib/store/libraryStore";
 import { imageReveal } from "@/lib/motion";
 
 interface Props {
@@ -23,7 +24,8 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
   const y = useMotionValue(0);
   const rx = useSpring(useTransform(y, [-50, 50], [1, -1]), { stiffness: 200, damping: 20 });
   const ry = useSpring(useTransform(x, [-50, 50], [-1, 1]), { stiffness: 200, damping: 20 });
-  const [fav, setFav] = useState(false);
+  const fav = useLibraryStore((s) => s.meta[item.id]?.favorite) ?? false;
+  const toggleFavorite = useLibraryStore((s) => s.toggleFavorite);
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
 
@@ -129,7 +131,7 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
         aria-pressed={fav}
         onClick={(e) => {
           e.preventDefault();
-          setFav((f) => !f);
+          toggleFavorite(item.id);
         }}
         className="focus-ring absolute right-2 top-2 grid h-9 w-9 place-items-center rounded-full bg-black/45 text-white/80 opacity-0 backdrop-blur transition duration-[var(--dur-normal)] ease-[var(--ease-out)] group-hover:opacity-100 hover:scale-110 hover:text-rose-400 md:h-7 md:w-7"
       >

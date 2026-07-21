@@ -1,11 +1,15 @@
+import { useCurrentUser } from '@/hooks/use-auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersApi } from '@/lib/api';
 import { queryKeys } from '@/lib/api/query-keys';
 import type { UpdateProfileInput, UpdatePreferencesInput, UpdatePrivacyInput } from '@/lib/api/users';
 
 export function useProfile() {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.users.profile(),
+    enabled: !!user,
     queryFn: () => usersApi.getProfile(),
     staleTime: 5 * 60_000,
   });
@@ -62,8 +66,11 @@ export function useDeleteAvatar() {
 }
 
 export function useSessions() {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.users.sessions(),
+    enabled: !!user,
     queryFn: () => usersApi.getSessions(),
   });
 }

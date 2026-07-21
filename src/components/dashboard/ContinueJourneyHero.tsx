@@ -53,21 +53,21 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link to="/app/media/$id" params={{ id: j.mediaId }}>
-                <PremiumButton variant="primary" icon={<Play className="h-4 w-4" />}>
+              <PremiumButton variant="primary" icon={<Play className="h-4 w-4" />} asChild>
+                <Link to="/app/media/$id" params={{ id: j.mediaId }}>
                   Continue
-                </PremiumButton>
-              </Link>
-              <Link to="/app/journal">
-                <PremiumButton variant="ghost" size="sm" icon={<NotebookPen className="h-3.5 w-3.5" />}>
+                </Link>
+              </PremiumButton>
+              <PremiumButton variant="ghost" size="sm" icon={<NotebookPen className="h-3.5 w-3.5" />} asChild>
+                <Link to="/app/journal">
                   Journal
-                </PremiumButton>
-              </Link>
-              <Link to="/app/timeline">
-                <PremiumButton variant="ghost" size="sm" icon={<Clock className="h-3.5 w-3.5" />}>
+                </Link>
+              </PremiumButton>
+              <PremiumButton variant="ghost" size="sm" icon={<Clock className="h-3.5 w-3.5" />} asChild>
+                <Link to="/app/timeline">
                   Timeline
-                </PremiumButton>
-              </Link>
+                </Link>
+              </PremiumButton>
               <Link
                 to="/app/media/$id"
                 params={{ id: j.mediaId }}

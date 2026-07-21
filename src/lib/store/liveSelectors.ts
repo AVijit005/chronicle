@@ -41,7 +41,7 @@ export function useUserReflections(): ReflectionRow[] {
       }
     }
     return out;
-  }, [meta, custom]);
+  }, [meta, custom, hydrated]);
 }
 
 export function useUserQuotes() {
@@ -126,5 +126,5 @@ export function useLiveStats(): LiveStats {
     const topMoodEntry = Object.entries(moods).sort((a, b) => b[1] - a[1])[0];
     if (topMoodEntry) stats.topMood = topMoodEntry[0];
     return stats;
-  }, [meta, custom, userQuotes]);
+  }, [meta, custom, userQuotes, hydrated]);
 }

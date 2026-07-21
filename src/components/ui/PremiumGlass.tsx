@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/use-theme";
 import { motion, type HTMLMotionProps } from "motion/react";
 import { forwardRef, useCallback, useRef, type PointerEvent as ReactPointerEvent, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -41,13 +42,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
     ref,
   ) => {
     const innerRef = useRef<HTMLDivElement | null>(null);
-    const [isLight, setIsLight] = useState(false);
-    useEffect(() => {
-      const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
-      ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-      setIsLight(document.documentElement.classList.contains('light'));
-      return () => ob.disconnect();
-    }, []);
+    const { isLight } = useTheme();
 
     const setRefs = useCallback(
       (node: HTMLDivElement | null) => {

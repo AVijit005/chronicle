@@ -1,7 +1,7 @@
 # Chronicle — Frontend Audit & UI/Animation Improvement Report
 
-> **Revision 2 (deepened).** Audit report only (per user choice — no implementation sequencing).
-> Scope: line-by-line audit of recent 6 commits (8a1e674..e4f4374) + frontend-wide UI/animation findings.
+> **Revision 3.** Adds: (a) verification of the claimed "Phase 2–4 complete" work in commit 6f0b49c, (b) new line-by-line findings on live surfaces, (c) an implementation-ready next-phase plan.
+> Scope: line-by-line audit of recent 7 commits (8a1e674..6f0b49c) + frontend-wide UI/animation findings.
 > Method: every finding cites real code read this session (file:line). UNVERIFIED items marked.
 
 ---

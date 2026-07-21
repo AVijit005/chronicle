@@ -84,7 +84,7 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
             variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
             className="absolute inset-0"
             style={{
-              background: `radial-gradient(60% 80% at 50% 100%, ${accent} / 0.35, transparent 70%)`,
+              background: `radial-gradient(60% 80% at 50% 100%, color-mix(in oklch, ${accent} 35%, transparent), transparent 70%)`,
             }}
           />
 

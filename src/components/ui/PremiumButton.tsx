@@ -2,6 +2,7 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Loader2, Check } from "lucide-react";
+import { Slot } from "@radix-ui/react-slot";
 
 type Variant = "primary" | "secondary" | "ghost" | "icon";
 type Size = "sm" | "md" | "lg";
@@ -13,6 +14,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   success?: boolean;
   icon?: ReactNode;
   children?: ReactNode;
+  asChild?: boolean;
 }
 
 const sizes: Record<Size, string> = {
@@ -23,7 +25,7 @@ const sizes: Record<Size, string> = {
 
 export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
   (
-    { variant = "primary", size = "md", loading, success, icon, className, children, ...rest },
+    { variant = "primary", size = "md", loading, success, icon, className, children, asChild, ...rest },
     ref,
   ) => {
     const reduced = useReducedMotion();
@@ -40,8 +42,10 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
       icon: "h-11 w-11 p-0 rounded-2xl glass-subtle hover:bg-white/[0.08] hover:text-primary",
     };
 
+    const Comp = asChild ? Slot : "button";
+
     return (
-      <button
+      <Comp
         ref={ref}
         {...rest}
         className={cn(base, variant !== "icon" && sizes[size], variantClass[variant], className)}
@@ -100,7 +104,7 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
           </AnimatePresence>
           {children}
         </span>
-      </button>
+      </Comp>
     );
   },
 );

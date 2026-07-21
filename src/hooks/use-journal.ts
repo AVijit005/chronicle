@@ -1,3 +1,4 @@
+import { useCurrentUser } from '@/hooks/use-auth';
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { journalApi } from '@/lib/api';
 import { queryKeys } from '@/lib/api/query-keys';
@@ -5,8 +6,11 @@ import type { CreateJournalEntryInput, UpdateJournalEntryInput, CreateMemoryInpu
 import { analytics } from '@/lib/analytics';
 
 export function useJournalEntries(params?: { cursor?: string; limit?: number }) {
+  const { data: user } = useCurrentUser();
+
   return useInfiniteQuery({
     queryKey: queryKeys.journal.entries(params),
+    enabled: !!user,
     queryFn: ({ pageParam }) => journalApi.listJournalEntries({ ...params, cursor: pageParam as string | undefined }),
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
     initialPageParam: undefined as string | undefined,
@@ -14,6 +18,8 @@ export function useJournalEntries(params?: { cursor?: string; limit?: number }) 
 }
 
 export function useJournalEntry(id: string) {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.journal.entry(id),
     queryFn: () => journalApi.getJournalEntry(id),
@@ -22,8 +28,11 @@ export function useJournalEntry(id: string) {
 }
 
 export function useJournalStats() {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.journal.stats(),
+    enabled: !!user,
     queryFn: () => journalApi.getJournalStats(),
   });
 }
@@ -69,8 +78,11 @@ export function useDeleteJournalEntry() {
 }
 
 export function useMemories(params?: { cursor?: string; limit?: number }) {
+  const { data: user } = useCurrentUser();
+
   return useInfiniteQuery({
     queryKey: queryKeys.memories.list(params),
+    enabled: !!user,
     queryFn: ({ pageParam }) => journalApi.listMemories({ ...params, cursor: pageParam as string | undefined }),
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
     initialPageParam: undefined as string | undefined,
@@ -89,8 +101,11 @@ export function useCreateMemory() {
 }
 
 export function useTimelineEvents(params?: { year?: number; month?: number }) {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.timeline.events(params),
+    enabled: !!user,
     queryFn: () => journalApi.listTimelineEvents(params),
   });
 }
@@ -107,8 +122,11 @@ export function useCreateTimelineEvent() {
 }
 
 export function useJournalPrompts() {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: [...queryKeys.journal.all, 'prompts'] as const,
+    enabled: !!user,
     queryFn: () => journalApi.getJournalPrompts(),
     staleTime: 60 * 60_000,
   });

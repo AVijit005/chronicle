@@ -24,7 +24,7 @@ export function DashboardGreeting({ className }: { className?: string }) {
   const name = user?.name ? user.name.split(" ")[0] : "Traveler";
   const g = getGreeting({
     name: name,
-    streak: streaks?.currentStreak,
+    streak: streaks?.current,
     recentCompletions: overview?.moviesCompleted, // using as proxy
     unfinishedTitle: dashboard?.continueWatching?.[0]?.title
   });

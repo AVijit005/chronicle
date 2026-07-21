@@ -36,6 +36,7 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
       {/* Search trigger */}
       <button
         onClick={onOpenSearch}
+        aria-label="Search"
         className={cn(
           "mx-3 mt-1 mb-3 flex items-center gap-3 rounded-2xl border border-border/60 bg-background/40 px-3 py-2.5 text-left text-sm text-muted-foreground transition press-scale hover:bg-background/70 hover:text-foreground",
         )}
@@ -107,6 +108,7 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
       {/* Collapse */}
       <button
         onClick={() => setCollapsed((c) => !c)}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         className="mx-3 mb-3 flex items-center justify-center gap-2 rounded-xl border border-border/50 bg-background/30 py-2 text-xs text-muted-foreground transition press-scale hover:text-foreground"
       >
         {collapsed ? (

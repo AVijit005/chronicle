@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Play, BookmarkPlus } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { MediaItem } from "@/lib/types";
 
 export function CinematicHero({ item }: { item: MediaItem }) {
@@ -18,7 +19,7 @@ export function CinematicHero({ item }: { item: MediaItem }) {
           style={{
             background: `linear-gradient(to right, oklch(0 0 0 / 0.95) 0%, oklch(0 0 0 / 0.6) 45%, transparent 100%),
                          radial-gradient(circle at 75% 50%, transparent 20%, oklch(0 0 0 / 0.8) 100%),
-                         radial-gradient(60% 80% at 100% 0%, ${item.accent ?? "var(--primary)"} / 0.25, transparent 60%)`,
+                         radial-gradient(60% 80% at 100% 0%, color-mix(in oklch, ${item.accent ?? "var(--primary)"} 25%, transparent), transparent 60%)`,
           }}
         />
 
@@ -51,12 +52,12 @@ export function CinematicHero({ item }: { item: MediaItem }) {
             )}
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <button className="press-scale inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-white/30 hover:bg-white/15 hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5),0_0_16px_oklch(0.72_0.18_255/0.3)] cursor-pointer">
+              <Link to="/app/media/$id" params={{ id: item.id }} className="press-scale inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-white/30 hover:bg-white/15 hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5),0_0_16px_oklch(0.72_0.18_255/0.3)] cursor-pointer">
                 <Play className="h-4 w-4 fill-white" /> Continue
-              </button>
-              <button className="press-scale inline-flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/80 backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-white/15 hover:bg-white/10 hover:text-white hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5)] cursor-pointer">
+              </Link>
+              <Link to="/app/journal" className="press-scale inline-flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/80 backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-white/15 hover:bg-white/10 hover:text-white hover:shadow-[0_8px_16px_-4px_oklch(0_0_0/0.5)] cursor-pointer">
                 <BookmarkPlus className="h-4 w-4" /> Add to journal
-              </button>
+              </Link>
             </div>
           </div>
         </div>

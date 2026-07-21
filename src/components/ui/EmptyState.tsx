@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/use-theme";
 import { motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useState, useEffect } from "react";
 import { dur, ease } from "@/lib/motion";
@@ -21,13 +22,7 @@ export function EmptyState({
   className = "",
 }: Props) {
   const reduced = useReducedMotion();
-  const [isLight, setIsLight] = useState(false);
-  useEffect(() => {
-    const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
-    ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    setIsLight(document.documentElement.classList.contains('light'));
-    return () => ob.disconnect();
-  }, []);
+  const { isLight } = useTheme();
 
   return (
     <motion.div

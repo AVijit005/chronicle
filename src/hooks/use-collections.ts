@@ -1,16 +1,22 @@
+import { useCurrentUser } from '@/hooks/use-auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collectionsApi } from '@/lib/api';
 import { queryKeys } from '@/lib/api/query-keys';
 import type { CreateCollectionInput, UpdateCollectionInput, AddCollectionItemInput } from '@/lib/api/collections';
 
 export function useCollections() {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.collections.list(),
+    enabled: !!user,
     queryFn: () => collectionsApi.listCollections(),
   });
 }
 
 export function useCollection(id: string) {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.collections.detail(id),
     queryFn: () => collectionsApi.getCollection(id),
@@ -19,6 +25,8 @@ export function useCollection(id: string) {
 }
 
 export function useCollectionStats(id: string) {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.collections.stats(id),
     queryFn: () => collectionsApi.getCollectionStats(id),
@@ -85,13 +93,18 @@ export function useRemoveCollectionItem() {
 }
 
 export function useShelves() {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.shelves.list(),
+    enabled: !!user,
     queryFn: () => collectionsApi.listShelves(),
   });
 }
 
 export function useShelf(id: string) {
+  const { data: user } = useCurrentUser();
+
   return useQuery({
     queryKey: queryKeys.shelves.detail(id),
     queryFn: () => collectionsApi.getShelf(id),

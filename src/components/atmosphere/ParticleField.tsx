@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/use-theme";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
@@ -10,13 +11,7 @@ interface Props {
 export function ParticleField({ count = 36, className, color = "rgba(255,255,255,0.55)" }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
   const reduced = useReducedMotion();
-  const [isLight, setIsLight] = useState(false);
-  useEffect(() => {
-    const ob = new MutationObserver(() => setIsLight(document.documentElement.classList.contains('light')));
-    ob.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    setIsLight(document.documentElement.classList.contains('light'));
-    return () => ob.disconnect();
-  }, []);
+  const { isLight } = useTheme();
 
   useEffect(() => {
     if (reduced) return;
