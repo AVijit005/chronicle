@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  app:
+    image: oven/bun:1
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    command: bash -c "bun install && bun run dev --host 0.0.0.0"
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.61.1-jammy
+    volumes:
+      - .:/e2e
+      - /e2e/node_modules
+    working_dir: /e2e
+    command: bash -c "sleep 10 && npm install --legacy-peer-deps && sed -i 's/localhost:3000/app:5000/g' tests/e2e.test.ts && npx playwright test tests/e2e.test.ts"
+    depends_on:
+      - app
+    environment:
+      - CI=1

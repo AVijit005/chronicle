@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Chronicle E2E', () => {
   test('dashboard loads without crashing', async ({ page }) => {
-    await page.goto('http://localhost:3000/app');
+    await page.goto('http://localhost:5000/app');
     
     // Wait for the ShimmerSkeleton or actual content to appear
     await page.waitForLoadState('networkidle');
@@ -17,7 +17,7 @@ test.describe('Chronicle E2E', () => {
   });
 
   test('analytics loads without crashing', async ({ page }) => {
-    await page.goto('http://localhost:3000/app/analytics');
+    await page.goto('http://localhost:5000/app/analytics');
     await page.waitForLoadState('networkidle');
     
     await page.screenshot({ path: 'artifacts/analytics.png' });
