@@ -56,6 +56,14 @@ export function MagneticButton({
       onMouseMove={onMove}
       onMouseLeave={reset}
       onClick={onClick}
+      onKeyDown={(e: React.KeyboardEvent) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
       style={{ x: sx, y: sy }}
       className={className}
     >

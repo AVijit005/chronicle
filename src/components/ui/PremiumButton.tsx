@@ -92,6 +92,8 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
               exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.75 }}
               transition={{ duration: reduced ? 0.1 : 0.18 }}
               className="inline-flex items-center"
+              aria-live="polite"
+              role="status"
             >
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

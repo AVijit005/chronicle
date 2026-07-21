@@ -21,7 +21,11 @@ export const analytics = {
       return;
     }
     if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.capture('$pageview');
+      // Avoid double-firing if posthog auto-captures, but since this is manual SPA:
+      (window as any).posthog.capture('$pageview', { $current_url: path });
+    }
+    if (typeof window !== 'undefined' && (window as any).plausible) {
+      (window as any).plausible('pageview', { u: path });
     }
   },
   
