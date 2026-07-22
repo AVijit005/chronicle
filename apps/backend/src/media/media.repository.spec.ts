@@ -38,6 +38,7 @@ describe('MediaRepository', () => {
   let prismaMock: {
     movie: {
       findUnique: ReturnType<typeof mock>;
+      findFirst: ReturnType<typeof mock>;
       findMany: ReturnType<typeof mock>;
       count: ReturnType<typeof mock>;
     };
@@ -47,6 +48,7 @@ describe('MediaRepository', () => {
     prismaMock = {
       movie: {
         findUnique: mock(() => Promise.resolve(createMockRow())),
+        findFirst: mock(() => Promise.resolve(createMockRow())),
         findMany: mock(() => Promise.resolve([createMockRow()])),
         count: mock(() => Promise.resolve(1)),
       },
@@ -56,11 +58,11 @@ describe('MediaRepository', () => {
 
   describe('findById', () => {
     it('returns a row when found', async () => {
-      prismaMock.movie.findUnique.mockResolvedValueOnce(createMockRow({ id: 'movie-1' }));
+      prismaMock.movie.findFirst.mockResolvedValueOnce(createMockRow({ id: 'movie-1' }));
       const result = await repository.findById('movie', 'movie-1');
       expect(result).not.toBeNull();
       expect(result!.id).toBe('movie-1');
-      expect(prismaMock.movie.findUnique).toHaveBeenCalled();
+      expect(prismaMock.movie.findFirst).toHaveBeenCalled();
     });
 
     it('returns null for unknown type', async () => {
@@ -69,7 +71,7 @@ describe('MediaRepository', () => {
     });
 
     it('returns null when not found', async () => {
-      prismaMock.movie.findUnique.mockResolvedValueOnce(null);
+      prismaMock.movie.findFirst.mockResolvedValueOnce(null);
       const result = await repository.findById('movie', 'missing-id');
       expect(result).toBeNull();
     });
@@ -118,7 +120,7 @@ describe('MediaRepository', () => {
 
   describe('findRelated', () => {
     it('returns related items based on genre and language', async () => {
-      prismaMock.movie.findUnique.mockResolvedValueOnce(
+      prismaMock.movie.findFirst.mockResolvedValueOnce(
         createMockRow({ id: 'movie-1', genres: ['Action', 'Drama'], language: 'en' }),
       );
       prismaMock.movie.findMany.mockResolvedValueOnce([createMockRow({ id: 'movie-2' })]);
@@ -128,7 +130,7 @@ describe('MediaRepository', () => {
     });
 
     it('returns empty array when source not found', async () => {
-      prismaMock.movie.findUnique.mockResolvedValueOnce(null);
+      prismaMock.movie.findFirst.mockResolvedValueOnce(null);
       const result = await repository.findRelated('movie', 'missing');
       expect(result).toEqual([]);
     });
@@ -136,7 +138,7 @@ describe('MediaRepository', () => {
 
   describe('getMetadata', () => {
     it('returns metadata fields for an item', async () => {
-      prismaMock.movie.findUnique.mockResolvedValueOnce(
+      prismaMock.movie.findFirst.mockResolvedValueOnce(
         createMockRow({
           posterUrl: 'http://example.com/poster.jpg',
           runtime: 120,
@@ -152,7 +154,7 @@ describe('MediaRepository', () => {
     });
 
     it('returns null when item not found', async () => {
-      prismaMock.movie.findUnique.mockResolvedValueOnce(null);
+      prismaMock.movie.findFirst.mockResolvedValueOnce(null);
       const result = await repository.getMetadata('movie', 'missing');
       expect(result).toBeNull();
     });

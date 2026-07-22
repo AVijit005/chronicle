@@ -98,7 +98,7 @@ function JournalPage() {
     "Tonight";
 
   const entries = useMemo(() => {
-    return journalData?.pages.flatMap((p) => p.data).map(adaptJournalEntry) ?? [];
+    return journalData?.pages.flatMap((p) => p.items).filter(Boolean).map(adaptJournalEntry) ?? [];
   }, [journalData]);
 
   const favoriteMood = useMemo(() => {

@@ -6,7 +6,7 @@ import { Plus, NotebookPen, Calendar } from "lucide-react";
 import { OnThisDay } from "@/components/memory/OnThisDay";
 import { GoalHero } from "@/components/goals/GoalHero";
 import { ChallengeCard } from "@/components/challenges/ChallengeCard";
-import { getActiveChallenge } from "@/lib/challenges";
+
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { DashboardContext } from "@/components/dashboard/DashboardContext";
 import { ContinueJourneyHero } from "@/components/dashboard/ContinueJourneyHero";
@@ -114,59 +114,113 @@ function Home() {
       {isNewUser ? (
         <OnboardingGuide />
       ) : (
-      <ErrorBoundary fallback={<div className="p-8 text-center text-muted-foreground">Dashboard sections could not load.</div>}>
-      <InteractiveWidgets />
-      <DashboardGreeting className="mt-10" />
-      <NotificationStrip className="mt-4" />
-      <DailyRitual className="mt-8" insights={uiInsights} />
-      <ContinueJourneyHero className="mt-8" />
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <DailyFocus />
-        <TodayInHistory />
-      </div>
-      <OnThisDay variant="compact" className="mt-12" />
-      <PullQuote attribution={dailyQuote.attr}>{dailyQuote.quote}</PullQuote>
-                  <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1.3fr]">
-        <ChallengeCard challenge={(challengesData?.challenges?.[0] ?? getActiveChallenge()) as any} />
-        <GoalHero goal={challengesData?.goals?.[0] ? { id: challengesData.goals[0].id, title: challengesData.goals[0].title, description: challengesData.goals[0].description, current: challengesData.goals[0].current, target: challengesData.goals[0].target, reward: challengesData.goals[0].reward, accent: challengesData.goals[0].accent, startedAt: challengesData.goals[0].startedAt, priority: challengesData.goals[0].priority } : null} />
-      </div>
-      <DashboardContext className="mt-10" />
-            <DashboardMood className="mt-16" />
-      <WeeklyReflection className="mt-6" overview={uiOverview} />
-            <div className="mt-16 pointer-events-auto">
-        <PremiumGlass interactive variant="strong" glow="oklch(0.72 0.18 255 / 0.2)" className="group/master rounded-[2.5rem]">
-          <div className="flex flex-col text-left p-10 w-full">
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">This is you</div>
-              <h2 className="font-display text-3xl tracking-tight md:text-4xl">A quiet glance at your patterns</h2>
-              <p className="mt-4 text-[15px] leading-relaxed text-foreground/80">Not metrics — moods. The shape of how you've been spending your stories this month. Look softly. Nothing here demands a goal.</p>
-            </div>
-            <div className="flex flex-row flex-wrap gap-5 mt-8">
-              <LivingStats className="flex flex-row flex-wrap gap-5 m-0 p-0" />
-            </div>
+      <>
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Failed to load interactive widgets.</div>}>
+          <InteractiveWidgets />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Greeting failed to load.</div>}>
+          <DashboardGreeting className="mt-10" />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Notifications failed to load.</div>}>
+          <NotificationStrip className="mt-4" />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Daily ritual failed to load.</div>}>
+          <DailyRitual className="mt-8" insights={uiInsights} />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Journey failed to load.</div>}>
+          <ContinueJourneyHero className="mt-8" />
+        </ErrorBoundary>
+        
+        <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+          <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Focus failed to load.</div>}>
+            <DailyFocus />
+          </ErrorBoundary>
+          <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">History failed to load.</div>}>
+            <TodayInHistory />
+          </ErrorBoundary>
+        </div>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">On this day failed to load.</div>}>
+          <OnThisDay variant="compact" className="mt-12" />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Quote failed to load.</div>}>
+          <PullQuote attribution={dailyQuote.attr}>{dailyQuote.quote}</PullQuote>
+        </ErrorBoundary>
+        
+        <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1.3fr]">
+          <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Challenges failed to load.</div>}>
+            <ChallengeCard challenge={challengesData?.challenges?.[0] as any} />
+          </ErrorBoundary>
+          <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Goals failed to load.</div>}>
+            <GoalHero goal={challengesData?.goals?.[0] ? { id: challengesData.goals[0].id, title: challengesData.goals[0].title, description: challengesData.goals[0].description, current: challengesData.goals[0].current, target: challengesData.goals[0].target, reward: challengesData.goals[0].reward, accent: challengesData.goals[0].accent, startedAt: challengesData.goals[0].startedAt, priority: challengesData.goals[0].priority } : null} />
+          </ErrorBoundary>
+        </div>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Context failed to load.</div>}>
+          <DashboardContext className="mt-10" />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Mood failed to load.</div>}>
+          <DashboardMood className="mt-16" />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Reflection failed to load.</div>}>
+          <WeeklyReflection className="mt-6" overview={uiOverview} />
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Stats failed to load.</div>}>
+          <div className="mt-16 pointer-events-auto">
+            <PremiumGlass interactive variant="strong" glow="oklch(0.72 0.18 255 / 0.2)" className="group/master rounded-[2.5rem]">
+              <div className="flex flex-col text-left p-10 w-full">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.28em] text-primary/85 mb-3">This is you</div>
+                  <h2 className="font-display text-3xl tracking-tight md:text-4xl">A quiet glance at your patterns</h2>
+                  <p className="mt-4 text-[15px] leading-relaxed text-foreground/80">Not metrics — moods. The shape of how you've been spending your stories this month. Look softly. Nothing here demands a goal.</p>
+                </div>
+                <div className="flex flex-row flex-wrap gap-5 mt-8">
+                  <LivingStats className="flex flex-row flex-wrap gap-5 m-0 p-0" />
+                </div>
+              </div>
+            </PremiumGlass>
           </div>
-        </PremiumGlass>
-      </div>
-      {collectionList.length > 0 && (
-        <Section title="Collections" subtitle="Stories grouped by feeling." action={<Link to="/app/collections" className="story-link text-sm text-muted-foreground hover:text-foreground">All collections</Link>}>
-          <Collage items={collectionList.slice(0, 4).map((c) => ({ id: c.id, image: c.cover ?? "", alt: c.name, node: (<div className="rounded-2xl bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 pt-12"><div className="font-display text-xl tracking-tight text-white">{c.name}</div><div className="text-xs text-white/70">{c.itemCount} items</div></div>) }))} />
-        </Section>
-      )}
-      <Section title="Lately" subtitle="A small editorial timeline.">
-        <MiniTimeline />
-      </Section>
-      {recentlyCompletedItems.length > 0 && (
-        <Section title="Recently completed" subtitle="The stories that just became yours.">
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-4 lg:grid-cols-6">
-            {recentlyCompletedItems.slice(0, 6).map((item) => {
-              const uiItem = adaptContinueItem(activityToContinueItem(item));
-              return <MediaCard key={uiItem.id} item={uiItem} />;
-            })}
-          </div>
-        </Section>
-      )}
-      <SmartFooter className="mt-20" />
-      </ErrorBoundary>
+        </ErrorBoundary>
+
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Collections failed to load.</div>}>
+          {collectionList.length > 0 && (
+            <Section title="Collections" subtitle="Stories grouped by feeling." action={<Link to="/app/collections" className="story-link text-sm text-muted-foreground hover:text-foreground">All collections</Link>}>
+              <Collage items={collectionList.slice(0, 4).map((c) => ({ id: c.id, image: c.cover ?? "", alt: c.name, node: (<div className="rounded-2xl bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 pt-12"><div className="font-display text-xl tracking-tight text-white">{c.name}</div><div className="text-xs text-white/70">{c.itemCount} items</div></div>) }))} />
+            </Section>
+          )}
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Timeline failed to load.</div>}>
+          <Section title="Lately" subtitle="A small editorial timeline.">
+            <MiniTimeline />
+          </Section>
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Completed items failed to load.</div>}>
+          {recentlyCompletedItems.length > 0 && (
+            <Section title="Recently completed" subtitle="The stories that just became yours.">
+              <div className="grid grid-cols-2 gap-5 md:grid-cols-4 lg:grid-cols-6">
+                {recentlyCompletedItems.slice(0, 6).map((item) => {
+                  const uiItem = adaptContinueItem(activityToContinueItem(item));
+                  return <MediaCard key={uiItem.id} item={uiItem} />;
+                })}
+              </div>
+            </Section>
+          )}
+        </ErrorBoundary>
+        
+        <ErrorBoundary fallback={<div className="p-4 text-sm text-muted-foreground text-center">Footer failed to load.</div>}>
+          <SmartFooter className="mt-20" />
+        </ErrorBoundary>
+      </>
       )}
     </div>
   );

@@ -25,7 +25,6 @@ export interface LibraryRow {
   progressPercentage: number | null;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date | null;
   media?: Record<string, any> | null;
 }
 
@@ -172,7 +171,7 @@ export class LibraryRepository {
   }
 
   private buildWhere(userId: string, params: LibraryFindManyParams): Record<string, unknown> {
-    const where: Record<string, unknown> = { userId, deletedAt: null };
+    const where: Record<string, unknown> = { userId };
     if (params.status) where.status = params.status;
     if (params.favorite !== undefined) where.favorite = params.favorite;
     if (params.hidden !== undefined) where.hidden = params.hidden;
@@ -304,9 +303,8 @@ export class LibraryRepository {
     const existing = await delegate.findUnique({ where: { id } });
     if (!existing || existing.userId !== userId) return false;
 
-    await delegate.update({
+    await delegate.delete({
       where: { id },
-      data: { deletedAt: new Date(), updatedAt: new Date() },
     });
 
     return true;
@@ -320,7 +318,7 @@ export class LibraryRepository {
       if (!delegate) return [];
       return delegate.groupBy({
         by: ['status'],
-        where: { userId, deletedAt: null } as any,
+        where: { userId } as any,
         _count: { status: true },
       });
     });
@@ -340,7 +338,7 @@ export class LibraryRepository {
     for (const t of this.getTypes()) {
       const delegate = this.getDelegate(t);
       if (!delegate) continue;
-      counts[t] = await delegate.count({ where: { userId, deletedAt: null } as any });
+      counts[t] = await delegate.count({ where: { userId } as any });
     }
     return counts;
   }

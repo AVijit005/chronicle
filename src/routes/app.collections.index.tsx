@@ -86,10 +86,10 @@ function CollectionsIndex() {
       <RevealSection>
         <SectionHeader eyebrow="Smart" title="Built from your patterns" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[]
+          {allCollections
             .slice(0, 6)
             .map((c) => (
-              <SmartCollectionCard key={c.id} collection={c} />
+              <SmartCollectionCard key={c.id} collection={c as any} />
             ))}
         </div>
       </RevealSection>

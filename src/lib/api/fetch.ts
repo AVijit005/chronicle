@@ -124,7 +124,9 @@ export async function apiFetch<T>(
 
       if (response.status === 401 && !skipAuth && !path.includes(REFRESH_ENDPOINT)) {
         try {
-          await refreshAccessToken();
+          setAccessToken(null);
+          const newToken = await getValidToken();
+          if (!newToken) throw new Error('Refresh failed');
           continue;
         } catch {
           if (typeof window !== 'undefined' && window.location.pathname !== '/auth' && window.location.pathname !== '/') {

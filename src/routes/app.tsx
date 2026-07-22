@@ -1,7 +1,8 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, isRedirect } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout/AppShell";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { authApi } from "@/lib/api";
+import { ApiError } from "@/lib/api/errors";
 
 export const Route = createFileRoute("/app")({
   beforeLoad: async ({ context }) => {
@@ -17,8 +18,15 @@ export const Route = createFileRoute("/app")({
       if (!user) {
         throw redirect({ to: "/auth" });
       }
-    } catch {
-      throw redirect({ to: "/auth" });
+    } catch (error) {
+      if (isRedirect(error)) {
+        throw error;
+      }
+      if (error instanceof ApiError && error.status === 401) {
+        throw redirect({ to: "/auth" });
+      }
+      // Re-throw other errors so the UI doesn't crash to login for network blips
+      throw error;
     }
   },
   component: () => (

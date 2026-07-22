@@ -29,7 +29,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 const signInSchema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email: z.string().trim().email("Enter a valid email"),
   password: z.string().min(6, "At least 6 characters"),
   remember: z.boolean().optional(),
 });
@@ -37,7 +37,7 @@ const signInSchema = z.object({
 const signUpSchema = z
   .object({
     fullName: z.string().min(2, "Enter your full name"),
-    email: z.string().email("Enter a valid email"),
+    email: z.string().trim().email("Enter a valid email"),
     password: z.string().min(6, "At least 6 characters"),
     confirmPassword: z.string().min(6, "At least 6 characters"),
   })
@@ -77,10 +77,10 @@ function Auth() {
 
   const loginMutation = useLogin();
   const registerMutation = useRegister();
-
+  // Forms
   const signIn = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
-    defaultValues: { email: "", password: "", remember: true },
+    defaultValues: { email: "", password: "", remember: false },
   });
   const signUp = useForm<SignUp>({
     resolver: zodResolver(signUpSchema),

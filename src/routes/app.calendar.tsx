@@ -122,10 +122,11 @@ function CalendarPage() {
     const cell = month.cells.find((c) => c.day === selectedDay);
     if (!cell || !cell.hasMedia) return [];
     return Array.from({ length: Math.min(cell.mediaCount, 6) }, (_, i) => {
-      const media = MEDIA[(monthIdx * 100 + selectedDay + i * 7) % MEDIA.length];
+      const media = MEDIA.length > 0 ? MEDIA[(monthIdx * 100 + selectedDay + i * 7) % MEDIA.length] : undefined;
+      const title = media ? media.title : `Story ${i + 1}`;
       return {
         icon: Film, label: "Story",
-        title: media.title.length > 20 ? media.title.slice(0, 20) + "\u2026" : media.title,
+        title: title.length > 20 ? title.slice(0, 20) + "\u2026" : title,
         note: "From your library",
       };
     });

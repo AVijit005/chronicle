@@ -24,7 +24,7 @@ export function useMediaSearch(params: MediaSearchParams, enabled = true) {
     queryFn: ({ pageParam }) => mediaApi.searchMedia({ ...params, cursor: pageParam as string | undefined }),
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
     initialPageParam: undefined as string | undefined,
-    enabled: enabled && !!params.search && params.search.length > 0,
+    enabled: enabled && !!params.search && params.search.length > 0 && !!user,
     staleTime: 0,
   });
 }
@@ -35,7 +35,7 @@ export function useMedia(id: string) {
   return useQuery({
     queryKey: queryKeys.media.detail(id),
     queryFn: () => mediaApi.getMedia(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
     staleTime: 10 * 60_000,
   });
 }
@@ -46,7 +46,7 @@ export function useRelatedMedia(id: string) {
   return useQuery({
     queryKey: queryKeys.media.related(id),
     queryFn: () => mediaApi.getRelatedMedia(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
     staleTime: 10 * 60_000,
   });
 }
@@ -59,6 +59,6 @@ export function useMediaByType(type: string, params?: MediaFilterParams) {
     queryFn: ({ pageParam }) => mediaApi.listMediaByType(type, { ...params, cursor: pageParam as string | undefined }),
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : undefined,
     initialPageParam: undefined as string | undefined,
-    enabled: !!type,
+    enabled: !!type && !!user,
   });
 }

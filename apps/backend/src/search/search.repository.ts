@@ -12,7 +12,7 @@ interface SearchableMediaConfig {
 const MEDIA_CONFIG: Record<string, SearchableMediaConfig> = {
   movie: { delegate: 'movie', titleField: 'title', descriptionField: 'overview' },
   tvShow: { delegate: 'tvShow', titleField: 'title', descriptionField: 'overview' },
-  anime: { delegate: 'anime', titleField: 'title', descriptionField: 'synopsis' },
+  anime: { delegate: 'anime', titleField: 'title', descriptionField: 'description' },
   book: { delegate: 'book', titleField: 'title', descriptionField: 'description' },
   game: { delegate: 'game', titleField: 'title', descriptionField: 'description' },
   musicAlbum: { delegate: 'musicAlbum', titleField: 'title', descriptionField: 'description' },

@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { CountUp } from "@/components/landing/CountUp";
-import { STATUS_TINT, statusCounts, trendFor, type MediaStatus } from "@/lib/library";
+import { STATUS_TINT, trendFor, type MediaStatus } from "@/lib/library";
+import type { LibraryStatsResponse } from "@/lib/api/library";
 
 const ITEMS: { key: "total" | MediaStatus | "favorite"; label: string }[] = [
   { key: "total", label: "Total" },
@@ -12,10 +13,10 @@ const ITEMS: { key: "total" | MediaStatus | "favorite"; label: string }[] = [
   { key: "rewatching", label: "Rewatching" },
 ];
 
-export function StatsGrid({ favoritesCount }: { favoritesCount: number }) {
-  const c = statusCounts();
-  const total = Object.values(c).reduce((a, b) => a + b, 0);
-  const values: Record<string, number> = { total, ...c, favorite: favoritesCount };
+export function StatsGrid({ stats }: { stats?: LibraryStatsResponse }) {
+  const c = stats?.byStatus || {};
+  const total = stats?.total || 0;
+  const values: Record<string, number> = { total, ...c, favorite: stats?.favoriteCount || 0 };
 
   return (
     <div className="flex flex-wrap items-center gap-3 md:gap-4 w-full">

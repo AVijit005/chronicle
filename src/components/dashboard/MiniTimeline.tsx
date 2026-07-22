@@ -40,7 +40,7 @@ export function MiniTimeline({ className }: { className?: string }) {
     );
   }
 
-  const events = (timelineData ?? []).map(adaptTimelineEvent).slice(0, 10);
+  const events = (timelineData?.items ?? []).map(adaptTimelineEvent).slice(0, 10);
 
   if (events.length === 0) {
     return (

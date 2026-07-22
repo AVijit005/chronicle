@@ -38,7 +38,7 @@ export function MediaTimelinePreview({ item }: { item: UIMediaItem }) {
     );
   }
 
-  const events = (timelineData ?? []).map(adaptTimelineEvent);
+  const events = (timelineData?.items ?? []).map(adaptTimelineEvent).slice(0, 5);
   const recentEvents = events.slice(0, 6);
 
   if (recentEvents.length === 0) {

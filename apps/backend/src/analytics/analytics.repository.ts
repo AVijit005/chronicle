@@ -432,9 +432,14 @@ export class AnalyticsRepository {
       if (!delegate) continue;
 
       const items = await delegate.findMany({
-        where: { userId,  },
-        select: { status: true, rating: true, minutesSpent: true, hoursSpent: true },
-        include: { [cfg.mediaDelegate]: { select: { genres: true } } },
+        where: { userId },
+        select: { 
+          status: true, 
+          rating: true, 
+          minutesSpent: true, 
+          hoursSpent: true,
+          [cfg.mediaDelegate]: { select: { genres: true } }
+        },
       });
 
       for (const item of items) {

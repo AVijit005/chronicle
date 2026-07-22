@@ -10,7 +10,7 @@ export function useSearch(params: SearchParams, enabled = true) {
   return useQuery({
     queryKey: queryKeys.search.query(params),
     queryFn: () => searchApi.search(params),
-    enabled: enabled && !!params.q && params.q.length > 0,
+    enabled: enabled && !!params.q && params.q.length > 0 && !!user,
     staleTime: 0,
   });
 }
@@ -21,7 +21,7 @@ export function useSearchSuggestions(q: string) {
   return useQuery({
     queryKey: queryKeys.search.suggestions(q),
     queryFn: () => searchApi.getSuggestions(q),
-    enabled: !!q && q.length >= 2,
+    enabled: !!q && q.length >= 2 && !!user,
     staleTime: 10_000,
   });
 }

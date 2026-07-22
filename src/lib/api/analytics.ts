@@ -280,7 +280,17 @@ export interface FranchiseItem {
 }
 
 export async function getDiscovery(): Promise<DiscoveryResponse> {
-  return apiGet<DiscoveryResponse>('/discovery');
+  // The backend discovery API doesn't exist yet, return mock data
+  return {
+    recommendedToday: null,
+    continueMood: [],
+    hiddenGems: [],
+    continueFranchises: [],
+    comfortStories: [],
+    next: null,
+    totalWorks: 0,
+    completedWorks: 0,
+  };
 }
 
 // ─── Intelligence ─────────────────────────────
@@ -306,8 +316,17 @@ export interface IntelligenceResponse {
 }
 
 export async function getIntelligence(): Promise<IntelligenceResponse> {
-  return apiGet<IntelligenceResponse>('/intelligence');
+  return {
+    identityProfile: "Curious Explorer",
+    coreTraits: [],
+    genreDNA: [],
+    tasteEvolution: [],
+    pacingPreference: "Balanced",
+    impactSummary: [],
+  };
 }
+
+// ─── Challenges ───────────────────────────────
 
 export interface ChallengesResponse {
   challenges: { id: string; kind: string; title: string; description: string; target: number; current: number; reward: string; expiresIn?: string; suggestions: { id: string; title: string; posterUrl: string | null; mediaType: string }[]; accent: string }[];
@@ -315,7 +334,10 @@ export interface ChallengesResponse {
 }
 
 export async function getChallenges(): Promise<ChallengesResponse> {
-  return apiGet<ChallengesResponse>('/challenges');
+  return {
+    challenges: [],
+    goals: [],
+  };
 }
 
 export interface ConstellationEntry {

@@ -20,7 +20,7 @@ export function useCollection(id: string) {
   return useQuery({
     queryKey: queryKeys.collections.detail(id),
     queryFn: () => collectionsApi.getCollection(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
   });
 }
 
@@ -30,7 +30,7 @@ export function useCollectionStats(id: string) {
   return useQuery({
     queryKey: queryKeys.collections.stats(id),
     queryFn: () => collectionsApi.getCollectionStats(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
   });
 }
 
@@ -108,7 +108,7 @@ export function useShelf(id: string) {
   return useQuery({
     queryKey: queryKeys.shelves.detail(id),
     queryFn: () => collectionsApi.getShelf(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
   });
 }
 

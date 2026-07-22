@@ -19,7 +19,7 @@ import { MemoryHighlights } from "@/components/memory/MemoryHighlights";
 import { RememberAgain } from "@/components/memory/RememberAgain";
 import { ComfortStories } from "@/components/discovery/ComfortStories";
 import { GoalCard } from "@/components/goals/GoalCard";
-import { getPrimaryGoal } from "@/lib/goals";
+
 import { LibraryMap } from "@/components/intelligence/LibraryMap";
 import { Collage } from "@/components/editorial/Collage";
 import { PullQuote } from "@/components/editorial/PullQuote";
@@ -28,6 +28,7 @@ import { PremiumErrorState } from "@/components/common/PremiumErrorState";
 
 import { useLibrary, useLibraryByStatus, useLibraryStats } from "@/hooks/use-library";
 import { useCollections } from "@/hooks/use-collections";
+import { useChallenges } from "@/hooks/use-analytics";
 import { adaptLibraryItem } from "@/lib/adapters/media";
 import { adaptCollectionResponse } from "@/lib/adapters/collection";
 
@@ -43,6 +44,7 @@ function LibraryIndex() {
   const { data: favoritesData, isLoading: isLoadingFavorites } = useLibrary({ favorite: true, limit: 8 });
   const { data: allData, isLoading: isLoadingAll } = useLibrary({ limit: 8 });
   const { data: collections } = useCollections();
+  const { data: challengesData } = useChallenges();
 
   const isLoading = isLoadingContinue || isLoadingPlanning || isLoadingFavorites || isLoadingAll;
 
@@ -78,6 +80,7 @@ function LibraryIndex() {
   const recentlyAdded = (allData?.pages.flatMap((p) => p.data) ?? []).map(adaptLibraryItem);
   const collectionList = collections?.map(adaptCollectionResponse) ?? [];
   const wall = favs.slice(0, 4);
+  const primaryGoal = challengesData?.goals?.[0] as any;
 
   return (
     <div className="space-y-16 pt-2 pb-24">
@@ -93,7 +96,7 @@ function LibraryIndex() {
           title="Where you are right now"
           subtitle="A live read on every story passing through your days."
         />
-        <StatsGrid favoritesCount={favs.length} />
+        <StatsGrid stats={stats} />
       </section>
 
       {/* Editorial memory wall — replaces 'just another grid' rhythm */}
@@ -272,7 +275,7 @@ function LibraryIndex() {
         </Link>
       </RevealSection>
 
-      <RevealSection>{getPrimaryGoal() && <GoalCard goal={getPrimaryGoal()!} />}</RevealSection>
+      <RevealSection>{primaryGoal && <GoalCard goal={primaryGoal} />}</RevealSection>
 
       <RevealSection>
         <ComfortStories />

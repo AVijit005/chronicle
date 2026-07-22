@@ -33,7 +33,7 @@ function TimelinePage() {
   const { data: timelineData, isLoading } = useTimelineEvents();
   const { data: statsData } = useJournalStats();
 
-  const allEvents = useMemo(() => (timelineData ?? []).map(adaptTimelineEvent), [timelineData]);
+  const allEvents = useMemo(() => (timelineData?.items ?? []).map(adaptTimelineEvent), [timelineData]);
   
   const years = useMemo(() => {
     const y = new Set<string>();
@@ -139,10 +139,10 @@ function TimelinePage() {
             )}
             {yearEvents.map((e, i) => {
                // Map UI event properties from metadata or fallback
-               const rawEvent = (timelineData ?? []).find(d => d.id === e.id);
+               const rawEvent = (timelineData?.items ?? []).find(d => d.id === e.id);
                const meta = (rawEvent?.metadata as any) || {};
                const media = {
-                 poster: meta.mediaPoster || MEDIA[0].poster,
+                 poster: meta.mediaPoster || "https://images.unsplash.com/photo-1616530940355-351fabd9524b",
                  title: meta.mediaTitle || e.title,
                  creator: meta.mediaCreator || "Creator",
                  accent: e.color || "var(--primary)"
@@ -286,7 +286,7 @@ function TimelinePage() {
       >
         <ZoneHeading eyebrow="Highlights" title="Editorial highlights" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {[MEDIA[0], MEDIA[7], MEDIA[1]].map((m) => (
+          {[].map((m: any) => (
             <Link key={m.id} to="/app/media/$id" params={{ id: m.id }} className="block">
               <motion.div
                 whileHover={{ y: reduced ? 0 : -4 }}

@@ -49,6 +49,20 @@ export class JournalController {
     return this.journalService.findEntries(user.sub, cursor, limit ? parseInt(limit, 10) : 20);
   }
 
+  // ─── Statistics & Prompts ─────────────────────────────────────────────────
+
+  @Get('journal/stats')
+  @ApiOperation({ summary: 'Get journal statistics' })
+  async getStats(@CurrentUser() user: AccessTokenPayload): Promise<JournalStatisticsDto> {
+    return this.journalService.getStatistics(user.sub);
+  }
+
+  @Get('journal/prompts')
+  @ApiOperation({ summary: 'Get all journal prompts' })
+  async getPrompts(@CurrentUser() user: AccessTokenPayload): Promise<string[]> {
+    return this.journalService.getAllPrompts();
+  }
+
   @Get('journal/:id')
   @ApiOperation({ summary: 'Get a journal entry' })
   async findEntry(@CurrentUser() user: AccessTokenPayload, @Param('id') id: string): Promise<JournalEntryResponseDto> {
@@ -235,19 +249,5 @@ export class JournalController {
     @Param('highlightId') highlightId: string,
   ): Promise<void> {
     return this.journalService.deleteHighlight(highlightId, user.sub);
-  }
-
-  // ─── Statistics ───────────────────────────────────────────────────────────
-
-  @Get('journal/stats')
-  @ApiOperation({ summary: 'Get journal statistics' })
-  async getStats(@CurrentUser() user: AccessTokenPayload): Promise<JournalStatisticsDto> {
-    return this.journalService.getStatistics(user.sub);
-  }
-
-  @Get('journal/prompts')
-  @ApiOperation({ summary: 'Get all journal prompts' })
-  async getPrompts(@CurrentUser() user: AccessTokenPayload): Promise<string[]> {
-    return this.journalService.getAllPrompts();
   }
 }

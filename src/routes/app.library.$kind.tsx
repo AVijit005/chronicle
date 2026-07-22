@@ -1,9 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { MediaCard } from "@/components/media/MediaCard";
-import { MEDIA, KIND_LABEL, type MediaKind } from "@/lib/types";
+import { KIND_LABEL, type MediaKind } from "@/lib/types";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { cascade } from "@/lib/motion";
+import { useLibraryByType } from "@/hooks/use-library";
 import { Search } from "lucide-react";
 
 const KINDS = new Set<MediaKind>([
@@ -30,7 +31,8 @@ export const Route = createFileRoute("/app/library/$kind")({
 function LibraryKind() {
   const data = Route.useLoaderData() as { kind: MediaKind };
   const kind = data.kind;
-  const items = MEDIA.filter((m) => m.kind === kind);
+  const { data: libraryData, isLoading } = useLibraryByType(kind);
+  const items = libraryData?.pages.flatMap(p => p.items) || [];
   return (
     <div className="pt-2">
       <div className="mb-8 flex items-end justify-between">
@@ -64,7 +66,7 @@ function LibraryKind() {
               viewport={{ once: true, margin: "-40px" }}
               transition={cascade(i)}
             >
-              <MediaCard item={m as any} />
+              <MediaCard item={m.media as any} />
             </motion.div>
           ))}
         </div>

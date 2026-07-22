@@ -148,22 +148,19 @@ function RootComponent() {
   useEffect(() => {
     const saved = queryClient.getQueryData<{ themePreference?: string }>(queryKeys.auth.me());
     const pref = saved?.themePreference || localStorage.getItem('theme') || 'system';
-    let isLight = false;
     
-    if (pref === 'light') isLight = true;
-    else if (pref === 'dark') isLight = false;
-    else {
-      isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-    }
+    const isLight = pref === 'light' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches);
     
     if (isLight) {
       document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
     } else {
       document.documentElement.classList.add('dark');
       document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
+    }
+    
+    if (pref !== 'system' && localStorage.getItem('theme') !== pref) {
+      localStorage.setItem('theme', pref);
     }
   }, [queryClient]);
 

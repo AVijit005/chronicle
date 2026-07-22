@@ -183,7 +183,7 @@ export async function createJournalEntry(input: CreateJournalEntryInput): Promis
   return apiPost<JournalEntryResponse>('/journal', input);
 }
 
-export async function listJournalEntries(params?: { cursor?: string; limit?: number }): Promise<{ data: JournalEntryResponse[]; hasMore: boolean; nextCursor?: string }> {
+export async function listJournalEntries(params?: { cursor?: string; limit?: number }): Promise<{ items: JournalEntryResponse[]; hasMore: boolean; nextCursor?: string }> {
   return apiGet(`/journal${buildQueryString(params ?? {})}`);
 }
 
@@ -225,14 +225,14 @@ export async function createTimelineEvent(input: CreateTimelineEventInput): Prom
   return apiPost<TimelineEventResponse>('/timeline/events', input);
 }
 
-export async function listTimelineEvents(params?: { year?: number; month?: number }): Promise<TimelineEventResponse[]> {
+export async function listTimelineEvents(params?: { year?: number; month?: number }): Promise<{ items: TimelineEventResponse[]; hasMore: boolean; nextCursor?: string }> {
   if (params?.year && params?.month) {
-    return apiGet<TimelineEventResponse[]>(`/timeline/${params.year}/${params.month}`);
+    return apiGet<{ items: TimelineEventResponse[]; hasMore: boolean; nextCursor?: string }>(`/timeline/${params.year}/${params.month}`);
   }
   if (params?.year) {
-    return apiGet<TimelineEventResponse[]>(`/timeline/${params.year}`);
+    return apiGet<{ items: TimelineEventResponse[]; hasMore: boolean; nextCursor?: string }>(`/timeline/${params.year}`);
   }
-  return apiGet<TimelineEventResponse[]>('/timeline');
+  return apiGet<{ items: TimelineEventResponse[]; hasMore: boolean; nextCursor?: string }>('/timeline');
 }
 
 // Quotes

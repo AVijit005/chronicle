@@ -46,7 +46,7 @@ export function useLibraryItem(id: string) {
   return useQuery({
     queryKey: queryKeys.library.detail(id),
     queryFn: () => libraryApi.getLibraryItem(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
   });
 }
 

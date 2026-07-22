@@ -66,7 +66,7 @@ export function getLifeChapters(): LifeChapter[] {
       era: "Now",
       description: "Soulslike pilgrimages and quiet rewatches.",
       accent: "oklch(0.72 0.16 80)",
-      mediaIds: ["elden-ring", MEDIA[0]!.id],
+      mediaIds: ["elden-ring", "spirited-away"],
     },
   ];
 }
