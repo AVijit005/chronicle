@@ -38,7 +38,7 @@ export function MediaCollections({ item }: { item: UIMediaItem }) {
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {cols.map((c, i) => {
         const coverSrc = c.cover ?? c.items?.[0]?.posterUrl ?? "";
-        const accent = c.color ?? "oklch(0.72 0.18 255)";
+        const accent = c.color ?? "var(--primary)";
         return (
           <motion.div
             key={c.id}

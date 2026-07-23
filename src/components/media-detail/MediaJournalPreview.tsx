@@ -8,9 +8,9 @@ import { PremiumButton } from "@/components/ui/PremiumButton";
 import { useMediaActions } from "@/lib/store/MediaActionsContext";
 
 export function MediaJournalPreview({ item }: { item: UIMediaItem }) {
-  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const accent = item.accent ?? "var(--primary)";
   const { data: journalData, isLoading } = useJournalEntries({ limit: 1 });
-  const entries = journalData?.pages.flatMap((p) => p.data).map(adaptJournalEntry) ?? [];
+  const entries = journalData?.pages.flatMap((p) => p.items).map(adaptJournalEntry) ?? [];
   const latestEntry = entries[0];
   const { openReflection } = useMediaActions();
 

@@ -29,6 +29,22 @@ export function MobileNav({ onOpenSearch }: { onOpenSearch: () => void }) {
             </Link>
           );
         }
+        if (it.label === "Search") {
+          return (
+            <button
+              key={it.label}
+              onClick={onOpenSearch}
+              className={cn(
+                "flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[10px] transition",
+                active ? "text-foreground" : "text-muted-foreground",
+              )}
+            >
+              <it.icon className={cn("h-5 w-5", active && "text-primary")} />
+              <span>{it.label}</span>
+            </button>
+          );
+        }
+
         return (
           <Link
             key={it.to}

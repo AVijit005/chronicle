@@ -1,6 +1,7 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { motion } from "motion/react";
 import { Target } from "lucide-react";
-import { PremiumGlass } from "@/components/ui/PremiumGlass";
+
 import { PremiumProgress } from "@/components/ui/PremiumProgress";
 import { cn } from "@/lib/utils";
 
@@ -50,3 +51,6 @@ export function GoalHero({ className, goal }: Props) {
     </motion.section>
   );
 }
+
+
+

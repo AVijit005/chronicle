@@ -19,7 +19,7 @@ export function PlanningRow({ item }: { item: MediaItem }) {
       className="group glass flex items-center gap-4 rounded-2xl p-3 transition hover-lift"
     >
       <img
-        src={item.poster}
+        src={item.poster || undefined}
         alt=""
         className="h-20 w-14 shrink-0 rounded-lg object-cover"
         loading="lazy"

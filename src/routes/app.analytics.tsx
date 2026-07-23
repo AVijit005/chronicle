@@ -165,7 +165,7 @@ function AnalyticsPage() {
 
   const lifetimeStats = [
     { label: "Movies", value: o.moviesCompleted, delta: 0, accent: "oklch(0.65 0.22 295)" },
-    { label: "Shows", value: o.showsFinished, delta: 0, accent: "oklch(0.72 0.18 255)" },
+    { label: "Shows", value: o.showsFinished, delta: 0, accent: "var(--primary)" },
     { label: "Books", value: o.booksRead, delta: 0, accent: "oklch(0.7 0.18 25)" },
     { label: "Games", value: o.gamesFinished, delta: 0, accent: "oklch(0.82 0.16 80)" },
     { label: "Total Library Items", value: o.totalItems, delta: 0, accent: "oklch(0.72 0.16 160)" },
@@ -173,7 +173,7 @@ function AnalyticsPage() {
   ];
 
   const mediaDistribution = Object.entries(m.completionByType).map(([name, value], idx) => {
-    const colors = ["oklch(0.72 0.18 255)", "oklch(0.65 0.22 295)", "oklch(0.72 0.16 160)", "oklch(0.7 0.18 25)"];
+    const colors = ["var(--primary)", "oklch(0.65 0.22 295)", "oklch(0.72 0.16 160)", "oklch(0.7 0.18 25)"];
     return { name, value, color: colors[idx % colors.length] };
   });
 
@@ -346,8 +346,8 @@ function AnalyticsPage() {
                 <AreaChart data={s.monthlyActivity || []} role="img" aria-label="Monthly activity area chart">
                   <defs>
                     <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.7} />
-                      <stop offset="100%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.7} />
+                      <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis
@@ -448,7 +448,7 @@ function AnalyticsPage() {
       <Zone eyebrow="Zone 05" title="Completion insights">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
           {[
-            { label: "Reviews", value: m.reviewCount, ring: 60, accent: "oklch(0.72 0.18 255)" },
+            { label: "Reviews", value: m.reviewCount, ring: 60, accent: "var(--primary)" },
             { label: "Favorites", value: m.favoriteCount, ring: 30, accent: "oklch(0.65 0.22 295)" },
             { label: "Bookmarks", value: m.bookmarkCount, ring: 45, accent: "oklch(0.82 0.16 80)" },
             { label: "Completion Streak", value: s.completionStreak, ring: 80, accent: "oklch(0.7 0.18 25)" },
@@ -503,7 +503,7 @@ function AnalyticsPage() {
                     viewport={{ once: true }}
                     transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                     className="h-full rounded-full"
-                    style={{ background: "oklch(0.72 0.18 255)", boxShadow: `0 0 10px oklch(0.72 0.18 255)` }}
+                    style={{ background: "var(--primary)", boxShadow: `0 0 10px var(--primary)` }}
                   />
                 </div>
                 <div className="mt-2 text-xs text-muted-foreground">{g.genreTimeSpent[genre.genre] ?? 0}h</div>

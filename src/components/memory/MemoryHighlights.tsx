@@ -1,6 +1,6 @@
+import { useLibrary } from "@/hooks/use-library";
 import { Link } from "@tanstack/react-router";
 import { HIGHLIGHTS } from "@/lib/memoryInsights";
-import { MEDIA } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,6 +8,8 @@ interface Props {
 }
 
 export function MemoryHighlights({ className }: Props) {
+  const { data: libraryData } = useLibrary({ limit: 100 });
+  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
   return (
     <section aria-label="Memory highlights" className={cn("space-y-5", className)}>
       <header className="flex items-baseline justify-between">

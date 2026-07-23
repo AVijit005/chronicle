@@ -49,6 +49,14 @@ export class AnalyticsService {
     return this.aggregation.getActivity(userId);
   }
 
+    async getCalendarYear(userId: string, year: number): Promise<any> {
+    return this.aggregation.getCalendarYear(userId, year);
+  }
+
+  async getCalendarDay(userId: string, date: string): Promise<any> {
+    return this.aggregation.getCalendarDay(userId, date);
+  }
+
   async getCalendar(userId: string, year: number, month: number): Promise<CalendarDto> {
     return this.aggregation.getCalendar(userId, year, month);
   }
@@ -57,3 +65,4 @@ export class AnalyticsService {
     return this.insightsService.getInsights(userId);
   }
 }
+

@@ -7,7 +7,7 @@ export function ContinueCard({ item }: { item: UIMediaItem }) {
   const { openProgress } = useMediaActions();
   const pct = item.progress ?? 0;
   const label = item.progressLabel ?? `${pct}% complete`;
-  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const accent = item.accent ?? "var(--primary)";
 
   // Derive continue label from media kind
   const continueLabel: Record<string, string> = {

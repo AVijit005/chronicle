@@ -1,5 +1,8 @@
 // Collection Relationships — adjacency builder.
-import { COLLECTIONS, type Collection } from "@/lib/types";
+import { type Collection } from "@/lib/types";
+const COLLECTIONS: any[] = [];
+
+
 
 export interface Relation {
   kind: string;

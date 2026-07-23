@@ -4,7 +4,7 @@ import type { UIMediaItem } from "@/lib/adapters/types";
 import { Repeat, Clock, Eye, History } from "lucide-react";
 
 export function MediaStatistics({ item }: { item: UIMediaItem }) {
-  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const accent = item.accent ?? "var(--primary)";
   const cards = [
     { icon: Repeat, label: "Rewatches", value: item.rewatchCount ?? 0, suffix: "" },
     { icon: Clock, label: "Total hours", value: 0, suffix: "h" },

@@ -91,7 +91,7 @@ export function adaptCalendarYear(y: CalendarYearResponse): UICalendarYear {
     'oklch(0.65 0.2 250)', 'oklch(0.7 0.18 290)', 'oklch(0.78 0.16 130)',
     'oklch(0.82 0.16 80)', 'oklch(0.7 0.2 35)', 'oklch(0.72 0.18 255)',
     'oklch(0.78 0.16 80)', 'oklch(0.7 0.2 35)', 'oklch(0.65 0.22 295)',
-    'oklch(0.7 0.18 25)', 'oklch(0.6 0.18 250)',
+    'oklch(0.7 0.18 25)', 'oklch(0.6 0.18 250)', 'oklch(0.68 0.15 280)'
   ];
 
   const months = y.months.map((m) => ({
@@ -100,7 +100,15 @@ export function adaptCalendarYear(y: CalendarYearResponse): UICalendarYear {
     short: monthNames[m.month],
     daysInMonth: new Date(y.year, m.month + 1, 0).getDate(),
     startDay: new Date(y.year, m.month, 1).getDay(),
-    cells: [] as any,
+    cells: Array.from({ length: new Date(y.year, m.month + 1, 0).getDate() }, (_, i) => ({
+      day: i + 1,
+      hasMedia: false,
+      hasJournal: false,
+      hasAchievement: false,
+      intensity: 0,
+      mediaCount: 0,
+      poster: '',
+    })),
     accent: monthAccents[m.month],
     favorite: '',
     genre: '',

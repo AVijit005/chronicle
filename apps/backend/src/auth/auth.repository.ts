@@ -19,18 +19,18 @@ export class AuthRepository extends BaseRepository<User> {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+    return this.prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
   }
 
   async emailExists(email: string): Promise<boolean> {
-    const count = await this.prisma.user.count({ where: { email } });
+    const count = await this.prisma.user.count({ where: { email: email.toLowerCase().trim() } });
     return count > 0;
   }
 
   async create(data: { email: string; passwordHash: string; name?: string | null }): Promise<User> {
     return this.prisma.user.create({
       data: {
-        email: data.email,
+        email: data.email.toLowerCase().trim(),
         passwordHash: data.passwordHash,
         name: data.name ?? null,
         status: 'PENDING_VERIFICATION',
@@ -42,11 +42,11 @@ export class AuthRepository extends BaseRepository<User> {
   async createOAuthUser(data: { email: string; displayName?: string | null; emailVerified?: boolean }): Promise<User> {
     return this.prisma.user.create({
       data: {
-        email: data.email,
+        email: data.email.toLowerCase().trim(),
         passwordHash: null,
         name: data.displayName ?? null,
         status: 'ACTIVE',
-        emailVerified: data.emailVerified ?? true,
+        emailVerified: data.emailVerified ?? false,
       },
     });
   }

@@ -19,14 +19,14 @@ const MEDIA_TYPE_TO_KIND: Record<string, MediaKind> = {
 const STATUS_MAP: Record<string, MediaItem["status"]> = {
   PLANNING: "planned",
   WATCHING: "watching",
-  READING: "watching",
-  PLAYING: "watching",
-  LISTENING: "watching",
-  LEARNING: "watching",
+  READING: "reading",
+  PLAYING: "playing",
+  LISTENING: "listening",
+  LEARNING: "learning",
   PAUSED: "paused",
   COMPLETED: "completed",
-  DROPPED: "paused",
-  ARCHIVED: "completed",
+  DROPPED: "dropped",
+  ARCHIVED: "archived",
 };
 
 export function mediaResponseToMediaItem(m: MediaResponse): MediaItem {

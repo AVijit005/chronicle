@@ -116,7 +116,6 @@ export const BottomBorderInput = forwardRef<HTMLInputElement, Props>(
           {isPassword && (
             <button
               type="button"
-              tabIndex={-1}
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-5 z-10 flex h-6 w-6 items-center justify-center rounded-md text-white/40 hover:text-white/80 transition-colors"
               aria-label={showPassword ? "Hide password" : "Show password"}

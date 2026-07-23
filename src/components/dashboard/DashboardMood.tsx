@@ -1,4 +1,5 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+
 import { useInsights } from "@/hooks/use-analytics";
 import { cn } from "@/lib/utils";
 import { fadeBlurIn } from "@/lib/motion";
@@ -28,3 +29,6 @@ export function DashboardMood({ className }: { className?: string }) {
     </PremiumGlass>
   );
 }
+
+
+

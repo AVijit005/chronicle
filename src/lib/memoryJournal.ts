@@ -4,6 +4,8 @@ import { mulberry } from "@/lib/seed";
 import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, TODAY, type Mood, type MediaMemory } from "@/lib/memory";
 
+
+
 /* ============================================================
  * Types
  * ============================================================ */
@@ -208,7 +210,7 @@ function buildExtensions(item: MediaItem, memory: MediaMemory): MemoryExtensions
 
   const hasQuote = rng() > 0.4;
   const quote: any = hasQuote
-    ? { text: pick(rng, QUOTES), attribution: item.creator }
+    ? { text: pick(rng), attribution: item.creator }
     : null;
 
   const reflection: MemoryReflectionData = {

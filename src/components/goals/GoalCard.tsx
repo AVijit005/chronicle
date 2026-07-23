@@ -4,11 +4,12 @@ import type { Goal } from "@/lib/goals";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  goal: Goal;
+  goal?: Goal | null;
   className?: string;
 }
 
 export function GoalCard({ goal: g, className }: Props) {
+  if (!g) return null;
   const pct = Math.round((g.current / g.target) * 100);
   return (
     <PremiumGlass variant="subtle" className={cn("h-full", className)}>

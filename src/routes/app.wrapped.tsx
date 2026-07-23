@@ -20,6 +20,28 @@ export const Route = createFileRoute("/app/wrapped")({
   pendingComponent: PageSkeleton,
 });
 
+function downloadAsImage() {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  script.integrity = 'sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSK/6d101tGsAHZI/A94g==';
+  script.crossOrigin = 'anonymous';
+  script.onload = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error html2canvas is loaded dynamically
+    window.html2canvas(document.body, { backgroundColor: '#090a0f' }).then((canvas: HTMLCanvasElement) => {
+      const link = document.createElement('a');
+      link.download = 'chronicle-wrapped.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }).catch((err: unknown) => {
+      console.error("Failed to generate image", err);
+      alert("Failed to generate image.");
+    });
+  };
+  script.onerror = () => alert("Failed to load image generator.");
+  document.head.appendChild(script);
+}
+
 function WrappedPage() {
   const { data: overview, isLoading: oLoad, isError: oErr, refetch: oRef } = useOverview();
   const { data: insights, isLoading: iLoad, isError: iErr, refetch: iRef } = useInsights();
@@ -59,7 +81,7 @@ function WrappedPage() {
       eyebrow: "Welcome to Chronicle",
       title: "Your Year in Stories",
       caption: "A look back at everything you watched, read, played, and lived.",
-      accent: "oklch(0.72 0.18 255)",
+      accent: "var(--primary)",
     },
     {
       key: "total-items",
@@ -88,7 +110,7 @@ function WrappedPage() {
       eyebrow: "Thank you",
       title: "Here's to the next chapter.",
       caption: "Keep exploring.",
-      accent: "oklch(0.72 0.18 255)",
+      accent: "var(--primary)",
     },
   ];
 
@@ -197,11 +219,11 @@ function Slide({ slide, index, last, totalSlides }: { slide: UIWrappedSlide; ind
                 transition={{ duration: 0.7, delay: 0.6 }}
                 className="mt-10 flex justify-center gap-3"
               >
-                <PremiumButton variant="primary" icon={<Share2 className="h-4 w-4" />} onClick={() => navigator.share?.({ title: "Chronicle Wrapped", url: window.location.href }).catch(()=>{})}>
+                <PremiumButton variant="primary" icon={<Share2 className="h-4 w-4" />} onClick={() => navigator.share?.({ title: "Chronicle Wrapped", url: window.location.href }).catch(e => console.error("Share failed", e))}>
                   Share your year
                 </PremiumButton>
-                <PremiumButton variant="secondary" icon={<Download className="h-4 w-4" />} onClick={() => window.print()}>
-                  Save as image
+                <PremiumButton variant="secondary" icon={<Download className="h-4 w-4" />} onClick={downloadAsImage}>
+                  Download
                 </PremiumButton>
               </motion.div>
             )}
@@ -315,7 +337,7 @@ function ShareSection({ overview: o, insights: i }: { overview: UIOverview; insi
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/15 to-amber-300/10" />
         <div className="relative">
           <div className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">
-            Chronicle 2026 · Share card
+            Chronicle {new Date().getFullYear()} · Share card
           </div>
           <div className="mt-4 font-display text-4xl tracking-tight">Your year in stories</div>
           <div className="mt-6 grid grid-cols-2 gap-3">
@@ -334,14 +356,14 @@ function ShareSection({ overview: o, insights: i }: { overview: UIOverview; insi
             ))}
           </div>
           <div className="mt-6 flex justify-center gap-2">
-            <PremiumButton variant="primary" size="sm" icon={<Share2 className="h-3.5 w-3.5" />} onClick={() => navigator.share?.({ title: "Chronicle Wrapped", url: window.location.href }).catch(()=>{})}>
+            <PremiumButton variant="primary" size="sm" icon={<Share2 className="h-3.5 w-3.5" />} onClick={() => navigator.share?.({ title: "Chronicle Wrapped", url: window.location.href }).catch(e => console.error("Share failed", e))}>
               Share
             </PremiumButton>
             <PremiumButton
               variant="secondary"
               size="sm"
               icon={<Download className="h-3.5 w-3.5" />}
-              onClick={() => window.print()}
+              onClick={downloadAsImage}
             >
               Download
             </PremiumButton>
@@ -351,3 +373,5 @@ function ShareSection({ overview: o, insights: i }: { overview: UIOverview; insi
     </section>
   );
 }
+
+

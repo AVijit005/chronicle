@@ -15,6 +15,8 @@ import {
 
 @Injectable()
 export class AuthService {
+  private readonly loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
+
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly passwordService: PasswordService,
@@ -30,17 +32,18 @@ export class AuthService {
     dto: RegisterDto,
     metadata: { ipAddress?: string; userAgent?: string } = {},
   ): Promise<UserResponseDto> {
-    const existing = await this.authRepository.findByEmail(dto.email);
-    if (existing) {
-      throw new ConflictException('Email already registered');
-    }
-
     const passwordHash = await this.passwordService.hash(dto.password);
-    const user = await this.authRepository.create({
-      email: dto.email,
-      passwordHash,
-      name: dto.name,
-    });
+    let user;
+    try {
+      user = await this.authRepository.create({
+        email: dto.email.toLowerCase().trim(),
+        passwordHash,
+        name: dto.name,
+      });
+    } catch (e: any) {
+      if (e.code === 'P2002') throw new ConflictException('Email already registered');
+      throw e;
+    }
 
     await this.emailVerificationService.sendVerification(user.id, user.email, user.name ?? undefined, metadata);
 
@@ -48,17 +51,27 @@ export class AuthService {
   }
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string, response?: Response): Promise<AuthResponseDto> {
+    const emailKey = dto.email.toLowerCase().trim();
+    const attempt = this.loginAttempts.get(emailKey);
+    if (attempt && attempt.lockedUntil > Date.now()) {
+      throw new ForbiddenException('Account temporarily locked due to too many failed attempts');
+    }
+
     const user = await this.authRepository.findByEmail(dto.email);
     if (!user || !user.passwordHash) {
+      this.recordFailedAttempt(emailKey, attempt);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const valid = await this.passwordService.compare(dto.password, user.passwordHash);
     if (!valid) {
+      this.recordFailedAttempt(emailKey, attempt);
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const verificationRequired = this.config.get<boolean>('emailVerification.required') ?? true;
+    this.loginAttempts.delete(emailKey);
+
+    const verificationRequired = String(this.config.get('emailVerification.required')) !== 'false';
     if (verificationRequired && !user.emailVerified) {
       throw new ForbiddenException('Email not verified');
     }
@@ -161,6 +174,11 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
+    if (!dbUser.emailVerified) {
+      dbUser.emailVerified = true;
+      await this.authRepository.save(dbUser);
+    }
+
     await this.authRepository.updateLastLogin(dbUser.id);
 
     const { token: refreshToken } = await this.refreshTokenService.create(dbUser.id);
@@ -211,5 +229,14 @@ export class AuthService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
+  }
+
+  private recordFailedAttempt(email: string, attempt?: { count: number; lockedUntil: number }) {
+    const current = attempt || { count: 0, lockedUntil: 0 };
+    current.count += 1;
+    if (current.count >= 5) {
+      current.lockedUntil = Date.now() + 15 * 60 * 1000; // 15 minutes lockout
+    }
+    this.loginAttempts.set(email, current);
   }
 }

@@ -2552,6 +2552,7 @@ enum VisibilityLevel {
 enum UserMediaStatus {
   PLANNING
   WATCHING
+  REWATCHING
   READING
   PLAYING
   LISTENING

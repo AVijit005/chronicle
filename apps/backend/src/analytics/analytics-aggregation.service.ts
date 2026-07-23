@@ -12,11 +12,17 @@ import type {
 } from './dto';
 
 @Injectable()
+
+
+
 export class AnalyticsAggregationService {
+  private convertInternalRatingToApiScale(total: number, count: number): number {
+    return Math.round((total / count / 2) * 10) / 10;
+  }
   constructor(private readonly repository: AnalyticsRepository) {}
 
   async getOverview(userId: string): Promise<OverviewDto> {
-    const [completedByType, totalsByType, totalItems, avgRating, journalCount, memoryCount, reviewCount] =
+    const [completedByType, totalsByType, totalItems, avgRating, journalCount, memoryCount, reviewCount, favoriteCount, hoursData, genreData] =
       await Promise.all([
         this.repository.countCompletedByType(userId),
         this.repository.countTotalByType(userId),
@@ -26,21 +32,23 @@ export class AnalyticsAggregationService {
         this.repository.getRecentMemories(userId, 10000),
         this.repository.getReviewCount(userId),
         this.repository.getFavoriteCount(userId),
+        this.repository.getHoursAndEpisodesByType(userId),
+        this.repository.getGenreData(userId),
       ]);
 
     return {
       moviesCompleted: completedByType['movie'] ?? 0,
       showsFinished: (completedByType['tvShow'] ?? 0) + (completedByType['anime'] ?? 0),
-      episodesWatched: 0,
+      episodesWatched: hoursData.episodes,
       booksRead: completedByType['book'] ?? 0,
       gamesFinished: completedByType['game'] ?? 0,
       coursesCompleted: completedByType['course'] ?? 0,
-      hoursWatched: 0,
-      hoursRead: 0,
-      hoursPlayed: 0,
-      hoursLearned: 0,
+      hoursWatched: (hoursData.hours['movie'] ?? 0) + (hoursData.hours['tvShow'] ?? 0) + (hoursData.hours['anime'] ?? 0) + (hoursData.hours['documentary'] ?? 0),
+      hoursRead: hoursData.hours['book'] ?? 0,
+      hoursPlayed: hoursData.hours['game'] ?? 0,
+      hoursLearned: hoursData.hours['course'] ?? 0,
       averageRating: avgRating,
-      favoriteGenre: null,
+      favoriteGenre: Object.keys(genreData.genreCounts).length > 0 ? Object.entries(genreData.genreCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? null : null,
       favoriteMediaType: this.getFavoriteType(totalsByType),
       totalLibraryItems: totalItems,
       totalJournalEntries: journalCount.length,
@@ -89,7 +97,7 @@ export class AnalyticsAggregationService {
 
     const genreRatings: Record<string, number> = {};
     for (const [genre, data] of Object.entries(raw.genreRatings)) {
-      genreRatings[genre] = Math.round((data.total / data.count / 2) * 10) / 10;
+      genreRatings[genre] = this.convertInternalRatingToApiScale(data.total, data.count);
     }
 
     return {
@@ -137,6 +145,61 @@ export class AnalyticsAggregationService {
     };
   }
 
+    async getCalendarYear(userId: string, year: number): Promise<any> {
+    const raw = await this.repository.getCalendarData(userId, year);
+
+    let totalStories = 0;
+    let totalJournals = 0;
+    let totalHours = 0;
+
+    for (const key of Object.keys(raw.completedCounts)) totalStories += raw.completedCounts[key];
+    for (const key of Object.keys(raw.journalCounts)) totalJournals += raw.journalCounts[key];
+    for (const key of Object.keys(raw.hoursTracked)) totalHours += raw.hoursTracked[key];
+
+    const months = Array.from({ length: 12 }, (_, month) => {
+      let journalCount = 0;
+      let storyCount = 0;
+      let hoursTracked = 0;
+      let dayHits = 0;
+
+      for (let day = 1; day <= 31; day++) {
+        const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        if (raw.journalCounts[key]) { journalCount += raw.journalCounts[key]; dayHits++; }
+        if (raw.completedCounts[key]) { storyCount += raw.completedCounts[key]; dayHits++; }
+        if (raw.hoursTracked[key]) { hoursTracked += raw.hoursTracked[key]; }
+      }
+      return {
+        month,
+        name: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][month],
+        journalCount,
+        storyCount,
+        hoursTracked: Math.round(hoursTracked * 10) / 10,
+        topMedia: [],
+        dayHits,
+      };
+    });
+
+    return {
+      year,
+      stats: { totalStories, totalJournals, longestStreak: 0, totalHours: Math.round(totalHours * 10) / 10 },
+      months,
+      heatmap: [],
+      highlights: [],
+      streaks: [],
+      upcoming: [],
+      insights: [],
+    };
+  }
+
+  async getCalendarDay(userId: string, date: string): Promise<any> {
+    // Basic mock implementation for CalendarDayResponse
+    return {
+      date,
+      mediaItems: [],
+      journalEntry: null,
+    };
+  }
+
   async getCalendar(userId: string, year: number, month: number): Promise<CalendarDto> {
     const raw = await this.repository.getCalendarData(userId, year, month);
     const allDates = new Set([
@@ -161,3 +224,9 @@ export class AnalyticsAggregationService {
     return Object.entries(totals).sort(([, a], [, b]) => b - a)[0]?.[0] ?? null;
   }
 }
+
+
+
+
+
+

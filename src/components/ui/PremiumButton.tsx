@@ -35,11 +35,11 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
 
     const variantClass: Record<Variant, string> = {
       primary:
-        "bg-white text-black shadow-[var(--shadow-button)] hover:shadow-[var(--shadow-button-hover)] hover:-translate-y-0.5",
+        "bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:shadow-[var(--shadow-button-hover)] hover:-translate-y-0.5",
       secondary:
         "glass text-foreground hover:-translate-y-0.5 hover:shadow-[var(--shadow-ghost-hover)]",
-      ghost: "text-muted-foreground hover:text-foreground hover:bg-white/[0.04]",
-      icon: "h-11 w-11 p-0 rounded-2xl glass-subtle hover:bg-white/[0.08] hover:text-primary",
+      ghost: "text-muted-foreground hover:text-foreground hover:bg-foreground/5",
+      icon: "h-11 w-11 p-0 rounded-2xl glass-subtle hover:bg-foreground/5 hover:text-primary",
     };
 
     const Comp = asChild ? Slot : "button";
@@ -59,8 +59,7 @@ export const PremiumButton = forwardRef<HTMLButtonElement, Props>(
               style={{
                 background:
                   "linear-gradient(120deg, transparent 30%, oklch(1 0 0 / 0.45) 50%, transparent 70%)",
-                transform: "translateX(-100%)",
-                animation: "sheen 2.2s ease-in-out infinite",
+                animation: reduced ? undefined : "sheen 2.2s ease-in-out forwards",
               }}
             />
             <span

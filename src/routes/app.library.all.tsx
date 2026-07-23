@@ -44,7 +44,7 @@ function AllLibraryPage() {
         r.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "Rating":
-        r.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        r.sort((a, b) => (b.avgRating ?? 0) - (a.avgRating ?? 0));
         break;
       case "Release Year":
         r.sort((a, b) => b.year - a.year);
@@ -57,6 +57,9 @@ function AllLibraryPage() {
         break;
       case "Random":
         r.sort(() => Math.random() - 0.5);
+        break;
+      case "Recently Added":
+        r.sort((a, b) => new Date(metaOf(b.id).addedAt ?? 0).getTime() - new Date(metaOf(a.id).addedAt ?? 0).getTime());
         break;
       default:
         break;
@@ -159,7 +162,7 @@ function AllLibraryPage() {
               >
                 <motion.img
                   layoutId={`poster-${m.id}`}
-                  src={m.poster}
+                  src={m.poster || undefined}
                   alt=""
                   className="h-20 w-14 shrink-0 rounded-lg object-cover"
                   loading="lazy"

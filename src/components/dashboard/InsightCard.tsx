@@ -1,7 +1,11 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 import { Lightbulb } from "lucide-react";
-import { INSIGHTS } from "@/lib/types";
+const INSIGHTS = [
+  "You've watched more sci-fi this month than the past year combined.",
+  "Your most productive reading hours are between 10 PM and midnight.",
+  "You typically rewatch comfort shows on Sundays.",
+];
 
 export function InsightCard() {
   const [i, setI] = useState(0);

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '@/lib/api';
+import { setAccessToken } from '@/lib/api/fetch';
 import { queryKeys } from '@/lib/api/query-keys';
 import type { LoginInput, RegisterInput, AuthResponse, UserResponse } from '@/lib/api/auth';
 
@@ -39,6 +40,7 @@ export function useLogout() {
   return useMutation<void, Error, void>({
     mutationFn: () => authApi.logoutUser(),
     onSuccess: () => {
+      setAccessToken(null);
       queryClient.clear();
     },
   });
@@ -49,6 +51,7 @@ export function useLogoutAll() {
   return useMutation<void, Error, void>({
     mutationFn: () => authApi.logoutAll(),
     onSuccess: () => {
+      setAccessToken(null);
       queryClient.clear();
     },
   });

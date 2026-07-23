@@ -61,7 +61,7 @@ export class LibraryService {
 
     const meta = buildCursorMeta(items, (item) => item.id, limit);
     return {
-      data: meta.data.map((item) => this.toResponse(item, type ?? 'movie')),
+      data: meta.data.map((item) => this.toResponse(item, type ?? this.detectMediaType(item))),
       hasMore: meta.hasMore,
       nextCursor: meta.nextCursor,
     };
@@ -87,6 +87,9 @@ export class LibraryService {
     const updateData: Record<string, unknown> = {};
 
     if (dto.status !== undefined) updateData.status = dto.status;
+    const currentItem = await this.repository.findById(id, userId, type);
+    if (!currentItem) throw new NotFoundException('Library item not found');
+
     if (dto.rating !== undefined) updateData.rating = dto.rating;
     if (dto.favorite !== undefined) updateData.favorite = dto.favorite;
     if (dto.hidden !== undefined) updateData.hidden = dto.hidden;
@@ -97,11 +100,20 @@ export class LibraryService {
     if (dto.startedAt !== undefined) updateData.startedAt = new Date(dto.startedAt);
     if (dto.finishedAt !== undefined) updateData.finishedAt = new Date(dto.finishedAt);
 
+    if (dto.status && ['IN_PROGRESS', 'REWATCHING', 'PAUSED'].includes(dto.status) && !dto.startedAt && !(currentItem as any).startedAt) {
+      updateData.startedAt = new Date();
+    }
+
     if (dto.status === 'COMPLETED' && !dto.finishedAt) {
       updateData.finishedAt = new Date();
     }
     if (dto.status === 'COMPLETED') {
       updateData.progress = 100;
+    }
+    if (dto.status === 'PLANNING') {
+      updateData.progress = 0;
+      updateData.startedAt = null;
+      updateData.finishedAt = null;
     }
 
     updateData.lastInteractionAt = new Date();
@@ -132,7 +144,7 @@ export class LibraryService {
     if ((item as any).musicAlbum) return 'musicAlbum';
     if ((item as any).podcast) return 'podcast';
     if ((item as any).course) return 'course';
-    return 'movie';
+    return 'unknown';
   }
 
   private toResponse(row: LibraryRow, mediaType: string): LibraryItemResponseDto {

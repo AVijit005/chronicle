@@ -8,7 +8,9 @@ export class SignedUrlService {
   private readonly secret: string;
 
   constructor(private readonly config: ConfigService) {
-    this.secret = this.config.get<string>('jwt.accessSecret') ?? 'chronicle-signed-url-secret';
+    const secret = this.config.get<string>('jwt.accessSecret');
+    if (!secret) throw new Error('JWT access secret must be defined for signed URLs');
+    this.secret = secret;
   }
 
   generateUploadUrl(path: string, userId: string, expiresInSeconds = 3600): SignedUrlDto {

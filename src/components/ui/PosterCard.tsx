@@ -50,17 +50,17 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
       <Link
         to="/app/media/$id"
         params={{ id: item.id }}
-        className="focus-ring relative block aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/10 transition-shadow duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:shadow-[var(--shadow-poster-hover)]"
+        className="focus-ring relative block aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-foreground/10 transition-shadow duration-[var(--dur-large)] ease-[var(--ease-out)] group-hover:shadow-[var(--shadow-poster-hover)]"
         aria-label={`${item.title} — ${item.kind} (${item.year})`}
       >
         {errored ? (
-          <div className="grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
-            <ImageOff className="h-6 w-6 text-white/30" />
+          <div className="grid h-full w-full place-items-center bg-gradient-to-br from-foreground/[0.06] to-foreground/[0.02]">
+            <ImageOff className="h-6 w-6 text-foreground/30" />
           </div>
         ) : (
           <motion.div initial="hidden" animate={loaded ? "visible" : "hidden"} variants={imageReveal}>
             <img
-              src={item.poster}
+              src={item.poster || undefined}
               alt=""
               loading="lazy"
               decoding="async"
@@ -98,7 +98,7 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
           />
         )}
         {/* rating chip */}
-        <div className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-[10px] text-white/90 backdrop-blur">
+        <div className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-background/50 px-2 py-0.5 text-[10px] text-foreground/90 backdrop-blur">
           <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
           {(item.rating ?? 0).toFixed(1)}
         </div>
@@ -116,7 +116,7 @@ export function PosterCard({ item, size = "md", showMeta = true, className = "" 
                   style={{
                     width: `${(item.progress ?? 0)}%`,
                     background: item.accent ?? "var(--primary)",
-                    boxShadow: `0 0 8px ${item.accent ?? "oklch(0.72 0.18 255)"}`,
+                    boxShadow: `0 0 8px ${item.accent ?? "var(--primary)"}`,
                   }}
                 />
               </div>

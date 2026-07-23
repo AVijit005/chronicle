@@ -1,5 +1,5 @@
 // Contextual verbs for any media item. Frontend-only — drives the live library store.
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import {
   Heart,
   Play,
@@ -65,10 +65,18 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
   const removeItem = useLibraryStore((s) => s.removeItem);
   const createCollection = useLibraryStore((s) => s.createCollection);
   const toggleCollectionItem = useLibraryStore((s) => s.toggleCollectionItem);
+  const addUserQuote = useLibraryStore((s) => s.addUserQuote);
   const { openProgress, openReflection } = useMediaActions();
   const [bookmarked, setBookmarked] = useState(() => isBookmarked("media", id));
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [collectionOpen, setCollectionOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
   const reduced = useReducedMotion();
   const heroMotion =
     variant === "hero" && !reduced
@@ -147,7 +155,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         icon: Check,
         run: () => {
           s("completed", "Marked complete");
-          setTimeout(() => openReflection(id), 60);
+          timeoutRef.current = setTimeout(() => openReflection(id), 60);
         },
       });
     }
@@ -166,7 +174,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         icon: Check,
         run: () => {
           s("completed", "Marked complete");
-          setTimeout(() => openReflection(id), 60);
+          timeoutRef.current = setTimeout(() => openReflection(id), 60);
         },
       });
     }
@@ -356,11 +364,11 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
                   onSelect={() => {
                     toggleCollectionItem(c.id, id);
                     toast.success(
-                      c.itemIds.includes(id) ? `Removed from ${c.name}` : `Added to ${c.name}`,
+                      c.itemIds?.includes(id) ? `Removed from ${c.name}` : `Added to ${c.name}`,
                     );
                   }}
                 >
-                  {c.itemIds.includes(id) ? (
+                  {c.itemIds?.includes(id) ? (
                     <Check className="mr-2 h-4 w-4 text-primary" />
                   ) : (
                     <span className="mr-2 inline-block h-4 w-4" />
@@ -406,7 +414,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         confirmLabel="Save quote"
         multiline
         onConfirm={(text) => {
-          useLibraryStore.getState().addUserQuote(text, { id, title });
+          addUserQuote(text, { id, title });
           toast.success("Quote saved", { description: title });
         }}
       />

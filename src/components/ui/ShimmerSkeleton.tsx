@@ -5,7 +5,7 @@ interface Props {
   variant?: "poster" | "glass" | "line" | "chart";
 }
 export function ShimmerSkeleton({ className, variant = "glass" }: Props) {
-  const base = "relative overflow-hidden bg-white/[0.04] ring-1 ring-white/5";
+  const base = "relative overflow-hidden bg-foreground/[0.04] ring-1 ring-foreground/5";
   const shapes: Record<NonNullable<Props["variant"]>, string> = {
     poster: "aspect-[2/3] rounded-2xl",
     glass: "rounded-2xl",

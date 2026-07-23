@@ -1,6 +1,6 @@
+import { useLibrary } from "@/hooks/use-library";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import type { Capsule } from "@/lib/memoryInsights";
-import { MEDIA } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
 }
 
 export function MemoryCapsule({ capsule, className }: Props) {
+  const { data: libraryData } = useLibrary({ limit: 100 });
+  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
   const covers = capsule.coverIds
     .map((id) => MEDIA.find((m) => m.id === id))
     .filter((m): m is NonNullable<typeof m> => !!m);

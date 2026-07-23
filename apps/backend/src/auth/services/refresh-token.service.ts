@@ -47,15 +47,20 @@ export class RefreshTokenService {
         where: { tokenHash },
       });
 
-      if (!existing || existing.revokedAt || existing.expiresAt < new Date()) {
+      if (!existing || existing.expiresAt < new Date()) {
         throw new ForbiddenException('Refresh token invalid or expired');
       }
 
-      // Revoke the old token atomically
-      await tx.refreshToken.update({
-        where: { id: existing.id },
+      // Revoke the old token atomically using updateMany as a lock
+      const updateResult = await tx.refreshToken.updateMany({
+        where: { id: existing.id, revokedAt: null },
         data: { revokedAt: new Date() },
       });
+
+      if (updateResult.count === 0) {
+        // If count is 0, it was already revoked by a concurrent request
+        throw new ForbiddenException('Refresh token invalid or expired');
+      }
 
       // Create the new token in the same transaction
       const newToken = this.tokenFactory.generateSecureToken();

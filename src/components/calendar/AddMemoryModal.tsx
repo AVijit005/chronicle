@@ -1,10 +1,11 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { createPortal } from "react-dom";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   X, Film, Tv, BookOpen, BookImage, Gamepad2, Music, Mic, GraduationCap, PlaySquare, Sparkles,
 } from "lucide-react";
-import { PremiumGlass } from "@/components/ui/PremiumGlass";
+
 import { toast } from "sonner";
 import { useCreateJournalEntry } from "@/hooks/use-journal";
 
@@ -158,3 +159,6 @@ export function AddMemoryModal({ isOpen, onClose, selectedDay, monthName, curren
     document.body,
   );
 }
+
+
+

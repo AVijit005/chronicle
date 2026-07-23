@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 const DEMO_COLLECTIONS = [
   { id: "1", name: "Cyberpunk Vibe", count: 12, cover: "https://images.unsplash.com/photo-1518770660439-4636190af475", accent: "oklch(0.7 0.2 295)", description: "Neon-drenched stories." },
   { id: "2", name: "Ghibli Magic", count: 8, cover: "https://images.unsplash.com/photo-1542204165-65bf26472b9b", accent: "oklch(0.78 0.18 50)", description: "Whimsical adventures." },
-  { id: "3", name: "Space Operas", count: 24, cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa", accent: "oklch(0.72 0.18 255)", description: "Across the universe." },
+  { id: "3", name: "Space Operas", count: 24, cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa", accent: "var(--primary)", description: "Across the universe." },
   { id: "4", name: "Comfort Games", count: 5, cover: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f", accent: "oklch(0.72 0.16 80)", description: "Cozy weekends." }
 ];
 

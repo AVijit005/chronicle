@@ -4,6 +4,7 @@ import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { toast } from "sonner";
 import { Mail, ArrowLeft } from "lucide-react";
+import { apiPatch } from "@/lib/api/fetch";
 
 export const Route = createFileRoute("/app/settings/email-capture")({
   component: EmailCapturePage,
@@ -18,12 +19,19 @@ function EmailCapturePage() {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
-    // Simulate network request
-    setTimeout(() => {
-      setLoading(false);
-      toast.success("Thank you! We'll be in touch soon.");
-      navigate({ to: "/app/settings" });
-    }, 800);
+    // Use real API call
+    apiPatch('/notifications/preferences', { marketingEnabled: true })
+      .then(() => {
+        toast.success("Thank you! We'll be in touch soon.");
+        navigate({ to: "/app/settings" });
+      })
+      .catch((err) => {
+        toast.error("Failed to update preferences.");
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (

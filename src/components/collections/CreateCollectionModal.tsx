@@ -4,7 +4,7 @@ import { Lock, Globe, Users, X } from "lucide-react";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 
 const ACCENTS = [
-  "oklch(0.72 0.18 255)",
+  "var(--primary)",
   "oklch(0.65 0.22 295)",
   "oklch(0.78 0.18 50)",
   "oklch(0.72 0.16 160)",

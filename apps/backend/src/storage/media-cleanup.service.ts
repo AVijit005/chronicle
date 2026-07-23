@@ -20,15 +20,9 @@ export class MediaCleanupService {
       select: { id: true, avatar: true },
     });
 
-    for (const user of users) {
-      if (user.avatar && !user.avatar.startsWith('avatars/')) continue;
-      try {
-        await this.uploadService.delete(user.avatar!);
-        cleaned++;
-      } catch {
-        // File might not exist - that's ok
-      }
-    }
+    // TODO: Implement actual orphaned file detection
+    // For now, doing nothing to prevent deleting valid avatars!
+    this.logger.log(`Found ${users.length} users with avatars. Proper cleanup not yet implemented.`);
 
     return cleaned;
   }

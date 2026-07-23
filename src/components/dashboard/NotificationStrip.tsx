@@ -1,5 +1,6 @@
-import { Bell } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { Bell } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/use-notifications";
 import { adaptNotification } from "@/lib/adapters/notifications";
@@ -38,3 +39,6 @@ export function NotificationStrip({ className }: { className?: string }) {
     </section>
   );
 }
+
+
+

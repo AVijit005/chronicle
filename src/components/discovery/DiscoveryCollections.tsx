@@ -1,3 +1,4 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { useCollections } from "@/hooks/use-collections";
@@ -68,3 +69,5 @@ export function DiscoveryCollections({ className }: Props) {
     </section>
   );
 }
+
+

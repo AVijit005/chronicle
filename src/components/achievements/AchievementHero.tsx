@@ -1,6 +1,7 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { motion } from "motion/react";
 import { Trophy } from "lucide-react";
-import { PremiumGlass } from "@/components/ui/PremiumGlass";
+
 import { rankAchievements } from "@/lib/achievements";
 import { cn } from "@/lib/utils";
 
@@ -35,3 +36,6 @@ export function AchievementHero({ className }: { className?: string }) {
     </motion.section>
   );
 }
+
+
+

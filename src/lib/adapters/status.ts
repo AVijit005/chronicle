@@ -12,6 +12,7 @@ import type { UIMediaStatus } from "./types";
 const STATUS_MAP: Record<string, UIMediaStatus> = {
   PLANNING: "planning",
   WATCHING: "in_progress",
+  REWATCHING: "rewatching",
   READING: "in_progress",
   PLAYING: "in_progress",
   LISTENING: "in_progress",
@@ -34,7 +35,7 @@ export function adaptStatusToBackend(uiStatus: UIMediaStatus): string {
     planning: "PLANNING",
     paused: "PAUSED",
     dropped: "DROPPED",
-    rewatching: "WATCHING",
+    rewatching: "REWATCHING",
     archived: "ARCHIVED",
     on_hold: "ON_HOLD",
   };

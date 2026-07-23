@@ -10,8 +10,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { CALENDAR_YEAR } from "@/lib/types";
-import { MEDIA } from "@/lib/types";
+const CALENDAR_YEAR: any = {};
+const MEDIA: any[] = [];
 import { useCalendarYear } from "@/hooks/use-analytics";
 import { adaptCalendarYear } from "@/lib/adapters/analytics";
 import { useQuery } from "@tanstack/react-query";
@@ -69,7 +69,16 @@ function CalendarPage() {
   const { data: calendarYearData, isLoading: isCalendarLoading, isError: isCalendarError } = useCalendarYear(displayYear);
   const calendarUI = calendarYearData ? adaptCalendarYear(calendarYearData) : null;
   const apiMonth = calendarUI?.months[monthIdx] ?? null;
-  const month = apiMonth ?? CALENDAR_YEAR[monthIdx];
+  const month = apiMonth ?? {
+    index: monthIdx,
+    name: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][monthIdx],
+    startDay: new Date(displayYear, monthIdx, 1).getDay(),
+    mediaCount: 0,
+    journalCount: 0,
+    hours: 0,
+    accent: "var(--primary)",
+    cells: [],
+  };
 
   const dateParam = selectedDay ? `${displayYear}-${String(monthIdx + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}` : null;
   const { data: dayData } = useQuery({
@@ -142,7 +151,15 @@ function CalendarPage() {
         isAtToday={yearOffset === 0 && monthIdx === currentMonth} />
 
       <MemoryZone title="Year overview">
-        <YearOverview monthIdx={monthIdx} onSelectMonth={(idx) => { setMonthIdx(idx); setSelectedDay(null); }} />
+        <YearOverview 
+          months={calendarUI?.months ?? Array.from({ length: 12 }, (_, i) => ({
+            index: i, name: "", short: "", daysInMonth: 31, startDay: 0, cells: [],
+            accent: "var(--primary)", favorite: "", genre: "", mediaCount: 0, journalCount: 0, hours: 0,
+            collage: [], dayHits: 0
+          }))}
+          monthIdx={monthIdx} 
+          onSelectMonth={(idx) => { setMonthIdx(idx); setSelectedDay(null); }} 
+        />
       </MemoryZone>
 
       <MemoryZone
@@ -195,3 +212,4 @@ function CalendarPage() {
     </div>
   );
 }
+

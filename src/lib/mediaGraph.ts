@@ -1,9 +1,13 @@
 // Media Graph — pure relationship builders.
-import { MEDIA, COLLECTIONS, type MediaItem } from "@/lib/types";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { MEMORIES_BY_MEDIA, type MediaMemory } from "@/lib/memory";
 import { MEMORY_EXTENSIONS } from "@/lib/memoryJournal";
 import { GOALS_FULL } from "@/lib/goals";
 import { ACHIEVEMENTS_FULL } from "@/lib/achievements";
+const COLLECTIONS: any[] = [];
+const ACHIEVEMENTS: any[] = [];
+
+
 
 const get = (id: string): MediaItem | null => MEDIA.find((m) => m.id === id) ?? null;
 

@@ -108,12 +108,6 @@ export interface CalendarResponse {
 export interface InsightsResponse {
   mostActiveWeekday: string;
   favoriteGenre: string | null;
-  favoriteDecade: string | null;
-  longestBinge: string | null;
-  mostRewatchedMedia: string | null;
-  mostRereadBook: string | null;
-  mostReplayedGame: string | null;
-  averageCompletionTime: number | null;
   mostProductiveMonth: string | null;
   totalUniqueMedia: number;
   totalHoursSpent: number;
@@ -227,11 +221,11 @@ export interface CalendarDayResponse {
 }
 
 export async function getCalendarDay(date: string): Promise<CalendarDayResponse> {
-  return apiGet<CalendarDayResponse>(`/analytics/calendar/day/${date}`);
+  return apiGet<CalendarDayResponse>(`/analytics/calendar/day?date=${date}`);
 }
 
 export async function getCalendarYear(year: number): Promise<CalendarYearResponse> {
-  return apiGet<CalendarYearResponse>(`/analytics/calendar/rich/${year}`);
+  return apiGet<CalendarYearResponse>(`/analytics/calendar/year?year=${year}`);
 }
 
 // ─── Discovery ────────────────────────────────
@@ -280,17 +274,7 @@ export interface FranchiseItem {
 }
 
 export async function getDiscovery(): Promise<DiscoveryResponse> {
-  // The backend discovery API doesn't exist yet, return mock data
-  return {
-    recommendedToday: null,
-    continueMood: [],
-    hiddenGems: [],
-    continueFranchises: [],
-    comfortStories: [],
-    next: null,
-    totalWorks: 0,
-    completedWorks: 0,
-  };
+  return apiGet<DiscoveryResponse>('/analytics/discovery');
 }
 
 // ─── Intelligence ─────────────────────────────
@@ -316,14 +300,7 @@ export interface IntelligenceResponse {
 }
 
 export async function getIntelligence(): Promise<IntelligenceResponse> {
-  return {
-    identityProfile: "Curious Explorer",
-    coreTraits: [],
-    genreDNA: [],
-    tasteEvolution: [],
-    pacingPreference: "Balanced",
-    impactSummary: [],
-  };
+  return apiGet<IntelligenceResponse>('/analytics/intelligence');
 }
 
 // ─── Challenges ───────────────────────────────
@@ -334,10 +311,7 @@ export interface ChallengesResponse {
 }
 
 export async function getChallenges(): Promise<ChallengesResponse> {
-  return {
-    challenges: [],
-    goals: [],
-  };
+  return apiGet<ChallengesResponse>('/analytics/challenges');
 }
 
 export interface ConstellationEntry {
@@ -355,3 +329,4 @@ export async function getConstellation(categories?: string[]): Promise<Constella
   const qs = params.toString();
   return apiGet<ConstellationEntry[]>(`/analytics/constellation${qs ? `?${qs}` : ''}`);
 }
+

@@ -1,6 +1,6 @@
+import { useLibrary } from "@/hooks/use-library";
 import { Link } from "@tanstack/react-router";
 import { FIRSTS } from "@/lib/memoryInsights";
-import { MEDIA } from "@/lib/types";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,8 @@ interface Props {
 }
 
 export function FirstMoments({ className }: Props) {
+  const { data: libraryData } = useLibrary({ limit: 100 });
+  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
   return (
     <section aria-label="Firsts" className={cn("space-y-5", className)}>
       <header className="flex items-baseline justify-between">

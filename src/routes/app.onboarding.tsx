@@ -8,7 +8,7 @@ import { analytics } from "@/lib/analytics";
 export const Route = createFileRoute("/app/onboarding")({ component: OnboardingPage });
 
 const MEDIA_TYPES = [
-  { id: "movies", label: "Movies", icon: Film, accent: "oklch(0.72 0.18 255)" },
+  { id: "movies", label: "Movies", icon: Film, accent: "var(--primary)" },
   { id: "shows", label: "TV Shows", icon: Tv, accent: "oklch(0.65 0.22 295)" },
   { id: "books", label: "Books", icon: BookOpen, accent: "oklch(0.7 0.18 25)" },
   { id: "games", label: "Games", icon: Gamepad2, accent: "oklch(0.82 0.16 80)" },

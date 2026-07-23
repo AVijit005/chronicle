@@ -84,25 +84,13 @@ export interface MediaDetail {
   continueDetail: string;
 }
 
-export const MEDIA: MediaItem[] = [];
-export const COLLECTIONS: Collection[] = [];
-export const JOURNAL: any[] = [];
-export const THIS_WEEK: any[] = [];
-export const ACTIVITY_30D: any[] = [];
-export const STATS: any = {};
-export const CALENDAR_HERO: any = {};
-export const CALENDAR_INSIGHTS: any = {};
-export const YEAR_HEATMAP: any = {};
-export const CALENDAR_HIGHLIGHTS: any[] = [];
-export const MEMORY_STREAKS: any = {};
-export const UPCOMING_RELEASES: any[] = [];
-export const CALENDAR_YEAR: any = {};
-export const JOURNAL_PROMPTS: any[] = [];
+export const SEARCHABLE_SETTINGS = [
+  { id: "settings", label: "Settings", hint: "Theme, privacy, and active sessions", to: "/app/settings", icon: "settings" },
+  { id: "import", label: "Import & Export", hint: "Bring your library in from JSON or CSV", to: "/app/import", icon: "download" },
+  { id: "profile", label: "Profile", hint: "View your public profile", to: "/app/profile", icon: "user" },
+];
 
-export const MEMORY_CLUSTERS: any[] = [];
 
-export const QUOTES: any[] = [];
-export const PINNED_MEDIA: any[] = [];
-export const RECENT_JOURNALS: any[] = [];
-export const SEARCHABLE_SETTINGS: any[] = [];
-export const ACHIEVEMENTS: any[] = [];
+
+
+export const MEDIA: any[] = [];

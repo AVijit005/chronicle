@@ -1,6 +1,10 @@
 // Crosslinks — surface peer entities for any media item.
-import { COLLECTIONS, JOURNAL, MEDIA, type MediaItem } from "@/lib/types";
+import { MEDIA, type MediaItem } from "@/lib/types";
 import { GOALS_FULL } from "@/lib/goals";
+const COLLECTIONS: any[] = [];
+const JOURNAL: any[] = [];
+
+
 
 export interface Crosslinks {
   collections: typeof COLLECTIONS;

@@ -94,7 +94,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         className={cn(
           "group/glass relative rounded-3xl",
           interactive && 
-            "cursor-pointer transition-all duration-[300ms] ease-out hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_oklch(0.72_0.18_255/0.1)] active:scale-[0.98]",
+            "cursor-pointer transition-all duration-[300ms] ease-out hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_20px_color-mix(in_oklch,var(--primary),transparent_90%)] active:scale-[0.98]",
           className
         )}
         style={
@@ -151,7 +151,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
                   borderRadius: "inherit",
                   opacity: "calc(var(--glass-rev)*0.65)",
                   background:
-                    "radial-gradient(420px circle at var(--glass-px) var(--glass-py), oklch(0.72 0.18 255 / 0.15), transparent 60%)"
+                    "radial-gradient(420px circle at var(--glass-px) var(--glass-py), color-mix(in oklch, var(--primary), transparent 85%), transparent 60%)"
                 }}
               />
               <span

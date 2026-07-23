@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CHARACTERS } from "@/lib/characters";
-import { MEDIA } from "@/lib/types";
+import { useLibrary } from "@/hooks/use-library";
 import { MagazineBlock } from "@/components/editorial/MagazineBlock";
 
 export const Route = createFileRoute("/app/characters/")({ component: CharactersIndex });
 
 function CharactersIndex() {
+  const { data: libraryData } = useLibrary({ limit: 50 });
+  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
   const hero = CHARACTERS[0];
   const heroMedia = hero ? MEDIA.find((x) => x.id === hero.mediaId) : null;
   const rest = CHARACTERS.slice(1);
@@ -40,7 +42,7 @@ function CharactersIndex() {
               </Link>
             </>
           }
-          image={heroMedia.poster}
+          image={heroMedia?.poster || ""}
           side="left"
         />
       )}
@@ -68,7 +70,7 @@ function CharactersIndex() {
                     <div className="grid grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-5 p-4 md:gap-6">
                       {m && (
                         <img
-                          src={m.poster}
+                          src={m.poster || undefined}
                           alt=""
                           className="aspect-[2/3] w-22 rounded-xl object-cover ring-1 ring-white/10"
                         />
@@ -96,3 +98,4 @@ function CharactersIndex() {
     </div>
   );
 }
+

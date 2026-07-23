@@ -57,7 +57,7 @@ export function YourQuotesRail({
           >
             <div
               className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-40 blur-3xl"
-              style={{ background: q.accent ?? "oklch(0.72 0.18 255)" }}
+              style={{ background: q.accent ?? "var(--primary)" }}
             />
             <div className="relative">
               <Quote className="h-4 w-4 text-primary/70" />

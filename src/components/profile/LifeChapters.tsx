@@ -1,5 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { Link } from "@tanstack/react-router";
+
 import { getLifeChapters } from "@/lib/lifeChapters";
 import { useLibrary } from "@/hooks/use-library";
 import { adaptLibraryItem } from "@/lib/adapters/media";
@@ -22,7 +23,7 @@ export function LifeChapters() {
             <li
               key={c.id}
               className="relative grid grid-cols-[100px_minmax(0,1fr)] gap-4 border-l-2 pl-4"
-              style={{ borderColor: c.accent + " / 0.5" }}
+              style={{ borderColor: c.accent.replace(')', ' / 0.5)') }}
             >
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {c.era}
@@ -56,3 +57,6 @@ export function LifeChapters() {
     </PremiumGlass>
   );
 }
+
+
+

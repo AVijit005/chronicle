@@ -5,7 +5,7 @@ import { useMemories } from "@/hooks/use-journal";
 import { adaptMemory } from "@/lib/adapters/journal";
 
 export function PersonalMemory({ item }: { item: UIMediaItem }) {
-  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const accent = item.accent ?? "var(--primary)";
   const { data: memoriesData, isLoading } = useMemories({ limit: 1 });
   const memories = memoriesData?.pages.flatMap((p) => p.data).map(adaptMemory) ?? [];
   const latestMemory = memories[0];

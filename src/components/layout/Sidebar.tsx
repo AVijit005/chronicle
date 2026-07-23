@@ -5,8 +5,15 @@ import { NAV, GROUP_LABELS, NAV_GROUP_ORDER } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
-  const [collapsed, setCollapsed] = useState(false);
+export function Sidebar({ 
+  onOpenSearch, 
+  collapsed, 
+  onToggle 
+}: { 
+  onOpenSearch: () => void;
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const groups = NAV_GROUP_ORDER;
@@ -77,8 +84,8 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
                         className={cn(
                           "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition press-scale",
                           active
-                            ? "bg-white/[0.06] text-foreground"
-                            : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground",
+                            ? "bg-muted text-foreground"
+                            : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                         )}
                       >
                         {active && (
@@ -107,7 +114,7 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
 
       {/* Collapse */}
       <button
-        onClick={() => setCollapsed((c) => !c)}
+        onClick={onToggle}
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         className="mx-3 mb-3 flex items-center justify-center gap-2 rounded-xl border border-border/50 bg-background/30 py-2 text-xs text-muted-foreground transition press-scale hover:text-foreground"
       >
@@ -122,3 +129,4 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch: () => void }) {
     </motion.aside>
   );
 }
+

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Play, Archive as ArchiveIcon } from "lucide-react";
 import { StatusPageShell } from "@/components/library/StatusPageShell";
 import { paused, metaOf } from "@/lib/library";
+import { useLibraryStore } from "@/lib/store/libraryStore";
 
 export const Route = createFileRoute("/app/library/paused")({
   component: PausedPage,
@@ -22,7 +23,7 @@ function PausedPage() {
           return (
             <div key={m.id} className="glass flex items-center gap-4 rounded-2xl p-3">
               <img
-                src={m.poster}
+                src={m.poster || undefined}
                 alt=""
                 className="h-20 w-14 shrink-0 rounded-md object-cover"
                 loading="lazy"
@@ -37,7 +38,7 @@ function PausedPage() {
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-[oklch(0.78_0.12_75)] to-[oklch(0.78_0.16_50)]"
+                    className="h-full rounded-full bg-primary"
                     style={{ width: `${m.progress ?? 0}%` }}
                   />
                 </div>
@@ -50,7 +51,10 @@ function PausedPage() {
                 >
                   <Play className="h-3 w-3 fill-current" /> Resume
                 </Link>
-                <button className="press-scale glass-subtle inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] text-muted-foreground hover:text-foreground">
+                <button 
+                  className="press-scale glass-subtle inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] text-muted-foreground hover:text-foreground"
+                  onClick={() => useLibraryStore.getState().setStatus(m.id, "archived" as any)}
+                >
                   <ArchiveIcon className="h-3 w-3" /> Archive
                 </button>
               </div>

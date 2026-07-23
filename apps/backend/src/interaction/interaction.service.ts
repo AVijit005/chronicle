@@ -20,7 +20,7 @@ function apiToInternal(rating: number): number {
 }
 
 function internalToApi(rating: number | null): number | null {
-  if (rating === null || rating === null) return null;
+  if (rating === null || rating === undefined) return null;
   return rating / 2;
 }
 

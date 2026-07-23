@@ -1,7 +1,6 @@
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
-import { MEMORY_STREAKS } from "@/lib/types";
 
 interface StreakData {
   label: string;
@@ -76,11 +75,11 @@ function StreakCard({ s, idx }: { s: StreakData; idx: number }) {
 }
 
 export function MemoryStreaks({ streaks: propStreaks }: Props) {
-  const streaks = propStreaks?.length ? propStreaks : MEMORY_STREAKS;
+  const streaks = propStreaks?.length ? propStreaks : [];
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-      {streaks.map((s, idx) => (
+      {streaks.map((s: any, idx: any) => (
         <StreakCard key={s.label} s={s} idx={idx} />
       ))}
     </div>

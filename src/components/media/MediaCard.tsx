@@ -36,7 +36,7 @@ const KIND_GLYPH: Record<UIMediaKind, LucideIcon> = {
 export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "sm" | "md" | "lg" | "full" }) {
   const w = size === "full" ? "w-full" : size === "sm" ? "w-36" : size === "lg" ? "w-56" : "w-44";
   const rating = item.rating ?? 0;
-  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const accent = item.accent ?? "var(--primary)";
   const [focused, setFocused] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
@@ -53,13 +53,13 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
       className={cn("group relative flex flex-col min-w-0", size !== "full" && "shrink-0", w)}
     >
       <div className="relative">
-        <Link to="/app/media/$id" params={{ id: item.mediaId || item.id }} className="block">
         <motion.div
           variants={{ rest: { y: 0 }, hover: { y: -6 } }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="relative aspect-[2/3] overflow-hidden rounded-2xl"
           style={{ boxShadow: "0 20px 40px -20px oklch(0 0 0 / 0.7)" }}
         >
+          <Link to="/app/media/$id" params={{ id: item.mediaId || item.id }} className="absolute inset-0 z-10" aria-label={`View ${item.title}`} />
           {errored ? (
             <div className="absolute inset-0 grid h-full w-full place-items-center bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
               <Glyph className="h-8 w-8 text-muted-foreground/40" />
@@ -98,11 +98,8 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
           {/* Cross-media glyph — subtle medium identity */}
           <div
             aria-hidden
-            className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-black/45 text-white/85 ring-1 ring-white/10 backdrop-blur-md"
+            className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-black/45 text-white/85 ring-1 ring-white/10 backdrop-blur-md z-10"
             title={item.kind}
-            style={{
-              boxShadow: `inset 0 0 0 1px ${accent} / 0.0`,
-            }}
           >
             <Glyph className="h-3 w-3" />
           </div>
@@ -129,7 +126,6 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
             </div>
           </motion.div>
         </motion.div>
-        </Link>
       </div>
       <div className="mt-3 px-0.5">
         <div className="truncate text-sm font-medium">{item.title}</div>

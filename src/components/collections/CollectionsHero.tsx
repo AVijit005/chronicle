@@ -72,7 +72,7 @@ export function CollectionsHero() {
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: `linear-gradient(180deg, transparent 40%, ${c.color ?? "oklch(0.72 0.18 255)"} / 0.5, oklch(0 0 0 / 0.8))`,
+                    background: `linear-gradient(180deg, transparent 40%, ${c.color ?? "var(--primary)"} / 0.5, oklch(0 0 0 / 0.8))`,
                   }}
                 />
                 <div className="absolute inset-x-0 bottom-0 p-2 text-[10px] text-white">

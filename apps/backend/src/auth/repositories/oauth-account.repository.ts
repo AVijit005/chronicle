@@ -26,8 +26,12 @@ export class OAuthAccountRepository extends BaseRepository<OAuthAccount> {
     private readonly config: ConfigService,
   ) {
     super();
-    const secret = this.config.get<string>('jwt.secret') ?? 'default_secret_key_32_bytes_long!';
-    this.encryptionKey = Buffer.from(secret.padEnd(32, '0').slice(0, 32));
+    const secret = this.config.get<string>('oauth.encryptionKey');
+    if (!secret && process.env.NODE_ENV === 'production') {
+      throw new Error('OAuth encryption key is required in production');
+    }
+    const finalSecret = secret || 'default_secret_key_32_bytes_long!';
+    this.encryptionKey = Buffer.from(finalSecret.padEnd(32, '0').slice(0, 32));
   }
 
   private encrypt(text: string): string {
@@ -49,7 +53,7 @@ export class OAuthAccountRepository extends BaseRepository<OAuthAccount> {
       decipher.setAuthTag(authTag);
       return decipher.update(encryptedText) + decipher.final('utf8');
     } catch {
-      return text;
+      throw new Error('Failed to decrypt OAuth token');
     }
   }
 

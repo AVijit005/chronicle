@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, useMotionValue, useMotionTemplate } from "motion/react";
-import { CALENDAR_HIGHLIGHTS } from "@/lib/types";
+
 
 interface Props {
   highlights?: { label: string; value: string; note: string; media: { poster: string | null } }[];
@@ -9,7 +9,7 @@ interface Props {
 const BENTO_SPANS = ["md:col-span-2", "md:col-span-1", "md:col-span-1", "md:col-span-2", "md:col-span-2", "md:col-span-1"];
 
 export function MemoryHighlights({ highlights: propHighlights }: Props) {
-  const highlights = propHighlights?.length ? propHighlights.map((h) => ({ ...h, media: { backdrop: h.media.poster, poster: h.media.poster } })) : CALENDAR_HIGHLIGHTS;
+  const highlights = propHighlights?.length ? propHighlights.map((h) => ({ ...h, media: { backdrop: h.media.poster, poster: h.media.poster } })) : [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

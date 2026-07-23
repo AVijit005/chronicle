@@ -60,9 +60,17 @@ export async function getCurrentUser(): Promise<UserResponse> {
 }
 
 export async function logoutUser(): Promise<void> {
-  return apiPost<void>('/auth/logout');
+  try {
+    await apiPost<void>('/auth/logout');
+  } finally {
+    setAccessToken(null);
+  }
 }
 
 export async function logoutAll(): Promise<void> {
-  return apiPost<void>('/auth/logout-all');
+  try {
+    await apiPost<void>('/auth/logout-all');
+  } finally {
+    setAccessToken(null);
+  }
 }

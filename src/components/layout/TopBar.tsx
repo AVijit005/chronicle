@@ -123,3 +123,4 @@ export function TopBar({ onOpenSearch }: { onOpenSearch: () => void }) {
     </motion.header>
   );
 }
+

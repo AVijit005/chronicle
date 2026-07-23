@@ -2,8 +2,7 @@ import { motion } from "motion/react";
 import { CloudSun, ChevronLeft, ChevronRight, ChevronsUp } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
-import { CALENDAR_HERO } from "@/lib/types";
-import { useCalendar } from "@/hooks/use-analytics";
+import { useCalendar, useStreaks } from "@/hooks/use-analytics";
 
 interface Props {
   currentYear: number;
@@ -15,15 +14,16 @@ interface Props {
 
 export function CalendarHero({ currentYear, yearOffset, onChangeYear, onToday, isAtToday }: Props) {
   const { data: calendarData } = useCalendar(currentYear);
+  const { data: streakData } = useStreaks();
   const entries = calendarData?.entries ?? [];
   const totalStories = entries.reduce((sum, e) => sum + e.completedCount, 0);
   const totalJournals = entries.reduce((sum, e) => sum + e.journalCount, 0);
   const totalHours = Math.round(entries.reduce((sum, e) => sum + e.hoursTracked, 0));
 
   const stats = [
-    { l: "Stories", v: totalStories || CALENDAR_HERO.stories, s: "" },
-    { l: "Journals", v: totalJournals || CALENDAR_HERO.journals, s: "" },
-    { l: "Longest streak", v: CALENDAR_HERO.longestStreak, s: "d" },
+    { l: "Stories", v: totalStories || 0, s: "" },
+    { l: "Journals", v: totalJournals || 0, s: "" },
+    { l: "Longest streak", v: streakData?.longestStreak || 0, s: "d" },
     { l: "Hours tracked", v: totalHours || 0, s: "h" },
   ];
 
@@ -65,3 +65,4 @@ export function CalendarHero({ currentYear, yearOffset, onChangeYear, onToday, i
     </motion.section>
   );
 }
+

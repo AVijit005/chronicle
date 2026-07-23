@@ -1,20 +1,18 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { YEAR_HEATMAP } from "@/lib/types";
-
 interface Props {
   heatmap?: { w: number; d: number; v: number }[];
 }
 
 export function MediaHeatmap({ heatmap }: Props) {
-  const cells = heatmap?.length ? heatmap : YEAR_HEATMAP;
+  const cells = heatmap?.length ? heatmap : [];
 
   return (
     <PremiumGlass className="p-6 md:p-8 border border-white/[0.08] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
       <div className="overflow-x-auto pb-2">
         <div className="grid grid-rows-7 gap-1" style={{ gridTemplateColumns: `repeat(52, minmax(10px, 1fr))` }}>
           <TooltipProvider delayDuration={0}>
-            {cells.map((c, i) => {
+            {cells.map((c: any, i: any) => {
               const isActive = c.v >= 0.15;
               const opacity = isActive ? Math.min(1, 0.15 + c.v * 0.85) : 0;
               return (
@@ -27,7 +25,7 @@ export function MediaHeatmap({ heatmap }: Props) {
                       style={{ gridColumnStart: c.w + 1, gridRowStart: c.d + 1, backgroundColor: "rgba(0, 0, 0, 0.25)", boxShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
                     >
                       {isActive && <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: `radial-gradient(150% 150% at 50% 50%, oklch(0.72 0.18 255 / ${opacity}) 0%, oklch(0.72 0.18 255 / 0) 100%)` }} />}
-                      {isActive && <div className="absolute inset-0 blur-[2px] transition-opacity duration-500" style={{ backgroundColor: "oklch(0.72 0.18 255)", opacity: opacity * 0.4 }} />}
+                      {isActive && <div className="absolute inset-0 blur-[2px] transition-opacity duration-500" style={{ backgroundColor: "var(--primary)", opacity: opacity * 0.4 }} />}
                       <div className="absolute inset-0 pointer-events-none border border-white/5 group-hover:border-white/20 transition-colors" style={{ boxShadow: "inset 0 1px 1px 0 rgba(255,255,255,0.2), inset 0 -1px 1px 0 rgba(0,0,0,0.6)" }} />
                     </div>
                   </TooltipTrigger>
@@ -52,3 +50,4 @@ export function MediaHeatmap({ heatmap }: Props) {
     </PremiumGlass>
   );
 }
+

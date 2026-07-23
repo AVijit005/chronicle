@@ -1,22 +1,82 @@
 version: '3.8'
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: chronicle-postgres-e2e
+    environment:
+      POSTGRES_USER: chronicle
+      POSTGRES_PASSWORD: chronicle
+      POSTGRES_DB: chronicle
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U chronicle -d chronicle']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  redis:
+    image: redis:7-alpine
+    container_name: chronicle-redis-e2e
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: chronicle-api-e2e
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://chronicle:chronicle@postgres:5432/chronicle?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CORS_ORIGIN: http://127.0.0.1:5173,http://localhost:5173
+      OAUTH_ENCRYPTION_KEY: super-secret-key-that-is-at-least-32-chars-long
+      JWT_ACCESS_SECRET: test-secret-super-long-so-it-passes-32-chars-test
+      JWT_REFRESH_SECRET: test-refresh-secret-super-long-so-it-passes-32-chars-test
+      GOOGLE_CLIENT_ID: dummy-client-id
+      GOOGLE_CLIENT_SECRET: dummy-client-secret
+      EMAIL_VERIFICATION_REQUIRED: "false"
+      GOOGLE_CALLBACK_URL: http://localhost:3000/api/auth/google/callback
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && node dist/main"
+
   app:
     image: oven/bun:1
     volumes:
       - .:/app
       - /app/node_modules
     working_dir: /app
+    ports:
+      - "5173:5173"
     environment:
       - NODE_ENV=development
+      - VITE_API_URL=http://api:3000/api
+      - API_HOST=http://api:3000
     command: bash -c "bun install && bun run dev --host 0.0.0.0"
+    depends_on:
+      - api
+
   e2e:
     image: mcr.microsoft.com/playwright:v1.61.1-jammy
+    network_mode: "service:app"
     volumes:
       - .:/e2e
       - /e2e/node_modules
+      - ./artifacts:/e2e/artifacts
     working_dir: /e2e
-    command: bash -c "sleep 10 && npm install --legacy-peer-deps && sed -i 's/localhost:3000/app:5000/g' tests/e2e.test.ts && npx playwright test tests/e2e.test.ts"
+    command: bash -c "sleep 15 && npm install --legacy-peer-deps && sed -i 's/app:5173/127.0.0.1:5173/g' tests/e2e.test.ts && sed -i 's/localhost:5000/127.0.0.1:5173/g' tests/e2e.test.ts && npx playwright test tests/e2e.test.ts"
     depends_on:
       - app
     environment:
       - CI=1
+
+

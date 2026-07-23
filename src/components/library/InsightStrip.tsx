@@ -1,9 +1,18 @@
 import { Sparkles } from "lucide-react";
-import { smartInsights } from "@/lib/library";
+import { useInsights } from "@/hooks/use-analytics";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
 export function InsightStrip() {
-  const items = smartInsights().slice(0, 4);
+  const { data: insights } = useInsights();
+  
+  const items = [];
+  if (insights?.mostActiveWeekday) items.push(`Most active on ${insights.mostActiveWeekday}s`);
+  if (insights?.favoriteGenre) items.push(`Favorite genre is ${insights.favoriteGenre}`);
+  if (insights?.mostProductiveMonth) items.push(`Most productive in ${insights.mostProductiveMonth}`);
+  if (insights?.totalUniqueMedia) items.push(`Tracked ${insights.totalUniqueMedia} items total`);
+
+  if (!items.length) return null;
+
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {items.map((text, i) => (

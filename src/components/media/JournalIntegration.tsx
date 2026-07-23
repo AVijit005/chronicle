@@ -1,9 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import { JOURNAL } from "@/lib/types";
+import { } from "@/lib/types";
 import { NotebookPen } from "lucide-react";
 import type { MediaItem } from "@/lib/types";
+const JOURNAL: any[] = [];
+
+
 
 export function JournalIntegration({ item }: { item: MediaItem }) {
   const entries = JOURNAL.slice(0, 3);

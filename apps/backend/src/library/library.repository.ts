@@ -95,6 +95,8 @@ export class LibraryRepository {
       },
     });
 
+    if (!item || item.deletedAt) return null;
+
     return (item as LibraryRow) ?? null;
   }
 
@@ -121,7 +123,7 @@ export class LibraryRepository {
             }
           : undefined,
       });
-      if (!item || item.userId !== userId) return null;
+      if (!item || item.userId !== userId || item.deletedAt) return null;
       return item as LibraryRow;
     }
 
@@ -147,7 +149,7 @@ export class LibraryRepository {
             }
           : undefined,
       });
-      if (item && item.userId === userId) return item as LibraryRow;
+      if (item && item.userId === userId && !item.deletedAt) return item as LibraryRow;
     }
     return null;
   }
@@ -163,15 +165,15 @@ export class LibraryRepository {
     for (const t of this.getTypes()) {
       const delegate = this.getDelegate(t);
       if (!delegate) continue;
-      const rows = await this.executeFindAll(delegate, userId, t, { ...params, limit: params.limit + 1 });
+      const rows = await this.executeFindAll(delegate, userId, t, params);
       all.push(...rows);
       if (all.length > params.limit) break;
     }
-    return all.slice(0, params.limit + 1);
+    return all.slice(0, params.limit);
   }
 
   private buildWhere(userId: string, params: LibraryFindManyParams): Record<string, unknown> {
-    const where: Record<string, unknown> = { userId };
+    const where: Record<string, unknown> = { userId, deletedAt: null };
     if (params.status) where.status = params.status;
     if (params.favorite !== undefined) where.favorite = params.favorite;
     if (params.hidden !== undefined) where.hidden = params.hidden;
@@ -198,7 +200,7 @@ export class LibraryRepository {
     const query: Record<string, unknown> = {
       where,
       orderBy,
-      take: params.limit + 1,
+      take: params.limit,
     };
 
     if (cfg) {
@@ -271,7 +273,7 @@ export class LibraryRepository {
     if (!delegate || !cfg) return null;
 
     const existing = await delegate.findUnique({ where: { id } });
-    if (!existing || existing.userId !== userId) return null;
+    if (!existing || existing.userId !== userId || existing.deletedAt) return null;
 
     const updateData = { ...data, updatedAt: new Date() };
 
@@ -301,10 +303,11 @@ export class LibraryRepository {
     if (!delegate) return false;
 
     const existing = await delegate.findUnique({ where: { id } });
-    if (!existing || existing.userId !== userId) return false;
+    if (!existing || existing.userId !== userId || existing.deletedAt) return false;
 
-    await delegate.delete({
+    await delegate.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
 
     return true;
@@ -318,7 +321,7 @@ export class LibraryRepository {
       if (!delegate) return [];
       return delegate.groupBy({
         by: ['status'],
-        where: { userId } as any,
+        where: { userId, deletedAt: null } as any,
         _count: { status: true },
       });
     });
@@ -338,7 +341,7 @@ export class LibraryRepository {
     for (const t of this.getTypes()) {
       const delegate = this.getDelegate(t);
       if (!delegate) continue;
-      counts[t] = await delegate.count({ where: { userId } as any });
+      counts[t] = await delegate.count({ where: { userId, deletedAt: null } as any });
     }
     return counts;
   }
@@ -348,6 +351,6 @@ export class LibraryRepository {
     const mediaDelegate = prismaAny[type];
     if (!mediaDelegate) return false;
     const item = await mediaDelegate.findUnique({ where: { id: mediaId } });
-    return item !== null && item.deletedAt === null;
+    return !!item && !item.deletedAt;
   }
 }

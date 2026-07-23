@@ -1,5 +1,6 @@
-import { TasteChip } from "./TasteChip";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
+import { TasteChip } from "./TasteChip";
+
 import { cn } from "@/lib/utils";
 import { cascade } from "@/lib/motion";
 
@@ -122,3 +123,6 @@ function Fact({ label, value }: { label: string; value: React.ReactNode }) {
     </div>
   );
 }
+
+
+

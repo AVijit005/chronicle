@@ -91,7 +91,7 @@ function ImportExportPage() {
           kind,
           year,
           poster:
-            "https://images.unsplash.com/photo-1489599577372-39e9b94f2bb4?auto=format&fit=crop&w=800&h=1200&q=80",
+            null,
           backdrop: null,
           rating: Number(cells[idx("rating")]) || 0,
           progress: 0,

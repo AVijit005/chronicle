@@ -28,7 +28,7 @@ export function CollectionCard({
   const aspect =
     size === "lg" ? "aspect-[16/10]" : size === "sm" ? "aspect-square" : "aspect-[4/5]";
 
-  const accent = c.color ?? "oklch(0.72 0.18 255)";
+  const accent = c.color ?? "var(--primary)";
   const coverImages = c.items?.slice(0, 4).map((item) => item.posterUrl).filter(Boolean) as string[] ?? [];
   const coverSrc = c.cover ?? coverImages[0] ?? "";
 

@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class JournalRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private prismaAny(): Record<string, any> {
+  public prismaAny(): Record<string, any> {
     return this.prisma as unknown as Record<string, any>;
   }
 
@@ -33,7 +33,7 @@ export class JournalRepository {
 
   async findEntriesByUserId(userId: string, limit = 50, cursor?: string): Promise<Record<string, any>[]> {
     const where: Record<string, any> = { userId };
-    if (cursor) where.createdAt = { lt: cursor };
+    if (cursor) where.createdAt = { lt: new Date(cursor) };
     return this.prismaAny().journalEntry.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -95,7 +95,7 @@ export class JournalRepository {
 
   async findMemoriesByUserId(userId: string, limit = 50, cursor?: string): Promise<Record<string, any>[]> {
     const where: Record<string, any> = { userId };
-    if (cursor) where.createdAt = { lt: cursor };
+    if (cursor) where.createdAt = { lt: new Date(cursor) };
     return this.prismaAny().memory.findMany({
       where,
       orderBy: [{ isPinned: 'desc' }, { createdAt: 'desc' }],
@@ -128,8 +128,8 @@ export class JournalRepository {
       await this.prismaAny().memoryMedia.create({
         data: { memoryId, [mediaField]: mediaId },
       });
-    } catch {
-      // duplicate or invalid - ignore
+    } catch (e: any) {
+      if (e?.code !== 'P2002') throw e;
     }
   }
 
@@ -152,7 +152,7 @@ export class JournalRepository {
       const end = new Date(year, 11, 31, 23, 59, 59, 999);
       where.eventDate = { gte: start, lte: end };
     }
-    if (cursor) where.createdAt = { lt: cursor };
+    if (cursor) where.eventDate = { lt: new Date(cursor) };
 
     return this.prismaAny().timelineEvent.findMany({
       where,
@@ -212,7 +212,7 @@ export class JournalRepository {
 
   async findQuotesByUserId(userId: string, limit = 50, cursor?: string): Promise<Record<string, any>[]> {
     const where: Record<string, any> = { userId };
-    if (cursor) where.createdAt = { lt: cursor };
+    if (cursor) where.createdAt = { lt: new Date(cursor) };
     return this.prismaAny().favoriteQuote.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -279,7 +279,7 @@ export class JournalRepository {
 
   async findHighlightsByUserId(userId: string, limit = 50, cursor?: string): Promise<Record<string, any>[]> {
     const where: Record<string, any> = { userId };
-    if (cursor) where.createdAt = { lt: cursor };
+    if (cursor) where.createdAt = { lt: new Date(cursor) };
     return this.prismaAny().highlight.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -304,3 +304,4 @@ export class JournalRepository {
     return this.prismaAny().highlight.count({ where: { userId } });
   }
 }
+

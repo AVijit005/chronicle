@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import React from "react";
 import { CinematicHero } from "@/components/media/CinematicHero";
 import { MediaCard } from "@/components/media/MediaCard";
 import { Section } from "@/components/common/Section";
@@ -101,7 +102,10 @@ function Home() {
     { quote: "Memory isn't about perfect recall. It's about what chooses to stay.", attr: "From your journal" },
     { quote: "Every library is a self-portrait painted in other people's stories.", attr: "A quiet thought" },
   ];
-  const dailyQuote = QUOTES[new Date().getDate() % QUOTES.length];
+  const [dailyQuote, setDailyQuote] = React.useState(QUOTES[0]);
+  React.useEffect(() => {
+    setDailyQuote(QUOTES[new Date().getDate() % QUOTES.length]);
+  }, []);
 
   return (
     <div className="pt-2">

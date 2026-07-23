@@ -1,7 +1,10 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Quote, ArrowUpRight } from "lucide-react";
-import { JOURNAL } from "@/lib/types";
+import { } from "@/lib/types";
+const JOURNAL: any[] = [];
+
+
 
 export function JournalPreview() {
   return (

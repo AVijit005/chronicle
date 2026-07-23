@@ -16,12 +16,12 @@ export default defineConfig({
   vite: {
     server: {
       host: "0.0.0.0",
-      port: 5000,
+      port: 5173,
       strictPort: true,
       allowedHosts: true,
       proxy: {
         "/api": {
-          target: "http://localhost:3000",
+          target: process.env.API_HOST || "http://localhost:3000",
           changeOrigin: true,
         },
       },

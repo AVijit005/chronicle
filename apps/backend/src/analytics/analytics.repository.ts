@@ -39,7 +39,7 @@ export class AnalyticsRepository {
       if (!delegate) return [];
       return delegate.groupBy({
         by: ['status'],
-        where: { userId },
+        where: { userId, deletedAt: null },
         _count: { status: true },
       });
     });
@@ -59,7 +59,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const count = await delegate.count({
-        where: { userId, status: 'COMPLETED',  },
+        where: { userId, status: 'COMPLETED', deletedAt: null },
       });
       if (count > 0) counts[cfg.type] = count;
     }
@@ -72,11 +72,31 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const count = await delegate.count({
-        where: { userId,  },
+        where: { userId, deletedAt: null },
       });
       if (count > 0) counts[cfg.type] = count;
     }
     return counts;
+  }
+
+  async getHoursAndEpisodesByType(userId: string): Promise<{ hours: Record<string, number>, episodes: number }> {
+    const hours: Record<string, number> = {};
+    let episodes = 0;
+    for (const cfg of USER_LIB_TYPES) {
+      const delegate = this.prismaAny()[cfg.delegate];
+      if (!delegate) continue;
+      const items = await delegate.findMany({
+        where: { userId, deletedAt: null },
+        select: { hoursSpent: true, minutesSpent: true, episodesWatched: true },
+      });
+      let h = 0;
+      for (const item of items) {
+        h += (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
+        if (item.episodesWatched) episodes += item.episodesWatched;
+      }
+      hours[cfg.type] = h;
+    }
+    return { hours, episodes };
   }
 
   async getTotalLibraryItems(userId: string): Promise<number> {
@@ -84,7 +104,7 @@ export class AnalyticsRepository {
     for (const cfg of USER_LIB_TYPES) {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
-      total += await delegate.count({ where: { userId,  } });
+      total += await delegate.count({ where: { userId, deletedAt: null } });
     }
     return total;
   }
@@ -96,7 +116,7 @@ export class AnalyticsRepository {
       if (!delegate) return [];
       return delegate.groupBy({
         by: ['progressPercentage'],
-        where: { userId },
+        where: { userId, deletedAt: null },
         _count: { progressPercentage: true },
       });
     });
@@ -126,7 +146,7 @@ export class AnalyticsRepository {
       if (!delegate) return [];
       return delegate.groupBy({
         by: ['rating'],
-        where: { userId, rating: { not: null } },
+        where: { userId, rating: { not: null }, deletedAt: null },
         _count: { rating: true },
       });
     });
@@ -151,7 +171,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) return null;
       return delegate.aggregate({
-        where: { userId, rating: { not: null } },
+        where: { userId, rating: { not: null }, deletedAt: null },
         _sum: { rating: true },
         _count: { rating: true },
       });
@@ -165,7 +185,7 @@ export class AnalyticsRepository {
       }
     }
 
-    return totalCount > 0 ? totalSum / totalCount / 2 : null; // Convert to 0.5-5.0 scale
+    return totalCount > 0 ? totalSum / totalCount : null;
   }
 
   async getFavoriteCount(userId: string): Promise<number> {
@@ -173,7 +193,7 @@ export class AnalyticsRepository {
     for (const cfg of USER_LIB_TYPES) {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
-      total += await delegate.count({ where: { userId, favorite: true,  } });
+      total += await delegate.count({ where: { userId, favorite: true, deletedAt: null } });
     }
     return total;
   }
@@ -184,7 +204,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId,  },
+        where: { userId, deletedAt: null },
         select: { metadata: true },
       });
       for (const item of items) {
@@ -201,7 +221,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const count = await delegate.count({
-        where: { userId,  bookmarked: true },
+        where: { userId, bookmarked: true, deletedAt: null },
       });
       total += count;
     }
@@ -239,14 +259,14 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId,  },
+        where: { userId, deletedAt: null },
         orderBy: { createdAt: 'desc' },
         take: limit,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
       });
       for (const item of items) results.push({ ...item, _mediaType: cfg.type });
     }
-    results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    results.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
     return results.slice(0, limit);
   }
 
@@ -256,14 +276,14 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, status: 'COMPLETED',  },
+        where: { userId, status: 'COMPLETED', deletedAt: null },
         orderBy: { updatedAt: 'desc' },
         take: limit,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
       });
       for (const item of items) results.push({ ...item, _mediaType: cfg.type });
     }
-    results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    results.sort((a, b) => (b.updatedAt?.getTime() || 0) - (a.updatedAt?.getTime() || 0));
     return results.slice(0, limit);
   }
 
@@ -285,7 +305,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().journalEntry;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
@@ -295,7 +315,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().memory;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
@@ -305,7 +325,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().journalEntry;
     if (!delegate) return [];
     const items = await delegate.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       orderBy: { createdAt: 'desc' },
       take: limit,
       select: { createdAt: true },
@@ -325,7 +345,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, createdAt: { gte: startDate },  },
+        where: { userId, createdAt: { gte: startDate }, deletedAt: null },
         select: { createdAt: true },
       });
       for (const item of items) {
@@ -338,7 +358,7 @@ export class AnalyticsRepository {
     const journal = this.prismaAny().journalEntry;
     if (journal) {
       const entries = await journal.findMany({
-        where: { userId, createdAt: { gte: startDate } },
+        where: { userId, createdAt: { gte: startDate }, deletedAt: null },
         select: { createdAt: true },
       });
       for (const e of entries) {
@@ -351,7 +371,7 @@ export class AnalyticsRepository {
     const memory = this.prismaAny().memory;
     if (memory) {
       const mems = await memory.findMany({
-        where: { userId, createdAt: { gte: startDate } },
+        where: { userId, createdAt: { gte: startDate }, deletedAt: null },
         select: { createdAt: true },
       });
       for (const m of mems) {
@@ -365,9 +385,9 @@ export class AnalyticsRepository {
 
   // ─── Calendar ──────────────────────────────────────────────────────────────
 
-  async getCalendarData(userId: string, year: number, month: number): Promise<CalendarRawData> {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+  async getCalendarData(userId: string, year: number, month?: number): Promise<CalendarRawData> {
+    const startDate = month ? new Date(year, month - 1, 1) : new Date(year, 0, 1);
+    const endDate = month ? new Date(year, month, 0, 23, 59, 59, 999) : new Date(year, 11, 31, 23, 59, 59, 999);
 
     const journalCounts: Record<string, number> = {};
     const memoryCounts: Record<string, number> = {};
@@ -378,7 +398,7 @@ export class AnalyticsRepository {
     const journal = this.prismaAny().journalEntry;
     if (journal) {
       const entries = await journal.findMany({
-        where: { userId, createdAt: { gte: startDate, lte: endDate } },
+        where: { userId, createdAt: { gte: startDate, lte: endDate }, deletedAt: null },
         select: { createdAt: true },
       });
       for (const e of entries) {
@@ -391,7 +411,7 @@ export class AnalyticsRepository {
     const memory = this.prismaAny().memory;
     if (memory) {
       const mems = await memory.findMany({
-        where: { userId, createdAt: { gte: startDate, lte: endDate } },
+        where: { userId, createdAt: { gte: startDate, lte: endDate }, deletedAt: null },
         select: { createdAt: true },
       });
       for (const m of mems) {
@@ -405,7 +425,7 @@ export class AnalyticsRepository {
       const delegate = this.prismaAny()[cfg.delegate];
       if (!delegate) continue;
       const items = await delegate.findMany({
-        where: { userId, updatedAt: { gte: startDate, lte: endDate }, status: 'COMPLETED',  },
+        where: { userId, updatedAt: { gte: startDate, lte: endDate }, status: 'COMPLETED', deletedAt: null },
         select: { updatedAt: true, minutesSpent: true, hoursSpent: true },
       });
       for (const item of items) {
@@ -432,7 +452,7 @@ export class AnalyticsRepository {
       if (!delegate) continue;
 
       const items = await delegate.findMany({
-        where: { userId },
+        where: { userId, deletedAt: null },
         select: { 
           status: true, 
           rating: true, 
@@ -468,7 +488,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().timelineEvent;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       orderBy: { eventDate: 'desc' },
       take: limit,
     });
@@ -484,7 +504,7 @@ export class AnalyticsRepository {
 
     await delegate.upsert({
       where: { userId_snapshotDate: { userId, snapshotDate: today } },
-      update: { ...data, metadata: {} },
+      update: { ...data },
       create: { userId, snapshotDate: today, ...data },
     });
   }
@@ -493,7 +513,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().analyticsSnapshot;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       orderBy: { snapshotDate: 'desc' },
       take: limit,
     });
@@ -513,3 +533,5 @@ interface GenreRawData {
   genreRatings: Record<string, { total: number; count: number }>;
   genreTime: Record<string, number>;
 }
+
+

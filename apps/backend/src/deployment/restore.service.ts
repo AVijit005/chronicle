@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import * as fs from 'fs';
 
 export interface RestoreResult {
@@ -18,7 +18,7 @@ export class RestoreService {
       const databaseUrl = process.env.DATABASE_URL;
       if (!databaseUrl) throw new Error('DATABASE_URL not set');
 
-      execSync(`psql "${databaseUrl}" < "${dumpFile}"`, { timeout: 600000 });
+      execFileSync('psql', [databaseUrl, '-f', dumpFile], { timeout: 600000 });
       this.logger.log(`Database restored from: ${dumpFile}`);
       return { success: true };
     } catch (error) {
@@ -32,7 +32,7 @@ export class RestoreService {
       if (!fs.existsSync(archiveFile)) throw new Error(`Archive not found: ${archiveFile}`);
 
       const uploadRoot = process.env.UPLOAD_ROOT || './uploads';
-      execSync(`tar -xzf "${archiveFile}" -C "${uploadRoot}"`, { timeout: 300000 });
+      execFileSync('tar', ['-xzf', archiveFile, '-C', uploadRoot], { timeout: 300000 });
       this.logger.log(`Media restored from: ${archiveFile}`);
       return { success: true };
     } catch (error) {

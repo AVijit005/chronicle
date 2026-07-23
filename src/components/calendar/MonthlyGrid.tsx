@@ -1,7 +1,8 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Trophy } from "lucide-react";
-import { PremiumGlass } from "@/components/ui/PremiumGlass";
+
 
 interface CellData {
   day: number;
@@ -163,3 +164,5 @@ export function MonthlyGrid({ monthIdx, grid, selectedDay, onSelectDay }: Props)
     </PremiumGlass>
   );
 }
+
+

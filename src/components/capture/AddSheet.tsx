@@ -46,7 +46,7 @@ const STATUS: { value: MediaStatus; label: string; hint: string }[] = [
 ];
 
 const DEFAULT_POSTER =
-  "https://images.unsplash.com/photo-1489599577372-39e9b94f2bb4?auto=format&fit=crop&w=800&h=1200&q=80";
+  "";
 
 export function AddSheet({
   open,

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { MediaCard } from "@/components/media/MediaCard";
 import { StatusPageShell } from "@/components/library/StatusPageShell";
-import { completed } from "@/lib/library";
+import { completed, metaOf } from "@/lib/library";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app/library/completed")({
@@ -18,7 +18,8 @@ function CompletedPage() {
     .slice()
     .sort((a, b) => {
       if (sort === "Highest Rated") return (b.rating ?? 0) - (a.rating ?? 0);
-      return 0;
+      if (sort === "Most Rewatched") return (b.stats?.rewatches ?? 0) - (a.stats?.rewatches ?? 0);
+      return new Date(metaOf(b.id).completedAt ?? 0).getTime() - new Date(metaOf(a.id).completedAt ?? 0).getTime();
     });
   return (
     <StatusPageShell

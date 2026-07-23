@@ -6,7 +6,12 @@ import { YourQuotesRail } from "@/components/memory/YourQuotesRail";
 export const Route = createFileRoute("/app/quotes")({ component: QuotesPage });
 
 function QuotesPage() {
-  const quotes = []();
+  const quotes = [
+    { text: "Some stories ask you to finish them. Others wait quietly until you're ready to be changed.", author: "Chronicle", context: "Weekly Reflection" },
+    { text: "The stories we return to say more about us than the stories we finish.", author: "Chronicle", context: "Taste Profile" },
+    { text: "Memory isn't about perfect recall. It's about what chooses to stay.", author: "Chronicle", context: "Journal" },
+    { text: "Every library is a self-portrait painted in other people's stories.", author: "Chronicle", context: "Quiet Thought" },
+  ];
   const hero = quotes[0];
   const rest = quotes.slice(1, 37);
 
@@ -23,7 +28,7 @@ function QuotesPage() {
         </p>
       </header>
 
-      {hero && <PullQuote attribution={`${hero.source} · ${hero.refTitle}`}>{hero.text}</PullQuote>}
+      {hero && <PullQuote attribution={`${hero.author} · ${hero.context}`}>{hero.text}</PullQuote>}
 
       <section className="mt-12">
         <YourQuotesRail />

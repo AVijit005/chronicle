@@ -1,7 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useMemo } from "react";
 import { Heart, Bookmark, Ticket, Music2, Star, Award, Calendar } from "lucide-react";
-import { MEDIA } from "@/lib/types";
 import { useMouseParallax } from "@/lib/useParallax";
 import { useTimeOfDay } from "@/lib/useTimeOfDay";
 import { dur, ease } from "@/lib/motion";
@@ -242,7 +241,7 @@ export function AuthStage() {
                   "dune": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
                   "cyberpunk": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7f.png"
                 };
-                const media = MEDIA.find((m) => m.id === p.id) ?? {
+                const media = {
                   title: p.id,
                   poster: MOCK_POSTERS[p.id] || "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
                   rating: 5
@@ -702,7 +701,7 @@ function ArtifactCard({ artifact, delay }: { artifact: Artifact; delay: number }
                     height: `${Math.max(8, Math.min(100, h))}%`,
                     background:
                       i < 16
-                        ? "oklch(0.72 0.18 255)"
+                        ? "var(--primary)"
                         : "oklch(0.72 0.18 255 / 0.3)",
                   }}
                 />
@@ -729,7 +728,7 @@ function ArtifactCard({ artifact, delay }: { artifact: Artifact; delay: number }
               style={{
                 width: `${artifact.pct}%`,
                 background:
-                  "linear-gradient(90deg, oklch(0.72 0.18 255), oklch(0.7 0.22 320))",
+                  "linear-gradient(90deg, var(--primary), oklch(0.7 0.22 320))",
                 boxShadow: "0 0 12px oklch(0.72 0.18 255 / 0.6)",
               }}
             />
@@ -784,3 +783,4 @@ function ArtifactCard({ artifact, delay }: { artifact: Artifact; delay: number }
 
 /* Re-export to satisfy tree-shaken icon imports if needed elsewhere. */
 export { Ticket };
+

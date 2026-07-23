@@ -1,7 +1,11 @@
 import { NotebookPen, Sparkles } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumSquircle } from "@/components/ui/PremiumSquircle";
-import { JOURNAL_PROMPTS } from "@/lib/types";
+import { } from "@/lib/types";
+const JOURNAL: any[] = [];
+const JOURNAL_PROMPTS: any[] = [];
+
+
 
 interface Props {
   promptIndex: number;

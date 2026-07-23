@@ -15,9 +15,11 @@ import { MediaActionsProvider, useMediaActions } from "@/lib/store/MediaActionsC
 import { Toaster } from "@/components/ui/sonner";
 import { useOnline } from "@/hooks/use-online";
 import { trackPageView } from "@/lib/analytics-tracker";
+import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const [search, setSearch] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const reduced = useReducedMotion();
   const online = useOnline();
@@ -41,8 +43,17 @@ export function AppShell({ children }: { children?: ReactNode }) {
           Skip to main content
         </a>
         <AtmosphereBackground />
-        <Sidebar onOpenSearch={() => setSearch(true)} />
-        <div className="lg:pl-[296px]">
+        <Sidebar 
+          onOpenSearch={() => setSearch(true)} 
+          collapsed={sidebarCollapsed} 
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+        />
+        <div 
+          className={cn(
+            "transition-[padding-left] duration-[350ms] ease-[cubic-bezier(0.22,1,0.36,1)] max-lg:!pl-0",
+            sidebarCollapsed ? "pl-[108px]" : "pl-[296px]"
+          )}
+        >
           <TopBar onOpenSearch={() => setSearch(true)} />
           <main
             id="main-content"
@@ -82,14 +93,13 @@ function CaptureFab() {
       aria-label="Add to Chronicle"
       title="Add to Chronicle (⌘N)"
       className="group press-scale fixed bottom-24 right-5 z-40 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all duration-300 ease-out lg:bottom-10 lg:right-10
-      bg-black/40 backdrop-blur-xl 
-      ring-1 ring-white/15 
-      shadow-[inset_0_0_20px_oklch(0.72_0.18_255/0.15),0_8px_24px_-8px_rgba(0,0,0,0.5)]
-      hover:-translate-y-1 hover:bg-black/30 hover:ring-white/25
-      hover:shadow-[inset_0_0_30px_oklch(0.72_0.18_255/0.3),0_12px_32px_-10px_oklch(0.72_0.18_255/0.6)]"
+      bg-background/80 backdrop-blur-xl 
+      ring-1 ring-border
+      shadow-lg
+      hover:-translate-y-1 hover:bg-background hover:ring-primary/50 hover:shadow-primary/20"
     >
-      <Plus className="h-[18px] w-[18px] text-cyan-300 transition-colors duration-300 group-hover:text-cyan-200" />
-      <span className="hidden sm:inline bg-gradient-to-r from-cyan-300 to-violet-300 bg-clip-text text-transparent transition-all duration-300 group-hover:from-cyan-200 group-hover:to-violet-200">
+      <Plus className="h-[18px] w-[18px] text-primary transition-colors duration-300 group-hover:text-primary/80" />
+      <span className="hidden sm:inline text-primary transition-all duration-300 group-hover:text-primary/80">
         Add
       </span>
     </button>

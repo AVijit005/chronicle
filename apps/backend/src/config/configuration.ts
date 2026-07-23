@@ -38,6 +38,9 @@ export default () => ({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/api/auth/google/callback',
   },
+  oauth: {
+    encryptionKey: process.env.OAUTH_ENCRYPTION_KEY || (() => { if (process.env.NODE_ENV === 'production') throw new Error('OAUTH_ENCRYPTION_KEY required in production'); return 'default_secret_key_32_bytes_long!'; })(),
+  },
   emailVerification: {
     ttlSeconds: parseInt(process.env.EMAIL_VERIFICATION_TTL_SECONDS || '86400', 10),
     required: process.env.EMAIL_VERIFICATION_REQUIRED !== 'false',

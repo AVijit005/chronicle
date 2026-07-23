@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { motion } from "motion/react";
 import { ArrowLeft, CalendarDays, RefreshCcw, User, Share2, Heart, Pencil } from "lucide-react";
 import { useCollection } from "@/hooks/use-collections";
@@ -176,10 +177,10 @@ function CollectionDetailContent({ collection: c }: { collection: UICollection }
               </span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <PremiumButton variant="primary" icon={<Pencil className="h-4 w-4" />}>
+              <PremiumButton variant="primary" icon={<Pencil className="h-4 w-4" />} onClick={() => toast.info("Collection editing coming soon.")}>
                 Edit collection
               </PremiumButton>
-              <PremiumButton variant="secondary" icon={<Share2 className="h-4 w-4" />}>
+              <PremiumButton variant="secondary" icon={<Share2 className="h-4 w-4" />} onClick={() => toast.info("Sharing coming soon.")}>
                 Share
               </PremiumButton>
               <PremiumButton variant="secondary" icon={<Heart className="h-4 w-4" />}>

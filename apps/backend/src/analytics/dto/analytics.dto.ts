@@ -122,12 +122,6 @@ export class CalendarDto {
 export class InsightsDto {
   mostActiveWeekday: string;
   favoriteGenre: string | null;
-  favoriteDecade: string | null;
-  longestBinge: string | null;
-  mostRewatchedMedia: string | null;
-  mostRereadBook: string | null;
-  mostReplayedGame: string | null;
-  averageCompletionTime: number | null;
   mostProductiveMonth: string | null;
   totalUniqueMedia: number;
   totalHoursSpent: number;

@@ -49,7 +49,7 @@ export function RecentlyFinishedTimeline({ limit }: { limit?: number }) {
                         className="flex items-center gap-3 rounded-2xl p-3"
                       >
                         <img
-                          src={m.poster}
+                          src={m.poster || undefined}
                           alt=""
                           className="h-16 w-12 shrink-0 rounded-md object-cover"
                           loading="lazy"

@@ -23,7 +23,7 @@ export function useJournalEntry(id: string) {
   return useQuery({
     queryKey: queryKeys.journal.entry(id),
     queryFn: () => journalApi.getJournalEntry(id),
-    enabled: !!id,
+    enabled: !!id && !!user,
   });
 }
 
@@ -62,6 +62,7 @@ export function useUpdateJournalEntry() {
     onSuccess: (_data, { id }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.journal.entry(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.journal.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline.all });
     },
   });
 }

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { RotateCcw } from "lucide-react";
 import { StatusPageShell } from "@/components/library/StatusPageShell";
 import { dropped, metaOf } from "@/lib/library";
+import { useLibraryStore } from "@/lib/store/libraryStore";
 
 export const Route = createFileRoute("/app/library/dropped")({
   component: DroppedPage,
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/app/library/dropped")({
 
 function DroppedPage() {
   const items = dropped();
+  const setStatus = useLibraryStore((s) => s.setStatus);
   return (
     <StatusPageShell
       status="dropped"
@@ -20,11 +22,11 @@ function DroppedPage() {
         {items.map((m) => {
           const meta = metaOf(m.id);
           return (
-            <div key={m.id} className="glass flex items-center gap-4 rounded-2xl p-3 opacity-90">
+            <div key={m.id} className="glass flex items-center gap-4 rounded-2xl p-3">
               <img
-                src={m.poster}
+                src={m.poster || undefined}
                 alt=""
-                className="h-20 w-14 shrink-0 rounded-md object-cover saturate-75"
+                className="h-20 w-14 shrink-0 rounded-md object-cover"
                 loading="lazy"
               />
               <div className="min-w-0 flex-1">
@@ -41,13 +43,12 @@ function DroppedPage() {
                   {m.year} · {m.kind}
                 </div>
               </div>
-              <Link
-                to="/app/media/$id"
-                params={{ id: m.id }}
+              <button
+                onClick={() => setStatus(m.id, "in_progress")}
                 className="press-scale glass-subtle inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1 text-[11px] text-muted-foreground hover:text-foreground"
               >
                 <RotateCcw className="h-3 w-3" /> Restart
-              </Link>
+              </button>
             </div>
           );
         })}

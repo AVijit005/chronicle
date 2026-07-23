@@ -1,6 +1,6 @@
+import { useLibrary } from "@/hooks/use-library";
 import { ArrowUpRight } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
-import { MEDIA } from "@/lib/types";
 import type { LifeChapter } from "@/lib/memoryInsights";
 import { MemoryChip } from "./MemoryChip";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,8 @@ interface Props {
 }
 
 export function LifeChapterCard({ chapter, className }: Props) {
+  const { data: libraryData } = useLibrary({ limit: 100 });
+  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
   const covers = chapter.coverIds
     .map((id) => MEDIA.find((m) => m.id === id))
     .filter((m): m is NonNullable<typeof m> => !!m);

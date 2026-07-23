@@ -1,5 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
+
 export function CharacterQuotes({ quotes, accent }: { quotes: string[]; accent: string }) {
   if (!quotes.length) return null;
   return (
@@ -14,3 +15,6 @@ export function CharacterQuotes({ quotes, accent }: { quotes: string[]; accent: 
     </div>
   );
 }
+
+
+

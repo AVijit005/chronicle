@@ -20,7 +20,7 @@ const CONTINUE_LABEL: Record<string, string> = {
 
 export function ContinueExperience({ item }: { item: UIMediaItem }) {
   const continueLabel = CONTINUE_LABEL[item.kind] ?? "Continue";
-  const accent = item.accent ?? "oklch(0.72 0.18 255)";
+  const accent = item.accent ?? "var(--primary)";
   const { openProgress } = useMediaActions();
   return (
     <motion.div

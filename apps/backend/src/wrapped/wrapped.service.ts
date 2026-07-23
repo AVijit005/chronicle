@@ -19,9 +19,9 @@ export class WrappedService {
       throw new ConflictException(`Wrapped for ${year} already exists. Use regenerate to create a new version.`);
     }
 
-    const { cards, stats, insights, summary, sharePayload } = await this.generator.generate(userId, year);
+    const { cards, stats, insights, summary, sharePayload, totalCompleted, totalHours, journalCount } = await this.generator.generate(userId, year);
 
-    const metadata = { cards, insights, summary, sharePayload, version: 1 };
+    const metadata = { cards, insights, summary, sharePayload, totalCompleted, totalHours, totalJournalEntries: journalCount, version: 1 };
     const wrappedYear = await this.repository.createWrappedYear({
       userId,
       year,
@@ -45,9 +45,9 @@ export class WrappedService {
     const oldMeta = (existing.metadata ?? {}) as Record<string, any>;
     const nextVersion = (oldMeta.version ?? 1) + 1;
 
-    const { cards, stats, insights, summary, sharePayload } = await this.generator.generate(userId, year);
+    const { cards, stats, insights, summary, sharePayload, totalCompleted, totalHours, journalCount } = await this.generator.generate(userId, year);
 
-    const metadata = { cards, insights, summary, sharePayload, version: nextVersion };
+    const metadata = { cards, insights, summary, sharePayload, totalCompleted, totalHours, totalJournalEntries: journalCount, version: nextVersion };
     const updated = await this.repository.updateWrappedYear(existing.id, {
       metadata,
       generatedAt: new Date(),
@@ -71,9 +71,9 @@ export class WrappedService {
         year: item.year,
         generatedAt: item.generatedAt?.toISOString() ?? '',
         version: meta.version ?? 1,
-        totalCompleted: 0,
-        totalHours: 0,
-        totalJournalEntries: 0,
+        totalCompleted: meta.totalCompleted ?? 0,
+        totalHours: meta.totalHours ?? 0,
+        totalJournalEntries: meta.totalJournalEntries ?? 0,
       };
     });
   }
@@ -116,9 +116,9 @@ export class WrappedService {
       year: wrapped.year,
       generatedAt: wrapped.generatedAt?.toISOString() ?? '',
       version: meta.version ?? 1,
-      totalCompleted: 0,
-      totalHours: 0,
-      totalJournalEntries: 0,
+      totalCompleted: meta.totalCompleted ?? 0,
+      totalHours: meta.totalHours ?? 0,
+      totalJournalEntries: meta.totalJournalEntries ?? 0,
     };
   }
 
@@ -139,7 +139,7 @@ export class WrappedService {
     summary: string,
     version: number,
   ): WrappedDto {
-    const sharePayload: Record<string, unknown> = {
+    const sharePayload = wrapped.metadata?.sharePayload ?? {
       year: wrapped.year,
       stats: stats.slice(0, 10),
       insights: insights.slice(0, 5),

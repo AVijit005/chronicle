@@ -1,7 +1,8 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Sparkles, BookmarkPlus, NotebookPen } from "lucide-react";
-import { PremiumGlass } from "@/components/ui/PremiumGlass";
+
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { cn } from "@/lib/utils";
 
@@ -63,3 +64,6 @@ export function DiscoveryHero({ className, recommendedToday: rec }: Props) {
     </motion.section>
   );
 }
+
+
+

@@ -1,7 +1,11 @@
 // Memory Layer — deterministic, SSR-safe.
 // Source of truth for memory data, types, and selectors across Chronicle.
 import { mulberry } from "@/lib/seed";
-import { MEDIA, JOURNAL, COLLECTIONS, type MediaItem } from "@/lib/types";
+import { MEDIA, type MediaItem } from "@/lib/types";
+const COLLECTIONS: any[] = [];
+const JOURNAL: any[] = [];
+
+
 
 /* ============================================================
  * Fixed "today" so all relative-time math is SSR-deterministic.

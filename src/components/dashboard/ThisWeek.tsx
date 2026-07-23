@@ -1,8 +1,11 @@
 import { motion } from "motion/react";
 import { Film, BookOpen, Gamepad2, Music2, Target, Flame, Sparkles } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
-import { THIS_WEEK } from "@/lib/types";
+import { } from "@/lib/types";
 import { CountUp } from "@/components/landing/CountUp";
+const THIS_WEEK: any[] = [];
+
+
 
 type Item = {
   key: string;
@@ -20,7 +23,7 @@ const ITEMS: Item[] = [
     label: "Watch time",
     value: THIS_WEEK.watchTime,
     suffix: "h",
-    color: "oklch(0.72 0.18 255)",
+    color: "var(--primary)",
   },
   {
     key: "read",

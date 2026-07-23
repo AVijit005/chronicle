@@ -130,7 +130,7 @@ export function StatCardPremium({
         </div>
         {delta && (
           <div className="mt-1 text-xs text-muted-foreground">
-            <span className="text-emerald-300/90">{delta}</span> · vs last period
+            <span className={delta.toString().startsWith('-') ? "text-rose-400/90" : "text-emerald-300/90"}>{delta}</span> · vs last period
           </div>
         )}
       </div>
@@ -154,7 +154,7 @@ export function ProgressRing({
 }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const v = Math.max(0, Math.min(100, value));
+  const v = Number.isNaN(value) ? 0 : Math.max(0, Math.min(100, value));
   
   return (
     <div className="relative flex items-center justify-center mb-5" style={{ width: size, height: size }}>
@@ -184,8 +184,8 @@ export function ProgressRing({
           fill="none"
           strokeDasharray={c}
           initial={{ strokeDashoffset: c }}
-          whileInView={{ strokeDashoffset: c - (c * v) / 100 }}
-          viewport={{ once: true }}
+          animate={{ strokeDashoffset: c - (c * v) / 100 }}
+          
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         />
       </svg>

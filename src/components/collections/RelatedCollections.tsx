@@ -28,7 +28,7 @@ export function RelatedCollections({ exclude }: { exclude: string }) {
 
 function Mini({ c }: { c: UICollection }) {
   const coverSrc = c.cover ?? c.items?.[0]?.posterUrl ?? "";
-  const accent = c.color ?? "oklch(0.72 0.18 255)";
+  const accent = c.color ?? "var(--primary)";
   return (
     <Link
       to="/app/collections/$id"

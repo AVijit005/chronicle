@@ -15,7 +15,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         classNames: {
           toast: [
             "group toast",
-            "!rounded-2xl !border !border-white/10",
+            "!rounded-2xl !border !border-foreground/10",
             "!bg-[color:color-mix(in_oklab,var(--popover)_82%,transparent)]",
             "!backdrop-blur-xl !text-foreground",
             "!shadow-[0_24px_60px_-24px_oklch(0_0_0/0.7),inset_0_1px_0_oklch(1_0_0/0.06)]",
@@ -24,9 +24,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
           title: "text-sm font-medium",
           description: "!text-muted-foreground text-xs leading-relaxed",
           actionButton: "!bg-primary !text-primary-foreground !rounded-lg !text-xs !font-medium",
-          cancelButton: "!bg-white/[0.05] !text-muted-foreground !rounded-lg !text-xs",
+          cancelButton: "!bg-foreground/5 !text-muted-foreground !rounded-lg !text-xs",
           closeButton:
-            "!bg-white/[0.05] !border-white/10 !text-muted-foreground hover:!bg-white/10",
+            "!bg-foreground/5 !border-foreground/10 !text-muted-foreground hover:!bg-foreground/10",
           success: "!text-foreground",
           error: "!text-foreground",
           info: "!text-foreground",

@@ -7,9 +7,10 @@ export function ChallengeCard({
   challenge: c,
   className,
 }: {
-  challenge: Challenge;
+  challenge?: Challenge;
   className?: string;
 }) {
+  if (!c) return null;
   const pct = Math.round((c.current / c.target) * 100);
   return (
     <PremiumGlass variant="subtle" glow={c.accent} className={cn("h-full", className)}>
@@ -32,7 +33,7 @@ export function ChallengeCard({
             {c.suggestions.slice(0, 3).map((m) => (
               <li key={m.id}>
                 <img
-                  src={m.poster}
+                  src={m.poster || undefined}
                   alt=""
                   className="h-12 w-9 rounded-md object-cover ring-1 ring-white/10"
                 />

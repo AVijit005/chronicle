@@ -1,7 +1,11 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Send, AlertCircle } from "lucide-react";
-import { JOURNAL_PROMPTS } from "@/lib/types";
+import { } from "@/lib/types";
+const JOURNAL: any[] = [];
+const JOURNAL_PROMPTS: any[] = [];
+
+
 
 interface Props {
   isOpen: boolean;

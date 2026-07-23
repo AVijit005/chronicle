@@ -7,10 +7,9 @@ export class InsightsService {
   constructor(private readonly repository: AnalyticsRepository) {}
 
   async getInsights(userId: string): Promise<InsightsDto> {
-    const [activityData, genreData, _completedByType, totalItems] = await Promise.all([
+    const [activityData, genreData, totalItems] = await Promise.all([
       this.repository.getActivityData(userId, 365),
       this.repository.getGenreData(userId),
-      this.repository.countCompletedByType(userId),
       this.repository.getTotalLibraryItems(userId),
     ]);
 
@@ -21,26 +20,12 @@ export class InsightsService {
       const day = dayNames[new Date(date).getDay()];
       weekdayCounts[day] = (weekdayCounts[day] ?? 0) + count;
     }
-    const mostActiveWeekday = Object.entries(weekdayCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? 'Mon';
+    const mostActiveWeekday = Object.keys(weekdayCounts).length > 0 
+      ? Object.entries(weekdayCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? 'Mon'
+      : 'Mon';
 
     // Favorite genre
     const topGenre = Object.entries(genreData.genreCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? null;
-
-    // Favorite decade
-    const _decadeCounts: Record<string, number> = {};
-    // Simplified - uses genre data as proxy
-    const favoriteDecade = null;
-
-    // Longest binge
-    const longestBinge = null;
-
-    // Most rewatched / reread / replayed
-    const mostRewatched = null;
-    const mostReread = null;
-    const mostReplayed = null;
-
-    // Average completion time
-    const avgCompletionTime = null;
 
     // Most productive month
     const monthCounts: Record<string, number> = {};
@@ -51,20 +36,15 @@ export class InsightsService {
     const mostProductiveMonth = Object.entries(monthCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? null;
 
     // Total hours spent
-    let totalHours = 0;
+    const totalHours = Object.values(genreData.genreTime).reduce((a, b) => a + b, 0);
 
     return {
       mostActiveWeekday,
       favoriteGenre: topGenre,
-      favoriteDecade,
-      longestBinge,
-      mostRewatchedMedia: mostRewatched,
-      mostRereadBook: mostReread,
-      mostReplayedGame: mostReplayed,
-      averageCompletionTime: avgCompletionTime,
       mostProductiveMonth,
       totalUniqueMedia: totalItems,
       totalHoursSpent: Math.round(totalHours),
     };
   }
 }
+

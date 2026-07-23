@@ -27,7 +27,7 @@ function RewatchingPage() {
               className="glass flex items-center gap-4 rounded-2xl p-3 transition hover-lift"
             >
               <img
-                src={m.poster}
+                src={m.poster || undefined}
                 alt=""
                 className="h-20 w-14 shrink-0 rounded-md object-cover"
                 loading="lazy"

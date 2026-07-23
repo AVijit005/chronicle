@@ -35,7 +35,7 @@ const ITEM: MediaItem = {
   rating: 4.2,
   poster: POSTER,
   backdrop: POSTER,
-  accent: "oklch(0.72 0.18 255)",
+  accent: "var(--primary)",
   progress: 64,
   status: "in_progress",
   genres: ["Drama"],
@@ -49,7 +49,7 @@ const ITEM: MediaItem = {
   favorite: false,
   runtime: null,
   creator: null,
-};
+} as any;
 
 function VisualHarness() {
   return (

@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/app/search")({ component: Page });
 
 function Page() {
-  // hint: open palette via ⌘K
+  const [isMac, setIsMac] = useState(true);
+
   useEffect(() => {
-    const ev = new KeyboardEvent("keydown", { key: "k", metaKey: true });
-    setTimeout(() => window.dispatchEvent(ev), 200);
+    const mac = navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+    setIsMac(mac);
+    const ev = new KeyboardEvent("keydown", { key: "k", metaKey: mac, ctrlKey: !mac });
+    window.dispatchEvent(ev);
   }, []);
+  
   return (
     <div className="pt-2">
       <div className="glass grid place-items-center rounded-[40px] p-16 text-center">
@@ -19,7 +23,7 @@ function Page() {
         <h2 className="mt-5 font-display text-3xl">
           Press{" "}
           <kbd className="rounded-md border border-border/70 bg-background/60 px-2 py-1 text-base">
-            ⌘K
+            {isMac ? "⌘K" : "Ctrl+K"}
           </kbd>
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">

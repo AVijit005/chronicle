@@ -4,6 +4,7 @@ export function useOnline(): boolean {
   const [online, setOnline] = useState(typeof navigator !== "undefined" ? navigator.onLine : true);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const go = () => setOnline(true);
     const off = () => setOnline(false);
     window.addEventListener("online", go);

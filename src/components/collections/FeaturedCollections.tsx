@@ -1,3 +1,4 @@
+import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
@@ -36,7 +37,7 @@ export function FeaturedCollections() {
             <div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(125deg, transparent 30%, ${c.color ?? "oklch(0.72 0.18 255)"} / 0.35, oklch(0 0 0 / 0.85))`,
+                background: `linear-gradient(125deg, transparent 30%, ${c.color ?? "var(--primary)"} / 0.35, oklch(0 0 0 / 0.85))`,
               }}
             />
             <span
@@ -66,3 +67,5 @@ export function FeaturedCollections() {
     </div>
   );
 }
+
+

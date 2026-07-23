@@ -6,8 +6,9 @@ import { Star, NotebookPen, Trophy, Layers } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp, SegmentedFilter, ZoneHeading } from "@/components/analytics/AnalyticsKit";
 import {
-  MEMORY_CLUSTERS,
+  
 } from "@/lib/types";
+
 import { MEDIA } from "@/lib/types";
 import { LIFE_CHAPTERS } from "@/lib/memoryInsights";
 import { LifeChapterCard } from "@/components/memory/LifeChapterCard";
@@ -142,7 +143,7 @@ function TimelinePage() {
                const rawEvent = (timelineData?.items ?? []).find(d => d.id === e.id);
                const meta = (rawEvent?.metadata as any) || {};
                const media = {
-                 poster: meta.mediaPoster || "https://images.unsplash.com/photo-1616530940355-351fabd9524b",
+                 poster: meta.mediaPoster,
                  title: meta.mediaTitle || e.title,
                  creator: meta.mediaCreator || "Creator",
                  accent: e.color || "var(--primary)"
@@ -234,47 +235,6 @@ function TimelinePage() {
           </div>
         </div>
       </section>
-
-
-      {/* Memory clusters */}
-      <motion.section
-        initial={{ opacity: 0, y: reduced ? 0 : 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: reduced ? 0 : 0.7 }}
-        className="mt-24"
-      >
-        <ZoneHeading
-          eyebrow="Clusters"
-          title="Memory clusters"
-          sub="Things you experienced together."
-        />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {MEMORY_CLUSTERS.map((c) => (
-            <motion.div
-              key={c.id}
-              whileHover={{ y: reduced ? 0 : -4 }}
-              className="glass group relative overflow-hidden rounded-3xl p-5"
-            >
-              <div
-                className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full blur-3xl opacity-60"
-                style={{ background: c.accent }}
-              />
-              <div className="relative">
-                <div className="flex gap-1">
-                  {c.covers.map((src: string, i: number) => (
-                    <img key={i} src={src} alt="" loading="lazy" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none'; }} className="h-20 w-14 rounded-md object-cover" />
-                  ))}
-                </div>
-                <div className="mt-4 font-display text-2xl tracking-tight">{c.name}</div>
-                <div className="mt-0.5 text-xs text-muted-foreground">
-                  {c.period} · {c.count} stories
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
 
       {/* Editorial highlights */}
       <motion.section

@@ -48,7 +48,7 @@ export function StatusOverviewRow() {
                   {collage.map((src, i) => (
                     <img
                       key={i}
-                      src={src}
+                      src={src || undefined}
                       alt=""
                       className="h-16 w-12 rounded-lg border border-border/60 object-cover shadow-lg"
                       style={{ transform: `rotate(${(i - 1) * 5}deg)` }}

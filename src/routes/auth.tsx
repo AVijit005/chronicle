@@ -30,7 +30,7 @@ export const Route = createFileRoute("/auth")({
 
 const signInSchema = z.object({
   email: z.string().trim().email("Enter a valid email"),
-  password: z.string().min(6, "At least 6 characters"),
+  password: z.string().min(8, "At least 8 characters"),
   remember: z.boolean().optional(),
 });
 
@@ -38,8 +38,8 @@ const signUpSchema = z
   .object({
     fullName: z.string().min(2, "Enter your full name"),
     email: z.string().trim().email("Enter a valid email"),
-    password: z.string().min(6, "At least 6 characters"),
-    confirmPassword: z.string().min(6, "At least 6 characters"),
+    password: z.string().min(12, "At least 12 characters"),
+    confirmPassword: z.string().min(12, "At least 12 characters"),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords don't match",
@@ -98,7 +98,7 @@ function Auth() {
           email: values.email,
           password: values.password,
         });
-        analytics.identify(user.id);
+        analytics.identify(user.user.id);
         setStatus("success");
         setTimeout(() => navigate({ to: "/app" }), 700);
       } else {
@@ -108,15 +108,17 @@ function Auth() {
           password: values.password,
           name: values.fullName,
         });
-        analytics.track("signup");
-        // After registration, auto-login
+        
+        // Automatically log the user in after successful registration
         const user = await loginMutation.mutateAsync({
           email: values.email,
           password: values.password,
         });
-        analytics.identify(user.id);
+        
+        analytics.identify(user.user.id);
+        analytics.track("signup");
         setStatus("success");
-        setTimeout(() => navigate({ to: "/app/onboarding" }), 700);
+        setTimeout(() => navigate({ to: "/app" }), 700);
       }
     } catch (err: unknown) {
       setStatus("error");
@@ -133,7 +135,7 @@ function Auth() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[oklch(0.08_0.02_270)]">
+    <div className="relative min-h-screen overflow-x-hidden overflow-y-auto bg-[oklch(0.08_0.02_270)]">
       <AtmosphereBackground intensity="vivid" />
 
       {/* Full-canvas memory stage */}
@@ -321,29 +323,6 @@ function Auth() {
               </p>
             </motion.div>
 
-            {/* Social proof */}
-            <motion.div
-              variants={cardLine}
-              className="mt-4 flex items-center gap-2.5"
-            >
-              <div className="flex -space-x-1.5">
-                {["L", "S", "K", "A"].map((initial, i) => (
-                  <div
-                    key={i}
-                    className="flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-medium ring-1 ring-black/30"
-                    style={{ background: ["oklch(0.72 0.18 290)", "oklch(0.75 0.16 35)", "oklch(0.70 0.20 220)", "oklch(0.78 0.14 160)"][i], zIndex: 4 - i, color: "white" }}
-                  >
-                    {initial}
-                  </div>
-                ))}
-              </div>
-              <span className="text-[10px] tracking-wide" style={{ color: "rgba(255,255,255,0.35)" }}>
-                Trusted by{" "}
-                <span style={{ color: "rgba(255,255,255,0.58)", fontWeight: 500 }}>thousands of</span>{" "}
-                chroniclers
-              </span>
-            </motion.div>
-
             {/* Google button */}
             <motion.div variants={cardLine}>
               <a
@@ -479,7 +458,10 @@ function Auth() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                     transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-                    onSubmit={signUp.handleSubmit(onSubmit)}
+                    onSubmit={signUp.handleSubmit(onSubmit, (errors) => {
+                      console.error("Form validation failed:", errors);
+                      setErrorMessage(Object.values(errors)[0]?.message || "Validation failed");
+                    })}
                     className="space-y-5"
                   >
                     <BottomBorderInput

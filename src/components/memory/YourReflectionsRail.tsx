@@ -61,7 +61,7 @@ export function YourReflectionsRail({
           >
             <div
               className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-50 blur-3xl"
-              style={{ background: r.item.accent ?? "oklch(0.72 0.18 255)" }}
+              style={{ background: r.item.accent ?? "var(--primary)" }}
             />
             <div className="relative flex gap-4">
               <img

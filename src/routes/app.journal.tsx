@@ -53,9 +53,11 @@ function JournalPage() {
   }, []);
 
   useEffect(() => {
-    if (journalText.length > 0) {
+    if (journalText.length === 0) return;
+    const t = setTimeout(() => {
       localStorage.setItem('chronicle-journal-draft', journalText);
-    }
+    }, 1000);
+    return () => clearTimeout(t);
   }, [journalText]);
 
   const clearDraft = () => {
@@ -112,18 +114,20 @@ function JournalPage() {
     const MOOD_COLORS: Record<string, string> = {
       "Happy": "oklch(0.78 0.16 80)", "Inspired": "oklch(0.7 0.2 145)",
       "Emotional": "oklch(0.65 0.22 295)", "Excited": "oklch(0.7 0.18 25)",
-      "Relaxed": "oklch(0.72 0.18 255)", "Thoughtful": "oklch(0.55 0.18 280)",
+      "Relaxed": "var(--primary)", "Thoughtful": "oklch(0.55 0.18 280)",
     };
     const range = moodRange;
-    const lastN = Array.from({ length: moodRange }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (range - 1 - i));
-      const dateStr = date.toISOString().slice(0, 10);
+    const today = new Date();
+    const MAX_WORDS_INTENSITY = 1500;
+    const lastN = Array.from({ length: range }).map((_, i) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
       const entry = entries.find((e) => e.createdAt.slice(0, 10) === dateStr);
       const moodStr = entry?.mood ?? null;
-      const color = moodStr ? (MOOD_COLORS[moodStr] || "oklch(0.5 0 0)") : "oklch(0.5 0 0 / 0.15)";
+      const color = moodStr ? (MOOD_COLORS[moodStr] || "var(--primary)") : "oklch(0.5 0 0 / 0.15)";
       const words = entry ? countWords(entry.content) : 0;
-      return { day: range - i, mood: moodStr, color, intensity: moodStr ? Math.min(1, Math.max(0.08, words / 1500)) : 0.04 };
+      return { day: range - i, mood: moodStr, color, intensity: moodStr ? Math.min(1, Math.max(0.08, words / MAX_WORDS_INTENSITY)) : 0.04 };
     }).reverse();
     return lastN;
   }, [entries, moodRange]);
@@ -135,7 +139,7 @@ function JournalPage() {
   const handleSeal = async () => {
     setIsSealing(true);
     try {
-      await createJournalEntry.mutateAsync({ content: journalText, mood: selectedMood || "Reflective" });
+      await createJournalEntry.mutateAsync({ content: journalText, mood: selectedMood || "Thoughtful" });
       toast.success("Entry sealed and saved.");
       setIsWriting(false);
       clearDraft();
@@ -175,7 +179,7 @@ function JournalPage() {
       </MemoryZone>
 
       <MemoryZone title="Recurring themes" sub="The algorithm noticed these patterns in your writing.">
-        <MemoryDNA mediaId={entries[0]?.title?.slice(0, 20) || "interstellar"} />
+        <MemoryDNA />
       </MemoryZone>
 
       <MemoryZone title="Follow the thread">
@@ -195,7 +199,7 @@ function JournalPage() {
               <EmptyState 
                 title="Your journal is empty" 
                 description="Write your first entry and capture your current mood."
-                action={{ label: "Write entry", onClick: () => setIsWriting(true) }}
+                action={<PremiumButton variant="primary" onClick={() => setIsWriting(true)}>Write entry</PremiumButton>}
               />
             </div>
           )}
@@ -210,7 +214,7 @@ function JournalPage() {
         )}
       </MemoryZone>
 
-      <MemoryZone title="Moods across the month">
+      <div className="mb-12">
         <div className="flex items-center justify-end gap-2 mb-4">
           {[7, 30, 90].map((r) => (
             <button key={r} onClick={() => setMoodRange(r as 7 | 30 | 90)}
@@ -237,7 +241,7 @@ function JournalPage() {
           </div>
         </MemoryZone>
       )}
-      </MemoryZone>
+      </div>
 
       <MemoryZone title="Recent highlights">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -246,9 +250,6 @@ function JournalPage() {
         </div>
       </MemoryZone>
 
-      <MemoryZone title="Bookmarked memories" sub="Saved to return to, separate from favorites.">
-        <MemoryBookmarks />
-      </MemoryZone>
 
       <WriteOverlay
         isOpen={isWriting}

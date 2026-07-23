@@ -59,6 +59,27 @@ export class AnalyticsController {
 
   @Get('calendar')
   @ApiOperation({ summary: 'Calendar data for a specific month' })
+    @Get('calendar/year')
+  @ApiOperation({ summary: 'Calendar year data' })
+  async getCalendarYear(
+    @CurrentUser() user: AccessTokenPayload,
+    @Query('year') year: string,
+  ): Promise<any> {
+    return this.analyticsService.getCalendarYear(
+      user.sub,
+      parseInt(year, 10) || new Date().getFullYear(),
+    );
+  }
+
+  @Get('calendar/day')
+  @ApiOperation({ summary: 'Calendar day data' })
+  async getCalendarDay(
+    @CurrentUser() user: AccessTokenPayload,
+    @Query('date') date: string,
+  ): Promise<any> {
+    return this.analyticsService.getCalendarDay(user.sub, date);
+  }
+
   async getCalendar(
     @CurrentUser() user: AccessTokenPayload,
     @Query('year') year: string,
@@ -77,3 +98,4 @@ export class AnalyticsController {
     return this.analyticsService.getInsights(user.sub);
   }
 }
+

@@ -118,8 +118,27 @@ export class JournalService {
     });
 
     // Attach media if provided
-
     const _mediaIds = dto.mediaIds ?? [];
+    for (const libId of _mediaIds) {
+      let foundType: string | null = null;
+      let foundMediaId: string | null = null;
+      
+      for (const [type, cfg] of Object.entries(MEDIA_LOOKUP)) {
+        const delegate = (this.repository as any).prismaAny()?.[cfg.delegate];
+        if (delegate) {
+          const item = await delegate.findUnique({ where: { id: libId }, select: { [cfg.idField]: true } });
+          if (item) {
+            foundType = type;
+            foundMediaId = item[cfg.idField];
+            break;
+          }
+        }
+      }
+      
+      if (foundType && foundMediaId) {
+        await this.repository.addMemoryMedia(memory.id, foundType, foundMediaId);
+      }
+    }
 
     await this.events.emitMemoryCreated(userId, memory.id);
     await this.timelineFactory.createEvent(userId, this.timelineFactory.fromMemory(userId, memory.id, dto.title));
@@ -201,7 +220,7 @@ export class JournalService {
     return {
       items: sliced.map((e: any) => this.toTimelineResponse(e)),
       hasMore,
-      cursor: sliced.length > 0 ? sliced[sliced.length - 1].createdAt.toISOString() : null,
+      cursor: sliced.length > 0 ? sliced[sliced.length - 1].eventDate.toISOString() : null,
     };
   }
 

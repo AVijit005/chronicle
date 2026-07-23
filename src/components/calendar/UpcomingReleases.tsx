@@ -1,5 +1,4 @@
 import { motion, useMotionValue, useTransform, useMotionTemplate } from "motion/react";
-import { UPCOMING_RELEASES } from "@/lib/types";
 
 interface ReleaseItem {
   title: string;
@@ -51,7 +50,7 @@ function HolographicReleaseCard({ u }: { u: ReleaseItem }) {
 }
 
 export function UpcomingReleases({ releases: propReleases }: Props) {
-  const releases = propReleases?.length ? propReleases : UPCOMING_RELEASES;
+  const releases = propReleases?.length ? propReleases : [];
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">

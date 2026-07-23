@@ -1,7 +1,7 @@
+import { useLibrary } from "@/hooks/use-library";
 import { Link } from "@tanstack/react-router";
 import { Bookmark } from "lucide-react";
 import { MEMORY_BOOKMARKS } from "@/lib/memoryInsights";
-import { MEDIA } from "@/lib/types";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,8 @@ interface Props {
 }
 
 export function MemoryBookmarks({ className }: Props) {
+  const { data: libraryData } = useLibrary({ limit: 100 });
+  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
   return (
     <section aria-label="Memory bookmarks" className={cn("space-y-5", className)}>
       <header className="flex items-baseline justify-between">

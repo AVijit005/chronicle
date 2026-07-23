@@ -18,10 +18,6 @@ import {
   Command as CmdKey,
 } from "lucide-react";
 import {
-  MEDIA,
-  COLLECTIONS,
-  PINNED_MEDIA,
-  RECENT_JOURNALS,
   SEARCHABLE_SETTINGS,
   type MediaItem,
   type MediaKind,
@@ -32,9 +28,9 @@ import { useSearch, useRecentSearches, useTrending } from "@/hooks/use-search";
 import { analytics } from "@/lib/analytics";
 
 type Row =
-  | { kind: "media"; group: string; item: MediaItem; onSelect: () => void }
-  | { kind: "collection"; group: string; col: (typeof COLLECTIONS)[number]; onSelect: () => void }
-  | { kind: "journal"; group: string; j: (typeof RECENT_JOURNALS)[number]; onSelect: () => void }
+  | { kind: "media"; group: string; item: { id: string; title: string; kind: string; poster?: string | null; creator?: string; year?: number }; onSelect: () => void }
+  | { kind: "collection"; group: string; col: { id: string; name: string; description?: string; accent?: string; count?: number; category?: string }; onSelect: () => void }
+  | { kind: "journal"; group: string; j: { id: string; title: string; excerpt?: string; date?: string; media?: string; mood?: string }; onSelect: () => void }
   | { kind: "setting"; group: string; s: (typeof SEARCHABLE_SETTINGS)[number]; onSelect: () => void; }
   | { kind: "action"; group: string; label: string; onSelect: () => void }
   | { kind: "recent"; group: string; term: string; onSelect: () => void }
@@ -135,30 +131,7 @@ export function CommandPalette({
               }) as Row,
           ),
         },
-        {
-          title: "Pinned",
-          rows: PINNED_MEDIA.map(
-            (m) =>
-              ({
-                kind: "media",
-                group: "Pinned",
-                item: m,
-                onSelect: go({ to: "/app/media/$id", params: { id: m.id } }),
-              }) as Row,
-          ),
-        },
-        {
-          title: "Collections",
-          rows: COLLECTIONS.slice(0, 4).map(
-            (c) =>
-              ({
-                kind: "collection",
-                group: "Collections",
-                col: c,
-                onSelect: go({ to: "/app/collections/$id", params: { id: c.id } }),
-              }) as Row,
-          ),
-        },
+
         {
           title: "Quick actions",
           rows: [
@@ -188,18 +161,7 @@ export function CommandPalette({
             },
           ] as Row[],
         },
-        {
-          title: "Recent journals",
-          rows: RECENT_JOURNALS.map(
-            (j) =>
-              ({
-                kind: "journal",
-                group: "Recent journals",
-                j,
-                onSelect: go({ to: "/app/journal" }),
-              }) as Row,
-          ),
-        },
+
         {
           title: "Settings",
           rows: SEARCHABLE_SETTINGS.map(
@@ -243,7 +205,7 @@ export function CommandPalette({
                 ({
                   kind: "collection",
                   group: title,
-                  col: { id: item.id, name: item.title, description: item.subtitle || "", accent: "var(--primary)", count: 0, category: "Mixed" },
+                  col: { id: item.id, name: item.title, description: item.subtitle || "" },
                   onSelect: go({ to: "/app/collections/$id", params: { id: item.id } }),
                 }) as Row,
             ),
@@ -256,7 +218,7 @@ export function CommandPalette({
                 ({
                   kind: "journal",
                   group: title,
-                  j: { id: item.id, title: item.title, excerpt: item.subtitle || "", date: "Recent", mood: "Neutral", media: "Memory", accent: "var(--primary)" },
+                  j: { id: item.id, title: item.title, excerpt: item.subtitle || "" },
                   onSelect: go({ to: "/app/journal" }),
                 }) as Row,
             ),
@@ -269,7 +231,7 @@ export function CommandPalette({
                 ({
                   kind: "media",
                   group: title,
-                  item: { id: item.id, title: item.title, kind: type as MediaKind, poster: item.imageUrl || "", creator: item.subtitle, year: 2024, accent: null, status: "completed" },
+                  item: { id: item.id, title: item.title, kind: type, poster: item.imageUrl || "", creator: item.subtitle },
                   onSelect: go({ to: "/app/media/$id", params: { id: item.id } }),
                 }) as Row,
             ),
@@ -330,8 +292,6 @@ export function CommandPalette({
     el?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [active]);
 
-  let flatIndex = 0;
-
   return (
     <AnimatePresence>
       {open && (
@@ -388,10 +348,12 @@ export function CommandPalette({
                   description={`We couldn't find "${q}". Try a creator, year, mood or collection.`}
                 />
               ) : (
-                rows.map((g) => (
+                rows.map((g, gIdx) => {
+                  const offset = rows.slice(0, gIdx).reduce((acc, prevG) => acc + prevG.rows.length, 0);
+                  return (
                   <Section key={g.title} title={g.title}>
-                    {g.rows.map((r) => {
-                      const i = flatIndex++;
+                    {g.rows.map((r, rIdx) => {
+                      const i = offset + rIdx;
                       const focused = i === active;
                       return (
                         <RowView
@@ -406,7 +368,8 @@ export function CommandPalette({
                       );
                     })}
                   </Section>
-                ))
+                  );
+                })
               )}
             </div>
 
@@ -481,18 +444,18 @@ function RowView({
 
 function RowContent({ row }: { row: Row }) {
   if (row.kind === "media") {
-    const Icon = (MEDIA_ICONS as any)[row.item.kind];
+    const Icon = MEDIA_ICONS[row.item.kind as MediaKind] || Sparkles;
     return (
       <>
         <img
-          src={row.item.poster}
+          src={row.item.poster || undefined}
           alt=""
           className="h-10 w-7 rounded-md object-cover ring-1 ring-white/10"
         />
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm">{row.item.title}</div>
           <div className="truncate text-xs text-muted-foreground">
-            {row.item.creator} · {row.item.year} · {row.item.kind}
+            {[row.item.creator, row.item.year, row.item.kind].filter(x => x != null && x !== "" && x !== "undefined").join(" · ")}
           </div>
         </div>
         <Icon className="h-3.5 w-3.5 text-muted-foreground" />
@@ -510,7 +473,7 @@ function RowContent({ row }: { row: Row }) {
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm">{row.col.name}</div>
           <div className="truncate text-xs text-muted-foreground">
-            {row.col.count} items · {row.col.category}
+            {[row.col.count ? `${row.col.count} items` : null, row.col.category].filter(x => x != null && x !== "" && x !== "undefined").join(" · ")}
           </div>
         </div>
         <Layers className="h-3.5 w-3.5 text-muted-foreground" />
@@ -526,7 +489,7 @@ function RowContent({ row }: { row: Row }) {
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm">{row.j.title}</div>
           <div className="truncate text-xs text-muted-foreground">
-            {row.j.date} · {row.j.media}
+            {[row.j.date, row.j.media].filter(x => x != null && x !== "" && x !== "undefined").join(" · ")}
           </div>
         </div>
       </>
@@ -591,3 +554,4 @@ function Hint({ k, children }: { k: string; children: React.ReactNode }) {
     </span>
   );
 }
+

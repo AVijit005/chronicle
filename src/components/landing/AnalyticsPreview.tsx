@@ -27,7 +27,7 @@ const GENRE = [
   { name: "Other", value: 12 },
 ];
 const COLORS = [
-  "oklch(0.72 0.18 255)",
+  "var(--primary)",
   "oklch(0.7 0.2 295)",
   "oklch(0.78 0.18 50)",
   "oklch(0.72 0.16 80)",
@@ -71,8 +71,8 @@ export function AnalyticsPreview() {
             <AreaChart data={DEMO_ACTIVITY}>
               <defs>
                 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0.7} />
-                  <stop offset="100%" stopColor="oklch(0.72 0.18 255)" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.7} />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Area

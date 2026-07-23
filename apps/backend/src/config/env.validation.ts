@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsBoolean, Min, Max, validateSync } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsBoolean, Min, Max, validateSync, MinLength } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
 class EnvironmentVariables {
@@ -46,10 +46,16 @@ class EnvironmentVariables {
   API_PREFIX: string = 'api';
 
   @IsString()
+  @MinLength(32)
   JWT_ACCESS_SECRET: string;
 
   @IsString()
+  @MinLength(32)
   JWT_REFRESH_SECRET: string;
+
+  @IsString()
+  @IsOptional()
+  OAUTH_ENCRYPTION_KEY?: string;
 
   @IsNumber()
   @Min(1)

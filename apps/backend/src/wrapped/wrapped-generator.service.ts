@@ -17,18 +17,22 @@ export class WrappedGeneratorService {
     insights: WrappedInsightDto[];
     summary: string;
     sharePayload: Record<string, unknown>;
+    totalCompleted: number;
+    totalHours: number;
+    journalCount: number;
   }> {
-    const [completedByType, totalsByType, totalItems, avgRating, genreData, journalDates] = await Promise.all([
+    const [completedByType, totalsByType, totalItems, avgRating, genreData, journalDates, hoursData] = await Promise.all([
       this.analyticsRepo.countCompletedByType(userId),
       this.analyticsRepo.countTotalByType(userId),
       this.analyticsRepo.getTotalLibraryItems(userId),
       this.analyticsRepo.getAverageRating(userId),
       this.analyticsRepo.getGenreData(userId),
       this.analyticsRepo.getJournalEntryDates(userId, 10000),
+      this.analyticsRepo.getHoursAndEpisodesByType(userId),
     ]);
 
     const totalCompleted = Object.values(completedByType).reduce((a, b) => a + b, 0);
-    const _totalHours = 0; // Would need hours tracking to compute
+    const totalHours = Object.values(hoursData.hours).reduce((a, b) => a + b, 0);
     const journalCount = journalDates.length;
 
     // ─── Cards: Top media by completion ──────────────────────────────────────
@@ -76,9 +80,11 @@ export class WrappedGeneratorService {
         icon: 'graduation-cap',
         sortOrder: 5,
       },
-      { title: 'Total Items', value: String(totalItems), icon: 'library', sortOrder: 6 },
-      { title: 'Average Rating', value: avgRating ? avgRating.toFixed(1) : 'N/A', icon: 'star', sortOrder: 7 },
-      { title: 'Journal Entries', value: String(journalCount), icon: 'book-open', sortOrder: 8 },
+      { title: 'Music Albums', value: String(completedByType['musicAlbum'] ?? 0), icon: 'music', sortOrder: 6 },
+      { title: 'Podcasts Listened', value: String(completedByType['podcast'] ?? 0), icon: 'mic', sortOrder: 7 },
+      { title: 'Total Items', value: String(totalItems), icon: 'library', sortOrder: 8 },
+      { title: 'Average Rating', value: avgRating !== null && avgRating !== undefined ? avgRating.toFixed(1) : 'N/A', icon: 'star', sortOrder: 9 },
+      { title: 'Journal Entries', value: String(journalCount), icon: 'book-open', sortOrder: 10 },
     ];
 
     // ─── Top Genre ──────────────────────────────────────────────────────────
@@ -140,7 +146,7 @@ export class WrappedGeneratorService {
       insights,
     };
 
-    return { cards, stats, insights, summary, sharePayload };
+    return { cards, stats, insights, summary, sharePayload, totalCompleted, totalHours, journalCount };
   }
 
   private buildSummary(totalCompleted: number, totalItems: number, journalCount: number, year: number): string {

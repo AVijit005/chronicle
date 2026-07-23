@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { COLLECTIONS } from "@/lib/types";
+import { } from "@/lib/types";
 import type { MediaItem } from "@/lib/types";
+const COLLECTIONS: any[] = [];
+
+
 
 export function CollectionsIntegration({ item }: { item: MediaItem }) {
   const cols = COLLECTIONS.filter((c) => c.mediaIds?.includes(item.id));

@@ -22,20 +22,23 @@ export function PremiumErrorState({
         {description && (
           <p className="mx-auto mt-3 max-w-prose text-sm text-muted-foreground">{description}</p>
         )}
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          {action ?? (
-            <>
-              <Link to="/app">
-                <PremiumButton>Go home</PremiumButton>
-              </Link>
-              <Link to="/app/library">
-                <PremiumButton variant="secondary">Open library</PremiumButton>
-              </Link>
-              <Link to="/app/timeline">
-                <PremiumButton variant="ghost">Timeline</PremiumButton>
-              </Link>
-            </>
+        <div className="mt-8 flex flex-col items-center gap-6">
+          {action && (
+            <div className="flex flex-wrap justify-center gap-2">
+              {action}
+            </div>
           )}
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link to="/app">
+              <PremiumButton variant={action ? "secondary" : "primary"}>Go home</PremiumButton>
+            </Link>
+            <Link to="/app/library">
+              <PremiumButton variant={action ? "ghost" : "secondary"}>Open library</PremiumButton>
+            </Link>
+            <Link to="/app/timeline">
+              <PremiumButton variant="ghost">Timeline</PremiumButton>
+            </Link>
+          </div>
         </div>
       </div>
     </PremiumGlass>

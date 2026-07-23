@@ -1,18 +1,11 @@
 import { motion } from "motion/react";
 import { CountUp } from "@/components/landing/CountUp";
-import { lazy, Suspense } from "react";
-const ResponsiveContainer = lazy(() => import("recharts").then(m => ({ default: m.ResponsiveContainer })));
-const PieChart = lazy(() => import("recharts").then(m => ({ default: m.PieChart })));
-const Pie = lazy(() => import("recharts").then(m => ({ default: m.Pie })));
-const Cell = lazy(() => import("recharts").then(m => ({ default: m.Cell })));
-const BarChart = lazy(() => import("recharts").then(m => ({ default: m.BarChart })));
-const Bar = lazy(() => import("recharts").then(m => ({ default: m.Bar })));
-const XAxis = lazy(() => import("recharts").then(m => ({ default: m.XAxis })));
-const Tooltip = lazy(() => import("recharts").then(m => ({ default: m.Tooltip })));
+import { Suspense } from "react";
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip } from "recharts";
 import type { Collection } from "@/lib/types";
 
 const COLORS = [
-  "oklch(0.72 0.18 255)",
+  "var(--primary)",
   "oklch(0.65 0.22 295)",
   "oklch(0.78 0.16 50)",
   "oklch(0.72 0.16 160)",

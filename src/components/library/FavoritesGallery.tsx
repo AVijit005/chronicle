@@ -15,7 +15,7 @@ export function FavoritesGallery({ items }: { items: MediaItem[] }) {
               style={{ boxShadow: "0 30px 60px -25px oklch(0 0 0 / 0.7)" }}
             >
               <img
-                src={m.poster}
+                src={m.poster || undefined}
                 alt={m.title}
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
                 loading="lazy"

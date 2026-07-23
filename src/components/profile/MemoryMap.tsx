@@ -8,7 +8,7 @@ interface Node {
   accent: string;
 }
 const NODES: Node[] = [
-  { id: "movies", label: "Movies", to: "/app/library/movie", accent: "oklch(0.72 0.18 255)" },
+  { id: "movies", label: "Movies", to: "/app/library/movie", accent: "var(--primary)" },
   { id: "anime", label: "Anime", to: "/app/library/anime", accent: "oklch(0.78 0.18 50)" },
   { id: "books", label: "Books", to: "/app/library/book", accent: "oklch(0.62 0.2 295)" },
   { id: "games", label: "Games", to: "/app/library/game", accent: "oklch(0.72 0.16 80)" },
@@ -22,7 +22,7 @@ const NODES: Node[] = [
     accent: "oklch(0.65 0.22 295)",
   },
   { id: "journal", label: "Journal", to: "/app/journal", accent: "oklch(0.72 0.16 160)" },
-  { id: "timeline", label: "Timeline", to: "/app/timeline", accent: "oklch(0.72 0.18 255)" },
+  { id: "timeline", label: "Timeline", to: "/app/timeline", accent: "var(--primary)" },
   {
     id: "achievements",
     label: "Achievements",

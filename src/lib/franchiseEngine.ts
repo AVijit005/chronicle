@@ -1,5 +1,8 @@
 // Franchise engine — manual seed grouping of MEDIA into franchises.
-import { MEDIA, COLLECTIONS, type MediaItem, type Collection } from "@/lib/types";
+import { MEDIA, type MediaItem, type Collection } from "@/lib/types";
+const COLLECTIONS: any[] = [];
+
+
 
 export interface Franchise {
   id: string;
