@@ -10,6 +10,8 @@ import { snapshotAllItems } from "@/lib/store/libraryStore";
 import type { MediaKind } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { cascade } from "@/lib/motion";
+import { useLibrary } from "@/hooks/use-library";
+import { adaptLibraryItem } from "@/lib/adapters/media";
 
 export const Route = createFileRoute("/app/library/all")({
   component: AllLibraryPage,
@@ -24,8 +26,11 @@ function AllLibraryPage() {
   const [sort, setSort] = useState<SortKey>("Recently Added");
   const [view, setView] = useState<"grid" | "rows">("grid");
 
+  const { data: libraryData } = useLibrary({ limit: 100 });
+
   const items = useMemo(() => {
-    let r = snapshotAllItems();
+    const rawApiItems = libraryData?.pages.flatMap((page) => page.data.map(adaptLibraryItem)) ?? [];
+    let r = rawApiItems.length > 0 ? rawApiItems : snapshotAllItems();
     if (q.trim()) {
       const t = q.toLowerCase();
       r = r.filter(
@@ -73,7 +78,7 @@ function AllLibraryPage() {
         break;
     }
     return r;
-  }, [q, status, kinds, favOnly, journaledOnly, sort]);
+  }, [q, status, kinds, favOnly, journaledOnly, sort, libraryData]);
 
   const clearFilters = () => {
     setQ("");

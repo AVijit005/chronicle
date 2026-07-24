@@ -1,10 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import type { Character } from "@/lib/characters";
-import { MEDIA } from "@/lib/types";
 
 export function CharacterProfile({ character }: { character: Character }) {
-  const media = MEDIA.find((m) => m.id === character.mediaId);
   return (
     <PremiumGlass variant="strong" glow={character.accent + " / 0.4"}>
       <div className="grid gap-0 md:grid-cols-[260px_minmax(0,1fr)]">

@@ -90,7 +90,7 @@ export class WrappedGeneratorService {
     // ─── Top Genre ──────────────────────────────────────────────────────────
     const topGenre = Object.entries(genreData.genreCounts).sort(([, a], [, b]) => b - a)[0];
     if (topGenre) {
-      stats.push({ title: 'Favorite Genre', value: topGenre[0], icon: 'tag', sortOrder: 9 });
+      stats.push({ title: 'Favorite Genre', value: topGenre[0], icon: 'tag', sortOrder: 11 });
     }
 
     // ─── Insights ───────────────────────────────────────────────────────────

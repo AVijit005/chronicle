@@ -1,5 +1,4 @@
 // Goals — deterministic lifelong-journey models.
-import { MEDIA } from "@/lib/types";
 
 export type GoalStatus = "Planning" | "Active" | "Paused" | "Completed" | "Archived";
 
@@ -59,5 +58,3 @@ export function getRelatedGoal(mediaId: string): Goal | null {
     ) ?? null
   );
 }
-
-export const _media = MEDIA;

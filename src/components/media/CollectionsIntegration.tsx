@@ -1,13 +1,22 @@
 import { Link } from "@tanstack/react-router";
-import { } from "@/lib/types";
 import type { MediaItem } from "@/lib/types";
-const COLLECTIONS: any[] = [];
 
+interface Collection {
+  id: string;
+  name: string;
+  count: number;
+  accent: string;
+  mediaIds?: string[];
+}
 
+interface Props {
+  item: MediaItem;
+  collections?: Collection[];
+}
 
-export function CollectionsIntegration({ item }: { item: MediaItem }) {
-  const cols = COLLECTIONS.filter((c) => c.mediaIds?.includes(item.id));
-  const fallback = cols.length ? cols : COLLECTIONS.slice(0, 4);
+export function CollectionsIntegration({ item, collections = [] }: Props) {
+  const cols = collections.filter((c) => c.mediaIds?.includes(item.id));
+  const fallback = cols.length ? cols : collections.slice(0, 4);
   return (
     <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
       {fallback.map((c) => (

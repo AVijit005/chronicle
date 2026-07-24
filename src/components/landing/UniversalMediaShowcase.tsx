@@ -140,12 +140,16 @@ export function UniversalMediaShowcase() {
             className={`group relative aspect-[2/3] overflow-hidden rounded-3xl ring-1 ring-white/10 ${t.offset}`}
             style={{ transform: `rotate(${t.tilt}deg)` }}
           >
-            <img
-              src={t.poster}
-              alt=""
-              loading="lazy"
-              className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-            />
+            {t.poster ? (
+              <img
+                src={t.poster}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+              />
+            ) : (
+              <div className="h-full w-full bg-gradient-to-br from-primary/30 to-background/80" />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
             <Headphones className="hidden" aria-hidden />
             <div className="absolute inset-x-0 top-0 flex items-center justify-between p-3">

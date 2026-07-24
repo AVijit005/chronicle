@@ -17,7 +17,7 @@ export function adaptWrappedResponse(w: WrappedResponse): UIWrappedSlide[] {
   });
 
   // Card slides
-  for (const card of w.cards) {
+  for (const card of w.cards ?? []) {
     slides.push({
       key: `card-${card.rank}`,
       eyebrow: card.type,
@@ -29,7 +29,7 @@ export function adaptWrappedResponse(w: WrappedResponse): UIWrappedSlide[] {
   }
 
   // Stat slides
-  for (const stat of w.stats) {
+  for (const stat of w.stats ?? []) {
     slides.push({
       key: `stat-${stat.sortOrder}`,
       eyebrow: stat.title,
@@ -39,7 +39,7 @@ export function adaptWrappedResponse(w: WrappedResponse): UIWrappedSlide[] {
   }
 
   // Insight slides
-  for (const insight of w.insights) {
+  for (const insight of w.insights ?? []) {
     slides.push({
       key: `insight-${insight.category}`,
       eyebrow: insight.category,

@@ -51,6 +51,7 @@ export class AuthService {
   }
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string, response?: Response): Promise<AuthResponseDto> {
+    this.cleanupExpiredLoginAttempts();
     const emailKey = dto.email.toLowerCase().trim();
     const attempt = this.loginAttempts.get(emailKey);
     if (attempt && attempt.lockedUntil > Date.now()) {
@@ -238,5 +239,14 @@ export class AuthService {
       current.lockedUntil = Date.now() + 15 * 60 * 1000; // 15 minutes lockout
     }
     this.loginAttempts.set(email, current);
+  }
+
+  private cleanupExpiredLoginAttempts(): void {
+    const now = Date.now();
+    for (const [key, attempt] of this.loginAttempts.entries()) {
+      if (attempt.lockedUntil < now) {
+        this.loginAttempts.delete(key);
+      }
+    }
   }
 }

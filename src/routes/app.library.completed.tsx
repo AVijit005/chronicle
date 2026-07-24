@@ -5,6 +5,9 @@ import { StatusPageShell } from "@/components/library/StatusPageShell";
 import { completed, metaOf } from "@/lib/library";
 import { cn } from "@/lib/utils";
 
+import { EmptyState } from "@/components/ui/EmptyState";
+import { CheckCircle2 } from "lucide-react";
+
 export const Route = createFileRoute("/app/library/completed")({
   component: CompletedPage,
 });
@@ -44,11 +47,19 @@ function CompletedPage() {
         </div>
       }
     >
-      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {items.map((m) => (
-          <MediaCard key={m.id} item={m as any} />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <EmptyState
+          icon={<CheckCircle2 className="h-8 w-8 text-primary" />}
+          title="No completed stories yet"
+          description="When you finish a movie, book, game, or show, it will appear here."
+        />
+      ) : (
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {items.map((m) => (
+            <MediaCard key={m.id} item={m as any} />
+          ))}
+        </div>
+      )}
     </StatusPageShell>
   );
 }

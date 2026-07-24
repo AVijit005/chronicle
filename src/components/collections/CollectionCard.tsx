@@ -68,7 +68,7 @@ export function CollectionCard({
           aria-hidden
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, transparent 35%, ${accent} / 0.42, oklch(0 0 0 / 0.9))`,
+            background: `linear-gradient(180deg, transparent 35%, ${accent.startsWith('var(') ? `color-mix(in oklch, ${accent}, transparent 58%)` : `${accent}66`}, oklch(0 0 0 / 0.9))`,
           }}
         />
         {/* reflection */}

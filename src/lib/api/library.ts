@@ -1,5 +1,5 @@
 import { apiGet, apiPost, apiPatch, apiDelete } from './fetch';
-import { MEDIA, type MediaItem } from '@/lib/types';
+import type { MediaItem } from '@/lib/types';
 
 export interface LibraryItemMedia {
   id: string;

@@ -19,7 +19,7 @@ export function MemoryCapsule({ capsule, className }: Props) {
       <article className="p-5" aria-label={`Memory capsule: ${capsule.name}`}>
         <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-xl">
           {covers.slice(0, 3).map((c) => (
-            <img key={c.id} src={c.poster} alt="" className="h-24 w-full object-cover" />
+            <img key={c.id} src={c.poster} alt={c.title} className="h-24 w-full object-cover" />
           ))}
           {covers.length < 3 &&
             Array.from({ length: 3 - covers.length }).map((_, i) => (

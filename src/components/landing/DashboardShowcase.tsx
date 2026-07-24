@@ -8,7 +8,6 @@ import {
 } from "motion/react";
 import { useState } from "react";
 import { Play, BookOpen, Gamepad2, Music2, Sparkles, Film } from "lucide-react";
-import { MEDIA } from "@/lib/types";
 
 const MODES = [
   {

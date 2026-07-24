@@ -3,6 +3,8 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: chronicle-postgres-e2e
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: chronicle
       POSTGRES_PASSWORD: chronicle
@@ -16,6 +18,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: chronicle-redis-e2e
+    ports:
+      - "6379:6379"
     command: redis-server --appendonly yes
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']

@@ -22,7 +22,7 @@ export function LifeChapterCard({ chapter, className }: Props) {
       <article className="p-5 md:p-6" aria-label={`Life chapter: ${chapter.name}`}>
         <div className="grid grid-cols-4 gap-1 overflow-hidden rounded-xl">
           {covers.slice(0, 4).map((c) => (
-            <img key={c.id} src={c.poster} alt="" className="h-20 w-full object-cover" />
+            <img key={c.id} src={c.poster} alt={c.title} className="h-20 w-full object-cover" />
           ))}
         </div>
         <header className="mt-4">

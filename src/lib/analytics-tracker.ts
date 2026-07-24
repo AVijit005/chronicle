@@ -6,15 +6,16 @@ type PageViewPayload = {
 };
 
 export function trackPageView(path: string, title?: string): void {
+  if (typeof window === 'undefined') return;
   const payload: PageViewPayload = {
     path,
-    title: title ?? document.title,
-    referrer: document.referrer,
+    title: title ?? (typeof document !== 'undefined' ? document.title : ''),
+    referrer: typeof document !== 'undefined' ? document.referrer : '',
     timestamp: new Date().toISOString(),
   };
 
   // Beacon API for non-blocking delivery
-  if (navigator.sendBeacon) {
+  if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
     navigator.sendBeacon('/api/analytics/pageview', JSON.stringify(payload));
   } else {
     // Fallback: fire and forget fetch
@@ -28,6 +29,7 @@ export function trackPageView(path: string, title?: string): void {
 }
 
 export function trackEvent(category: string, action: string, label?: string, value?: number): void {
+  if (typeof window === 'undefined') return;
   const payload = { category, action, label, value, timestamp: new Date().toISOString(), path: window.location.pathname };
 
   if (navigator.sendBeacon) {

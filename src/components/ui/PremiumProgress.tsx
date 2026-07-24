@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 }
 
 export function PremiumProgress({ value, accent, className, height = 6 }: Props) {
+  const reduced = useReducedMotion();
   const v = Math.max(0, Math.min(100, value));
   const fill = accent ?? "var(--primary)";
   return (
@@ -17,9 +18,9 @@ export function PremiumProgress({ value, accent, className, height = 6 }: Props)
       style={{ height }}
     >
       <motion.div
-        initial={{ width: 0 }}
+        initial={reduced ? { width: `${v}%` } : { width: 0 }}
         animate={{ width: `${v}%` }}
-        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+        transition={reduced ? { duration: 0 } : { duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
         className="relative h-full rounded-full"
         style={{
           background: `linear-gradient(90deg, color-mix(in oklab, ${fill} 60%, transparent), ${fill})`,
@@ -33,16 +34,18 @@ export function PremiumProgress({ value, accent, className, height = 6 }: Props)
           style={{ background: fill, boxShadow: `0 0 12px ${fill}` }}
         />
         {/* animated shine */}
-        <span
-          aria-hidden
-          className="absolute inset-0 rounded-full opacity-60"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent 30%, oklch(1 0 0 / 0.3) 50%, transparent 70%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 2.6s linear infinite",
-          }}
-        />
+        {!reduced && (
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-full opacity-60"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 30%, oklch(1 0 0 / 0.3) 50%, transparent 70%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 2.6s linear infinite",
+            }}
+          />
+        )}
       </motion.div>
     </div>
   );

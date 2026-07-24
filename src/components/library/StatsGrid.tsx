@@ -14,9 +14,17 @@ const ITEMS: { key: "total" | MediaStatus | "favorite"; label: string }[] = [
 ];
 
 export function StatsGrid({ stats }: { stats?: LibraryStatsResponse }) {
-  const c = stats?.byStatus || {};
-  const total = stats?.total || 0;
-  const values: Record<string, number> = { total, ...c, favorite: stats?.favoriteCount || 0 };
+  const byStatusRaw = stats?.byStatus || {};
+  const values: Record<string, number> = {
+    total: stats?.total || 0,
+    favorite: stats?.favoriteCount || 0,
+    completed: (byStatusRaw.COMPLETED ?? 0) + (byStatusRaw.completed ?? 0),
+    in_progress: (byStatusRaw.WATCHING ?? 0) + (byStatusRaw.READING ?? 0) + (byStatusRaw.PLAYING ?? 0) + (byStatusRaw.LISTENING ?? 0) + (byStatusRaw.LEARNING ?? 0) + (byStatusRaw.in_progress ?? 0),
+    planning: (byStatusRaw.PLANNING ?? 0) + (byStatusRaw.planning ?? 0),
+    paused: (byStatusRaw.PAUSED ?? 0) + (byStatusRaw.paused ?? 0),
+    dropped: (byStatusRaw.DROPPED ?? 0) + (byStatusRaw.dropped ?? 0),
+    rewatching: (byStatusRaw.REWATCHING ?? 0) + (byStatusRaw.rewatching ?? 0),
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-3 md:gap-4 w-full">

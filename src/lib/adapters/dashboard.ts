@@ -38,15 +38,15 @@ function adaptPinnedCollection(item: PinnedCollection): UIPinnedCollection {
 
 export function adaptDashboardResponse(d: DashboardResponse): UIDashboard {
   return {
-    continueWatching: d.continueWatching.map(adaptContinueItem),
-    continueReading: d.continueReading.map(adaptContinueItem),
-    continuePlaying: d.continuePlaying.map(adaptContinueItem),
-    continueListening: d.continueListening.map(adaptContinueItem),
-    continueLearning: d.continueLearning.map(adaptContinueItem),
-    recentlyAdded: d.recentlyAdded.map(adaptRecentActivity),
-    recentlyCompleted: d.recentlyCompleted.map(adaptRecentActivity),
-    recentMemories: d.recentMemories.map(adaptRecentActivity),
-    recentJournalEntries: d.recentJournalEntries.map(adaptRecentActivity),
-    pinnedCollections: d.pinnedCollections.map(adaptPinnedCollection),
+    continueWatching: (d.continueWatching ?? []).map(adaptContinueItem),
+    continueReading: (d.continueReading ?? []).map(adaptContinueItem),
+    continuePlaying: (d.continuePlaying ?? []).map(adaptContinueItem),
+    continueListening: (d.continueListening ?? []).map(adaptContinueItem),
+    continueLearning: (d.continueLearning ?? []).map(adaptContinueItem),
+    recentlyAdded: (d.recentlyAdded ?? []).map(adaptRecentActivity),
+    recentlyCompleted: (d.recentlyCompleted ?? []).map(adaptRecentActivity),
+    recentMemories: (d.recentMemories ?? []).map(adaptRecentActivity),
+    recentJournalEntries: (d.recentJournalEntries ?? []).map(adaptRecentActivity),
+    pinnedCollections: (d.pinnedCollections ?? []).map(adaptPinnedCollection),
   };
 }

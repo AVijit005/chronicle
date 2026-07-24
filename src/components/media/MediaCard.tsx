@@ -115,8 +115,6 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
               </div>
             </div>
           )}
-
-          </motion.div>
         </motion.div>
         <motion.div
           variants={{ rest: { opacity: 0, y: 8, scale: 0.96 }, hover: { opacity: 1, y: 0, scale: 1 } }}

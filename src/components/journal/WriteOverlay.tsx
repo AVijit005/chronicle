@@ -1,16 +1,12 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Send, AlertCircle } from "lucide-react";
-import { } from "@/lib/types";
-const JOURNAL: any[] = [];
-const JOURNAL_PROMPTS: any[] = [];
-
-
 
 interface Props {
   isOpen: boolean;
   promptIndex: number;
   timeContext: string;
+  prompts?: string[];
   journalText: string;
   isSealing: boolean;
   isDraftSaved: boolean;
@@ -20,7 +16,7 @@ interface Props {
   onSeal: () => void;
 }
 
-export function WriteOverlay({ isOpen, promptIndex, timeContext, journalText, isSealing, isDraftSaved, textareaRef, onTextChange, onClose, onSeal }: Props) {
+export function WriteOverlay({ isOpen, promptIndex, timeContext, prompts = [], journalText, isSealing, isDraftSaved, textareaRef, onTextChange, onClose, onSeal }: Props) {
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -63,7 +59,7 @@ export function WriteOverlay({ isOpen, promptIndex, timeContext, journalText, is
               </div>
             )}
             <h2 className="text-3xl md:text-5xl font-display text-white text-center mb-16 drop-shadow-lg leading-tight">
-              "{JOURNAL_PROMPTS[promptIndex]}"
+              &ldquo;{prompts[promptIndex] ?? ""}&rdquo;
             </h2>
 
             <textarea

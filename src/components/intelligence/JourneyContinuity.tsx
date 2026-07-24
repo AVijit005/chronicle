@@ -3,17 +3,21 @@ import { Link } from "@tanstack/react-router";
 import { Route } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
-interface Props {
-  journey?: any;
-  mediaId?: string;
+interface JourneyStep {
+  id: string;
+  title: string;
+  year: string;
+  poster?: string;
 }
 
-export function JourneyContinuity({ journey }: Props) {
-  const steps = journey?.steps || [
-    { id: "1", title: "The Fellowship of the Ring", year: "2001", poster: "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=300&auto=format&fit=crop" },
-    { id: "2", title: "The Two Towers", year: "2002", poster: "https://images.unsplash.com/photo-1596727147705-611529ea271b?q=80&w=300&auto=format&fit=crop" },
-    { id: "3", title: "The Return of the King", year: "2003", poster: "https://images.unsplash.com/photo-1542360663-8f40838b8d7a?q=80&w=300&auto=format&fit=crop" },
-  ];
+interface Props {
+  journey?: { steps: JourneyStep[] };
+  mediaId?: string;
+  steps?: JourneyStep[];
+}
+
+export function JourneyContinuity({ journey, steps: propSteps }: Props) {
+  const steps = journey?.steps ?? propSteps ?? [];
 
   return (
     <PremiumGlass className="p-6">
@@ -23,7 +27,7 @@ export function JourneyContinuity({ journey }: Props) {
         </div>
         <div>
           <h3 className="font-display text-xl tracking-tight">Franchise Journey</h3>
-          <p className="text-xs text-muted-foreground">Your path through Middle-earth</p>
+          <p className="text-xs text-muted-foreground">Your journey through this franchise</p>
         </div>
       </div>
 

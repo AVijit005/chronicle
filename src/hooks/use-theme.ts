@@ -6,6 +6,7 @@ let observer: MutationObserver | null = null;
 const listeners = new Set<(isLight: boolean) => void>();
 
 function updateTheme() {
+  if (typeof window === 'undefined') return;
   const current = document.documentElement.classList.contains('light');
   if (current !== isLightMode) {
     isLightMode = current;

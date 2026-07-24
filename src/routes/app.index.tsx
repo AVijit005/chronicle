@@ -47,7 +47,19 @@ export const Route = createFileRoute("/app/")({
   }),
 });
 
+const QUOTES = [
+  { quote: "Some stories ask you to finish them. Others wait quietly until you're ready to be changed.", attr: "Your weekly reflection" },
+  { quote: "The stories we return to say more about us than the stories we finish.", attr: "Your taste profile" },
+  { quote: "Memory isn't about perfect recall. It's about what chooses to stay.", attr: "From your journal" },
+  { quote: "Every library is a self-portrait painted in other people's stories.", attr: "A quiet thought" },
+];
+
 function Home() {
+  const [dailyQuote, setDailyQuote] = React.useState(QUOTES[0]);
+  React.useEffect(() => {
+    setDailyQuote(QUOTES[new Date().getDate() % QUOTES.length]);
+  }, []);
+
   const { data: dashboard, isLoading, isError, error } = useDashboard();
   const { data: insights } = useInsights();
   const { data: overview } = useOverview();
@@ -95,17 +107,6 @@ function Home() {
     : recentlyCompletedItems[0]
       ? adaptContinueItem(activityToContinueItem(recentlyCompletedItems[0]))
       : null;
-
-  const QUOTES = [
-    { quote: "Some stories ask you to finish them. Others wait quietly until you're ready to be changed.", attr: "Your weekly reflection" },
-    { quote: "The stories we return to say more about us than the stories we finish.", attr: "Your taste profile" },
-    { quote: "Memory isn't about perfect recall. It's about what chooses to stay.", attr: "From your journal" },
-    { quote: "Every library is a self-portrait painted in other people's stories.", attr: "A quiet thought" },
-  ];
-  const [dailyQuote, setDailyQuote] = React.useState(QUOTES[0]);
-  React.useEffect(() => {
-    setDailyQuote(QUOTES[new Date().getDate() % QUOTES.length]);
-  }, []);
 
   return (
     <div className="pt-2">

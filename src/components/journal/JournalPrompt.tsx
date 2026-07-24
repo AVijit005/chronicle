@@ -1,20 +1,16 @@
 import { NotebookPen, Sparkles } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumSquircle } from "@/components/ui/PremiumSquircle";
-import { } from "@/lib/types";
-const JOURNAL: any[] = [];
-const JOURNAL_PROMPTS: any[] = [];
-
-
 
 interface Props {
   promptIndex: number;
   timeContext: string;
+  prompts?: string[];
   onStartWriting: () => void;
   onNextPrompt: () => void;
 }
 
-export function JournalPrompt({ promptIndex, timeContext, onStartWriting, onNextPrompt }: Props) {
+export function JournalPrompt({ promptIndex, timeContext, prompts = [], onStartWriting, onNextPrompt }: Props) {
   return (
     <PremiumGlass
       interactive
@@ -31,7 +27,7 @@ export function JournalPrompt({ promptIndex, timeContext, onStartWriting, onNext
         <PremiumSquircle icon={<Sparkles />} size="xl" variant="glass" className="py-4" />
       </div>
       <p className="mt-4 text-center font-display text-3xl leading-snug tracking-tight md:text-4xl text-foreground drop-shadow-sm">
-        "{JOURNAL_PROMPTS[promptIndex]}"
+        &ldquo;{prompts[promptIndex] ?? ""}&rdquo;
       </p>
 
       <div className="mt-12 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">

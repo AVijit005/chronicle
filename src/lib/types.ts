@@ -94,3 +94,9 @@ export const SEARCHABLE_SETTINGS = [
 
 
 export const MEDIA: any[] = [];
+export function getMediaItems(): any[] {
+  if (typeof window !== 'undefined' && (window as any).__CHRONICLE_MEDIA__) {
+    return (window as any).__CHRONICLE_MEDIA__;
+  }
+  return MEDIA;
+}

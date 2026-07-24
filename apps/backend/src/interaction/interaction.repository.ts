@@ -142,7 +142,7 @@ export class InteractionRepository {
       const items = await delegate.findMany({
         where,
         orderBy: { updatedAt: 'desc' },
-        take: limit,
+        take: limit + 1,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
       });
 
@@ -152,7 +152,7 @@ export class InteractionRepository {
     }
 
     results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-    return results.slice(0, limit);
+    return results.slice(0, limit + 1);
   }
 
   async findBookmarks(userId: string, type?: string, cursor?: string, limit = 20): Promise<LibraryItemWithMetadata[]> {
@@ -178,7 +178,7 @@ export class InteractionRepository {
       const items = await delegate.findMany({
         where,
         orderBy: { updatedAt: 'desc' },
-        take: limit,
+        take: limit + 1,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
       });
 
@@ -188,7 +188,7 @@ export class InteractionRepository {
     }
 
     results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-    return results.slice(0, limit);
+    return results.slice(0, limit + 1);
   }
 
   async findWithReviews(
@@ -219,7 +219,7 @@ export class InteractionRepository {
       const items = await delegate.findMany({
         where,
         orderBy: { updatedAt: 'desc' },
-        take: limit,
+        take: limit + 1,
         include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
       });
 
@@ -229,7 +229,7 @@ export class InteractionRepository {
     }
 
     results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-    return results.slice(0, limit);
+    return results.slice(0, limit + 1);
   }
 
   async findHistory(userId: string, type?: string, cursor?: string, limit = 20): Promise<Record<string, any>[]> {
@@ -237,7 +237,19 @@ export class InteractionRepository {
     if (!activityDelegate) return [];
 
     const where: Record<string, any> = { userId };
-    if (type) where.type = type.toUpperCase();
+    if (type) {
+      const typeMap: Record<string, string> = {
+        movie: 'WATCH',
+        tvshow: 'WATCH',
+        anime: 'WATCH',
+        book: 'READ',
+        game: 'PLAY',
+        musicalbum: 'LISTEN',
+        podcast: 'LISTEN',
+        course: 'LEARN',
+      };
+      where.type = typeMap[type.toLowerCase()] ?? type.toUpperCase();
+    }
     if (cursor) {
       where.createdAt = { lt: cursor };
     }
@@ -245,7 +257,7 @@ export class InteractionRepository {
     const items = await activityDelegate.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      take: limit,
+      take: limit + 1,
     });
 
     return items;

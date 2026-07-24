@@ -3,12 +3,14 @@ import { CloudSnow } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PosterCard } from "@/components/ui/PosterCard";
 
-export function SeasonalRecommendations(props: any) {
-  const items = props.items || [
-    { id: "sr1", mediaId: "sr1", _mediaId: "sr1", title: "Fargo", poster: "https://images.unsplash.com/photo-1542385151-efd9000785a0?q=80&w=600&auto=format&fit=crop", mediaType: "movie" },
-    { id: "sr2", mediaId: "sr2", _mediaId: "sr2", title: "The Shining", poster: "https://images.unsplash.com/photo-1518173663110-388274092b70?q=80&w=600&auto=format&fit=crop", mediaType: "movie" },
-    { id: "sr3", mediaId: "sr3", _mediaId: "sr3", title: "Snowpiercer", poster: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=600&auto=format&fit=crop", mediaType: "movie" },
-  ];
+import type { UIMediaItem } from "@/lib/adapters/types";
+
+interface Props {
+  items?: UIMediaItem[];
+  season?: string;
+}
+
+export function SeasonalRecommendations({ items = [], season = "Winter" }: Props) {
 
   return (
     <PremiumGlass className="relative overflow-hidden p-6 sm:p-8">

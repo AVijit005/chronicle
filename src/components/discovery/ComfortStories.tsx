@@ -11,10 +11,10 @@ interface Props {
 export function ComfortStories({ items = [] }: Props) {
   // Use mock items if none provided
   const displayItems = items.length > 0 ? items : [
-    { id: "cs1", mediaId: "cs1", _mediaId: "cs1", title: "Spirited Away", poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600&auto=format&fit=crop", mediaType: "movie", rewatchCount: 5, accent: "oklch(0.65 0.22 295)" },
-    { id: "cs2", mediaId: "cs2", _mediaId: "cs2", title: "The Office", poster: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=600&auto=format&fit=crop", mediaType: "tv", rewatchCount: 8, accent: "oklch(0.78 0.16 50)" },
-    { id: "cs3", mediaId: "cs3", _mediaId: "cs3", title: "Stardew Valley", poster: "https://images.unsplash.com/photo-1595089334571-0010996f2648?q=80&w=600&auto=format&fit=crop", mediaType: "game", rewatchCount: 12, accent: "oklch(0.70 0.18 160)" },
-    { id: "cs4", mediaId: "cs4", _mediaId: "cs4", title: "Harry Potter", poster: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?q=80&w=600&auto=format&fit=crop", mediaType: "book", rewatchCount: 3, accent: "oklch(0.72 0.18 25)" },
+    { id: "cs1", mediaId: "cs1", _mediaId: "cs1", title: "Spirited Away", poster: "", mediaType: "movie", rewatchCount: 5, accent: "var(--primary)" },
+    { id: "cs2", mediaId: "cs2", _mediaId: "cs2", title: "The Office", poster: "", mediaType: "tv", rewatchCount: 8, accent: "var(--primary)" },
+    { id: "cs3", mediaId: "cs3", _mediaId: "cs3", title: "Stardew Valley", poster: "", mediaType: "game", rewatchCount: 12, accent: "var(--primary)" },
+    { id: "cs4", mediaId: "cs4", _mediaId: "cs4", title: "Harry Potter", poster: "", mediaType: "book", rewatchCount: 3, accent: "var(--primary)" },
   ] as any[];
 
   if (displayItems.length === 0) return null;
@@ -24,7 +24,7 @@ export function ComfortStories({ items = [] }: Props) {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="flex items-center gap-2 font-display text-2xl tracking-tight">
-            <Heart size={20} className="text-[oklch(0.78_0.16_50)]" />
+            <Heart size={20} className="text-primary" />
             Comfort Stories
           </h2>
           <p className="text-sm text-muted-foreground mt-1">

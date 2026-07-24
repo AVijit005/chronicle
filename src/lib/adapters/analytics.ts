@@ -94,50 +94,59 @@ export function adaptCalendarYear(y: CalendarYearResponse): UICalendarYear {
     'oklch(0.7 0.18 25)', 'oklch(0.6 0.18 250)', 'oklch(0.68 0.15 280)'
   ];
 
-  const months = y.months.map((m) => ({
-    index: m.month,
-    name: monthNames[m.month],
-    short: monthNames[m.month],
-    daysInMonth: new Date(y.year, m.month + 1, 0).getDate(),
-    startDay: new Date(y.year, m.month, 1).getDay(),
-    cells: Array.from({ length: new Date(y.year, m.month + 1, 0).getDate() }, (_, i) => ({
-      day: i + 1,
-      hasMedia: false,
-      hasJournal: false,
-      hasAchievement: false,
-      intensity: 0,
-      mediaCount: 0,
-      poster: '',
-    })),
-    accent: monthAccents[m.month],
-    favorite: '',
-    genre: '',
-    mediaCount: m.storyCount,
-    journalCount: m.journalCount,
-    hours: m.hoursTracked,
-    collage: m.topMedia.map((t) => t.posterUrl ?? ''),
-    dayHits: m.dayHits,
-  }));
+  const rawMonths = y.months ?? [];
+  const months = rawMonths.map((m) => {
+    const monthIdx = typeof m.month === 'number' && m.month >= 0 && m.month < 12 ? m.month : 0;
+    const name = monthNames[monthIdx] ?? 'Jan';
+    const accent = monthAccents[monthIdx] ?? 'oklch(0.7 0.18 250)';
+    const daysInMonth = new Date(y.year ?? new Date().getFullYear(), monthIdx + 1, 0).getDate();
+    const startDay = new Date(y.year ?? new Date().getFullYear(), monthIdx, 1).getDay();
 
-  const heatmap = y.heatmap.map((c) => ({
-    w: c.week,
-    d: c.day,
-    v: c.value,
+    return {
+      index: monthIdx,
+      name,
+      short: name,
+      daysInMonth,
+      startDay,
+      cells: Array.from({ length: daysInMonth }, (_, i) => ({
+        day: i + 1,
+        hasMedia: false,
+        hasJournal: false,
+        hasAchievement: false,
+        intensity: 0,
+        mediaCount: 0,
+        poster: '',
+      })),
+      accent,
+      favorite: '',
+      genre: '',
+      mediaCount: m.storyCount ?? 0,
+      journalCount: m.journalCount ?? 0,
+      hours: m.hoursTracked ?? 0,
+      collage: (m.topMedia ?? []).map((t) => t?.posterUrl ?? ''),
+      dayHits: m.dayHits ?? 0,
+    };
+  });
+
+  const heatmap = (y.heatmap ?? []).map((c) => ({
+    w: c.week ?? 0,
+    d: c.day ?? 0,
+    v: c.value ?? 0,
   }));
 
   return {
-    year: y.year,
+    year: y.year ?? new Date().getFullYear(),
     stats: {
-      stories: y.stats.totalStories,
-      journals: y.stats.totalJournals,
-      longestStreak: y.stats.longestStreak,
+      stories: y.stats?.totalStories ?? 0,
+      journals: y.stats?.totalJournals ?? 0,
+      longestStreak: y.stats?.longestStreak ?? 0,
       favoriteMonth: [...months].sort((a, b) => b.dayHits - a.dayHits)[0]?.name ?? '—',
     },
     months,
     heatmap,
-    highlights: y.highlights.map((h) => ({ label: h.label, value: h.value, note: h.note, media: { poster: h.posterUrl } })),
-    streaks: y.streaks.map((s) => ({ label: s.label, value: s.value, total: s.total, accent: s.accent })),
-    releases: y.upcoming.map((u) => ({ title: u.title, poster: u.posterUrl ?? '', when: u.when, countdown: u.countdown, accent: u.accent })),
-    insights: y.insights,
+    highlights: (y.highlights ?? []).map((h) => ({ label: h.label ?? '', value: h.value ?? 0, note: h.note ?? '', media: { poster: h.posterUrl ?? '' } })),
+    streaks: (y.streaks ?? []).map((s) => ({ label: s.label ?? '', value: s.value ?? 0, total: s.total ?? 0, accent: s.accent ?? 'var(--primary)' })),
+    releases: (y.upcoming ?? []).map((u) => ({ title: u.title ?? '', poster: u.posterUrl ?? '', when: u.when ?? '', countdown: u.countdown ?? '', accent: u.accent ?? 'var(--primary)' })),
+    insights: y.insights ?? [],
   };
 }

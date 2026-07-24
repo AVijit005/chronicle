@@ -50,7 +50,7 @@ export function RecentlyFinishedTimeline({ limit }: { limit?: number }) {
                       >
                         <img
                           src={m.poster || undefined}
-                          alt=""
+                          alt={m.title}
                           className="h-16 w-12 shrink-0 rounded-md object-cover"
                           loading="lazy"
                         />

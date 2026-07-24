@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion, useReducedMotion } from "motion/react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { lazy, Suspense } from "react";
 import type { ComponentType } from "react";
 const ResponsiveContainer = lazy(() => import("recharts").then((m) => ({ default: m.ResponsiveContainer as unknown as ComponentType<any> })));
@@ -163,19 +163,27 @@ function AnalyticsPage() {
     );
   }
 
-  const lifetimeStats = [
-    { label: "Movies", value: o.moviesCompleted, delta: 0, accent: "oklch(0.65 0.22 295)" },
-    { label: "Shows", value: o.showsFinished, delta: 0, accent: "var(--primary)" },
-    { label: "Books", value: o.booksRead, delta: 0, accent: "oklch(0.7 0.18 25)" },
-    { label: "Games", value: o.gamesFinished, delta: 0, accent: "oklch(0.82 0.16 80)" },
-    { label: "Total Library Items", value: o.totalItems, delta: 0, accent: "oklch(0.72 0.16 160)" },
-    { label: "Average Rating", value: o.averageRating ?? 0, delta: 0, accent: "oklch(0.85 0.2 100)" },
-  ];
+  const lifetimeStats = useMemo(() => {
+    const stats = [
+      { label: "Completed Stories", value: o.completedItems, delta: o.completedItemsDelta ?? null, accent: "oklch(0.72 0.18 255)", scopeKey: "all" },
+      { label: "Movies Completed", value: o.moviesCompleted, delta: o.moviesCompletedDelta ?? null, accent: "oklch(0.65 0.22 295)", scopeKey: "movies" },
+      { label: "Books Read", value: o.booksRead, delta: o.booksReadDelta ?? null, accent: "oklch(0.7 0.18 25)", scopeKey: "books" },
+      { label: "Games Finished", value: o.gamesFinished, delta: o.gamesFinishedDelta ?? null, accent: "oklch(0.82 0.16 80)", scopeKey: "games" },
+      { label: "Total Library Items", value: o.totalItems, delta: o.totalItemsDelta ?? null, accent: "oklch(0.72 0.16 160)", scopeKey: "all" },
+      { label: "Average Rating", value: o.averageRating ?? 5.0, delta: o.averageRatingDelta ?? null, accent: "oklch(0.85 0.2 100)", scopeKey: "all" },
+    ];
+    if (scope === "all") return stats;
+    return stats.filter((s) => s.scopeKey === scope || s.scopeKey === "all");
+  }, [o, scope]);
 
-  const mediaDistribution = Object.entries(m.completionByType).map(([name, value], idx) => {
-    const colors = ["var(--primary)", "oklch(0.65 0.22 295)", "oklch(0.72 0.16 160)", "oklch(0.7 0.18 25)"];
-    return { name, value, color: colors[idx % colors.length] };
-  });
+  const mediaDistribution = useMemo(() => {
+    const source = Object.keys(m.completionByType).length > 0 ? m.completionByType : m.totalByType;
+    return Object.entries(source).map(([name, value], idx) => {
+      const colors = ["var(--primary)", "oklch(0.65 0.22 295)", "oklch(0.72 0.16 160)", "oklch(0.7 0.18 25)", "oklch(0.82 0.16 80)"];
+      const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+      return { name: formattedName, value, color: colors[idx % colors.length] };
+    });
+  }, [m]);
 
   return (
     <Suspense fallback={<div className="min-h-screen animate-pulse bg-white/5" />}>

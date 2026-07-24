@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-import { MEDIA } from "@/lib/types";
 
 const MEMORIES = [
   {

@@ -31,7 +31,7 @@ export function MemoryHighlights({ className }: Props) {
               >
                 <img
                   src={m.poster}
-                  alt=""
+                  alt={h.title}
                   className="h-20 w-14 flex-none rounded-lg object-cover"
                 />
                 <div className="min-w-0">

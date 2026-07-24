@@ -1,15 +1,24 @@
 import { Link } from "@tanstack/react-router";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
-import { } from "@/lib/types";
 import { NotebookPen } from "lucide-react";
 import type { MediaItem } from "@/lib/types";
-const JOURNAL: any[] = [];
 
+interface JournalEntry {
+  id: string;
+  date: string;
+  mood: string;
+  title: string;
+  excerpt: string;
+}
 
+interface Props {
+  item: MediaItem;
+  entries?: JournalEntry[];
+}
 
-export function JournalIntegration({ item }: { item: MediaItem }) {
-  const entries = JOURNAL.slice(0, 3);
+export function JournalIntegration({ item, entries = [] }: Props) {
+  const shown = entries.slice(0, 3);
   return (
     <PremiumGlass variant="subtle">
       <div className="p-5">
@@ -28,7 +37,7 @@ export function JournalIntegration({ item }: { item: MediaItem }) {
           </Link>
         </div>
         <ul className="mt-4 space-y-3">
-          {entries.map((j) => (
+          {shown.map((j) => (
             <li key={j.id} className="border-l-2 border-primary/40 pl-3">
               <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground/75">
                 {j.date} · {j.mood}

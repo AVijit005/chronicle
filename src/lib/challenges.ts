@@ -1,5 +1,5 @@
 // Challenges — deterministic personal prompts.
-import { MEDIA, type MediaItem } from "@/lib/types";
+import type { MediaItem } from "@/lib/types";
 
 export type ChallengeKind =
   | "Monthly"

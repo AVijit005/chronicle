@@ -35,7 +35,7 @@ function HolographicReleaseCard({ u }: { u: ReleaseItem }) {
       <motion.div className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
         style={{ background: useMotionTemplate`radial-gradient(200px circle at ${x}px ${y}px, rgba(255,255,255,0.4), transparent 70%)` }} />
       <div className="relative shrink-0">
-        <motion.img src={u.poster} alt="" className="h-[90px] w-[64px] rounded-xl object-cover shadow-[0_8px_16px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-110" />
+        <motion.img src={u.poster} alt={u.title} className="h-[90px] w-[64px] rounded-xl object-cover shadow-[0_8px_16px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-110" />
         <div className="absolute inset-0 rounded-xl border border-white/20 pointer-events-none mix-blend-overlay group-hover:border-white/40 transition-colors duration-500" />
       </div>
       <div className="min-w-0 flex-1 relative z-10">

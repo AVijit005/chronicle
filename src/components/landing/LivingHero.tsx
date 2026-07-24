@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { ArrowRight, Sparkles, ImageOff } from "lucide-react";
-import { MEDIA } from "@/lib/types";
 import { useMouseParallax } from "@/lib/useParallax";
 import { MagneticButton } from "./MagneticButton";
 

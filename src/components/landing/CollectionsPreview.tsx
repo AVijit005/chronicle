@@ -1,10 +1,10 @@
 import { motion, useReducedMotion } from "motion/react";
 
 const DEMO_COLLECTIONS = [
-  { id: "1", name: "Cyberpunk Vibe", count: 12, cover: "https://images.unsplash.com/photo-1518770660439-4636190af475", accent: "oklch(0.7 0.2 295)", description: "Neon-drenched stories." },
-  { id: "2", name: "Ghibli Magic", count: 8, cover: "https://images.unsplash.com/photo-1542204165-65bf26472b9b", accent: "oklch(0.78 0.18 50)", description: "Whimsical adventures." },
-  { id: "3", name: "Space Operas", count: 24, cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa", accent: "var(--primary)", description: "Across the universe." },
-  { id: "4", name: "Comfort Games", count: 5, cover: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f", accent: "oklch(0.72 0.16 80)", description: "Cozy weekends." }
+  { id: "1", name: "Cyberpunk Vibe", count: 12, cover: "", accent: "var(--primary)", description: "Neon-drenched stories." },
+  { id: "2", name: "Ghibli Magic", count: 8, cover: "", accent: "var(--primary)", description: "Whimsical adventures." },
+  { id: "3", name: "Space Operas", count: 24, cover: "", accent: "var(--primary)", description: "Across the universe." },
+  { id: "4", name: "Comfort Games", count: 5, cover: "", accent: "var(--primary)", description: "Cozy weekends." }
 ];
 
 export function CollectionsPreview() {
@@ -21,17 +21,21 @@ export function CollectionsPreview() {
           whileHover={{ y: -6 }}
           className="group relative aspect-[3/4] overflow-hidden rounded-3xl ring-1 ring-white/10"
         >
-          <motion.img
-            src={c.cover}
-            alt=""
-            className="h-full w-full object-cover"
-            animate={reduced ? undefined : { scale: [1, 1.04, 1] }}
-            transition={reduced ? undefined : { duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          />
+          {c.cover ? (
+            <motion.img
+              src={c.cover}
+              alt=""
+              className="h-full w-full object-cover"
+              animate={reduced ? undefined : { scale: [1, 1.04, 1] }}
+              transition={reduced ? undefined : { duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-primary/30 to-background/80" />
+          )}
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, transparent 40%, ${c.accent.replace(")", " / 0.5)")}, oklch(0 0 0 / 0.85))`,
+              background: `linear-gradient(180deg, transparent 40%, ${c.accent.startsWith('var(') ? `color-mix(in oklch, ${c.accent}, transparent 50%)` : `${c.accent}80`}, oklch(0 0 0 / 0.85))`,
             }}
           />
           <div

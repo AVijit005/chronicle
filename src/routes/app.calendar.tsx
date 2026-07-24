@@ -66,7 +66,7 @@ function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const { data: calendarYearData, isLoading: isCalendarLoading, isError: isCalendarError } = useCalendarYear(displayYear);
+  const { data: calendarYearData, isLoading: isCalendarLoading, isError: isCalendarError, refetch: refetchCalendar } = useCalendarYear(displayYear);
   const calendarUI = calendarYearData ? adaptCalendarYear(calendarYearData) : null;
   const apiMonth = calendarUI?.months[monthIdx] ?? null;
   const month = apiMonth ?? {
@@ -89,30 +89,25 @@ function CalendarPage() {
   });
   const season = seasonOf(monthIdx);
 
-  if (isCalendarLoading) return <CalendarSkeleton />;
-
-  if (isCalendarError) {
-    return (
-      <div className="py-20">
-        <PremiumErrorState
-          title="Couldn't load your calendar"
-          description="Something went wrong fetching your year overview. Please try again."
-          action={<PremiumButton variant="primary">Retry</PremiumButton>}
-        />
-      </div>
-    );
-  }
-
   const grid = useMemo(() => {
     const cells: ({
       day: number; hasMedia: boolean; hasJournal: boolean;
       hasAchievement: boolean; intensity: number; mediaCount: number; poster: string;
     } | null)[] = [];
     for (let i = 0; i < month.startDay; i++) cells.push(null);
-    month.cells.forEach((c) => cells.push(c));
+    const monthCells = month.cells.length > 0 ? month.cells : Array.from({ length: new Date(displayYear, monthIdx + 1, 0).getDate() }, (_, i) => ({
+      day: i + 1,
+      hasMedia: false,
+      hasJournal: false,
+      hasAchievement: false,
+      intensity: 0,
+      mediaCount: 0,
+      poster: '',
+    }));
+    monthCells.forEach((c) => cells.push(c));
     while (cells.length % 7) cells.push(null);
     return cells;
-  }, [month]);
+  }, [month, displayYear, monthIdx]);
 
   const dailyMemoryItems = useMemo(() => {
     if (!selectedDay) return [];
@@ -140,6 +135,20 @@ function CalendarPage() {
       };
     });
   }, [selectedDay, dayData, monthIdx, month.cells]);
+
+  if (isCalendarLoading) return <CalendarSkeleton />;
+
+  if (isCalendarError) {
+    return (
+      <div className="py-20">
+        <PremiumErrorState
+          title="Couldn't load your calendar"
+          description="Something went wrong fetching your year overview. Please try again."
+          action={<PremiumButton variant="primary" onClick={() => refetchCalendar()}>Retry</PremiumButton>}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="pb-32 pt-2">

@@ -6,8 +6,8 @@ import { ApiError } from "@/lib/api/errors";
 
 export const Route = createFileRoute("/app")({
   beforeLoad: async ({ context }) => {
-    // Check if user is authenticated by trying to fetch current user.
-    // If the query fails (401), redirect to auth page.
+    if (typeof window === "undefined") return;
+
     const { queryClient } = context;
     try {
       const user = await queryClient.fetchQuery({
@@ -22,11 +22,7 @@ export const Route = createFileRoute("/app")({
       if (isRedirect(error)) {
         throw error;
       }
-      if (error instanceof ApiError && error.status === 401) {
-        throw redirect({ to: "/auth" });
-      }
-      // Re-throw other errors so the UI doesn't crash to login for network blips
-      throw error;
+      throw redirect({ to: "/auth" });
     }
   },
   component: () => (

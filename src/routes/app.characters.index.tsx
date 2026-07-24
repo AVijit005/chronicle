@@ -8,7 +8,7 @@ export const Route = createFileRoute("/app/characters/")({ component: Characters
 
 function CharactersIndex() {
   const { data: libraryData } = useLibrary({ limit: 50 });
-  const MEDIA = libraryData?.pages.flatMap(p => p.items) || [];
+  const MEDIA = libraryData?.pages.flatMap(p => p.data ?? p.items ?? []) || [];
   const hero = CHARACTERS[0];
   const heroMedia = hero ? MEDIA.find((x) => x.id === hero.mediaId) : null;
   const rest = CHARACTERS.slice(1);

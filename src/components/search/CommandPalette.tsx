@@ -449,7 +449,7 @@ function RowContent({ row }: { row: Row }) {
       <>
         <img
           src={row.item.poster || undefined}
-          alt=""
+          alt={row.item.title}
           className="h-10 w-7 rounded-md object-cover ring-1 ring-white/10"
         />
         <div className="min-w-0 flex-1">

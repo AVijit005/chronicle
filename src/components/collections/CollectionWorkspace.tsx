@@ -1,6 +1,6 @@
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { getWorkspace } from "@/lib/collectionWorkspace";
-import { MEDIA, type Collection } from "@/lib/types";
+import type { Collection } from "@/lib/types";
 
 export function CollectionWorkspace({ collection }: { collection: Collection }) {
   const w = getWorkspace(collection);

@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-import { MEDIA } from "@/lib/types";
 
 export function CrossPlatform() {
   const desktop = { id: "interstellar", title: "Interstellar", creator: "Christopher Nolan", kind: "movie", progress: 68, backdrop: "https://image.tmdb.org/t/p/w1280/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", poster: "https://image.tmdb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" };

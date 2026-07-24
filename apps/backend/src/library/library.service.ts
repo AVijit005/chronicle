@@ -181,9 +181,3 @@ export class LibraryService {
     };
   }
 }
-      genres: media.genres ?? [],
-          }
-        : null,
-    };
-  }
-}

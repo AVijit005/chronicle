@@ -1,15 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageSkeleton } from "@/components/common/PageSkeleton";
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState, useMemo } from "react";
 import { Star, NotebookPen, Trophy, Layers } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp, SegmentedFilter, ZoneHeading } from "@/components/analytics/AnalyticsKit";
-import {
-  
-} from "@/lib/types";
-
-import { MEDIA } from "@/lib/types";
 import { LIFE_CHAPTERS } from "@/lib/memoryInsights";
 import { LifeChapterCard } from "@/components/memory/LifeChapterCard";
 import { SeasonalRecommendations } from "@/components/discovery/SeasonalRecommendations";
@@ -60,14 +53,8 @@ function TimelinePage() {
           className="relative overflow-hidden rounded-[40px] p-10 md:p-16"
           glow="oklch(0.65 0.22 295 / 0.4)"
         >
-          {/* collage */}
-          <div className="pointer-events-none absolute inset-0 grid grid-cols-6 gap-1 opacity-25">
-            {MEDIA.concat(MEDIA)
-              .slice(0, 18)
-              .map((m, i) => (
-                <img key={i} src={m.poster} alt="" loading="lazy" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none'; }} className="h-full w-full object-cover" />
-              ))}
-          </div>
+          {/* Background decoration */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/5 via-secondary/5 to-background" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background" />
           <div className="relative">
             <div className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
@@ -285,10 +272,10 @@ function TimelinePage() {
         <ZoneHeading eyebrow="Journey" title="The numbers behind it" />
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
-            { l: "Years tracked", v: 4 },
-            { l: "Stories", v: 312 },
-            { l: "Words journaled", v: 38_412 },
-            { l: "Achievements", v: 24 },
+            { l: "Stories tracked", v: timelineEvents?.length || 0 },
+            { l: "Life chapters", v: LIFE_CHAPTERS?.length || 0 },
+            { l: "Journal entries", v: 0 },
+            { l: "Achievements", v: 0 },
           ].map((s) => (
             <PremiumGlass key={s.l} className="p-6">
               <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">

@@ -51,7 +51,7 @@ export class SearchRepository {
             { [cfg.descriptionField]: { contains: qLower, mode: 'insensitive' } },
           ],
         },
-        take: limit,
+        take: limit + 1,
         select: {
           id: true,
           title: true,
@@ -114,7 +114,7 @@ export class SearchRepository {
             ],
           },
         },
-        take: limit,
+        take: limit + 1,
         include: {
           [cfg.delegate]: {
             select: {
@@ -176,7 +176,7 @@ export class SearchRepository {
           { content: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -211,7 +211,7 @@ export class SearchRepository {
           { description: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -246,7 +246,7 @@ export class SearchRepository {
           { description: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -282,7 +282,7 @@ export class SearchRepository {
           { note: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -317,7 +317,7 @@ export class SearchRepository {
           { description: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -352,7 +352,7 @@ export class SearchRepository {
           { description: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -387,7 +387,7 @@ export class SearchRepository {
           { description: { contains: qLower, mode: 'insensitive' } },
         ],
       },
-      take: limit,
+      take: limit + 1,
       orderBy: { eventDate: 'desc' },
     });
 
@@ -438,7 +438,7 @@ export class SearchRepository {
     const items = await delegate.findMany({
       where: { userId },
       orderBy: { searchedAt: 'desc' },
-      take: limit,
+      take: limit + 1,
       select: { query: true },
     });
 

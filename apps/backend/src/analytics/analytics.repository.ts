@@ -82,31 +82,39 @@ export class AnalyticsRepository {
   async getHoursAndEpisodesByType(userId: string): Promise<{ hours: Record<string, number>, episodes: number }> {
     const hours: Record<string, number> = {};
     let episodes = 0;
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
-        select: { hoursSpent: true, minutesSpent: true, currentEpisode: true, currentSeason: true },
-      });
-      let h = 0;
-      for (const item of items) {
-        h += (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
-        if (item.currentEpisode) episodes += item.currentEpisode;
-      }
-      hours[cfg.type] = h;
+    const results = await Promise.all(
+      USER_LIB_TYPES.map(async (cfg) => {
+        const delegate = this.prismaAny()[cfg.delegate];
+        if (!delegate) return { type: cfg.type, h: 0, ep: 0 };
+        const items = await delegate.findMany({
+          where: { userId, deletedAt: null },
+          select: { hoursSpent: true, minutesSpent: true, currentEpisode: true },
+        });
+        let h = 0;
+        let ep = 0;
+        for (const item of items) {
+          h += (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
+          if (item.currentEpisode) ep += item.currentEpisode;
+        }
+        return { type: cfg.type, h, ep };
+      })
+    );
+    for (const r of results) {
+      hours[r.type] = r.h;
+      episodes += r.ep;
     }
     return { hours, episodes };
   }
 
   async getTotalLibraryItems(userId: string): Promise<number> {
-    let total = 0;
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      total += await delegate.count({ where: { userId, deletedAt: null } });
-    }
-    return total;
+    const counts = await Promise.all(
+      USER_LIB_TYPES.map(async (cfg) => {
+        const delegate = this.prismaAny()[cfg.delegate];
+        if (!delegate) return 0;
+        return delegate.count({ where: { userId, deletedAt: null } });
+      })
+    );
+    return counts.reduce((sum, c) => sum + c, 0);
   }
 
   async getProgressDistribution(userId: string): Promise<Record<string, number>> {
@@ -189,43 +197,45 @@ export class AnalyticsRepository {
   }
 
   async getFavoriteCount(userId: string): Promise<number> {
-    let total = 0;
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      total += await delegate.count({ where: { userId, favorite: true, deletedAt: null } });
-    }
-    return total;
+    const counts = await Promise.all(
+      USER_LIB_TYPES.map(async (cfg) => {
+        const delegate = this.prismaAny()[cfg.delegate];
+        if (!delegate) return 0;
+        return delegate.count({ where: { userId, favorite: true, deletedAt: null } });
+      })
+    );
+    return counts.reduce((sum, c) => sum + c, 0);
   }
 
   async getReviewCount(userId: string): Promise<number> {
-    let total = 0;
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const items = await delegate.findMany({
-        where: { userId, deletedAt: null },
-        select: { metadata: true },
-      });
-      for (const item of items) {
-        const meta = item.metadata as Record<string, any> | null;
-        if (meta?.review) total++;
-      }
-    }
-    return total;
+    const counts = await Promise.all(
+      USER_LIB_TYPES.map(async (cfg) => {
+        const delegate = this.prismaAny()[cfg.delegate];
+        if (!delegate) return 0;
+        const items = await delegate.findMany({
+          where: { userId, deletedAt: null },
+          select: { metadata: true },
+        });
+        let count = 0;
+        for (const item of items) {
+          const meta = item.metadata as Record<string, any> | null;
+          if (meta?.review) count++;
+        }
+        return count;
+      })
+    );
+    return counts.reduce((sum, c) => sum + c, 0);
   }
 
   async getBookmarkCount(userId: string): Promise<number> {
-    let total = 0;
-    for (const cfg of USER_LIB_TYPES) {
-      const delegate = this.prismaAny()[cfg.delegate];
-      if (!delegate) continue;
-      const count = await delegate.count({
-        where: { userId, bookmarked: true, deletedAt: null },
-      });
-      total += count;
-    }
-    return total;
+    const counts = await Promise.all(
+      USER_LIB_TYPES.map(async (cfg) => {
+        const delegate = this.prismaAny()[cfg.delegate];
+        if (!delegate) return 0;
+        return delegate.count({ where: { userId, bookmarked: true, deletedAt: null } });
+      })
+    );
+    return counts.reduce((sum, c) => sum + c, 0);
   }
 
   // ─── Continue Watching / Reading / Playing / Listening / Learning ──────────
@@ -241,11 +251,9 @@ export class AnalyticsRepository {
       where: {
         userId,
         status: { in: statuses },
-        
-        progress: { gt: 0 },
-        progressPercentage: { lt: 100 },
+        deletedAt: null,
       },
-      orderBy: { lastInteractionAt: 'desc' },
+      orderBy: { updatedAt: 'desc' },
       take: limit,
       include: { [cfg.mediaDelegate]: { select: { id: true, slug: true, title: true, posterUrl: true } } },
     });

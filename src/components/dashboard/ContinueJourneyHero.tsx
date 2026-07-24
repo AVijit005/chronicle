@@ -24,7 +24,7 @@ export function ContinueJourneyHero({ className }: { className?: string }) {
       <PremiumGlass variant="strong" className="hover-lift overflow-hidden">
         <div className="relative grid gap-0 md:grid-cols-[1.1fr_1fr]">
           <div className="relative aspect-[16/9] md:aspect-auto md:min-h-[280px]">
-            <img src={j.posterUrl ?? ""} alt="" className="h-full w-full object-cover" />
+            <img src={j.posterUrl ?? ""} alt={j.title} className="h-full w-full object-cover" />
             <div
               className="absolute inset-0"
               style={{

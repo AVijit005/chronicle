@@ -1,6 +1,6 @@
 import { useTheme } from "@/hooks/use-theme";
 import { motion, type HTMLMotionProps } from "motion/react";
-import { forwardRef, useCallback, useRef, type PointerEvent as ReactPointerEvent, useState, useEffect } from "react";
+import { forwardRef, useCallback, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "subtle" | "default" | "strong";
@@ -108,7 +108,7 @@ export const PremiumGlass = forwardRef<HTMLDivElement, Props>(
         }
       >
         {/* 2. ISOLATION / CLIPPING CONTAINER */}
-        <div className={cn("pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]", variantClass[variant])}>
+        <div aria-hidden className={cn("pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]", variantClass[variant])}>
           
           {/* 3. ABSOLUTE REFLECTION LAYERS */}
           {/* outer highlight */}

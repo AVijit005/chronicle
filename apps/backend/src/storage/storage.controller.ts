@@ -18,12 +18,16 @@ import type { Response } from 'express';
 import { CurrentUser, JwtAuthGuard } from '../auth';
 import type { AccessTokenPayload } from '../auth/services/jwt-token.service';
 import { StorageService } from './storage.service';
+import { SignedUrlService } from './signed-url.service';
 import type { UploadResponseDto, SignedUrlDto } from './dto';
 
 @ApiTags('Storage')
 @Controller('storage')
 export class StorageController {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(
+    private readonly storageService: StorageService,
+    private readonly signedUrlService: SignedUrlService,
+  ) {}
 
   @Post('upload')
   @UseGuards(JwtAuthGuard)
@@ -74,18 +78,29 @@ export class StorageController {
   async download(
     @CurrentUser() user: AccessTokenPayload,
     @Param('id') id: string,
-    @Res() res: Response,
+    @Query('token') token?: string,
+    @Query('exp') exp?: string,
+    @Res() res?: Response,
   ): Promise<void> {
+    if (token && exp) {
+      const isValid = this.signedUrlService.verifyDownloadToken(token, id, parseInt(exp, 10));
+      if (!isValid && res) {
+        res.status(403).json({ statusCode: 403, message: 'Invalid or expired signed URL token' });
+        return;
+      }
+    }
     const file = await this.storageService.downloadWithMeta(id, user.sub);
-    if (!file) {
+    if (!file && res) {
       res.status(404).json({ statusCode: 404, message: 'File not found' });
       return;
     }
 
-    res.set('Content-Type', file.mimeType || 'application/octet-stream');
-    res.set('Content-Length', String(file.buffer.length));
-    res.set('Cache-Control', 'private, max-age=3600');
-    res.send(file.buffer);
+    if (res && file) {
+      res.set('Content-Type', file.mimeType || 'application/octet-stream');
+      res.set('Content-Length', String(file.buffer.length));
+      res.set('Cache-Control', 'private, max-age=3600');
+      res.send(file.buffer);
+    }
   }
 
   @Delete(':id')
@@ -102,7 +117,7 @@ export class StorageController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: 'Generate a signed upload URL' })
   async generateSignedUrl(@CurrentUser() user: AccessTokenPayload, @Query('path') path: string): Promise<SignedUrlDto> {
-    return this.storageService.generateUploadUrl(path, user.sub);
+    return this.signedUrlService.generateUploadUrl(path, user.sub);
   }
 
   @Post('avatar')

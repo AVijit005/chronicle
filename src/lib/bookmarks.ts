@@ -33,7 +33,8 @@ function read(): Bookmark[] {
   try {
     const raw = window.localStorage.getItem(KEY);
     return raw ? (JSON.parse(raw) as Bookmark[]) : [];
-  } catch {
+  } catch (e) {
+    console.error('Failed to read bookmarks', e);
     return [];
   }
 }
@@ -41,8 +42,8 @@ function writem(list: Bookmark[]) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(KEY, JSON.stringify(list));
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.error('Failed to write bookmarks', e);
   }
 }
 

@@ -4,9 +4,18 @@ import { statusCounts, collageRecent } from "@/lib/library";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { CountUp } from "@/components/analytics/AnalyticsKit";
 
+import { useLibraryStats } from "@/hooks/use-library";
+
 export function LibraryHero() {
+  const { data: stats } = useLibraryStats();
   const c = statusCounts();
   const posters = collageRecent(9);
+
+  const byStatusRaw = stats?.byStatus || {};
+  const total = stats?.total ?? (c.completed + c.in_progress + c.planning + c.paused + c.dropped + c.rewatching + c.archived);
+  const completed = stats ? (byStatusRaw.COMPLETED ?? 0) : c.completed;
+  const inProgress = stats ? ((byStatusRaw.WATCHING ?? 0) + (byStatusRaw.READING ?? 0) + (byStatusRaw.PLAYING ?? 0) + (byStatusRaw.LISTENING ?? 0) + (byStatusRaw.LEARNING ?? 0)) : c.in_progress;
+  const planning = stats ? (byStatusRaw.PLANNING ?? 0) : c.planning;
   
   return (
     <motion.section
@@ -45,20 +54,10 @@ export function LibraryHero() {
           </p>
           <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
             {[
-              {
-                l: "Total",
-                v:
-                  c.completed +
-                  c.in_progress +
-                  c.planning +
-                  c.paused +
-                  c.dropped +
-                  c.rewatching +
-                  c.archived,
-              },
-              { l: "Completed", v: c.completed },
-              { l: "In Progress", v: c.in_progress },
-              { l: "Planning", v: c.planning },
+              { l: "Total", v: total },
+              { l: "Completed", v: completed },
+              { l: "In Progress", v: inProgress },
+              { l: "Planning", v: planning },
             ].map((s) => (
               <PremiumGlass 
                 key={s.l} 

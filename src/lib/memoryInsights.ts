@@ -1,5 +1,4 @@
-// Memory Insights — Part 03.
-import { MEDIA } from "@/lib/types";
+// Memory Insights — Part 03. Grouping selectors over library items + memories.
 import {
   MEMORIES_BY_MEDIA,
   TODAY,
@@ -8,15 +7,17 @@ import {
   type Season,
   type Companion,
 } from "@/lib/memory";
+import type { MediaItem } from "@/lib/types";
 
 interface Pair {
-  media: (typeof MEDIA)[number];
+  media: MediaItem;
   memory: MediaMemory;
 }
-const all = (): Pair[] =>
-  MEDIA.map((m) => ({ media: m, memory: MEMORIES_BY_MEDIA[m.id] })).filter(
-    (x): x is Pair => !!x.memory,
-  );
+
+const all = (items: MediaItem[]): Pair[] =>
+  items
+    .map((m) => ({ media: m, memory: MEMORIES_BY_MEDIA[m.id] }))
+    .filter((x): x is Pair => !!x.memory);
 
 /* ============================================================
  * Life chapters — editorial groupings of memories.
@@ -37,7 +38,7 @@ export interface LifeChapter {
 export const LIFE_CHAPTERS: LifeChapter[] = [];
 
 /* ============================================================
- * Capsules
+ * Capsules, Highlights, Tags, Firsts, Milestones, Streaks, Bookmarks
  * ============================================================ */
 export interface Capsule {
   id: string;
@@ -48,9 +49,6 @@ export interface Capsule {
 }
 export const CAPSULES: Capsule[] = [];
 
-/* ============================================================
- * Highlights, tags, firsts, milestones, streaks, bookmarks, insights
- * ============================================================ */
 export interface MemoryHighlight {
   id: string;
   label: string;
@@ -60,23 +58,9 @@ export interface MemoryHighlight {
 export const HIGHLIGHTS: MemoryHighlight[] = [];
 
 export const TAGS = [
-  "Comfort",
-  "Healing",
-  "Adventure",
-  "Mind-blowing",
-  "Dark",
-  "Funny",
-  "Late Night",
-  "Rainy Day",
-  "Winter",
-  "Childhood",
-  "Family",
-  "Friends",
-  "College",
-  "Travel",
-  "Hope",
-  "Loss",
-  "Growth",
+  "Comfort", "Healing", "Adventure", "Mind-blowing", "Dark", "Funny",
+  "Late Night", "Rainy Day", "Winter", "Childhood", "Family", "Friends",
+  "College", "Travel", "Hope", "Loss", "Growth",
 ] as const;
 export type MemoryTag = (typeof TAGS)[number];
 
@@ -114,41 +98,43 @@ export const MEMORY_BOOKMARKS: BookmarkedMemory[] = [];
 export const INSIGHT_LINES: string[] = [];
 
 /* ============================================================
- * Grouping selectors
+ * Grouping selectors — accept items from live library
  * ============================================================ */
 export function groupByLifeChapter() {
   return LIFE_CHAPTERS;
 }
 
-export function groupBySeason(): Record<Season, Pair[]> {
+export function groupBySeason(items: MediaItem[]): Record<Season, Pair[]> {
   const out = { Spring: [], Summer: [], Autumn: [], Winter: [] } as Record<Season, Pair[]>;
-  for (const p of all()) out[p.memory.season].push(p);
+  for (const p of all(items)) out[p.memory.season].push(p);
   return out;
 }
-export function groupByCompanion(): Record<Companion, Pair[]> {
+
+export function groupByCompanion(items: MediaItem[]): Record<Companion, Pair[]> {
   const out = {} as Record<Companion, Pair[]>;
-  for (const p of all()) (out[p.memory.companion] ??= []).push(p);
+  for (const p of all(items)) (out[p.memory.companion] ??= []).push(p);
   return out;
 }
-export function groupByMood(): Record<Mood, Pair[]> {
+
+export function groupByMood(items: MediaItem[]): Record<Mood, Pair[]> {
   const out = {} as Record<Mood, Pair[]>;
-  for (const p of all()) (out[p.memory.mood] ??= []).push(p);
+  for (const p of all(items)) (out[p.memory.mood] ??= []).push(p);
   return out;
 }
-export function getFavoriteYears() {
+
+export function getFavoriteYears(items: MediaItem[]) {
   const counts: Record<string, number> = {};
-  for (const p of all()) {
+  for (const p of all(items)) {
     if (!p.memory.finishedAt) continue;
     const y = p.memory.finishedAt.slice(0, 4);
     counts[y] = (counts[y] ?? 0) + 1;
   }
-  return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4);
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4);
 }
-export function getBiggestMonth() {
+
+export function getBiggestMonth(items: MediaItem[]) {
   const counts: Record<string, number> = {};
-  for (const p of all()) {
+  for (const p of all(items)) {
     if (!p.memory.finishedAt) continue;
     const m = p.memory.finishedAt.slice(0, 7);
     counts[m] = (counts[m] ?? 0) + 1;
@@ -156,21 +142,25 @@ export function getBiggestMonth() {
   const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
   return top ? { month: top[0], count: top[1] } : null;
 }
-export function getMemoryDensity() {
-  return all().length / Math.max(1, MEDIA.length);
+
+export function getMemoryDensity(items: MediaItem[]) {
+  return items.length > 0 ? all(items).length / items.length : 0;
 }
-export function getEmotionalPeaks() {
-  return all()
+
+export function getEmotionalPeaks(items: MediaItem[]) {
+  return all(items)
     .filter(({ memory }) => ["Heartbreak", "Awe", "Triumph"].includes(memory.mood))
     .slice(0, 5);
 }
-export function getForgottenMemories() {
-  return all().filter(({ memory }) => {
+
+export function getForgottenMemories(items: MediaItem[]) {
+  return all(items).filter(({ memory }) => {
     if (!memory.finishedAt) return false;
     const d = Math.floor((TODAY().getTime() - new Date(memory.finishedAt).getTime()) / 86_400_000);
     return d > 700;
   });
 }
+
 export function getPersonalMilestones() {
   return MILESTONES;
 }

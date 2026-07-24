@@ -1,5 +1,6 @@
-// Personal Museum — curated editorial selections from MEDIA.
-import { MEDIA, type MediaItem } from "@/lib/types";
+// Personal Museum — curated editorial selections.
+// Items resolve from live library data passed by consuming components.
+import type { MediaItem } from "@/lib/types";
 
 export interface MuseumGallery {
   id: string;
@@ -8,51 +9,14 @@ export interface MuseumGallery {
   items: MediaItem[];
 }
 
-const by = (ids: string[]) => ids.map((id) => MEDIA.find((m) => m.id === id)!).filter(Boolean);
-
 export function getMuseum(): MuseumGallery[] {
   return [
-    {
-      id: "emotional",
-      title: "Most Emotional",
-      subtitle: "Stories that left a mark.",
-      items: by(["interstellar", "dune", "succession"]),
-    },
-    {
-      id: "beautiful",
-      title: "Most Beautiful",
-      subtitle: "Visually unforgettable.",
-      items: by(["dune", "interstellar", "one-piece"]),
-    },
-    {
-      id: "impactful",
-      title: "Most Impactful",
-      subtitle: "Changed how you see things.",
-      items: by(["succession", "interstellar", "cs50"]),
-    },
-    {
-      id: "nostalgic",
-      title: "Most Nostalgic",
-      subtitle: "The early loves.",
-      items: by(["harry-potter", "one-piece", "dark-side"]),
-    },
-    {
-      id: "replayed",
-      title: "Most Replayed",
-      subtitle: "Returned to, again and again.",
-      items: by(["interstellar", "elden-ring", "dark-side"]),
-    },
-    {
-      id: "inspiring",
-      title: "Most Inspiring",
-      subtitle: "Lit something inside.",
-      items: by(["cs50", "interstellar", "dune"]),
-    },
-    {
-      id: "masterpieces",
-      title: "Personal Masterpieces",
-      subtitle: "Your highest shelf.",
-      items: by(["dark-side", "interstellar", "elden-ring", "succession"]),
-    },
+    { id: "emotional", title: "Most Emotional", subtitle: "Stories that left a mark.", items: [] },
+    { id: "beautiful", title: "Most Beautiful", subtitle: "Visually unforgettable.", items: [] },
+    { id: "impactful", title: "Most Impactful", subtitle: "Changed how you see things.", items: [] },
+    { id: "nostalgic", title: "Most Nostalgic", subtitle: "The early loves.", items: [] },
+    { id: "replayed", title: "Most Replayed", subtitle: "Returned to, again and again.", items: [] },
+    { id: "inspiring", title: "Most Inspiring", subtitle: "Lit something inside.", items: [] },
+    { id: "masterpieces", title: "Personal Masterpieces", subtitle: "Your highest shelf.", items: [] },
   ];
 }

@@ -728,8 +728,8 @@ function ArtifactCard({ artifact, delay }: { artifact: Artifact; delay: number }
               style={{
                 width: `${artifact.pct}%`,
                 background:
-                  "linear-gradient(90deg, var(--primary), oklch(0.7 0.22 320))",
-                boxShadow: "0 0 12px oklch(0.72 0.18 255 / 0.6)",
+                  "linear-gradient(90deg, var(--primary), var(--primary))",
+                boxShadow: "0 0 12px var(--primary)",
               }}
             />
           </div>

@@ -1,15 +1,29 @@
-import { motion } from "motion/react";
+import { useMemo } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { Headphones } from "lucide-react";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 
-export function LifeSoundtrack(props: any) {
-  // Generate random heights for the waveform
-  const bars = Array.from({ length: 40 }).map((_, i) => ({
+interface Props {
+  topAlbum?: string;
+  artist?: string;
+  hoursPlayed?: number;
+}
+
+// Deterministic pseudo-random based on index (seedable)
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed * 12.9898 + seed * 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+export function LifeSoundtrack({ topAlbum = "Interstellar (Original Motion Picture Soundtrack)", artist = "Hans Zimmer", hoursPlayed = 42 }: Props) {
+  const reduced = useReducedMotion();
+  // Generate deterministic random heights for the waveform — stable across renders
+  const bars = useMemo(() => Array.from({ length: 40 }).map((_, i) => ({
     id: i,
-    height: 20 + Math.random() * 80,
-    delay: Math.random() * 1.5,
-    duration: 0.8 + Math.random() * 0.8
-  }));
+    height: 20 + seededRandom(i) * 80,
+    delay: seededRandom(i + 100) * 1.5,
+    duration: 0.8 + seededRandom(i + 200) * 0.8
+  })), []);
 
   return (
     <PremiumGlass className="p-6 relative overflow-hidden group">
@@ -31,13 +45,15 @@ export function LifeSoundtrack(props: any) {
               className="w-full bg-[oklch(0.72_0.18_255)]/40 rounded-t-sm"
               initial={{ height: "10%" }}
               animate={{ height: `${bar.height}%` }}
-              transition={{
-                duration: bar.duration,
-                delay: bar.delay,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut"
-              }}
+              transition={reduced
+                ? { duration: 0 }
+                : {
+                    duration: bar.duration,
+                    delay: bar.delay,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut"
+                  }}
               style={{
                 // Make the center bars taller on average
                 maxHeight: `${Math.sin((bar.id / 40) * Math.PI) * 100 + 20}%`
@@ -48,12 +64,12 @@ export function LifeSoundtrack(props: any) {
 
         <div className="flex justify-between items-end">
           <div>
-            <p className="text-sm font-medium">Interstellar (Original Motion Picture Soundtrack)</p>
-            <p className="text-xs text-muted-foreground">Hans Zimmer</p>
+            <p className="text-sm font-medium">{topAlbum}</p>
+            <p className="text-xs text-muted-foreground">{artist}</p>
           </div>
           <div className="text-right">
             <span className="text-xs text-[oklch(0.72_0.18_255)] font-medium">Top Album</span>
-            <p className="text-xs text-muted-foreground">42 hours played</p>
+            <p className="text-xs text-muted-foreground">{hoursPlayed} hours played</p>
           </div>
         </div>
       </div>

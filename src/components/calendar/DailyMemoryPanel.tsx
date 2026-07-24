@@ -17,6 +17,8 @@ interface Props {
   currentYear: number;
   monthAccent: string;
   items: DailyMemoryItem[];
+  mood?: string;
+  weather?: string;
   onAddMemory: () => void;
 }
 
@@ -27,6 +29,8 @@ export function DailyMemoryPanel({
   currentYear,
   monthAccent,
   items,
+  mood = "Awe",
+  weather = "Clear",
   onAddMemory,
 }: Props) {
   return (
@@ -89,39 +93,43 @@ export function DailyMemoryPanel({
             <>
               <PremiumGlass
                 variant="subtle"
+                role="button"
+                tabIndex={0}
+                aria-label="Add memory"
                 className="mt-2 flex items-center justify-center gap-2 rounded-xl border border-dashed border-white/10 p-3 text-xs text-muted-foreground hover:text-foreground cursor-pointer press-scale relative z-10"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onAddMemory}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onAddMemory(); } }}
               >
                 <Plus className="h-3 w-3" /> Add memory
               </PremiumGlass>
               <div className="mt-5 flex flex-col xl:flex-row items-center gap-3">
                 <motion.div
                   whileHover={{ y: -2, scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group flex w-full flex-1 items-center gap-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-3 transition-colors hover:bg-white/[0.04] hover:border-white/[0.08] cursor-pointer shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                  className="group flex w-full flex-1 items-center gap-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-3 transition-colors hover:bg-white/[0.04] hover:border-white/[0.08] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                  aria-label={`Mood: ${mood}`}
                 >
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20 shadow-[0_0_12px_-2px_rgba(245,158,11,0.3)] transition-transform duration-300 group-hover:scale-110">
                     <Sparkles className="h-4 w-4 text-amber-300" />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold mb-0.5">Mood</span>
-                    <span className="font-display text-lg tracking-tight text-foreground/90 leading-none">Awe</span>
+                    <span className="font-display text-lg tracking-tight text-foreground/90 leading-none">{mood}</span>
                   </div>
                 </motion.div>
 
                 <motion.div
                   whileHover={{ y: -2, scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group flex w-full flex-1 items-center gap-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-3 transition-colors hover:bg-white/[0.04] hover:border-white/[0.08] cursor-pointer shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                  className="group flex w-full flex-1 items-center gap-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-3 transition-colors hover:bg-white/[0.04] hover:border-white/[0.08] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                  aria-label={`Weather: ${weather}`}
                 >
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/10 border border-sky-500/20 shadow-[0_0_12px_-2px_rgba(14,165,233,0.3)] transition-transform duration-300 group-hover:scale-110">
                     <CloudSun className="h-4 w-4 text-sky-300" />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-semibold mb-0.5">Weather</span>
-                    <span className="font-display text-lg tracking-tight text-foreground/90 leading-none">Cold, clear</span>
+                    <span className="font-display text-lg tracking-tight text-foreground/90 leading-none">{weather}</span>
                   </div>
                 </motion.div>
               </div>

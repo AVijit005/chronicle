@@ -252,7 +252,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
           className={cn(
             "press-scale overflow-hidden min-h-0 min-w-0 transition-all duration-300 ease-out",
             variant === "overlay"
-              ? "flex aspect-square flex-1 items-center justify-center rounded-full bg-white/[0.10] text-white ring-1 ring-white/15 hover:-translate-y-[2px] hover:bg-white hover:text-black hover:shadow-[0_8px_16px_-4px_oklch(0.72_0.18_255/0.4)]"
+              ? "flex aspect-square flex-1 items-center justify-center rounded-full bg-white/[0.10] text-white ring-1 ring-white/15 hover:-translate-y-[2px] hover:bg-white hover:text-black hover:shadow-[0_8px_16px_-4px_var(--primary)]"
               : "inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary text-xs font-medium text-primary-foreground",
             variant === "hero" ? "px-4 py-2 text-sm" : variant === "inline" ? "px-3 py-1.5" : ""
           )}
@@ -270,7 +270,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         className={cn(
           "press-scale shrink-0 min-h-0 min-w-0 overflow-hidden transition-all duration-300 ease-out",
           variant === "overlay"
-            ? "flex aspect-square flex-1 items-center justify-center rounded-full ring-1 ring-white/10 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_-4px_oklch(0.72_0.18_255/0.3)]"
+            ? "flex aspect-square flex-1 items-center justify-center rounded-full ring-1 ring-white/10 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_-4px_var(--primary)]"
             : "grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10",
           variant === "hero" && "tap-target",
           fav
@@ -289,7 +289,7 @@ export function ItemActionBar({ id, title, variant = "inline", className }: Prop
         className={cn(
           "press-scale shrink-0 min-h-0 min-w-0 overflow-hidden transition-all duration-300 ease-out",
           variant === "overlay"
-            ? "flex aspect-square flex-1 items-center justify-center rounded-full ring-1 ring-white/10 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_-4px_oklch(0.72_0.18_255/0.3)]"
+            ? "flex aspect-square flex-1 items-center justify-center rounded-full ring-1 ring-white/10 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_-4px_var(--primary)]"
             : "grid h-8 w-8 place-items-center rounded-full ring-1 ring-white/10",
           variant === "hero" && "tap-target",
           bookmarked

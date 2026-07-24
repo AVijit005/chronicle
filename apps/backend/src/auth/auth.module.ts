@@ -60,7 +60,8 @@ import {
       provide: EMAIL_TRANSPORT,
       inject: [ConfigService, ResendEmailTransportService, ConsoleEmailTransportService],
       useFactory: (config: ConfigService, resend: ResendEmailTransportService, console: ConsoleEmailTransportService) => {
-        return config.get('nodeEnv') === 'development' ? console : resend;
+        const env = config.get('NODE_ENV') || config.get('nodeEnv') || process.env.NODE_ENV;
+        return env === 'development' || env === 'test' ? console : resend;
       }
     },
   ],

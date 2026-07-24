@@ -20,7 +20,7 @@ export function PlanningRow({ item }: { item: MediaItem }) {
     >
       <img
         src={item.poster || undefined}
-        alt=""
+        alt={item.title}
         className="h-20 w-14 shrink-0 rounded-lg object-cover"
         loading="lazy"
       />

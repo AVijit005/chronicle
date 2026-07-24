@@ -1,7 +1,7 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AnalyticsService } from './analytics.service';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CurrentUser, JwtAuthGuard } from '../auth';
 import type { AccessTokenPayload } from '../auth/services/jwt-token.service';
 import type { ActivityDto, OverviewDto, InsightsDto, GenreAnalyticsDto, CalendarDto } from './dto/analytics.dto';
 
@@ -11,31 +11,57 @@ import type { ActivityDto, OverviewDto, InsightsDto, GenreAnalyticsDto, Calendar
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
+  @Get('dashboard')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get full dashboard analytics' })
+  async getDashboard(@CurrentUser() user: AccessTokenPayload): Promise<any> {
+    return this.analyticsService.getDashboard(user.sub);
+  }
+
+  @Get('streaks')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get streak analytics' })
+  async getStreaks(@CurrentUser() user: AccessTokenPayload): Promise<any> {
+    return this.analyticsService.getStreaks(user.sub);
+  }
+
+  @Get('media')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get media distribution analytics' })
+  async getMediaAnalytics(@CurrentUser() user: AccessTokenPayload): Promise<any> {
+    return this.analyticsService.getMediaAnalytics(user.sub);
+  }
+
   @Get('overview')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get analytics overview' })
   async getOverview(@CurrentUser() user: AccessTokenPayload): Promise<OverviewDto> {
     return this.analyticsService.getOverview(user.sub);
   }
 
   @Get('genres')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get genre analytics' })
   async getGenres(@CurrentUser() user: AccessTokenPayload): Promise<GenreAnalyticsDto> {
     return this.analyticsService.getGenreAnalytics(user.sub);
   }
 
   @Get('insights')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get AI-generated insights' })
   async getInsights(@CurrentUser() user: AccessTokenPayload): Promise<InsightsDto> {
     return this.analyticsService.getInsights(user.sub);
   }
 
   @Get('activity')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get activity heatmap data' })
   async getActivity(@CurrentUser() user: AccessTokenPayload): Promise<ActivityDto> {
     return this.analyticsService.getActivity(user.sub);
   }
 
   @Get('calendar')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Calendar data for a specific month' })
   async getCalendar(
     @CurrentUser() user: AccessTokenPayload,
@@ -50,6 +76,7 @@ export class AnalyticsController {
   }
 
   @Get('calendar/year')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Calendar year data' })
   async getCalendarYear(
     @CurrentUser() user: AccessTokenPayload,
@@ -62,12 +89,19 @@ export class AnalyticsController {
   }
 
   @Get('calendar/day')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Calendar day data' })
   async getCalendarDay(
     @CurrentUser() user: AccessTokenPayload,
     @Query('date') date: string,
   ): Promise<any> {
     return this.analyticsService.getCalendarDay(user.sub, date);
+  }
+
+  @Post('pageview')
+  @ApiOperation({ summary: 'Record pageview analytics' })
+  async recordPageView(@Body() body: Record<string, any>) {
+    return { success: true };
   }
 
   @Get('health')
