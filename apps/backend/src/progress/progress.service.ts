@@ -70,7 +70,6 @@ export class ProgressService {
     if (dto.currentPage !== undefined) updateData.currentPage = dto.currentPage;
     if (dto.currentTrack !== undefined) updateData.currentTrack = dto.currentTrack;
     if (dto.currentLesson !== undefined) updateData.currentLesson = dto.currentLesson;
-    if (dto.currentModule !== undefined) updateData.currentModule = dto.currentModule;
     if (dto.hoursSpent !== undefined) updateData.hoursSpent = dto.hoursSpent;
     if (dto.minutesSpent !== undefined) updateData.minutesSpent = dto.minutesSpent;
 
@@ -157,7 +156,6 @@ export class ProgressService {
       currentPage: null,
       currentTrack: null,
       currentLesson: null,
-      currentModule: null,
       hoursSpent: null,
       minutesSpent: null,
     };

@@ -30,7 +30,10 @@ See [frontend/taste.md](frontend/taste.md)
 
 # prompts
 - When writing prompts for autonomous executors (Antigravity or similar), be long, detailed, and verbose with specific file paths, exact line references, and concrete commands — the user explicitly prefers comprehensive output over concise. Confidence: 0.80
-- Autonomous executor prompts must always include: (1) verification steps with specific grep/read commands to confirm results, (2) tests to write and run, (3) build/type-checks to pass, (4) exact git commit message and push command, (5) non-negotiable guardrails (no fake data, no force-push, no rewrite history). Confidence: 0.75
+- Autonomous executor prompts must always include: (1) verification steps with specific grep/read commands to confirm results, (2) tests to write and run, (3) build/type-checks to pass, (4) exact git commit message and push command, (5) non-negotiable guardrails (no fake data, no force-push, no rewrite history). Confidence: 0.80
+
+# planning
+- When creating an implementation plan from an audit, include a verification summary table showing the audit's accuracy rate (confirmed vs false-positive claims), organize fixes into independently testable phases ordered by risk level, and append CI guard scripts (grep-based checks, build/type-check commands) at the end. Confidence: 0.75
 
 # workflow
 - Run 'npx tsc --noEmit' after each phase of refactoring to verify TypeScript compilation. Confidence: 0.85

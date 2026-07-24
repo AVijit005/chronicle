@@ -116,15 +116,16 @@ export function MediaCard({ item, size = "full" }: { item: UIMediaItem; size?: "
             </div>
           )}
 
-          <motion.div
-            variants={{ rest: { opacity: 0, y: 8, scale: 0.96 }, hover: { opacity: 1, y: 0, scale: 1 } }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="pointer-events-none absolute inset-x-2 bottom-2 z-20 flex justify-center"
-          >
-            <div className="pointer-events-auto w-full max-w-[220px]">
-              <ItemActionBar id={item.id} title={item.title} variant="overlay" />
-            </div>
           </motion.div>
+        </motion.div>
+        <motion.div
+          variants={{ rest: { opacity: 0, y: 8, scale: 0.96 }, hover: { opacity: 1, y: 0, scale: 1 } }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="pointer-events-none absolute inset-x-2 bottom-2 z-20 flex justify-center"
+        >
+          <div className="pointer-events-auto w-full max-w-[220px]">
+            <ItemActionBar id={item.id} title={item.title} variant="overlay" />
+          </div>
         </motion.div>
       </div>
       <div className="mt-3 px-0.5">

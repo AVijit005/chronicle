@@ -46,7 +46,7 @@ export function CalendarHero({ currentYear, yearOffset, onChangeYear, onToday, i
             <button onClick={() => onChangeYear(yearOffset - 1)} className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08]" aria-label="Previous year">
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button onClick={() => onChangeYear(yearOffset === 0 ? 0 : yearOffset + 1)} disabled={yearOffset >= 0} className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Next year">
+            <button onClick={() => onChangeYear(yearOffset + 1)} disabled={yearOffset >= 5} className="glass-subtle grid h-9 w-9 place-items-center rounded-full hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Next year">
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>

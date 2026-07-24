@@ -10,7 +10,7 @@ const JOURNAL: any[] = [];
 /* ============================================================
  * Fixed "today" so all relative-time math is SSR-deterministic.
  * ============================================================ */
-export const TODAY = new Date("2026-06-27T00:00:00Z");
+export const TODAY = () => new Date();
 
 /* ============================================================
  * Taxonomy
@@ -171,7 +171,7 @@ const FAV_MOMENTS = [
 ];
 
 function daysAgo(n: number): string {
-  const d = new Date(TODAY);
+  const d = TODAY();
   d.setUTCDate(d.getUTCDate() - n);
   return d.toISOString().slice(0, 10);
 }
@@ -257,7 +257,7 @@ export function getSeasonalMemories(season?: Season) {
 export function getForgottenStories() {
   return withMemory().filter(({ memory }) => {
     if (!memory.finishedAt) return false;
-    const days = Math.floor((TODAY.getTime() - new Date(memory.finishedAt).getTime()) / 86_400_000);
+    const days = Math.floor((TODAY().getTime() - new Date(memory.finishedAt).getTime()) / 86_400_000);
     return days > 600;
   });
 }

@@ -43,7 +43,7 @@ export class AnalyticsAggregationService {
       booksRead: completedByType['book'] ?? 0,
       gamesFinished: completedByType['game'] ?? 0,
       coursesCompleted: completedByType['course'] ?? 0,
-      hoursWatched: (hoursData.hours['movie'] ?? 0) + (hoursData.hours['tvShow'] ?? 0) + (hoursData.hours['anime'] ?? 0) + (hoursData.hours['documentary'] ?? 0),
+      hoursWatched: (hoursData.hours['movie'] ?? 0) + (hoursData.hours['tvShow'] ?? 0) + (hoursData.hours['anime'] ?? 0),
       hoursRead: hoursData.hours['book'] ?? 0,
       hoursPlayed: hoursData.hours['game'] ?? 0,
       hoursLearned: hoursData.hours['course'] ?? 0,
@@ -192,11 +192,43 @@ export class AnalyticsAggregationService {
   }
 
   async getCalendarDay(userId: string, date: string): Promise<any> {
-    // Basic mock implementation for CalendarDayResponse
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(date);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const [journalEntries, memories, libraryItems] = await Promise.all([
+      this.repository.getRecentJournalEntries(userId, 100),
+      this.repository.getRecentMemories(userId, 100),
+      this.repository.getRecentlyAdded(userId, 100),
+    ]);
+
+    const dayJournal = journalEntries.filter((e: any) => {
+      const d = new Date(e.createdAt);
+      return d >= dayStart && d <= dayEnd;
+    });
+
+    const dayMemories = memories.filter((m: any) => {
+      const d = new Date(m.createdAt);
+      return d >= dayStart && d <= dayEnd;
+    });
+
+    const dayLibrary = libraryItems.filter((item: any) => {
+      const d = new Date(item.createdAt);
+      return d >= dayStart && d <= dayEnd;
+    });
+
+    const mediaItems = dayLibrary.map((item: any) => ({
+      mediaType: item._mediaType ?? 'movie',
+      title: item.title ?? 'Untitled',
+      note: item.notes ?? null,
+    }));
+
     return {
       date,
-      mediaItems: [],
-      journalEntry: null,
+      mediaItems,
+      journalEntry: dayJournal[0] ?? null,
+      memories: dayMemories,
     };
   }
 

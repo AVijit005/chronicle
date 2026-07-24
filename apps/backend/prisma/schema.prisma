@@ -996,6 +996,7 @@ model UserMovie {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   movie              Movie           @relation(fields: [movieId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1039,6 +1040,7 @@ model UserTvShow {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   tvShow             TvShow          @relation(fields: [tvShowId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1168,6 +1170,7 @@ model UserAnime {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   anime              Anime           @relation(fields: [animeId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1254,6 +1257,7 @@ model UserBook {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   book               Book            @relation(fields: [bookId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1297,6 +1301,7 @@ model UserGame {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   game               Game            @relation(fields: [gameId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1340,6 +1345,7 @@ model UserMusicAlbum {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   musicAlbum         MusicAlbum      @relation(fields: [musicAlbumId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1426,6 +1432,7 @@ model UserPodcast {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   podcast            Podcast         @relation(fields: [podcastId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1512,6 +1519,7 @@ model UserCourse {
   metadata           Json?           @map("metadata")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
+  deletedAt          DateTime?       @map("deleted_at")
   course             Course          @relation(fields: [courseId], references: [id], onDelete: Restrict)
   user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 

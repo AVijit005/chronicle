@@ -6,6 +6,7 @@ const MEDIA_TYPE_VALUES = ['movie', 'tvShow', 'anime', 'book', 'game', 'musicAlb
 const STATUS_VALUES = [
   'PLANNING',
   'WATCHING',
+  'REWATCHING',
   'READING',
   'PLAYING',
   'LISTENING',
@@ -13,6 +14,7 @@ const STATUS_VALUES = [
   'PAUSED',
   'COMPLETED',
   'DROPPED',
+  'ON_HOLD',
   'ARCHIVED',
 ] as const;
 

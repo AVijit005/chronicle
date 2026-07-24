@@ -100,7 +100,7 @@ export class LibraryService {
     if (dto.startedAt !== undefined) updateData.startedAt = new Date(dto.startedAt);
     if (dto.finishedAt !== undefined) updateData.finishedAt = new Date(dto.finishedAt);
 
-    if (dto.status && ['IN_PROGRESS', 'REWATCHING', 'PAUSED'].includes(dto.status) && !dto.startedAt && !(currentItem as any).startedAt) {
+    if (dto.status && ['WATCHING', 'REWATCHING', 'PAUSED', 'READING', 'PLAYING', 'LISTENING', 'LEARNING', 'ON_HOLD'].includes(dto.status) && !dto.startedAt && !(currentItem as any).startedAt) {
       updateData.startedAt = new Date();
     }
 
@@ -176,6 +176,12 @@ export class LibraryService {
             backdropUrl: media.backdropUrl ?? null,
             releaseYear: media.releaseYear ?? null,
             genres: media.genres ?? [],
+          }
+        : null,
+    };
+  }
+}
+      genres: media.genres ?? [],
           }
         : null,
     };

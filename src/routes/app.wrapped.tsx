@@ -9,6 +9,7 @@ import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Share2, Download, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { PremiumGlass } from "@/components/ui/PremiumGlass";
 import { PremiumButton } from "@/components/ui/PremiumButton";
 import { useOverview, useInsights } from "@/hooks/use-analytics";
@@ -20,26 +21,42 @@ export const Route = createFileRoute("/app/wrapped")({
   pendingComponent: PageSkeleton,
 });
 
+declare global {
+  // eslint-disable-next-line no-var
+  var html2canvas: ((target: HTMLElement, opts?: Record<string, unknown>) => Promise<HTMLCanvasElement>) | undefined;
+}
+
 function downloadAsImage() {
+  if (typeof window === 'undefined') return;
+  if (window.html2canvas) {
+    captureAndDownload();
+    return;
+  }
   const script = document.createElement('script');
   script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
   script.integrity = 'sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSK/6d101tGsAHZI/A94g==';
   script.crossOrigin = 'anonymous';
-  script.onload = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error html2canvas is loaded dynamically
-    window.html2canvas(document.body, { backgroundColor: '#090a0f' }).then((canvas: HTMLCanvasElement) => {
-      const link = document.createElement('a');
-      link.download = 'chronicle-wrapped.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    }).catch((err: unknown) => {
-      console.error("Failed to generate image", err);
-      alert("Failed to generate image.");
-    });
-  };
-  script.onerror = () => alert("Failed to load image generator.");
+  script.onload = () => captureAndDownload();
+  script.onerror = () => toast.error("Failed to load image generator. Check your connection.");
   document.head.appendChild(script);
+}
+
+function captureAndDownload() {
+  const el = document.getElementById('chronicle-wrapped-root');
+  if (!el || !window.html2canvas) {
+    toast.error("Failed to generate image.");
+    return;
+  }
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--background').trim() || '#090a0f';
+  window.html2canvas(el, { backgroundColor: bg }).then((canvas: HTMLCanvasElement) => {
+    const link = document.createElement('a');
+    link.download = 'chronicle-wrapped.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }).catch((err: unknown) => {
+    console.error("Failed to generate image", err);
+    toast.error("Failed to generate image.");
+  });
 }
 
 function WrappedPage() {
@@ -115,12 +132,9 @@ function WrappedPage() {
   ];
 
   return (
-    <div className="-mx-4 -mt-6 md:-mx-8">
+    <div className="-mx-4 -mt-6 md:-mx-8" id="chronicle-wrapped-root">
       {/* Snap-scroll container */}
-      <div
-        className="snap-y snap-mandatory overflow-y-auto"
-        style={{ scrollSnapType: "y mandatory" }}
-      >
+      <div className="snap-y snap-mandatory overflow-y-auto">
         {slides.map((s, idx) => (
           <Slide key={s.key} index={idx} slide={s} last={idx === slides.length - 1} totalSlides={slides.length} />
         ))}
@@ -153,7 +167,6 @@ function Slide({ slide, index, last, totalSlides }: { slide: UIWrappedSlide; ind
     <section
       ref={ref}
       className="relative grid min-h-[100svh] snap-start place-items-center overflow-hidden px-6 py-16"
-      style={{ scrollSnapAlign: "start" }}
     >
       {/* Background lighting */}
       <div className="pointer-events-none absolute inset-0">
@@ -325,10 +338,7 @@ function Slide({ slide, index, last, totalSlides }: { slide: UIWrappedSlide; ind
 
 function ShareSection({ overview: o, insights: i }: { overview: UIOverview; insights: UIInsights }) {
   return (
-    <section
-      className="relative grid min-h-[100svh] snap-start place-items-center px-6 py-16"
-      style={{ scrollSnapAlign: "start" }}
-    >
+    <section className="relative grid min-h-[100svh] snap-start place-items-center px-6 py-16">
       <PremiumGlass
         variant="strong"
         className="relative w-full max-w-md overflow-hidden rounded-[36px] p-8"
@@ -373,5 +383,3 @@ function ShareSection({ overview: o, insights: i }: { overview: UIOverview; insi
     </section>
   );
 }
-
-

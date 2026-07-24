@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function DailyRitual({ className, insights }: Props) {
-  const dateLabel = TODAY.toLocaleDateString(undefined, {
+  const dateLabel = TODAY().toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
     day: "numeric",

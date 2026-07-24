@@ -152,7 +152,7 @@ export class JournalRepository {
       const end = new Date(year, 11, 31, 23, 59, 59, 999);
       where.eventDate = { gte: start, lte: end };
     }
-    if (cursor) where.eventDate = { lt: new Date(cursor) };
+    if (cursor) where.eventDate = { ...where.eventDate, lt: new Date(cursor) };
 
     return this.prismaAny().timelineEvent.findMany({
       where,

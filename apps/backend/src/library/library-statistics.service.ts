@@ -14,8 +14,11 @@ export class LibraryStatisticsService {
   constructor(private readonly repository: LibraryRepository) {}
 
   async getStatistics(userId: string): Promise<LibraryStatistics> {
-    const byStatus = await this.repository.countByStatus(userId);
-    const byType = await this.repository.countByType(userId);
+    const [byStatus, byType, favoriteCount] = await Promise.all([
+      this.repository.countByStatus(userId),
+      this.repository.countByType(userId),
+      this.repository.countFavorites(userId),
+    ]);
 
     const total = Object.values(byType).reduce((sum, count) => sum + count, 0);
     const completed = byStatus['COMPLETED'] ?? 0;
@@ -25,7 +28,7 @@ export class LibraryStatisticsService {
       total,
       byStatus,
       byType,
-      favoriteCount: 0,
+      favoriteCount,
       completionRate,
     };
   }

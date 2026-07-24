@@ -5,7 +5,8 @@ import { MediaCard } from "@/components/media/MediaCard";
 import { LibraryToolbar, type SortKey } from "@/components/library/LibraryToolbar";
 import { StatusBadge } from "@/components/library/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { ALL_LIBRARY, metaOf, statusOf, type MediaStatus } from "@/lib/library";
+import { metaOf, statusOf, type MediaStatus } from "@/lib/library";
+import { snapshotAllItems } from "@/lib/store/libraryStore";
 import type { MediaKind } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { cascade } from "@/lib/motion";
@@ -24,7 +25,7 @@ function AllLibraryPage() {
   const [view, setView] = useState<"grid" | "rows">("grid");
 
   const items = useMemo(() => {
-    let r = ALL_LIBRARY.slice();
+    let r = snapshotAllItems();
     if (q.trim()) {
       const t = q.toLowerCase();
       r = r.filter(
@@ -53,13 +54,20 @@ function AllLibraryPage() {
         r.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         break;
       case "Most Time Spent":
-        r.sort((a, b) => (b.progress ?? 0) - (a.progress ?? 0));
+        r.sort((a, b) => {
+          const hoursA = (a.hoursSpent ?? 0) + (a.minutesSpent ?? 0) / 60;
+          const hoursB = (b.hoursSpent ?? 0) + (b.minutesSpent ?? 0) / 60;
+          return hoursB - hoursA;
+        });
         break;
       case "Random":
         r.sort(() => Math.random() - 0.5);
         break;
       case "Recently Added":
         r.sort((a, b) => new Date(metaOf(b.id).addedAt ?? 0).getTime() - new Date(metaOf(a.id).addedAt ?? 0).getTime());
+        break;
+      case "Recently Finished":
+        r.sort((a, b) => new Date(metaOf(b.id).completedAt ?? 0).getTime() - new Date(metaOf(a.id).completedAt ?? 0).getTime());
         break;
       default:
         break;

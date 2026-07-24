@@ -346,6 +346,16 @@ export class LibraryRepository {
     return counts;
   }
 
+  async countFavorites(userId: string): Promise<number> {
+    let total = 0;
+    for (const t of this.getTypes()) {
+      const delegate = this.getDelegate(t);
+      if (!delegate) continue;
+      total += await delegate.count({ where: { userId, favorite: true, deletedAt: null } as any });
+    }
+    return total;
+  }
+
   async verifyMediaExists(type: string, mediaId: string): Promise<boolean> {
     const prismaAny = this.prisma as unknown as Record<string, any>;
     const mediaDelegate = prismaAny[type];

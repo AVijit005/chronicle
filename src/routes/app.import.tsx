@@ -103,7 +103,9 @@ function ImportExportPage() {
                 ? "planning"
                 : status === "paused"
                   ? "paused"
-                  : "in_progress",
+                  : status === "rewatching"
+                    ? "rewatching"
+                    : "in_progress",
           genres: [],
           runtime: null,
           creator: cells[idx("creator")]?.trim() || null,

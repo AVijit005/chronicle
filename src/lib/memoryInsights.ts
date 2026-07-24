@@ -167,7 +167,7 @@ export function getEmotionalPeaks() {
 export function getForgottenMemories() {
   return all().filter(({ memory }) => {
     if (!memory.finishedAt) return false;
-    const d = Math.floor((TODAY.getTime() - new Date(memory.finishedAt).getTime()) / 86_400_000);
+    const d = Math.floor((TODAY().getTime() - new Date(memory.finishedAt).getTime()) / 86_400_000);
     return d > 700;
   });
 }

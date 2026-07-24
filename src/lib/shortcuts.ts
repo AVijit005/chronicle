@@ -57,7 +57,8 @@ export function useShortcuts(map: ShortcutMap) {
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [map]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(map)]);
 }
 
 export const SHORTCUT_HELP = [

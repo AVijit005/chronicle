@@ -1,4 +1,4 @@
-// Library status taxonomy + selectors derived from MEDIA mock + live store.
+// Library status taxonomy + selectors derived from live store.
 import { type MediaItem, type MediaKind } from "@/lib/types";
 import { useLibraryStore } from "@/lib/store/libraryStore";
 
@@ -24,8 +24,6 @@ export interface LibraryMeta {
   journalExcerpt?: string;
 }
 
-const SEED_ALL: MediaItem[] = [];
-
 function deriveStatus(m: MediaItem): MediaStatus {
   if (m.status === "completed") return "completed";
   if (m.status === "planned") return "planning";
@@ -35,15 +33,14 @@ function deriveStatus(m: MediaItem): MediaStatus {
 
 function liveItems(): MediaItem[] {
   const custom = useLibraryStore.getState().customItems;
-  const ids = new Set(custom.map((c) => c.id));
-  return [...custom, ...SEED_ALL.filter((m) => !ids.has(m.id))];
+  return [...custom];
 }
 
 function liveMeta(id: string): Partial<LibraryMeta> {
   return useLibraryStore.getState().meta[id] ?? {};
 }
 
-export const ALL_LIBRARY = SEED_ALL;
+export const ALL_LIBRARY: MediaItem[] = [];
 
 export function metaOf(id: string): LibraryMeta {
   const all = liveItems();
@@ -124,17 +121,8 @@ export function statusCounts(): Record<MediaStatus, number> {
   return out;
 }
 
-export function trendFor(status: MediaStatus): number {
-  const t: Record<MediaStatus, number> = {
-    in_progress: +2,
-    completed: +7,
-    planning: +12,
-    paused: -1,
-    dropped: 0,
-    rewatching: +1,
-    archived: +3,
-  };
-  return t[status];
+export function trendFor(status: MediaStatus): number | null {
+  return null;
 }
 
 export function collageRecent(n = 9): string[] {
@@ -149,7 +137,6 @@ export function smartInsights(): string[] {
 }
 
 // Status presentation tokens — emotional, not statistical.
-// Route paths stay technical (`/library/completed`); these are what users read.
 export const STATUS_LABEL: Record<MediaStatus, string> = {
   in_progress: "In the middle",
   completed: "Stayed with you",
@@ -170,4 +157,3 @@ export const STATUS_TINT: Record<MediaStatus | "favorite", string> = {
   archived: "var(--status-archived)",
   favorite: "var(--status-favorite)",
 };
-

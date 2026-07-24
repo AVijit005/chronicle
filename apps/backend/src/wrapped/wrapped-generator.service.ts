@@ -110,6 +110,27 @@ export class WrappedGeneratorService {
         category: 'media',
       });
     }
+    if (completedByType['tvShow'] && completedByType['tvShow'] > 0) {
+      insights.push({
+        text: `You finished ${completedByType['tvShow']} TV show${completedByType['tvShow'] !== 1 ? 's' : ''}.`,
+        icon: 'tv',
+        category: 'media',
+      });
+    }
+    if (completedByType['anime'] && completedByType['anime'] > 0) {
+      insights.push({
+        text: `You watched ${completedByType['anime']} anime${completedByType['anime'] !== 1 ? '' : ''}.`,
+        icon: 'sparkles',
+        category: 'media',
+      });
+    }
+    if (completedByType['game'] && completedByType['game'] > 0) {
+      insights.push({
+        text: `You beat ${completedByType['game']} game${completedByType['game'] !== 1 ? 's' : ''}.`,
+        icon: 'gamepad-2',
+        category: 'media',
+      });
+    }
     if (avgRating) {
       insights.push({
         text: `Your average rating was ${avgRating.toFixed(1)} out of 5.`,

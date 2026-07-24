@@ -7,9 +7,10 @@ export class StreakService {
   constructor(private readonly repository: AnalyticsRepository) {}
 
   async getStreaks(userId: string): Promise<StreaksDto> {
-    const [dates, activityData] = await Promise.all([
+    const [dates, activityData, completionStreak] = await Promise.all([
       this.repository.getJournalEntryDates(userId, 365),
       this.repository.getActivityData(userId, 365),
+      this.calculateCompletionStreak(userId),
     ]);
 
     const uniqueDays = [...new Set(dates.map((d) => d.toISOString().slice(0, 10)))].sort().reverse();
@@ -21,7 +22,7 @@ export class StreakService {
       weeklyActivity: this.getWeeklyActivity(activityData),
       monthlyActivity: this.getMonthlyActivity(activityData),
       yearlyActivity: this.getYearlyActivity(activityData),
-      completionStreak: this.calculateCompletionStreak(userId),
+      completionStreak,
       journalStreak: this.calculateCurrentStreak(uniqueDays, today),
     };
   }
@@ -56,9 +57,29 @@ export class StreakService {
     return longest;
   }
 
-  private calculateCompletionStreak(_userId: string): number {
-    // Simplified: count consecutive days with a completed item in the last 30 days
-    return 0;
+  private async calculateCompletionStreak(userId: string): Promise<number> {
+    const activityData = await this.repository.getActivityData(userId, 365);
+    const activeDays = Object.entries(activityData)
+      .filter(([, count]) => count > 0)
+      .map(([date]) => date)
+      .sort()
+      .reverse();
+
+    if (activeDays.length === 0) return 0;
+
+    let streak = 0;
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const expected = new Date(today);
+      expected.setDate(expected.getDate() - i);
+      const expectedDay = expected.toISOString().slice(0, 10);
+      if (activeDays.includes(expectedDay)) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
   }
 
   private getWeeklyActivity(data: Record<string, number>): ActivityCountDto[] {

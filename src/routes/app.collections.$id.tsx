@@ -184,7 +184,7 @@ function CollectionDetailContent({ collection: c }: { collection: UICollection }
                 Share
               </PremiumButton>
               <PremiumButton variant="secondary" icon={<Heart className="h-4 w-4" />}>
-                Favorite
+                Save
               </PremiumButton>
             </div>
           </motion.div>

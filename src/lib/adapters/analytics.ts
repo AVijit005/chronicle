@@ -131,7 +131,7 @@ export function adaptCalendarYear(y: CalendarYearResponse): UICalendarYear {
       stories: y.stats.totalStories,
       journals: y.stats.totalJournals,
       longestStreak: y.stats.longestStreak,
-      favoriteMonth: months.sort((a, b) => b.dayHits - a.dayHits)[0]?.name ?? '—',
+      favoriteMonth: [...months].sort((a, b) => b.dayHits - a.dayHits)[0]?.name ?? '—',
     },
     months,
     heatmap,

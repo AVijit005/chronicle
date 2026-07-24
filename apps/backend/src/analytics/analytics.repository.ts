@@ -87,12 +87,12 @@ export class AnalyticsRepository {
       if (!delegate) continue;
       const items = await delegate.findMany({
         where: { userId, deletedAt: null },
-        select: { hoursSpent: true, minutesSpent: true, episodesWatched: true },
+        select: { hoursSpent: true, minutesSpent: true, currentEpisode: true, currentSeason: true },
       });
       let h = 0;
       for (const item of items) {
         h += (item.hoursSpent ?? 0) + (item.minutesSpent ?? 0) / 60;
-        if (item.episodesWatched) episodes += item.episodesWatched;
+        if (item.currentEpisode) episodes += item.currentEpisode;
       }
       hours[cfg.type] = h;
     }
@@ -185,7 +185,7 @@ export class AnalyticsRepository {
       }
     }
 
-    return totalCount > 0 ? totalSum / totalCount : null;
+    return totalCount > 0 ? Math.round((totalSum / totalCount) * 10) / 10 : null;
   }
 
   async getFavoriteCount(userId: string): Promise<number> {
@@ -305,7 +305,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().journalEntry;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId, deletedAt: null },
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
@@ -315,7 +315,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().memory;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId, deletedAt: null },
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
@@ -325,7 +325,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().journalEntry;
     if (!delegate) return [];
     const items = await delegate.findMany({
-      where: { userId, deletedAt: null },
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       take: limit,
       select: { createdAt: true },
@@ -358,7 +358,7 @@ export class AnalyticsRepository {
     const journal = this.prismaAny().journalEntry;
     if (journal) {
       const entries = await journal.findMany({
-        where: { userId, createdAt: { gte: startDate }, deletedAt: null },
+        where: { userId, createdAt: { gte: startDate } },
         select: { createdAt: true },
       });
       for (const e of entries) {
@@ -371,7 +371,7 @@ export class AnalyticsRepository {
     const memory = this.prismaAny().memory;
     if (memory) {
       const mems = await memory.findMany({
-        where: { userId, createdAt: { gte: startDate }, deletedAt: null },
+        where: { userId, createdAt: { gte: startDate } },
         select: { createdAt: true },
       });
       for (const m of mems) {
@@ -398,7 +398,7 @@ export class AnalyticsRepository {
     const journal = this.prismaAny().journalEntry;
     if (journal) {
       const entries = await journal.findMany({
-        where: { userId, createdAt: { gte: startDate, lte: endDate }, deletedAt: null },
+        where: { userId, createdAt: { gte: startDate, lte: endDate } },
         select: { createdAt: true },
       });
       for (const e of entries) {
@@ -411,7 +411,7 @@ export class AnalyticsRepository {
     const memory = this.prismaAny().memory;
     if (memory) {
       const mems = await memory.findMany({
-        where: { userId, createdAt: { gte: startDate, lte: endDate }, deletedAt: null },
+        where: { userId, createdAt: { gte: startDate, lte: endDate } },
         select: { createdAt: true },
       });
       for (const m of mems) {
@@ -488,7 +488,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().timelineEvent;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId, deletedAt: null },
+      where: { userId },
       orderBy: { eventDate: 'desc' },
       take: limit,
     });
@@ -513,7 +513,7 @@ export class AnalyticsRepository {
     const delegate = this.prismaAny().analyticsSnapshot;
     if (!delegate) return [];
     return delegate.findMany({
-      where: { userId, deletedAt: null },
+      where: { userId },
       orderBy: { snapshotDate: 'desc' },
       take: limit,
     });

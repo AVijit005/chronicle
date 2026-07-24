@@ -99,10 +99,22 @@ export class InteractionRepository {
     const activityDelegate = this.prismaAny()['activityFeed'];
     if (!activityDelegate) return;
 
+    const activityTypeMap: Record<string, string> = {
+      movie: 'WATCH',
+      tvShow: 'WATCH',
+      anime: 'WATCH',
+      book: 'READ',
+      game: 'PLAY',
+      musicAlbum: 'LISTEN',
+      podcast: 'LISTEN',
+      course: 'LEARN',
+    };
+    const type = activityTypeMap[mediaType] ?? 'WATCH';
+
     await activityDelegate.create({
       data: {
         userId,
-        type: mediaType.toUpperCase(),
+        type,
         title: eventType,
         description: `${eventType} on ${mediaType} item ${libraryId}`,
         metadata: { ...metadata, libraryId, mediaType, eventType },
